@@ -124,13 +124,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: currentPage != 3
                 ? IconButton(
                     onPressed: () {
-                      setState(() {
-                        currentPage += 1;
-                      });
                       pageController.nextPage(
-                        duration: const Duration(milliseconds: 100),
+                        duration: const Duration(milliseconds: 800),
                         curve: Curves.easeIn,
-                      );
+                      ).then((val){
+                        setState(() {
+                          currentPage += 1;
+                        });
+                      });
                     },
                     icon: const Icon(
                       Icons.arrow_forward_outlined,
