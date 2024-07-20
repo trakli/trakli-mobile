@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 
 /// Adds a global error handler to the Flutter app.
@@ -16,7 +17,19 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      runApp(await builder());
+      await EasyLocalization.ensureInitialized();
+
+      runApp(
+        EasyLocalization(
+          supportedLocales: const [
+            Locale('en'),
+            Locale('fr'),
+          ],
+          path: 'assets/translations',
+          fallbackLocale: const Locale('en'),
+          child: await builder(),
+        ),
+      );
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
