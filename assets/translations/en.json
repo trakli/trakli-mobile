@@ -5,11 +5,12 @@
   "onboard_title_1": "Simplified personal finance",
   "onboard_desc_1": "Trakli focuses on the basics and gives just what you need to see where you money is coming from or going to.",
   "onboard_title_2": "Automated",
-  "onboard_desc_2": "Automated",
+  "onboard_desc_2": "Let us pick up transactions for you from you sms and fill the income expense report before you get there. You can also share various statements with us like from email.",
   "onboard_title_3": "Free and open source",
   "onboard_desc_3": "It does not cost anything to use Trakli",
   "skip": "Skip",
   "login": "Login",
   "login_google": "Login with Google",
-  "login_Apple": "Login with Apple"
+  "login_Apple": "Login with Apple",
+  "go": "Go"
 }
