@@ -1,3 +1,15 @@
 {
-  "app_name": "TrackLi"
+  "app_name": "TrackLi",
+  "welcome_text": "Bienvenue à Trakli",
+  "welcome_to": "Bienvenue à",
+  "onboard_title_1": "Simplified personal finance",
+  "onboard_desc_1": "Trakli focuses on the basics and gives just what you need to see where you money is coming from or going to.",
+  "onboard_title_2": "Automated",
+  "onboard_desc_2": "Automated",
+  "onboard_title_3": "Free and open source",
+  "onboard_desc_3": "It does not cost anything to use Trakli",
+  "skip": "Skip",
+  "login": "Login",
+  "login_google": "Login with Google",
+  "login_Apple": "Login with Apple"
 }

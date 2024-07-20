@@ -99,6 +99,20 @@ Please ensure your code follows our style guidelines:
 - Write clear, concise comments where necessary.
 - Follow best practices for Flutter and Dart.
 
+- translation: run this to generate translations after adding text to json files
+    ```bash
+    flutter pub run easy_localization:generate -S "assets/translations/" -O "lib/gen/translations" - o "codegen_loader.g.dart" -f keys
+    ```
+- Use translations by **LocaleKeys.app_name.tr()**
+
+- assets(images/SVGs): run this after adding an asset image or SVG 
+    ```bash
+    fluttergen -c pubspec.yaml
+    ```
+- Use asset by
+  For SVGs:Assets.images.svg
+  For Images:Assets.images.image.path
+
 ## Commit Messages
 
 Write clear and meaningful commit messages. Use the following structure:
