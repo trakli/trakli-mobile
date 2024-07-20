@@ -55,7 +55,7 @@ jobs:
         run: flutter build apk
 
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: apk
           path: build/app/outputs/flutter-apk/
