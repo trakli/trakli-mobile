@@ -1,0 +1,16 @@
+{
+  "appName": "Trakli",
+  "welcomeText": "Welcome to Trakli",
+  "welcomeTo": "Welcome to",
+  "onboardTitle1": "Simplified personal finance",
+  "onboardDesc1": "Trakli focuses on the basics and gives just what you need to see where you money is coming from or going to.",
+  "onboardTitle2": "Automated",
+  "onboardDesc2": "Let us pick up transactions for you from you sms and fill the income expense report before you get there. You can also share various statements with us like from email.",
+  "onboardTitle3": "Free and open source",
+  "onboardDesc3": "It does not cost anything to use Trakli",
+  "skip": "Skip",
+  "login": "Login",
+  "loginGoogle": "Login with Google",
+  "loginApple": "Login with Apple",
+  "go": "Go"
+}
