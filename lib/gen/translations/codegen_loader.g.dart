@@ -25,5 +25,8 @@ abstract class  LocaleKeys {
   static const otpDesc = 'otpDesc';
   static const continueT = 'continueT';
   static const otpCodeNotSent = 'otpCodeNotSent';
+  static const emailEmptyDesc = 'emailEmptyDesc';
+  static const emailValidDesc = 'emailValidDesc';
+  static const passEmptyDesc = 'passEmptyDesc';
 
 }

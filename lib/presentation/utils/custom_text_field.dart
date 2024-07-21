@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/helpers.dart';
 
 
 class CustomTextField extends StatefulWidget {
@@ -81,13 +82,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
         hintStyle: const TextStyle(
           color: Colors.grey,
         ),
+        errorStyle: const TextStyle(
+          color: Colors.redAccent,
+        ),
         // prefix: widget.prefix,
         prefixIcon: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: widget.prefix,
         ),
-        prefixIconConstraints:
-            const BoxConstraints(maxHeight: 50, maxWidth: 50),
+        prefixIconConstraints: const BoxConstraints(maxHeight: 50, maxWidth: 50),
         suffixIcon: widget.isPassword
             ? IconButton(
                 splashRadius: 1,
@@ -105,6 +108,24 @@ class _CustomTextFieldState extends State<CustomTextField> {
               )
             : widget.suffixIcon,
         hintText: widget.hintText,
+        error: null,
+        focusedErrorBorder: widget.showNoBorders == true
+            ? InputBorder.none
+            : widget.showBottomBorder == true
+            ? UnderlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: Colors.redAccent,
+            width: 2,
+          ),
+        )
+            : OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color:  Colors.redAccent,
+            width: 2,
+          ),
+        ),
         errorBorder: widget.showNoBorders == true
             ? InputBorder.none
             : widget.showBottomBorder == true
@@ -166,9 +187,5 @@ class _CustomTextFieldState extends State<CustomTextField> {
       ),
     );
   }
-}
-
-void hideKeyBoard() {
-  FocusManager.instance.primaryFocus?.unfocus();
 }
 

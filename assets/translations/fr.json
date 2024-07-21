@@ -22,5 +22,7 @@
   "noAccountYet": "Don't have an account yet?",
   "otpDesc": "Enter the OTP code sent to email ",
   "continueT": "Continue",
-  "otpCodeNotSent": "Didn't receive a code, resend in"
+  "otpCodeNotSent": "Didn't receive a code, resend in",
+  "emailEmptyDesc": "Email cannot be empty",
+  "emailValidDesc": "Enter a valid email"
 }
