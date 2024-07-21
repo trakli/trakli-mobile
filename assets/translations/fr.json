@@ -13,5 +13,14 @@
   "loginGoogle": "Se connecter avec Google",
   "loginApple": "Se connecter avec Apple",
   "go": "Go",
-  "create_account": "Créer un compte"
+  "createAccount": "Créer un compte",
+  "loginDesc": "Connectez-vous avec votre adresse e-mail",
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot Password",
+  "reset": "Reset",
+  "noAccountYet": "Don't have an account yet?",
+  "otpDesc": "Enter the OTP code sent to email ",
+  "continueT": "Continue",
+  "otpCodeNotSent": "Didn't receive a code, resend in"
 }

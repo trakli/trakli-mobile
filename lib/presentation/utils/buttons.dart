@@ -31,10 +31,11 @@ class PrimaryButton extends StatelessWidget {
         backgroundColor: onPress != null
             ? backgroundButtonColor ?? Theme.of(context).primaryColor
             : null,
+        overlayColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
           side: BorderSide(
-            color: borderColor ?? Colors.transparent
+            color: borderColor ?? Colors.transparent,
           ),
         ),
       ),
@@ -53,6 +54,8 @@ class PrimaryButton extends StatelessWidget {
                     buttonText,
                     style: TextStyle(
                       color: buttonTextColor ?? Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ],
@@ -62,6 +65,8 @@ class PrimaryButton extends StatelessWidget {
               buttonText,
               style: TextStyle(
                 color: buttonTextColor ?? Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 16.sp,
               ),
             ),
     );

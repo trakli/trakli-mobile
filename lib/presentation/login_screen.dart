@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/login_with_email_screen.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -16,7 +17,7 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.only(
           left: 16.sp,
           right: 16.sp,
@@ -27,22 +28,32 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(width: double.infinity),
             Text(
               LocaleKeys.welcomeTo.tr(),
-              style: const TextStyle(
-                fontSize: 20,
+              style: TextStyle(
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
+            SizedBox(height: 2.sp),
             SvgPicture.asset(
-              Assets.images.appLogoGreen,
+              Assets.images.logoGreen,
             ),
+            SizedBox(height: 8.sp),
             SvgPicture.asset(
               Assets.images.loginLogo,
             ),
+            SizedBox(height: 30.sp),
             SizedBox(
               width: double.infinity,
               height: 54.sp,
               child: PrimaryButton(
-                onPress: () {},
+                onPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginWithEmailScreen(),
+                    ),
+                  );
+                },
                 buttonText: LocaleKeys.login.tr(),
                 buttonTextColor: Colors.black,
                 backgroundButtonColor: const Color(0xFFDFE1E4),
@@ -54,7 +65,7 @@ class LoginScreen extends StatelessWidget {
               height: 54.sp,
               child: PrimaryButton(
                 onPress: () {},
-                buttonText: LocaleKeys.create_account.tr(),
+                buttonText: LocaleKeys.createAccount.tr(),
                 buttonTextColor: Colors.white,
               ),
             ),

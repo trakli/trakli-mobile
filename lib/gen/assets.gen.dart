@@ -19,8 +19,17 @@ class $AssetsImagesGen {
   /// File path: assets/images/apple.svg
   String get apple => 'assets/images/apple.svg';
 
+  /// File path: assets/images/arrow-left.svg
+  String get arrowLeft => 'assets/images/arrow-left.svg';
+
   /// File path: assets/images/bottom_left_circle.svg
   String get bottomLeftCircle => 'assets/images/bottom_left_circle.svg';
+
+  /// File path: assets/images/eye-slash.svg
+  String get eyeSlash => 'assets/images/eye-slash.svg';
+
+  /// File path: assets/images/eye.svg
+  String get eye => 'assets/images/eye.svg';
 
   /// File path: assets/images/google.svg
   String get google => 'assets/images/google.svg';
@@ -31,6 +40,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/logo.svg
   String get logo => 'assets/images/logo.svg';
 
+  /// File path: assets/images/logoGreen.svg
+  String get logoGreen => 'assets/images/logoGreen.svg';
+
   /// File path: assets/images/top_right_circle.svg
   String get topRightCircle => 'assets/images/top_right_circle.svg';
 
@@ -39,10 +51,14 @@ class $AssetsImagesGen {
         appLogo,
         appLogoGreen,
         apple,
+        arrowLeft,
         bottomLeftCircle,
+        eyeSlash,
+        eye,
         google,
         loginLogo,
         logo,
+        logoGreen,
         topRightCircle
       ];
 }
