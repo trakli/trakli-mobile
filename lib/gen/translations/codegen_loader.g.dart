@@ -15,5 +15,6 @@ abstract class  LocaleKeys {
   static const loginGoogle = 'loginGoogle';
   static const loginApple = 'loginApple';
   static const go = 'go';
+  static const create_account = 'create_account';
 
 }

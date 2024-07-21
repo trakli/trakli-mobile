@@ -139,8 +139,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           .nextPage(
                         duration: const Duration(milliseconds: 800),
                         curve: Curves.easeIn,
-                      )
-                          .then((val) {
+                      ).then((val) {
                         setState(() {
                           currentPage += 1;
                         });

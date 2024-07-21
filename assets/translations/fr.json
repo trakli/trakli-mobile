@@ -12,5 +12,6 @@
   "login": "Connexion",
   "loginGoogle": "Se connecter avec Google",
   "loginApple": "Se connecter avec Apple",
-  "go": "Go"
+  "go": "Go",
+  "create_account": "Créer un compte"
 }

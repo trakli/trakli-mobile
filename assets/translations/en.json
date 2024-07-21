@@ -12,5 +12,6 @@
   "login": "Login",
   "loginGoogle": "Login with Google",
   "loginApple": "Login with Apple",
-  "go": "Go"
+  "go": "Go",
+  "create_account": "Create an account"
 }
