@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -163,7 +162,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Text(
-          LocaleKeys.onboard_title_1.tr(),
+          LocaleKeys.onboardTitle1.tr(),
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
@@ -172,7 +171,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ),
         // const SizedBox(height: 20),
         Text(
-          LocaleKeys.onboard_desc_1.tr(),
+          LocaleKeys.onboardDesc1.tr(),
           style: const TextStyle(
             fontSize: 14,
           ),
@@ -204,7 +203,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Text(
-          LocaleKeys.onboard_title_2.tr(),
+          LocaleKeys.onboardTitle2.tr(),
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
@@ -213,7 +212,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ),
         // const SizedBox(height: 20),
         Text(
-          LocaleKeys.onboard_desc_2.tr(),
+          LocaleKeys.onboardDesc2.tr(),
           style: const TextStyle(
             fontSize: 14,
           ),
@@ -245,7 +244,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Text(
-          LocaleKeys.onboard_title_3.tr(),
+          LocaleKeys.onboardTitle3.tr(),
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
@@ -254,7 +253,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ),
         // const SizedBox(height: 20),
         Text(
-          LocaleKeys.onboard_desc_3.tr(),
+          LocaleKeys.onboardDesc3.tr(),
           style: const TextStyle(
             fontSize: 14,
           ),

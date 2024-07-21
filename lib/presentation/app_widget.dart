@@ -32,15 +32,15 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(LocaleKeys.app_name.tr()),
+        title: Text(LocaleKeys.appName.tr()),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SvgPicture.asset(Assets.images.appLogo),
-            const Text(
-              'Welcome to Trakli',
+            Text(
+              LocaleKeys.welcomeText.tr(),
             ),
           ],
         ),
