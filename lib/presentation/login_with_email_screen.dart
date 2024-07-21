@@ -17,6 +17,7 @@ class LoginWithEmailScreen extends StatefulWidget {
 }
 
 class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
+  TextEditingController pinController = TextEditingController();
   PageController pageController = PageController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -39,6 +40,15 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
       duration: const Duration(seconds: 1),
       curve: Curves.decelerate,
     );
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    pinController.dispose();
+    pageController.dispose();
+    super.dispose();
   }
 
 
@@ -226,7 +236,6 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
   }
 
   Widget get pageTwo {
-    TextEditingController pinController = TextEditingController();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 16.sp),
       child: Column(
