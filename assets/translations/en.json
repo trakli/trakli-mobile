@@ -12,5 +12,18 @@
   "login": "Login",
   "loginGoogle": "Login with Google",
   "loginApple": "Login with Apple",
-  "go": "Go"
+  "go": "Go",
+  "createAccount": "Create an account",
+  "loginDesc": "Sign in with your email address",
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot Password",
+  "reset": "Reset",
+  "noAccountYet": "Don't have an account yet?",
+  "otpDesc": "Enter the OTP code sent to email",
+  "continueT": "Continue",
+  "otpCodeNotSent": "Didn't receive a code, resend in",
+  "emailEmptyDesc": "Email cannot be empty",
+  "emailValidDesc": "Enter a valid email",
+  "passEmptyDesc": "Password cannot be empty"
 }

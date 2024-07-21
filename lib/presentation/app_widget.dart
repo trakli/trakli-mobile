@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
@@ -16,10 +17,14 @@ class AppWidget extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       localizationsDelegates: context.localizationDelegates,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green.shade900),
+        primaryColor: const Color(0xFF047844),
         useMaterial3: true,
       ),
-      home: const OnboardingScreen(),
+      home: const ScreenUtilInit(
+        designSize: Size(390, 844),
+        ensureScreenSize: true,
+        child: OnboardingScreen(),
+      ),
     );
   }
 }

@@ -15,5 +15,18 @@ abstract class  LocaleKeys {
   static const loginGoogle = 'loginGoogle';
   static const loginApple = 'loginApple';
   static const go = 'go';
+  static const createAccount = 'createAccount';
+  static const loginDesc = 'loginDesc';
+  static const email = 'email';
+  static const password = 'password';
+  static const forgotPassword = 'forgotPassword';
+  static const reset = 'reset';
+  static const noAccountYet = 'noAccountYet';
+  static const otpDesc = 'otpDesc';
+  static const continueT = 'continueT';
+  static const otpCodeNotSent = 'otpCodeNotSent';
+  static const emailEmptyDesc = 'emailEmptyDesc';
+  static const emailValidDesc = 'emailValidDesc';
+  static const passEmptyDesc = 'passEmptyDesc';
 
 }
