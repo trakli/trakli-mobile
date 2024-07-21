@@ -13,8 +13,20 @@ class $AssetsImagesGen {
   /// File path: assets/images/appLogo.svg
   String get appLogo => 'assets/images/appLogo.svg';
 
+  /// File path: assets/images/appLogoGreen.svg
+  String get appLogoGreen => 'assets/images/appLogoGreen.svg';
+
+  /// File path: assets/images/apple.svg
+  String get apple => 'assets/images/apple.svg';
+
   /// File path: assets/images/bottom_left_circle.svg
   String get bottomLeftCircle => 'assets/images/bottom_left_circle.svg';
+
+  /// File path: assets/images/google.svg
+  String get google => 'assets/images/google.svg';
+
+  /// File path: assets/images/loginLogo.svg
+  String get loginLogo => 'assets/images/loginLogo.svg';
 
   /// File path: assets/images/logo.svg
   String get logo => 'assets/images/logo.svg';
@@ -23,7 +35,16 @@ class $AssetsImagesGen {
   String get topRightCircle => 'assets/images/top_right_circle.svg';
 
   /// List of all assets
-  List<String> get values => [appLogo, bottomLeftCircle, logo, topRightCircle];
+  List<String> get values => [
+        appLogo,
+        appLogoGreen,
+        apple,
+        bottomLeftCircle,
+        google,
+        loginLogo,
+        logo,
+        topRightCircle
+      ];
 }
 
 class $AssetsTranslationsGen {
