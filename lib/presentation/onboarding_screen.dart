@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/presentation/home_screen.dart';
 import 'package:trakli/presentation/login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   late PageController pageController = PageController();
   int currentPage = 1;
 
-  navigateToNextPage(){
+  navigateToNextPage() {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -51,7 +51,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           Container(
             width: double.infinity,
-            color: const Color(0xFF047844),
+            color: Theme.of(context).primaryColor,
             height: MediaQuery.sizeOf(context).height * 0.65,
             child: Column(
               children: [
@@ -82,9 +82,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 controller: pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  pageOne,
-                  pageTwo,
-                  pageThree,
+                  pageItem(
+                    title: LocaleKeys.onboardTitle1.tr(),
+                    desc: LocaleKeys.onboardDesc1.tr(),
+                  ),
+                  pageItem(
+                    title: LocaleKeys.onboardTitle2.tr(),
+                    desc: LocaleKeys.onboardDesc2.tr(),
+                  ),
+                  pageItem(
+                    title: LocaleKeys.onboardTitle3.tr(),
+                    desc: LocaleKeys.onboardDesc3.tr(),
+                    isLastPage: true,
+                  ),
                 ],
               ),
             ),
@@ -106,8 +116,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 value: currentPage / 3,
                 strokeWidth: 6,
                 backgroundColor: const Color(0xFFFFFBE6),
-                valueColor:
-                    const AlwaysStoppedAnimation<Color>(Color(0xFF047844)),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor,
+                ),
               );
             },
           ),
@@ -115,19 +126,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         Center(
           child: Container(
             margin: const EdgeInsets.all(8),
-            width: 80.0,
-            height: 80.0,
-            decoration: const BoxDecoration(
+            width: 80.0.sp,
+            height: 80.0.sp,
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFF047844),
+              color: Theme.of(context).primaryColor,
             ),
             child: currentPage != 3
                 ? IconButton(
                     onPressed: () {
-                      pageController.nextPage(
+                      pageController
+                          .nextPage(
                         duration: const Duration(milliseconds: 800),
                         curve: Curves.easeIn,
-                      ).then((val){
+                      )
+                          .then((val) {
                         setState(() {
                           currentPage += 1;
                         });
@@ -145,9 +158,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       },
                       child: Text(
                         LocaleKeys.go.tr().toUpperCase(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                         ),
                       ),
                     ),
@@ -158,117 +171,49 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget get pageOne {
+  Widget pageItem({
+    required String title,
+    required String desc,
+    bool isLastPage = false,
+  }) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Text(
-          LocaleKeys.onboardTitle1.tr(),
-          style: const TextStyle(
-            fontSize: 24,
+          title,
+          style: TextStyle(
+            fontSize: 24.sp,
             fontWeight: FontWeight.w700,
           ),
           textAlign: TextAlign.center,
         ),
         // const SizedBox(height: 20),
         Text(
-          LocaleKeys.onboardDesc1.tr(),
-          style: const TextStyle(
-            fontSize: 14,
+          desc,
+          style: TextStyle(
+            fontSize: 14.sp,
           ),
           textAlign: TextAlign.center,
         ),
         // const SizedBox(height: 20),
         SizedBox(
-          height: 80,
-          width: 80,
+          height: 80.sp,
+          width: 80.sp,
           child: animatedProgress,
         ),
         TextButton(
-          onPressed: () {
+          onPressed: isLastPage ? null : () {
             navigateToNextPage();
           },
           child: Text(
-            LocaleKeys.skip.tr(),
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black),
+            isLastPage ? "" : LocaleKeys.skip.tr(),
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
+            ),
             textAlign: TextAlign.center,
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget get pageTwo {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Text(
-          LocaleKeys.onboardTitle2.tr(),
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        // const SizedBox(height: 20),
-        Text(
-          LocaleKeys.onboardDesc2.tr(),
-          style: const TextStyle(
-            fontSize: 14,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        // const SizedBox(height: 20),
-        SizedBox(
-          height: 80,
-          width: 80,
-          child: animatedProgress,
-        ),
-        TextButton(
-          onPressed: () {
-           navigateToNextPage();
-          },
-          child: Text(
-            LocaleKeys.skip.tr(),
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget get pageThree {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Text(
-          LocaleKeys.onboardTitle3.tr(),
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        // const SizedBox(height: 20),
-        Text(
-          LocaleKeys.onboardDesc3.tr(),
-          style: const TextStyle(
-            fontSize: 14,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        // const SizedBox(height: 20),
-        SizedBox(
-          height: 80,
-          width: 80,
-          child: animatedProgress,
-        ),
-        const TextButton(
-          onPressed: null,
-          child: Text(""),
         ),
       ],
     );
