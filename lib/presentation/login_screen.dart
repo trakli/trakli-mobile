@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/login_with_email_screen.dart';
-import 'package:trakli/presentation/root/main_navigation_screen.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -109,14 +108,7 @@ class LoginScreen extends StatelessWidget {
               width: double.infinity,
               height: 54.sp,
               child: PrimaryButton(
-                onPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MainNavigationScreen(),
-                    ),
-                  );
-                },
+                onPress: () {},
                 iconPath: Assets.images.apple,
                 buttonText: LocaleKeys.loginApple.tr(),
                 buttonTextColor: const Color(0xFF79828E),
