@@ -3,7 +3,7 @@
   "welcomeText": "Welcome to Trakli",
   "welcomeTo": "Welcome to",
   "onboardTitle1": "Simplified personal finance",
-  "onboardDesc1": "Trakli focuses on the basics and gives just what you need to see where you money is coming from or going to.",
+  "onboardDesc1": "Trakli focuses on the basics and gives just what you need to see where your money is coming from or going to.",
   "onboardTitle2": "Automated",
   "onboardDesc2": "Let us pick up transactions for you from you sms and fill the income expense report before you get there. You can also share various statements with us like from email.",
   "onboardTitle3": "Free and open source",
@@ -25,5 +25,14 @@
   "otpCodeNotSent": "Didn't receive a code, resend in",
   "emailEmptyDesc": "Email cannot be empty",
   "emailValidDesc": "Enter a valid email",
-  "passEmptyDesc": "Password cannot be empty"
+  "passEmptyDesc": "Password cannot be empty",
+  "otherR": "Other",
+  "home": "Home",
+  "history": "History",
+  "wallet": "Wallet",
+  "transactionHistory": "Transaction History",
+  "addTransaction": "Add Transaction",
+  "addGroup": "Add Group",
+  "myGroup": "My Group",
+  "homeDescText": "Are you ready to start tracking your money?"
 }

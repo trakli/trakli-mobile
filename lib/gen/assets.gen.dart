@@ -10,6 +10,9 @@
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/add.svg
+  String get add => 'assets/images/add.svg';
+
   /// File path: assets/images/appLogo.svg
   String get appLogo => 'assets/images/appLogo.svg';
 
@@ -34,6 +37,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/google.svg
   String get google => 'assets/images/google.svg';
 
+  /// File path: assets/images/home.svg
+  String get home => 'assets/images/home.svg';
+
   /// File path: assets/images/loginLogo.svg
   String get loginLogo => 'assets/images/loginLogo.svg';
 
@@ -43,11 +49,24 @@ class $AssetsImagesGen {
   /// File path: assets/images/logoGreen.svg
   String get logoGreen => 'assets/images/logoGreen.svg';
 
+  /// File path: assets/images/menu.svg
+  String get menu => 'assets/images/menu.svg';
+
+  /// File path: assets/images/navEllipse.svg
+  String get navEllipse => 'assets/images/navEllipse.svg';
+
+  /// File path: assets/images/refresh.svg
+  String get refresh => 'assets/images/refresh.svg';
+
   /// File path: assets/images/top_right_circle.svg
   String get topRightCircle => 'assets/images/top_right_circle.svg';
 
+  /// File path: assets/images/wallet.svg
+  String get wallet => 'assets/images/wallet.svg';
+
   /// List of all assets
   List<String> get values => [
+        add,
         appLogo,
         appLogoGreen,
         apple,
@@ -56,10 +75,15 @@ class $AssetsImagesGen {
         eyeSlash,
         eye,
         google,
+        home,
         loginLogo,
         logo,
         logoGreen,
-        topRightCircle
+        menu,
+        navEllipse,
+        refresh,
+        topRightCircle,
+        wallet
       ];
 }
 

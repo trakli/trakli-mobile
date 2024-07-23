@@ -24,5 +24,15 @@
   "continueT": "Continue",
   "otpCodeNotSent": "Didn't receive a code, resend in",
   "emailEmptyDesc": "Email cannot be empty",
-  "emailValidDesc": "Enter a valid email"
+  "emailValidDesc": "Enter a valid email",
+  "passEmptyDesc": "Password cannot be empty",
+  "otherR": "Other",
+  "home": "Home",
+  "history": "History",
+  "wallet": "Wallet",
+  "transactionHistory": "Transaction History",
+  "addTransaction": "Add Transaction",
+  "addGroup": "Add Group",
+  "myGroup": "My Group",
+  "homeDescText": "Are you ready to start tracking your money?"
 }

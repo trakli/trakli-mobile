@@ -6,6 +6,7 @@ import 'package:pinput/pinput.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/helpers.dart';
+import 'package:trakli/presentation/root/main_navigation_screen.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/custom_text_field.dart';
 
@@ -156,21 +157,19 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
             SizedBox(
               width: double.infinity,
               height: 54.sp,
-              child: Builder(
-                builder: (context) {
-                  return PrimaryButton(
-                    onPress: () {
-                      if(Form.of(context).validate()) {
-                        setState(() {
-                          slideToNextPage();
-                        });
-                      }
-                    },
-                    buttonText: LocaleKeys.login.tr(),
-                    buttonTextColor: Colors.white,
-                  );
-                }
-              ),
+              child: Builder(builder: (context) {
+                return PrimaryButton(
+                  onPress: () {
+                    if (Form.of(context).validate()) {
+                      setState(() {
+                        slideToNextPage();
+                      });
+                    }
+                  },
+                  buttonText: LocaleKeys.login.tr(),
+                  buttonTextColor: Colors.white,
+                );
+              }),
             ),
             SizedBox(height: 4.sp),
             Align(
@@ -267,7 +266,14 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
             width: double.infinity,
             height: 54.sp,
             child: PrimaryButton(
-              onPress: () {},
+              onPress: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MainNavigationScreen(),
+                  ),
+                );
+              },
               buttonText: LocaleKeys.login.tr(),
               buttonTextColor: Colors.white,
             ),
