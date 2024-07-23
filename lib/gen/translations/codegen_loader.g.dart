@@ -28,5 +28,14 @@ abstract class  LocaleKeys {
   static const emailEmptyDesc = 'emailEmptyDesc';
   static const emailValidDesc = 'emailValidDesc';
   static const passEmptyDesc = 'passEmptyDesc';
+  static const otherR = 'otherR';
+  static const home = 'home';
+  static const history = 'history';
+  static const wallet = 'wallet';
+  static const transactionHistory = 'transactionHistory';
+  static const addTransaction = 'addTransaction';
+  static const addGroup = 'addGroup';
+  static const myGroup = 'myGroup';
+  static const homeDescText = 'homeDescText';
 
 }

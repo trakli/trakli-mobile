@@ -6,6 +6,8 @@ import 'package:pinput/pinput.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/helpers.dart';
+import 'package:trakli/presentation/home_screen.dart';
+import 'package:trakli/presentation/root/main_navigation_screen.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/custom_text_field.dart';
 
@@ -50,7 +52,6 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
     pageController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -145,8 +146,8 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
               controller: passwordController,
               isPassword: true,
               filled: true,
-              validator: (value){
-                if(value == null || value.isEmpty){
+              validator: (value) {
+                if (value == null || value.isEmpty) {
                   return LocaleKeys.passEmptyDesc.tr();
                 }
                 return null;
@@ -156,21 +157,19 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
             SizedBox(
               width: double.infinity,
               height: 54.sp,
-              child: Builder(
-                builder: (context) {
-                  return PrimaryButton(
-                    onPress: () {
-                      if(Form.of(context).validate()) {
-                        setState(() {
-                          slideToNextPage();
-                        });
-                      }
-                    },
-                    buttonText: LocaleKeys.login.tr(),
-                    buttonTextColor: Colors.white,
-                  );
-                }
-              ),
+              child: Builder(builder: (context) {
+                return PrimaryButton(
+                  onPress: () {
+                    if (Form.of(context).validate()) {
+                      setState(() {
+                        slideToNextPage();
+                      });
+                    }
+                  },
+                  buttonText: LocaleKeys.login.tr(),
+                  buttonTextColor: Colors.white,
+                );
+              }),
             ),
             SizedBox(height: 4.sp),
             Align(
@@ -179,23 +178,22 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 onPressed: () {},
                 child: RichText(
                   text: TextSpan(
-                    text: "${LocaleKeys.forgotPassword.tr()}? ",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF1E2448),
-                    ),
-                    children: [
-                      TextSpan(
+                      text: "${LocaleKeys.forgotPassword.tr()}? ",
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1E2448),
+                      ),
+                      children: [
+                        TextSpan(
                           text: LocaleKeys.reset.tr(),
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFFF7B600),
                           ),
-                      ),
-                    ]
-                  ),
+                        ),
+                      ]),
                 ),
               ),
             ),
@@ -267,7 +265,14 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
             width: double.infinity,
             height: 54.sp,
             child: PrimaryButton(
-              onPress: () {},
+              onPress: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MainNavigationScreen(),
+                  ),
+                );
+              },
               buttonText: LocaleKeys.login.tr(),
               buttonTextColor: Colors.white,
             ),
@@ -289,11 +294,11 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                         text: "00:20",
                         style: TextStyle(
                           fontSize: 14.sp,
-                          color: Theme.of(context).primaryColor.withOpacity(0.8),
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.8),
                         ),
                       ),
-                    ]
-                ),
+                    ]),
               ),
             ),
           ),

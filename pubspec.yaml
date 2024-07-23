@@ -39,6 +39,7 @@ dependencies:
   flutter_svg: ^2.0.10
   flutter_screenutil: ^5.9.3
   pinput: ^5.0.0
+  flutter_bloc: ^8.1.6
 
 dev_dependencies:
   flutter_gen_runner: ^5.3.2

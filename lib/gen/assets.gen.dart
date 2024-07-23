@@ -52,6 +52,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/menu.svg
   String get menu => 'assets/images/menu.svg';
 
+  /// File path: assets/images/navEllipse.svg
+  String get navEllipse => 'assets/images/navEllipse.svg';
+
   /// File path: assets/images/refresh.svg
   String get refresh => 'assets/images/refresh.svg';
 
@@ -77,6 +80,7 @@ class $AssetsImagesGen {
         logo,
         logoGreen,
         menu,
+        navEllipse,
         refresh,
         topRightCircle,
         wallet
