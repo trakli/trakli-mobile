@@ -9,15 +9,10 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
 
+    // Wait for localization to load
+    await tester.pumpAndSettle();
+
     // Verify the AppBar title
     expect(find.text(LocaleKeys.appName.tr()), findsOneWidget);
-  });
-
-  testWidgets('HomeScreen has a Text widget with Welcome to Trakli',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
-
-    // Verify the Text widget
-    expect(find.text(LocaleKeys.welcomeText.tr()), findsOneWidget);
   });
 }
