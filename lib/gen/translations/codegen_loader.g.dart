@@ -37,5 +37,10 @@ abstract class  LocaleKeys {
   static const addGroup = 'addGroup';
   static const myGroup = 'myGroup';
   static const homeDescText = 'homeDescText';
+  static const groups = 'groups';
+  static const parties = 'parties';
+  static const people = 'people';
+  static const transactionTracking = 'transactionTracking';
+  static const support = 'support';
 
 }

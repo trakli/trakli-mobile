@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/onboarding_screen.dart';
+import 'package:trakli/presentation/utils/globals.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
@@ -12,6 +13,7 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Trakli',
       locale: context.locale,
       supportedLocales: context.supportedLocales,

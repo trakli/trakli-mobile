@@ -11,6 +11,7 @@ import 'package:trakli/presentation/other_screen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
 import 'package:trakli/presentation/transaction_screen.dart';
 import 'package:trakli/presentation/utils/bottom_nav.dart';
+import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/wallet_screen.dart';
 
 class MainNavigationScreen extends StatelessWidget {
@@ -32,6 +33,87 @@ class MainNavigationScreen extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<MainNavigationCubit>();
           return Scaffold(
+            key: scaffoldKey,
+            drawer: Drawer(
+              width: 0.8.sw,
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 16.sp),
+                    SvgPicture.asset(
+                      Assets.images.logoGreen,
+                      height: 75.sp,
+                    ),
+                    SizedBox(height: 24.sp),
+                    ListTile(
+                      onTap: () {},
+                      leading: SvgPicture.asset(
+                        Assets.images.category,
+                        colorFilter: const ColorFilter.mode(
+                          Color(0XFF3B4E45),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      title: Text(LocaleKeys.groups.tr()),
+                    ),
+                    ListTile(
+                      leading: SvgPicture.asset(
+                        Assets.images.bank,
+                        colorFilter: const ColorFilter.mode(
+                          Color(0XFF3B4E45),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      title: Text(LocaleKeys.parties.tr()),
+                    ),
+                    ListTile(
+                      leading: SvgPicture.asset(
+                        Assets.images.people,
+                        colorFilter: const ColorFilter.mode(
+                          Color(0XFF3B4E45),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      title: Text(LocaleKeys.people.tr()),
+                    ),
+                    ListTile(
+                      leading: SvgPicture.asset(
+                        Assets.images.wallet,
+                        colorFilter: const ColorFilter.mode(
+                          Color(0XFF3B4E45),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      title: Text(LocaleKeys.wallet.tr()),
+                    ),
+                    ListTile(
+                      leading: SvgPicture.asset(
+                        Assets.images.refresh,
+                        colorFilter: const ColorFilter.mode(
+                          Color(0XFF3B4E45),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      title: Text(LocaleKeys.transactionTracking.tr()),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      leading: SvgPicture.asset(
+                        Assets.images.support,
+                        colorFilter: const ColorFilter.mode(
+                          Color(0XFF3B4E45),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      title: Text(LocaleKeys.support.tr()),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             body: screens
                 .elementAt(MainNavigationPageState.values.indexOf(state)),
             floatingActionButtonLocation:
@@ -58,6 +140,10 @@ class MainNavigationScreen extends StatelessWidget {
             bottomNavigationBar: FABBottomAppBar(
               state: state,
               onTabSelected: (index) {
+                if (index == 3) {
+                  scaffoldKey.currentState?.openDrawer();
+                  return;
+                }
                 cubit.updateIndex(MainNavigationPageState.values[index]);
               },
               items: [

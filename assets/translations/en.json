@@ -34,5 +34,10 @@
   "addTransaction": "Add Transaction",
   "addGroup": "Add Group",
   "myGroup": "My Group",
-  "homeDescText": "Are you ready to start tracking your money?"
+  "homeDescText": "Are you ready to start tracking your money?",
+  "groups": "Groups",
+  "parties": "Parties",
+  "people": "People",
+  "transactionTracking": "Transaction Tracking",
+  "support": "Support"
 }
