@@ -44,6 +44,7 @@ dependencies:
 
 dev_dependencies:
   flutter_gen_runner: ^5.8.0
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
 
@@ -96,3 +97,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/launcher_icon/launcher_light.png"
+  web:
+    generate: true
+  windows:
+    generate: true
+  macos:
+    generate: true
