@@ -42,5 +42,18 @@ abstract class  LocaleKeys {
   static const people = 'people';
   static const transactionTracking = 'transactionTracking';
   static const support = 'support';
+  static const transactions = 'transactions';
+  static const moneySpent = 'moneySpent';
+  static const moneyReceived = 'moneyReceived';
+  static const totalCompanies = 'totalCompanies';
+  static const transactionLast30Days = 'transactionLast30Days';
+  static const transactionLast30DaysPerParties = 'transactionLast30DaysPerParties';
+  static const totalExpenses = 'totalExpenses';
+  static const totalSavings = 'totalSavings';
+  static const totalSpent = 'totalSpent';
+  static const trendingByMonth = 'trendingByMonth';
+  static const showingTotalVisitors = 'showingTotalVisitors';
+  static const days = 'days';
+  static const months = 'months';
 
 }

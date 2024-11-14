@@ -20,13 +20,25 @@ class AppWidget extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       theme: ThemeData(
         primaryColor: const Color(0xFF047844),
+        scaffoldBackgroundColor: const Color(0xFFEBEDEC),
+        brightness: Theme.of(context).brightness,
         useMaterial3: true,
+        textTheme: TextTheme(
+          headlineMedium: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.sp,
+          ),
+          headlineSmall: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14.sp,
+          ),
+          labelSmall: TextStyle(
+            fontSize: 12.sp,
+            color: const Color(0xFF71717A),
+          ),
+        ),
       ),
-      home: const ScreenUtilInit(
-        designSize: Size(390, 844),
-        ensureScreenSize: true,
-        child: OnboardingScreen(),
-      ),
+      home: const OnboardingScreen(),
     );
   }
 }

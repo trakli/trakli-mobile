@@ -39,5 +39,18 @@
   "parties": "Parties",
   "people": "People",
   "transactionTracking": "Transaction Tracking",
-  "support": "Support"
+  "support": "Support",
+  "transactions": "Transactions",
+  "moneySpent": "Money Spent",
+  "moneyReceived": "Money Received",
+  "totalCompanies": "Total companies",
+  "transactionLast30Days": "Transaction of last {} {}",
+  "transactionLast30DaysPerParties": "Transaction of last {} {} per parties",
+  "totalExpenses": "Total Expenses",
+  "totalSavings": "Total Savings",
+  "totalSpent": "Total Spent",
+  "trendingByMonth": "Trending up by {}% this month",
+  "showingTotalVisitors": "Showing total visitors for the last {} {}",
+  "days": "days",
+  "months": "months"
 }
