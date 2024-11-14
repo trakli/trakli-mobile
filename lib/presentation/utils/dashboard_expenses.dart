@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:trakli/bootstrap.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 
 class DashboardExpenses extends StatelessWidget {
