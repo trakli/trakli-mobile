@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/bootstrap.dart';
 
 import 'presentation/app_widget.dart';
@@ -16,10 +15,6 @@ import 'presentation/app_widget.dart';
 /// - Running the app by calling the provided `builder` function.
 void main() {
   bootstrap(
-    () => const ScreenUtilInit(
-      designSize: Size(390, 844),
-      ensureScreenSize: true,
-      child: AppWidget(),
-    ),
+    () => const AppWidget(),
   );
 }

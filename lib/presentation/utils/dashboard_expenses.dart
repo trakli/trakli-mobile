@@ -4,8 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 
-class DashboardExpenses extends StatelessWidget {
+class DashboardExpenses extends StatefulWidget {
   const DashboardExpenses({super.key});
+
+  @override
+  State<DashboardExpenses> createState() => _DashboardExpensesState();
+}
+
+class _DashboardExpensesState extends State<DashboardExpenses> {
+  DateFormat format = DateFormat('MMMM');
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +31,17 @@ class DashboardExpenses extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           Text(
-            "From January - June 20214",
+            LocaleKeys.fromDateToDate.tr(
+              args: [
+                format.format(DateTime.now()),
+                format.format(
+                  DateTime.now().add(
+                    const Duration(days: 30),
+                  ),
+                ),
+                DateTime.now().year.toString(),
+              ],
+            ),
             style: Theme.of(context).textTheme.labelSmall,
           ),
           SizedBox(height: 12.sp),
@@ -144,7 +161,7 @@ class DashboardExpenses extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 30.sp,
                                   fontWeight: FontWeight.bold,
-                                    color: const Color(0XFFFF3B30),
+                                  color: const Color(0XFFFF3B30),
                                 ),
                               ),
                               Text(
@@ -174,7 +191,8 @@ class DashboardExpenses extends StatelessWidget {
             ),
           ),
           Text(
-            LocaleKeys.showingTotalVisitors.tr(args: [6.toString(), LocaleKeys.months.tr()]),
+            LocaleKeys.showingTotalVisitors
+                .tr(args: [6.toString(), LocaleKeys.months.tr()]),
             style: Theme.of(context).textTheme.labelSmall,
           ),
         ],

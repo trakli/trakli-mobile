@@ -51,6 +51,7 @@
   "totalSpent": "Total Spent",
   "trendingByMonth": "Trending up by {}% this month",
   "showingTotalVisitors": "Showing total visitors for the last {} {}",
-  "days": "days",
-  "months": "months"
+  "days": "Days",
+  "months": "Months",
+  "fromDateToDate" : "From {} - {} {}"
 }

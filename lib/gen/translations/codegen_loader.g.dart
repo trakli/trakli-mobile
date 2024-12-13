@@ -55,5 +55,6 @@ abstract class  LocaleKeys {
   static const showingTotalVisitors = 'showingTotalVisitors';
   static const days = 'days';
   static const months = 'months';
+  static const fromDateToDate = 'fromDateToDate';
 
 }
