@@ -25,8 +25,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/arrow-left.svg
   String get arrowLeft => 'assets/images/arrow-left.svg';
 
+  /// File path: assets/images/bank.svg
+  String get bank => 'assets/images/bank.svg';
+
   /// File path: assets/images/bottom_left_circle.svg
   String get bottomLeftCircle => 'assets/images/bottom_left_circle.svg';
+
+  /// File path: assets/images/category.svg
+  String get category => 'assets/images/category.svg';
 
   /// File path: assets/images/eye-slash.svg
   String get eyeSlash => 'assets/images/eye-slash.svg';
@@ -55,8 +61,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/navEllipse.svg
   String get navEllipse => 'assets/images/navEllipse.svg';
 
+  /// File path: assets/images/people.svg
+  String get people => 'assets/images/people.svg';
+
   /// File path: assets/images/refresh.svg
   String get refresh => 'assets/images/refresh.svg';
+
+  /// File path: assets/images/support.svg
+  String get support => 'assets/images/support.svg';
 
   /// File path: assets/images/top_right_circle.svg
   String get topRightCircle => 'assets/images/top_right_circle.svg';
@@ -71,7 +83,9 @@ class $AssetsImagesGen {
         appLogoGreen,
         apple,
         arrowLeft,
+        bank,
         bottomLeftCircle,
+        category,
         eyeSlash,
         eye,
         google,
@@ -81,7 +95,9 @@ class $AssetsImagesGen {
         logoGreen,
         menu,
         navEllipse,
+        people,
         refresh,
+        support,
         topRightCircle,
         wallet
       ];

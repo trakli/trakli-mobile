@@ -52,7 +52,6 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,8 +145,8 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
               controller: passwordController,
               isPassword: true,
               filled: true,
-              validator: (value){
-                if(value == null || value.isEmpty){
+              validator: (value) {
+                if (value == null || value.isEmpty) {
                   return LocaleKeys.passEmptyDesc.tr();
                 }
                 return null;
@@ -178,23 +177,22 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 onPressed: () {},
                 child: RichText(
                   text: TextSpan(
-                    text: "${LocaleKeys.forgotPassword.tr()}? ",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF1E2448),
-                    ),
-                    children: [
-                      TextSpan(
+                      text: "${LocaleKeys.forgotPassword.tr()}? ",
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1E2448),
+                      ),
+                      children: [
+                        TextSpan(
                           text: LocaleKeys.reset.tr(),
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFFF7B600),
                           ),
-                      ),
-                    ]
-                  ),
+                        ),
+                      ]),
                 ),
               ),
             ),
@@ -295,11 +293,12 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                         text: "00:20",
                         style: TextStyle(
                           fontSize: 14.sp,
-                          color: Theme.of(context).primaryColor.withOpacity(0.8),
+                          color: Theme.of(context).primaryColor.withValues(
+                                alpha: 0.8,
+                              ),
                         ),
                       ),
-                    ]
-                ),
+                    ]),
               ),
             ),
           ),

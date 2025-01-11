@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/onboarding_screen.dart';
+import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/globals.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
@@ -12,19 +14,32 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Trakli',
       locale: context.locale,
       supportedLocales: context.supportedLocales,
       localizationsDelegates: context.localizationDelegates,
       theme: ThemeData(
         primaryColor: const Color(0xFF047844),
+        scaffoldBackgroundColor: const Color(0xFFEBEDEC),
+        brightness: Theme.of(context).brightness,
         useMaterial3: true,
+        textTheme: TextTheme(
+          headlineMedium: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.sp,
+          ),
+          headlineSmall: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14.sp,
+          ),
+          labelSmall: TextStyle(
+            fontSize: 12.sp,
+            color: textColor,
+          ),
+        ),
       ),
-      home: const ScreenUtilInit(
-        designSize: Size(390, 844),
-        ensureScreenSize: true,
-        child: OnboardingScreen(),
-      ),
+      home: const OnboardingScreen(),
     );
   }
 }

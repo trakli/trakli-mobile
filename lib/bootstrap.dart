@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Adds a global error handler to the Flutter app.
 ///
@@ -27,7 +28,11 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
           ],
           path: 'assets/translations',
           fallbackLocale: const Locale('en'),
-          child: await builder(),
+          child: ScreenUtilInit(
+            designSize: const Size(390, 844),
+            ensureScreenSize: true,
+            child: await builder(),
+          ),
         ),
       );
     },
