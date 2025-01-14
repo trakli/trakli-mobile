@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/transaction_tile.dart';
 
 class HistoryScreen extends StatelessWidget {
@@ -32,7 +33,7 @@ class HistoryScreen extends StatelessWidget {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-               hintText: "Filter By ...",
+                hintText: "Filter By ...",
                 suffixIcon: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset(
@@ -64,15 +65,24 @@ class HistoryScreen extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(16.sp),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: const Color(0xFFB8BBB4),
-                )
-              ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: const Color(0xFFB8BBB4),
+                  )),
               child: ListView(
                 shrinkWrap: true,
-                children: List.generate(5, (index) => const TransactionTile()),
+                children: List.generate(
+                  5,
+                  (index) => TransactionTile(
+                    transactionType: (index % 2 == 0)
+                        ? TransactionType.income
+                        : TransactionType.expense,
+                    accentColor: (index % 2 == 0)
+                        ? Theme.of(context).primaryColor
+                        : const Color(0xFFEB5757),
+                  ),
+                ),
               ),
             ),
           ],

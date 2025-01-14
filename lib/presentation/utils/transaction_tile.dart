@@ -7,7 +7,13 @@ import 'package:trakli/presentation/utils/enums.dart';
 
 class TransactionTile extends StatefulWidget {
   final TransactionType transactionType;
-  const TransactionTile({super.key, this.transactionType = TransactionType.income});
+  final Color accentColor;
+
+  const TransactionTile({
+    super.key,
+    this.transactionType = TransactionType.income,
+    this.accentColor = const Color(0xFFEB5757),
+  });
 
   @override
   State<TransactionTile> createState() => _TransactionTileState();
@@ -27,11 +33,13 @@ class _TransactionTileState extends State<TransactionTile> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: widget.accentColor,
               shape: BoxShape.circle,
             ),
             child: SvgPicture.asset(
-              Assets.images.arrowSwapUp,
+              widget.transactionType == TransactionType.income
+                  ? Assets.images.arrowSwapDown
+                  : Assets.images.arrowSwapUp,
               width: 20.sp,
               height: 20.sp,
             ),
@@ -55,7 +63,7 @@ class _TransactionTileState extends State<TransactionTile> {
                     Text(
                       "350 000",
                       style: TextStyle(
-                        color: Theme.of(context).primaryColor,
+                        color: widget.accentColor,
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -101,7 +109,7 @@ class _TransactionTileState extends State<TransactionTile> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                     "1 hour ago",
+                      "1 hour ago",
                       style: TextStyle(
                         color: const Color(0xFF576760),
                         fontSize: 12.sp,
