@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/transaction_tile.dart';
 
@@ -25,6 +27,40 @@ class HistoryScreen extends StatelessWidget {
         padding: EdgeInsets.all(16.sp),
         child: Column(
           children: [
+            const SizedBox(height: 16),
+            TextFormField(
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+               hintText: "Filter By ...",
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: SvgPicture.asset(
+                    Assets.images.filter,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Colors.transparent,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Colors.transparent,
+                  ),
+                ),
+              ),
+              onTap: () async {},
+            ),
+            const SizedBox(height: 16),
             Container(
               padding: EdgeInsets.all(16.sp),
               decoration: BoxDecoration(

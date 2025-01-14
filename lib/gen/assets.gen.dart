@@ -61,6 +61,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/eye.svg
   String get eye => 'assets/images/eye.svg';
 
+  /// File path: assets/images/filter.svg
+  String get filter => 'assets/images/filter.svg';
+
   /// File path: assets/images/google.svg
   String get google => 'assets/images/google.svg';
 
@@ -119,6 +122,7 @@ class $AssetsImagesGen {
         documentUpload,
         eyeSlash,
         eye,
+        filter,
         google,
         home,
         loginLogo,
