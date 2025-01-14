@@ -55,7 +55,7 @@ class _TransactionTileState extends State<TransactionTile> {
                     Text(
                       "Personal Elelments",
                       style: TextStyle(
-                        color: Color(0xFF061D23),
+                        color: const Color(0xFF061D23),
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
                       ),

@@ -14,7 +14,7 @@ class GroupTile extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           shape: BoxShape.circle,
         ),
-        child: Text(
+        child: const Text(
           "PE",
           style: TextStyle(
             fontSize: 16,
@@ -22,7 +22,7 @@ class GroupTile extends StatelessWidget {
           ),
         ),
       ),
-      title: Text(
+      title: const Text(
         "Office Elements",
         style: TextStyle(
           fontSize: 14,
@@ -30,7 +30,7 @@ class GroupTile extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      subtitle: Text(
+      subtitle: const Text(
         "Here you store your office Elements",
         style: TextStyle(
           fontSize: 12,
