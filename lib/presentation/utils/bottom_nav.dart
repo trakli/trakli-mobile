@@ -20,7 +20,6 @@ class FABBottomAppBar extends StatefulWidget {
     required this.backgroundColor,
     required this.color,
     required this.selectedColor,
-    required this.notchedShape,
     required this.onTabSelected,
     required this.state,
   }) {
@@ -34,7 +33,6 @@ class FABBottomAppBar extends StatefulWidget {
   final Color backgroundColor;
   final Color color;
   final Color selectedColor;
-  final NotchedShape notchedShape;
   final ValueChanged<int> onTabSelected;
 
   @override
@@ -56,7 +54,6 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
     return BottomAppBar(
       padding: EdgeInsets.zero,
       height: 72.sp,
-      shape: widget.notchedShape,
       color: widget.backgroundColor,
       child: Row(
         mainAxisSize: MainAxisSize.max,

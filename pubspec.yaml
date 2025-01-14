@@ -41,7 +41,8 @@ dependencies:
   pinput: ^5.0.0
   flutter_bloc: ^8.1.6
   country_flags: ^3.0.0
-  syncfusion_flutter_gauges: ^27.1.58
+  syncfusion_flutter_gauges: ^28.1.38
+  syncfusion_flutter_charts: ^28.1.38
 
 dev_dependencies:
   flutter_gen_runner: ^5.8.0

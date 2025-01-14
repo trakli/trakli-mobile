@@ -11,6 +11,7 @@ import 'package:trakli/presentation/home_screen.dart';
 import 'package:trakli/presentation/other_screen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
 import 'package:trakli/presentation/transaction_screen.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_nav.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/wallet_screen.dart';
@@ -23,7 +24,6 @@ class MainNavigationScreen extends StatelessWidget {
     HistoryScreen(),
     WalletScreen(),
     OtherScreen(),
-    TransactionScreen(),
   ];
 
   @override
@@ -149,7 +149,7 @@ class MainNavigationScreen extends StatelessWidget {
                 shape: const CircleBorder(),
                 backgroundColor: Theme.of(context).primaryColor,
                 onPressed: () {
-                  cubit.updateIndex(MainNavigationPageState.add);
+                  AppNavigator.push(context, const TransactionScreen());
                 },
                 elevation: 0,
                 child: SvgPicture.asset(
@@ -191,7 +191,6 @@ class MainNavigationScreen extends StatelessWidget {
               backgroundColor: Colors.white,
               color: const Color(0xFF576760),
               selectedColor: Theme.of(context).primaryColor,
-              notchedShape: const CircularNotchedRectangle(),
             ),
           );
         },

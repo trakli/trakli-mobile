@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/dashboard_expenses.dart';
+import 'package:trakli/presentation/utils/dashboard_pie_data.dart';
 import 'package:trakli/presentation/utils/summary_widget.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,14 +13,36 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF047844),
         automaticallyImplyLeading: false,
-        title: Text(
-          LocaleKeys.appName.tr(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
+        backgroundColor: Theme.of(context).primaryColor,
+        toolbarHeight: 152.sp,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Welcome',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Nde Fru, Che Boy',
+              style: TextStyle(
+                color: const Color(0xFFFF9500),
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Are you ready to start tracking your money?',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.sp,
+              ),
+            ),
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -30,6 +53,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 32.sp),
             Text(
               LocaleKeys.transactionLast30Days.tr(
                 args: [
@@ -41,6 +65,7 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.sp),
             GridView(
+              physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 16.sp,
@@ -70,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20.sp),
+            SizedBox(height: 28.sp),
             Text(
               LocaleKeys.transactionLast30DaysPerParties.tr(
                 args: [
@@ -82,7 +107,15 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.sp),
             const DashboardExpenses(),
-            Text(LocaleKeys.welcomeText.tr()),
+            SizedBox(height: 28.sp),
+            Text(
+             "Transactions of Last 30 days In total",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            SizedBox(height: 12.sp),
+            const DashboardPieData(),
+            // Text(LocaleKeys.welcomeText.tr()),
+            // SizedBox(height: 72.sp),
           ],
         ),
       ),
