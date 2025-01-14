@@ -75,8 +75,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
               controller: tabController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                AddTransactionForm(),
                 AddTransactionForm(
+                  accentColor: Theme.of(context).primaryColor,
+                ),
+                const AddTransactionForm(
                   transactionType: TransactionType.expense,
                 ),
               ],

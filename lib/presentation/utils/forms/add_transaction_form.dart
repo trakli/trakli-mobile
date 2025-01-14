@@ -6,10 +6,12 @@ import 'package:trakli/presentation/utils/enums.dart';
 
 class AddTransactionForm extends StatelessWidget {
   final TransactionType transactionType;
+  final Color accentColor;
 
   const AddTransactionForm({
     super.key,
     this.transactionType = TransactionType.income,
+    this.accentColor = const Color(0xFFEB5757),
   });
 
   @override
@@ -19,7 +21,7 @@ class AddTransactionForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 28),
+          const SizedBox(height: 16),
           Row(
             spacing: 16,
             children: [
@@ -54,8 +56,8 @@ class AddTransactionForm extends StatelessWidget {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Colors.transparent,
+                          borderSide: BorderSide(
+                            color: accentColor,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
@@ -101,8 +103,8 @@ class AddTransactionForm extends StatelessWidget {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Colors.transparent,
+                          borderSide: BorderSide(
+                            color: accentColor,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
@@ -147,7 +149,7 @@ class AddTransactionForm extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
+                          color: accentColor,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
@@ -209,7 +211,7 @@ class AddTransactionForm extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: Theme.of(context).primaryColor,
+                  color: accentColor,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
@@ -255,7 +257,7 @@ class AddTransactionForm extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: Theme.of(context).primaryColor,
+                  color: accentColor,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
@@ -272,6 +274,9 @@ class AddTransactionForm extends StatelessWidget {
             height: 54,
             width: double.infinity,
             child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(accentColor),
+              ),
               onPressed: () {},
               child: Row(
                 spacing: 8,
