@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Welcome',
+              LocaleKeys.homeWelcome.tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24.sp,
@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Text(
-              'Are you ready to start tracking your money?',
+              LocaleKeys.homeDescText.tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16.sp,

@@ -37,9 +37,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
           style: ButtonStyle(
             backgroundColor: const WidgetStatePropertyAll(Colors.white),
             foregroundColor: WidgetStatePropertyAll(
-              Theme
-                  .of(context)
-                  .primaryColor,
+              Theme.of(context).primaryColor,
             ),
           ),
           onPressed: () {
@@ -66,8 +64,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             isScrollable: true,
             indicatorWeight: 3,
             tabs: [
-              Tab(text: "Income"),
-              Tab(text: "Expense"),
+              Tab(
+                text: LocaleKeys.transactionIncome.tr(),
+              ),
+              Tab(
+                text: LocaleKeys.transactionExpenses.tr(),
+              ),
             ],
           ),
           Expanded(

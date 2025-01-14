@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
 class AddTransactionForm extends StatelessWidget {
@@ -30,9 +32,9 @@ class AddTransactionForm extends StatelessWidget {
                   spacing: 8,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Transaction Date",
-                      style: TextStyle(
+                    Text(
+                      LocaleKeys.transactionDate.tr(),
+                      style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF213144)),
@@ -77,9 +79,9 @@ class AddTransactionForm extends StatelessWidget {
                   spacing: 8,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Transaction Time",
-                      style: TextStyle(
+                    Text(
+                      LocaleKeys.transactionTime.tr(),
+                      style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF213144)),
@@ -122,9 +124,9 @@ class AddTransactionForm extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          const Text(
-            "Amount",
-            style: TextStyle(
+          Text(
+            LocaleKeys.transactionAmount.tr(),
+            style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF213144)),
@@ -177,9 +179,9 @@ class AddTransactionForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            "Party",
-            style: TextStyle(
+          Text(
+            LocaleKeys.transactionParty.tr(),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: Color(0xFF213144),
@@ -224,18 +226,18 @@ class AddTransactionForm extends StatelessWidget {
             onTap: () async {},
           ),
           const SizedBox(height: 16),
-          const Text(
-            "Category",
-            style: TextStyle(
+          Text(
+            LocaleKeys.transactionCategory.tr(),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: Color(0xFF213144),
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            "Description",
-            style: TextStyle(
+          Text(
+            LocaleKeys.transactionDescription.tr(),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: Color(0xFF213144),
@@ -245,7 +247,7 @@ class AddTransactionForm extends StatelessWidget {
           TextFormField(
             maxLines: 5,
             decoration: InputDecoration(
-              hintText: "Type here ...",
+              hintText: LocaleKeys.transactionTypeHere.tr(),
               filled: true,
               fillColor: const Color(0xFFF5F6F7),
               border: OutlineInputBorder(
@@ -282,7 +284,11 @@ class AddTransactionForm extends StatelessWidget {
                 spacing: 8,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Record Income"),
+                  Text(
+                    transactionType == TransactionType.income
+                        ? LocaleKeys.transactionRecordIncome.tr()
+                        : LocaleKeys.transactionRecordExpenses.tr(),
+                  ),
                   SvgPicture.asset(
                     Assets.images.add,
                     width: 24,

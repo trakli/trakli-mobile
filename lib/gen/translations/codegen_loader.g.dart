@@ -4,6 +4,7 @@ abstract class  LocaleKeys {
   static const appName = 'appName';
   static const welcomeText = 'welcomeText';
   static const welcomeTo = 'welcomeTo';
+  static const homeWelcome = 'homeWelcome';
   static const onboardTitle1 = 'onboardTitle1';
   static const onboardDesc1 = 'onboardDesc1';
   static const onboardTitle2 = 'onboardTitle2';
@@ -56,5 +57,21 @@ abstract class  LocaleKeys {
   static const days = 'days';
   static const months = 'months';
   static const fromDateToDate = 'fromDateToDate';
+  static const transactionFilterBy = 'transactionFilterBy';
+  static const transactionFrom = 'transactionFrom';
+  static const transactionTo = 'transactionTo';
+  static const transactionIncome = 'transactionIncome';
+  static const transactionExpenses = 'transactionExpenses';
+  static const transactionDate = 'transactionDate';
+  static const transactionTime = 'transactionTime';
+  static const transactionAmount = 'transactionAmount';
+  static const transactionParty = 'transactionParty';
+  static const transactionCategory = 'transactionCategory';
+  static const transactionAttachment = 'transactionAttachment';
+  static const transactionDescription = 'transactionDescription';
+  static const transactionTypeHere = 'transactionTypeHere';
+  static const transactionRecordIncome = 'transactionRecordIncome';
+  static const transactionRecordExpenses = 'transactionRecordExpenses';
+  static const groupsMyGroups = 'groupsMyGroups';
 
 }
