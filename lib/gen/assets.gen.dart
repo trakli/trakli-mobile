@@ -22,8 +22,20 @@ class $AssetsImagesGen {
   /// File path: assets/images/apple.svg
   String get apple => 'assets/images/apple.svg';
 
+  /// File path: assets/images/arrow-down.svg
+  String get arrowDown => 'assets/images/arrow-down.svg';
+
   /// File path: assets/images/arrow-left.svg
   String get arrowLeft => 'assets/images/arrow-left.svg';
+
+  /// File path: assets/images/arrow-right.svg
+  String get arrowRight => 'assets/images/arrow-right.svg';
+
+  /// File path: assets/images/arrow-swap-down.svg
+  String get arrowSwapDown => 'assets/images/arrow-swap-down.svg';
+
+  /// File path: assets/images/arrow-swap-up.svg
+  String get arrowSwapUp => 'assets/images/arrow-swap-up.svg';
 
   /// File path: assets/images/bank.svg
   String get bank => 'assets/images/bank.svg';
@@ -31,8 +43,17 @@ class $AssetsImagesGen {
   /// File path: assets/images/bottom_left_circle.svg
   String get bottomLeftCircle => 'assets/images/bottom_left_circle.svg';
 
+  /// File path: assets/images/calendar.svg
+  String get calendar => 'assets/images/calendar.svg';
+
   /// File path: assets/images/category.svg
   String get category => 'assets/images/category.svg';
+
+  /// File path: assets/images/clock.svg
+  String get clock => 'assets/images/clock.svg';
+
+  /// File path: assets/images/document-upload.svg
+  String get documentUpload => 'assets/images/document-upload.svg';
 
   /// File path: assets/images/eye-slash.svg
   String get eyeSlash => 'assets/images/eye-slash.svg';
@@ -67,6 +88,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/refresh.svg
   String get refresh => 'assets/images/refresh.svg';
 
+  /// File path: assets/images/search-special.svg
+  String get searchSpecial => 'assets/images/search-special.svg';
+
   /// File path: assets/images/support.svg
   String get support => 'assets/images/support.svg';
 
@@ -82,10 +106,17 @@ class $AssetsImagesGen {
         appLogo,
         appLogoGreen,
         apple,
+        arrowDown,
         arrowLeft,
+        arrowRight,
+        arrowSwapDown,
+        arrowSwapUp,
         bank,
         bottomLeftCircle,
+        calendar,
         category,
+        clock,
+        documentUpload,
         eyeSlash,
         eye,
         google,
@@ -97,6 +128,7 @@ class $AssetsImagesGen {
         navEllipse,
         people,
         refresh,
+        searchSpecial,
         support,
         topRightCircle,
         wallet

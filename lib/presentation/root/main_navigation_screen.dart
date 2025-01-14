@@ -6,11 +6,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/add_transaction_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
 import 'package:trakli/presentation/home_screen.dart';
+import 'package:trakli/presentation/my_groups_screen.dart';
 import 'package:trakli/presentation/other_screen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
-import 'package:trakli/presentation/transaction_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_nav.dart';
 import 'package:trakli/presentation/utils/globals.dart';
@@ -53,7 +54,9 @@ class MainNavigationScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 24.sp),
                       ListTile(
-                        onTap: () {},
+                        onTap: () {
+                          AppNavigator.push(context, const MyGroupsScreen());
+                        },
                         leading: SvgPicture.asset(
                           Assets.images.category,
                           colorFilter: const ColorFilter.mode(
@@ -149,7 +152,7 @@ class MainNavigationScreen extends StatelessWidget {
                 shape: const CircleBorder(),
                 backgroundColor: Theme.of(context).primaryColor,
                 onPressed: () {
-                  AppNavigator.push(context, const TransactionScreen());
+                  AppNavigator.push(context, const AddTransactionScreen());
                 },
                 elevation: 0,
                 child: SvgPicture.asset(

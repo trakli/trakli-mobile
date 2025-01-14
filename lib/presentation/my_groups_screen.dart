@@ -1,10 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/group_tile.dart';
 
-class TransactionScreen extends StatelessWidget {
-  const TransactionScreen({super.key});
+class MyGroupsScreen extends StatelessWidget {
+  const MyGroupsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +26,31 @@ class TransactionScreen extends StatelessWidget {
             size: 20,
           ),
         ),
-        title: Text(
-          LocaleKeys.addTransaction.tr(),
-          style: const TextStyle(
+        title: const Text(
+          "My Groups",
+          style: TextStyle(
             color: Colors.white,
             fontSize: 18,
           ),
         ),
       ),
-      body: const Center(
-        child: Text("TransactionScreen"),
+      body: Container(
+        padding: EdgeInsets.all(16.sp),
+        margin: EdgeInsets.all(16.sp),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: const Color(0xFFB8BBB4),
+          ),
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          children: List.generate(
+            5,
+            (index) => const GroupTile(),
+          ),
+        ),
       ),
     );
   }

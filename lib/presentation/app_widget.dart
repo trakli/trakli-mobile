@@ -38,6 +38,27 @@ class AppWidget extends StatelessWidget {
             color: textColor,
           ),
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: const WidgetStatePropertyAll(
+              Color(0xFF047844),
+            ),
+            foregroundColor: const WidgetStatePropertyAll(
+              Color(0xFFF9EDEB),
+            ),
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            padding: WidgetStatePropertyAll(
+              EdgeInsets.symmetric(
+                horizontal: 32.0.sp,
+                vertical: 12.sp,
+              ),
+            ),
+          ),
+        ),
       ),
       home: const OnboardingScreen(),
     );
