@@ -33,7 +33,7 @@ class HistoryScreen extends StatelessWidget {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-                hintText: "Filter By ...",
+                hintText:  LocaleKeys.transactionFilterBy.tr(),
                 suffixIcon: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset(
