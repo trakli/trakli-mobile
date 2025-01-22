@@ -52,10 +52,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Container(
             width: double.infinity,
             color: Theme.of(context).primaryColor,
-            height: MediaQuery.sizeOf(context).height * 0.65,
+            height: 0.65.sh,
             child: Column(
               children: [
-                SizedBox(height: MediaQuery.sizeOf(context).height * 0.2),
+                SizedBox(height: 0.2.sh),
                 SvgPicture.asset(Assets.images.logo),
               ],
             ),
@@ -64,7 +64,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             alignment: Alignment.bottomCenter,
             child: Container(
               width: double.infinity,
-              height: MediaQuery.sizeOf(context).height * 0.45,
+              height: 0.45.sh,
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               decoration: BoxDecoration(

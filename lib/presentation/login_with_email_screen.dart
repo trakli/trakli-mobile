@@ -177,30 +177,31 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 onPressed: () {},
                 child: RichText(
                   text: TextSpan(
-                      text: "${LocaleKeys.forgotPassword.tr()}? ",
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1E2448),
-                      ),
-                      children: [
-                        TextSpan(
-                          text: LocaleKeys.reset.tr(),
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFFF7B600),
-                          ),
+                    text: "${LocaleKeys.forgotPassword.tr()}? ",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: LocaleKeys.reset.tr(),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).highlightColor,
                         ),
-                      ]),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16.sp),
-              child: const Divider(
+              child: Divider(
                 height: 0,
-                color: Color(0xFFDFE1E4),
+                color: Theme.of(context).primaryColorLight,
               ),
             ),
             Align(
@@ -222,7 +223,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                   onPress: () {},
                   buttonText: LocaleKeys.createAccount.tr(),
                   buttonTextColor: Colors.black,
-                  backgroundButtonColor: const Color(0xFFDFE1E4),
+                  backgroundColor: const Color(0xFFDFE1E4),
                 ),
               ),
             ),

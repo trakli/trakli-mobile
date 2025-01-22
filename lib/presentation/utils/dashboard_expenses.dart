@@ -46,8 +46,8 @@ class _DashboardExpensesState extends State<DashboardExpenses> {
           ),
           SizedBox(height: 12.sp),
           SizedBox(
-            width: 190.sp,
-            height: 190.sp,
+            width: 190.w,
+            height: 190.h,
             child: SfRadialGauge(
               animationDuration: 3000,
               axes: [
@@ -115,8 +115,8 @@ class _DashboardExpensesState extends State<DashboardExpenses> {
           ),
           SizedBox(height: 16.sp),
           SizedBox(
-            width: 190.sp,
-            height: 190.sp,
+            width: 190.w,
+            height: 190.h,
             child: SfRadialGauge(
               animationDuration: 3000,
               axes: [

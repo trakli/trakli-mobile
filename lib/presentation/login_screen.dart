@@ -14,9 +14,6 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(
           left: 16.sp,
@@ -25,7 +22,7 @@ class LoginScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const SizedBox(width: double.infinity),
+            SizedBox(height: 60.h),
             Text(
               LocaleKeys.welcomeTo.tr(),
               style: TextStyle(
@@ -33,18 +30,18 @@ class LoginScreen extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 2.sp),
+            SizedBox(height: 2.h),
             SvgPicture.asset(
               Assets.images.logoGreen,
             ),
-            SizedBox(height: 8.sp),
+            SizedBox(height: 8.h),
             SvgPicture.asset(
               Assets.images.loginLogo,
             ),
-            SizedBox(height: 30.sp),
+            SizedBox(height: 30.h),
             SizedBox(
               width: double.infinity,
-              height: 54.sp,
+              height: 54.h,
               child: PrimaryButton(
                 onPress: () {
                   Navigator.push(
@@ -56,17 +53,16 @@ class LoginScreen extends StatelessWidget {
                 },
                 buttonText: LocaleKeys.login.tr(),
                 buttonTextColor: Colors.black,
-                backgroundButtonColor: const Color(0xFFDFE1E4),
+                backgroundColor: const Color(0xFFDFE1E4),
               ),
             ),
-            SizedBox(height: 12.sp),
+            SizedBox(height: 12.h),
             SizedBox(
               width: double.infinity,
-              height: 54.sp,
+              height: 54.h,
               child: PrimaryButton(
                 onPress: () {},
                 buttonText: LocaleKeys.createAccount.tr(),
-                buttonTextColor: Colors.white,
               ),
             ),
             Padding(
@@ -79,9 +75,9 @@ class LoginScreen extends StatelessWidget {
                       color: Color(0xFF79828E),
                     ),
                   ),
-                  SizedBox(width: 28.sp),
+                  SizedBox(width: 28.w),
                   const Text("OU"),
-                  SizedBox(width: 28.sp),
+                  SizedBox(width: 28.w),
                   const Expanded(
                     child: Divider(
                       height: 0,
@@ -93,27 +89,27 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(
               width: double.infinity,
-              height: 54.sp,
+              height: 54.h,
               child: PrimaryButton(
                 onPress: () {},
                 iconPath: Assets.images.google,
                 buttonText: LocaleKeys.loginGoogle.tr(),
                 buttonTextColor: const Color(0xFF79828E),
                 borderColor: const Color(0xFF79828E),
-                backgroundButtonColor: Colors.white,
+                backgroundColor: Colors.white,
               ),
             ),
-            SizedBox(height: 12.sp),
+            SizedBox(height: 12.h),
             SizedBox(
               width: double.infinity,
-              height: 54.sp,
+              height: 54.h,
               child: PrimaryButton(
                 onPress: () {},
                 iconPath: Assets.images.apple,
                 buttonText: LocaleKeys.loginApple.tr(),
                 buttonTextColor: const Color(0xFF79828E),
                 borderColor: const Color(0xFF79828E),
-                backgroundButtonColor: Colors.white,
+                backgroundColor: Colors.white,
               ),
             ),
           ],

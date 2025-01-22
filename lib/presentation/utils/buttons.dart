@@ -8,7 +8,7 @@ class PrimaryButton extends StatelessWidget {
     required this.onPress,
     required this.buttonText,
     this.iconPath,
-    this.backgroundButtonColor,
+    this.backgroundColor,
     this.borderColor,
     this.buttonTextColor,
     this.mainAxisAlignment = MainAxisAlignment.center,
@@ -19,7 +19,7 @@ class PrimaryButton extends StatelessWidget {
   final void Function()? onPress;
   final String? iconPath;
   final MainAxisAlignment mainAxisAlignment;
-  final Color? backgroundButtonColor;
+  final Color? backgroundColor;
   final Color? borderColor;
   final Color? buttonTextColor;
   final double? buttonTextPadding;
@@ -27,48 +27,35 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: onPress != null
-            ? backgroundButtonColor ?? Theme.of(context).primaryColor
-            : null,
-        overlayColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            color: borderColor ?? Colors.transparent,
-          ),
-        ),
-      ),
-      onPressed: onPress,
-      child: iconPath != null
-          ? Padding(
-              padding: EdgeInsets.symmetric(vertical: 14.sp),
-              child: Row(
-                mainAxisAlignment: mainAxisAlignment,
-                children: [
-                  SvgPicture.asset(
-                    iconPath!,
-                  ),
-                  SizedBox(width: 16.sp),
-                  Text(
-                    buttonText,
-                    style: TextStyle(
-                      color: buttonTextColor ?? Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : Text(
-              buttonText,
-              style: TextStyle(
-                color: buttonTextColor ?? Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 16.sp,
+      style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: BorderSide(
+                  color: borderColor ?? Colors.transparent,
+                ),
               ),
             ),
+            backgroundColor: WidgetStatePropertyAll(
+              backgroundColor ?? Theme.of(context).primaryColor,
+            ),
+            foregroundColor: WidgetStatePropertyAll(
+              buttonTextColor ?? Colors.white,
+            ),
+          ),
+      onPressed: onPress,
+      child: iconPath != null
+          ? Row(
+              spacing: 16.sp,
+              mainAxisAlignment: mainAxisAlignment,
+              children: [
+                SvgPicture.asset(
+                  iconPath!,
+                ),
+                Text(buttonText),
+              ],
+            )
+          : Text(buttonText),
     );
   }
 }

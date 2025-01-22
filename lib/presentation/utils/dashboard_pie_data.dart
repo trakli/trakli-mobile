@@ -55,8 +55,8 @@ class _DashboardPieDataState extends State<DashboardPieData> {
           ),
           Center(
             child: SizedBox(
-              width: 200.sp,
-              height: 200.sp,
+              width: 200.w,
+              height: 200.h,
               child: SfCircularChart(
                 series: <CircularSeries>[
                   PieSeries<ChartData, String>(
@@ -64,12 +64,12 @@ class _DashboardPieDataState extends State<DashboardPieData> {
                     pointColorMapper: (ChartData data, _) => data.color,
                     xValueMapper: (ChartData data, _) => data.property,
                     yValueMapper: (ChartData data, _) => data.value,
-                    dataLabelSettings: const DataLabelSettings(
+                    dataLabelSettings: DataLabelSettings(
                       isVisible: true,
                       labelPosition: ChartDataLabelPosition.inside,
                       labelIntersectAction: LabelIntersectAction.none,
                       textStyle: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -91,13 +91,13 @@ class _DashboardPieDataState extends State<DashboardPieData> {
                 children: [
                   Icon(
                     Icons.square,
-                    size: 16,
+                    size: 16.sp,
                     color: el.color,
                   ),
                   Text(
                     el.property,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 16.sp,
                       color: Colors.grey,
                     ),
                   )

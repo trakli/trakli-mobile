@@ -21,7 +21,9 @@ class AppWidget extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       theme: ThemeData(
         primaryColor: const Color(0xFF047844),
-
+        primaryColorLight:  const Color(0xFFDFE1E4),
+        primaryColorDark: const Color(0xFF1E2448),
+        highlightColor: const Color(0xFFF7B600),
         scaffoldBackgroundColor: const Color(0xFFEBEDEC),
         brightness: Theme.of(context).brightness,
         useMaterial3: true,
@@ -41,21 +43,30 @@ class AppWidget extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
+            textStyle: WidgetStatePropertyAll(
+              TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 16.sp,
+              ),
+            ),
             backgroundColor: const WidgetStatePropertyAll(
               Color(0xFF047844),
             ),
             foregroundColor: const WidgetStatePropertyAll(
-              Color(0xFFF9EDEB),
+              Colors.white,
             ),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
+                side: const BorderSide(
+                  color: Colors.transparent,
+                )
               ),
             ),
             padding: WidgetStatePropertyAll(
               EdgeInsets.symmetric(
-                horizontal: 32.0.sp,
-                vertical: 12.sp,
+                horizontal: 32.0.w,
+                vertical: 12.h,
               ),
             ),
           ),
