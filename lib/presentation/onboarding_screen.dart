@@ -126,8 +126,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         Center(
           child: Container(
             margin: const EdgeInsets.all(8),
-            width: 80.0.sp,
-            height: 80.0.sp,
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Theme.of(context).primaryColor,

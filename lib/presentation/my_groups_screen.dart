@@ -23,16 +23,16 @@ class MyGroupsScreen extends StatelessWidget {
           onPressed: () {
             AppNavigator.pop(context);
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
-            size: 20,
+            size: 20.sp,
           ),
         ),
         title: Text(
           LocaleKeys.groupsMyGroups.tr(),
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 18,
+            fontSize: 18.sp,
           ),
         ),
       ),
