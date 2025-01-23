@@ -23,21 +23,22 @@ class AddTransactionForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Row(
-            spacing: 16,
+            spacing: 16.w,
             children: [
               Expanded(
                 child: Column(
-                  spacing: 8,
+                  spacing: 8.h,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       LocaleKeys.transactionDate.tr(),
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF213144)),
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
                     ),
                     TextFormField(
                       readOnly: true,
@@ -81,10 +82,11 @@ class AddTransactionForm extends StatelessWidget {
                   children: [
                     Text(
                       LocaleKeys.transactionTime.tr(),
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF213144)),
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
                     ),
                     TextFormField(
                       readOnly: true,
@@ -134,7 +136,7 @@ class AddTransactionForm extends StatelessWidget {
           const SizedBox(height: 8),
           IntrinsicHeight(
             child: Row(
-              spacing: 16,
+              spacing: 16.w,
               children: [
                 Expanded(
                   child: TextFormField(
@@ -165,7 +167,7 @@ class AddTransactionForm extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  width: 60.sp,
+                  width: 60.w,
                   height: double.infinity,
                   decoration: BoxDecoration(
                     color: const Color(0xFFDEE1E0),
@@ -181,10 +183,10 @@ class AddTransactionForm extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             LocaleKeys.transactionParty.tr(),
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: 16.sp,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF213144),
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           const SizedBox(height: 8),
@@ -196,12 +198,20 @@ class AddTransactionForm extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 child: SvgPicture.asset(
                   Assets.images.searchSpecial,
+                  colorFilter: ColorFilter.mode(
+                    accentColor,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
               suffixIcon: Padding(
                 padding: const EdgeInsets.all(12),
                 child: SvgPicture.asset(
                   Assets.images.arrowDown,
+                  colorFilter: ColorFilter.mode(
+                    accentColor,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
               border: OutlineInputBorder(
@@ -228,19 +238,19 @@ class AddTransactionForm extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             LocaleKeys.transactionCategory.tr(),
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: 16.sp,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF213144),
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             LocaleKeys.transactionDescription.tr(),
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: 16.sp,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF213144),
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           const SizedBox(height: 8),
@@ -273,7 +283,7 @@ class AddTransactionForm extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            height: 54,
+            height: 54.h,
             width: double.infinity,
             child: ElevatedButton(
               style: ButtonStyle(
@@ -281,7 +291,7 @@ class AddTransactionForm extends StatelessWidget {
               ),
               onPressed: () {},
               child: Row(
-                spacing: 8,
+                spacing: 8.w,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
