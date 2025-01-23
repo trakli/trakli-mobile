@@ -61,7 +61,7 @@ abstract class  LocaleKeys {
   static const transactionFrom = 'transactionFrom';
   static const transactionTo = 'transactionTo';
   static const transactionIncome = 'transactionIncome';
-  static const transactionExpenses = 'transactionExpenses';
+  static const transactionExpense = 'transactionExpense';
   static const transactionDate = 'transactionDate';
   static const transactionTime = 'transactionTime';
   static const transactionAmount = 'transactionAmount';

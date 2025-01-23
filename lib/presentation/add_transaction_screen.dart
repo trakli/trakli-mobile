@@ -68,7 +68,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
                 text: LocaleKeys.transactionIncome.tr(),
               ),
               Tab(
-                text: LocaleKeys.transactionExpenses.tr(),
+                text: LocaleKeys.transactionExpense.tr(),
               ),
             ],
           ),
