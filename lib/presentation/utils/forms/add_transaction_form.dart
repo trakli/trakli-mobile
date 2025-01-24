@@ -248,80 +248,93 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
             onTap: () async {},
           ),
           SizedBox(height: 16.h),
-          Text(
-            LocaleKeys.transactionCategory.tr(),
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).primaryColorDark,
+          ExpansionTile(
+            collapsedBackgroundColor: const Color(0xFFF5F6F7),
+            collapsedShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.r),
             ),
-          ),
-          SizedBox(height: 8.h),
-          GridView(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              mainAxisSpacing: 8.h,
-              crossAxisSpacing: 8.w,
-              crossAxisCount: 2,
-              childAspectRatio: 3,
+            shape: const RoundedRectangleBorder(
+              side: BorderSide.none
             ),
-            children: chartData.asMap().entries.map<Widget>((el) {
-              int index = el.key;
-              return InkWell(
-                onTap: () {
-                  setState(() {
-                    selectedIndex = index;
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 8.h,
-                    horizontal: 16.w,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                      color: selectedIndex == index
-                          ? widget.accentColor
-                          : Colors.transparent,
-                      width: 2.0,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    spacing: 8.w,
-                    children: [
-                      Text(
-                        el.value.property,
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: Theme.of(context).primaryColorDark,
-                        ),
-                      ),
-                      Transform.scale(
-                        scale: 1.0,
-                        child: SizedBox(
-                          width: 16.w,
-                          height: 16.h,
-                          child: Radio(
-                            activeColor: widget.accentColor,
-                            value: index,
-                            groupValue: selectedIndex,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedIndex = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+            tilePadding: EdgeInsets.symmetric(
+              horizontal: 8.w,
+            ),
+            title: Text(
+              LocaleKeys.transactionCategory.tr(),
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).primaryColorDark,
+              ),
+            ),
+            children: [
+              GridView(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  mainAxisSpacing: 8.h,
+                  crossAxisSpacing: 8.w,
+                  crossAxisCount: 2,
+                  childAspectRatio: 3,
                 ),
-              );
-            }).toList(),
+                children: chartData.asMap().entries.map<Widget>((el) {
+                  int index = el.key;
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        selectedIndex = index;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 8.h,
+                        horizontal: 16.w,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                          color: selectedIndex == index
+                              ? widget.accentColor
+                              : Colors.transparent,
+                          width: 2.0,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        spacing: 8.w,
+                        children: [
+                          Text(
+                            el.value.property,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                          ),
+                          Transform.scale(
+                            scale: 1.0,
+                            child: SizedBox(
+                              width: 16.w,
+                              height: 16.h,
+                              child: Radio(
+                                activeColor: widget.accentColor,
+                                value: index,
+                                groupValue: selectedIndex,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedIndex = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
           SizedBox(height: 16.h),
           Text(
