@@ -151,6 +151,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               children: [
                 Expanded(
                   child: TextFormField(
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: const Color(0xFFF5F6F7),
