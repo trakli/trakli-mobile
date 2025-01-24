@@ -41,7 +41,7 @@ class MyGroupsScreen extends StatelessWidget {
         margin: EdgeInsets.all(16.sp),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color: const Color(0xFFB8BBB4),
           ),
