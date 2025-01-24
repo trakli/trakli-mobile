@@ -250,6 +250,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
           SizedBox(height: 16.h),
           ExpansionTile(
             collapsedBackgroundColor: const Color(0xFFF5F6F7),
+            iconColor: widget.accentColor,
             collapsedShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.r),
             ),
