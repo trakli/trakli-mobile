@@ -72,6 +72,6 @@
   "transactionRecordExpenses": "Record expense",
   "transactionUploadHere": "Upload here",
   "transactionFileType": "File type : jpg, jpeg, png, pdf",
-  "transactionMaxSize": "Max size",
+  "maxSize": "Max size",
   "groupsMyGroups": "My groups"
 }

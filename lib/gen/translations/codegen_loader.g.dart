@@ -74,7 +74,7 @@ abstract class  LocaleKeys {
   static const transactionRecordExpenses = 'transactionRecordExpenses';
   static const transactionUploadHere = 'transactionUploadHere';
   static const transactionFileType = 'transactionFileType';
-  static const transactionMaxSize = 'transactionMaxSize';
+  static const maxSize = 'maxSize';
   static const groupsMyGroups = 'groupsMyGroups';
 
 }

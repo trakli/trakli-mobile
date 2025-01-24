@@ -418,7 +418,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                       children: [
                         TextSpan(
                           text:
-                              "${LocaleKeys.transactionMaxSize.tr()}: $maxUploadSizeInMB",
+                              "${LocaleKeys.maxSize.tr()}: $maxUploadSizeInMB",
                         ),
                       ]),
                 ),
