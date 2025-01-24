@@ -1,5 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -20,6 +23,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
   void initState() {
     super.initState();
     tabController = TabController(length: 2, vsync: this);
+    tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -60,15 +66,57 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
         children: [
           TabBar(
             controller: tabController,
-            tabAlignment: TabAlignment.start,
-            isScrollable: true,
+            indicatorSize: TabBarIndicatorSize.tab,
             indicatorWeight: 3,
+            indicatorColor: (tabController.index == 0)
+                ? Theme.of(context).primaryColor
+                : const Color(0xFFEB5757),
+            unselectedLabelStyle: TextStyle(
+              fontSize: 16.sp,
+              color: const Color(0xFF1D3229),
+            ),
+            labelStyle: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF1D3229),
+            ),
+
             tabs: [
               Tab(
-                text: LocaleKeys.transactionIncome.tr(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 4,
+                  children: [
+                    SvgPicture.asset(
+                      Assets.images.arrowSwapDown,
+                      colorFilter: ColorFilter.mode(
+                        (tabController.index == 0)
+                            ? Theme.of(context).primaryColor
+                            : Colors.black,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    Text(LocaleKeys.transactionIncome.tr())
+                  ],
+                ),
               ),
               Tab(
-                text: LocaleKeys.transactionExpense.tr(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 4,
+                  children: [
+                    SvgPicture.asset(
+                      Assets.images.arrowSwapDown,
+                      colorFilter: ColorFilter.mode(
+                        (tabController.index == 0)
+                            ? Colors.black
+                            : const Color(0xFFEB5757),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    Text(LocaleKeys.transactionExpense.tr())
+                  ],
+                ),
               ),
             ],
           ),
