@@ -46,7 +46,7 @@ class PrimaryButton extends StatelessWidget {
       onPressed: onPress,
       child: iconPath != null
           ? Row(
-              spacing: 16.sp,
+              spacing: 16.w,
               mainAxisAlignment: mainAxisAlignment,
               children: [
                 SvgPicture.asset(

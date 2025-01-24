@@ -87,7 +87,7 @@ class _DashboardPieDataState extends State<DashboardPieData> {
             ),
             children: chartData.map<Widget>((el) {
               return Row(
-                spacing: 8,
+                spacing: 8.w,
                 children: [
                   Icon(
                     Icons.square,
@@ -105,7 +105,7 @@ class _DashboardPieDataState extends State<DashboardPieData> {
               );
             }).toList(),
           ),
-          SizedBox(height: 12.sp),
+          SizedBox(height: 12.h),
           Text(
             LocaleKeys.trendingByMonth.tr(args: [5.2.toString()]),
             style: TextStyle(

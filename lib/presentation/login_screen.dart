@@ -16,9 +16,9 @@ class LoginScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: EdgeInsets.only(
-          left: 16.sp,
-          right: 16.sp,
-          bottom: 24.sp,
+          left: 16.w,
+          right: 16.w,
+          bottom: 24.h,
         ),
         child: Column(
           children: [

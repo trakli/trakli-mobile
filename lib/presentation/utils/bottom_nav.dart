@@ -53,7 +53,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
 
     return BottomAppBar(
       padding: EdgeInsets.zero,
-      height: 72.sp,
+      height: 72.h,
       color: widget.backgroundColor,
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -105,12 +105,12 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
               item.text,
               style: TextStyle(color: color),
             ),
-            SizedBox(height: 4.sp),
+            SizedBox(height: 4.h),
             widget.state == MainNavigationPageState.values[index] ? SvgPicture.asset(
               Assets.images.navEllipse,
               fit: BoxFit.fill,
-              height: 7.sp,
-            ) : SizedBox(height: 7.sp),
+              height: 7.h,
+            ) : SizedBox(height: 7.h),
           ],
         ),
       ),

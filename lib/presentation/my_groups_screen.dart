@@ -12,7 +12,7 @@ class MyGroupsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF047844),
+        backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
           style: ButtonStyle(
             backgroundColor: const WidgetStatePropertyAll(Colors.white),
@@ -37,7 +37,10 @@ class MyGroupsScreen extends StatelessWidget {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.all(16.sp),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 16.h,
+        ),
         margin: EdgeInsets.all(16.sp),
         decoration: BoxDecoration(
           color: Colors.white,

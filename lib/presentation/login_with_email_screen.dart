@@ -104,7 +104,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
 
   Widget get pageOne {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.sp),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Form(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +116,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 // fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 28.sp),
+            SizedBox(height: 28.h),
             Text(
               LocaleKeys.email.tr(),
               style: TextStyle(
@@ -124,14 +124,14 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 8.sp),
+            SizedBox(height: 8.h),
             CustomTextField(
               hintText: LocaleKeys.email.tr(),
               controller: emailController,
               filled: true,
               validator: validateEmail,
             ),
-            SizedBox(height: 12.sp),
+            SizedBox(height: 12.h),
             Text(
               LocaleKeys.password.tr(),
               style: TextStyle(
@@ -139,7 +139,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 8.sp),
+            SizedBox(height: 8.h),
             CustomTextField(
               hintText: LocaleKeys.password.tr(),
               controller: passwordController,
@@ -152,10 +152,10 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 return null;
               },
             ),
-            SizedBox(height: 24.sp),
+            SizedBox(height: 24.h),
             SizedBox(
               width: double.infinity,
-              height: 54.sp,
+              height: 54.h,
               child: Builder(builder: (context) {
                 return PrimaryButton(
                   onPress: () {
@@ -170,7 +170,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 );
               }),
             ),
-            SizedBox(height: 4.sp),
+            SizedBox(height: 4.h),
             Align(
               alignment: Alignment.center,
               child: TextButton(
@@ -214,11 +214,11 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 12.sp),
+            SizedBox(height: 12.h),
             Align(
               alignment: Alignment.center,
               child: SizedBox(
-                height: 36.sp,
+                height: 40.h,
                 child: PrimaryButton(
                   onPress: () {},
                   buttonText: LocaleKeys.createAccount.tr(),
@@ -235,7 +235,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
 
   Widget get pageTwo {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.sp),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -246,7 +246,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
               // fontWeight: FontWeight.w700,
             ),
           ),
-          SizedBox(height: 28.sp),
+          SizedBox(height: 28.h),
           Center(
             child: Pinput(
               controller: pinController,
@@ -258,12 +258,13 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
               submittedPinTheme: defaultPinTheme.copyDecorationWith(
                 border: Border.all(color: Theme.of(context).primaryColor),
               ),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
           ),
-          SizedBox(height: 24.sp),
+          SizedBox(height: 24.h),
           SizedBox(
             width: double.infinity,
-            height: 54.sp,
+            height: 54.h,
             child: PrimaryButton(
               onPress: () {
                 Navigator.pushReplacement(
@@ -277,7 +278,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
               buttonTextColor: Colors.white,
             ),
           ),
-          SizedBox(height: 4.sp),
+          SizedBox(height: 4.h),
           Align(
             alignment: Alignment.center,
             child: TextButton(

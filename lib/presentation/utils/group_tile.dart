@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 
@@ -14,10 +15,10 @@ class GroupTile extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           shape: BoxShape.circle,
         ),
-        child: const Text(
+        child: Text(
           "PE",
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 16.sp,
             color: Colors.white,
           ),
         ),
@@ -30,11 +31,11 @@ class GroupTile extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      subtitle: const Text(
+      subtitle: Text(
         "Here you store your office Elements",
         style: TextStyle(
-          fontSize: 12,
-          color: Color(0xFF576760),
+          fontSize: 12.sp,
+          color: const Color(0xFF576760),
         ),
       ),
       trailing: SvgPicture.asset(

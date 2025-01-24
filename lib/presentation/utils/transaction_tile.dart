@@ -25,10 +25,10 @@ class _TransactionTileState extends State<TransactionTile> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(vertical: 10.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 12.sp,
+        spacing: 12.w,
         children: [
           Container(
             padding: const EdgeInsets.all(8),
@@ -40,13 +40,13 @@ class _TransactionTileState extends State<TransactionTile> {
               widget.transactionType == TransactionType.income
                   ? Assets.images.arrowSwapDown
                   : Assets.images.arrowSwapUp,
-              width: 20.sp,
-              height: 20.sp,
+              width: 20.r,
+              height: 20.r,
             ),
           ),
           Expanded(
             child: Column(
-              spacing: 6,
+              spacing: 6.h,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,11 +80,11 @@ class _TransactionTileState extends State<TransactionTile> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 4,
-                        horizontal: 8,
+                      padding: EdgeInsets.symmetric(
+                        vertical: 4.h,
+                        horizontal: 8.w,
                       ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF5F6F7),

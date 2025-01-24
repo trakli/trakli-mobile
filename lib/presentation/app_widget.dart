@@ -57,7 +57,7 @@ class AppWidget extends StatelessWidget {
             ),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
                 side: const BorderSide(
                   color: Colors.transparent,
                 )

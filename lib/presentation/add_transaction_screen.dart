@@ -38,7 +38,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF047844),
+        backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
           style: ButtonStyle(
             backgroundColor: const WidgetStatePropertyAll(Colors.white),
@@ -49,16 +49,16 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
           onPressed: () {
             AppNavigator.pop(context);
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
-            size: 20,
+            size: 20.r,
           ),
         ),
         title: Text(
           LocaleKeys.addTransaction.tr(),
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 18,
+            fontSize: 18.sp,
           ),
         ),
       ),
@@ -93,7 +93,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
               Tab(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 4,
+                  spacing: 4.w,
                   children: [
                     SvgPicture.asset(
                       Assets.images.arrowSwapDown,
@@ -111,7 +111,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
               Tab(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 4,
+                  spacing: 4.w,
                   children: [
                     SvgPicture.asset(
                       Assets.images.arrowSwapDown,

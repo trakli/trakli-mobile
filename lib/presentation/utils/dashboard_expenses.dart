@@ -18,7 +18,10 @@ class _DashboardExpensesState extends State<DashboardExpenses> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 16.h,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
@@ -44,7 +47,7 @@ class _DashboardExpensesState extends State<DashboardExpenses> {
             ),
             style: Theme.of(context).textTheme.labelSmall,
           ),
-          SizedBox(height: 12.sp),
+          SizedBox(height: 12.h),
           SizedBox(
             width: 190.w,
             height: 190.h,
@@ -113,7 +116,7 @@ class _DashboardExpensesState extends State<DashboardExpenses> {
               ],
             ),
           ),
-          SizedBox(height: 16.sp),
+          SizedBox(height: 16.h),
           SizedBox(
             width: 190.w,
             height: 190.h,
@@ -182,7 +185,7 @@ class _DashboardExpensesState extends State<DashboardExpenses> {
               ],
             ),
           ),
-          SizedBox(height: 16.sp),
+          SizedBox(height: 16.h),
           Text(
             LocaleKeys.trendingByMonth.tr(args: [5.2.toString()]),
             style: TextStyle(

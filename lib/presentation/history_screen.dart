@@ -14,26 +14,29 @@ class HistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF047844),
+        backgroundColor: Theme.of(context).primaryColor,
         automaticallyImplyLeading: false,
         title: Text(
           LocaleKeys.transactionHistory.tr(),
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 18,
+            fontSize: 18.sp,
           ),
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.sp),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 16.h,
+        ),
         child: Column(
           children: [
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             TextFormField(
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-                hintText:  LocaleKeys.transactionFilterBy.tr(),
+                hintText: LocaleKeys.transactionFilterBy.tr(),
                 suffixIcon: Padding(
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset(
@@ -61,7 +64,7 @@ class HistoryScreen extends StatelessWidget {
               ),
               onTap: () async {},
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Container(
               padding: EdgeInsets.all(16.sp),
               decoration: BoxDecoration(

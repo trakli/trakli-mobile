@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/enums.dart';
+import 'package:trakli/presentation/utils/globals.dart';
 
 class AddTransactionForm extends StatelessWidget {
   final TransactionType transactionType;
@@ -325,7 +326,8 @@ class AddTransactionForm extends StatelessWidget {
                       text: "${LocaleKeys.transactionFileType.tr()}\n",
                       children: [
                         TextSpan(
-                          text: LocaleKeys.transactionMaxSize.tr(),
+                          text:
+                              "${LocaleKeys.transactionMaxSize.tr()}: $maxUploadSizeInMB",
                         ),
                       ]),
                 ),
