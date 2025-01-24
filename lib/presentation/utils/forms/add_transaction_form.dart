@@ -281,6 +281,57 @@ class AddTransactionForm extends StatelessWidget {
             ),
             onTap: () async {},
           ),
+          const SizedBox(height: 16),
+          Text(
+            LocaleKeys.transactionAttachment.tr(),
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+              color: Theme.of(context).primaryColorDark,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity,
+            height: 122.h,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  Assets.images.documentUpload,
+                  colorFilter: ColorFilter.mode(
+                    accentColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  LocaleKeys.transactionUploadHere.tr(),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                  ),
+                ),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        color: Colors.grey,
+                      ),
+                      text: "${LocaleKeys.transactionFileType.tr()}\n",
+                      children: [
+                        TextSpan(
+                          text: LocaleKeys.transactionMaxSize.tr(),
+                        ),
+                      ]),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 20),
           SizedBox(
             height: 54.h,

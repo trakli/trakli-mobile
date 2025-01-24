@@ -70,5 +70,8 @@
   "transactionTypeHere": "Type here ..",
   "transactionRecordIncome": "Record income",
   "transactionRecordExpenses": "Record expense",
+  "transactionUploadHere": "Upload here",
+  "transactionFileType": "File type : jpg, jpeg, png, pdf",
+  "transactionMaxSize": "Max size",
   "groupsMyGroups": "My groups"
 }

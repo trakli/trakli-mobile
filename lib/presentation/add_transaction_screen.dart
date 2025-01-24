@@ -68,9 +68,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             controller: tabController,
             indicatorSize: TabBarIndicatorSize.tab,
             indicatorWeight: 3,
-            indicatorColor: (tabController.index == 0)
-                ? Theme.of(context).primaryColor
-                : const Color(0xFFEB5757),
+            indicator: BoxDecoration(
+                color: (tabController.index == 0)
+                    ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+                    : const Color(0xFFEB5757).withValues(alpha: 0.15),
+                border: Border(
+                  bottom: BorderSide(
+                    width: 3,
+                    color: (tabController.index == 0)
+                        ? Theme.of(context).primaryColor
+                        : const Color(0xFFEB5757),
+                  ),
+                )),
             unselectedLabelStyle: TextStyle(
               fontSize: 16.sp,
               color: const Color(0xFF1D3229),
@@ -80,7 +89,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
               fontWeight: FontWeight.bold,
               color: const Color(0xFF1D3229),
             ),
-
             tabs: [
               Tab(
                 child: Row(
