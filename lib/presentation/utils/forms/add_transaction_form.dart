@@ -7,7 +7,7 @@ import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 
-class AddTransactionForm extends StatelessWidget {
+class AddTransactionForm extends StatefulWidget {
   final TransactionType transactionType;
   final Color accentColor;
 
@@ -18,9 +18,19 @@ class AddTransactionForm extends StatelessWidget {
   });
 
   @override
+  State<AddTransactionForm> createState() => _AddTransactionFormState();
+}
+
+class _AddTransactionFormState extends State<AddTransactionForm> {
+  int? selectedIndex;
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16.sp),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 16.h,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -61,7 +71,7 @@ class AddTransactionForm extends StatelessWidget {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
-                            color: accentColor,
+                            color: widget.accentColor,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
@@ -78,7 +88,7 @@ class AddTransactionForm extends StatelessWidget {
               ),
               Expanded(
                 child: Column(
-                  spacing: 8,
+                  spacing: 8.h,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -109,7 +119,7 @@ class AddTransactionForm extends StatelessWidget {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
-                            color: accentColor,
+                            color: widget.accentColor,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
@@ -126,7 +136,7 @@ class AddTransactionForm extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             LocaleKeys.transactionAmount.tr(),
             style: const TextStyle(
@@ -134,7 +144,7 @@ class AddTransactionForm extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF213144)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           IntrinsicHeight(
             child: Row(
               spacing: 16.w,
@@ -154,7 +164,7 @@ class AddTransactionForm extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide(
-                          color: accentColor,
+                          color: widget.accentColor,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
@@ -181,7 +191,7 @@ class AddTransactionForm extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             LocaleKeys.transactionParty.tr(),
             style: TextStyle(
@@ -190,7 +200,7 @@ class AddTransactionForm extends StatelessWidget {
               color: Theme.of(context).primaryColorDark,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           TextFormField(
             decoration: InputDecoration(
               filled: true,
@@ -200,7 +210,7 @@ class AddTransactionForm extends StatelessWidget {
                 child: SvgPicture.asset(
                   Assets.images.searchSpecial,
                   colorFilter: ColorFilter.mode(
-                    accentColor,
+                    widget.accentColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -210,7 +220,7 @@ class AddTransactionForm extends StatelessWidget {
                 child: SvgPicture.asset(
                   Assets.images.arrowDown,
                   colorFilter: ColorFilter.mode(
-                    accentColor,
+                    widget.accentColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -224,7 +234,7 @@ class AddTransactionForm extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: accentColor,
+                  color: widget.accentColor,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
@@ -236,7 +246,7 @@ class AddTransactionForm extends StatelessWidget {
             ),
             onTap: () async {},
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             LocaleKeys.transactionCategory.tr(),
             style: TextStyle(
@@ -245,7 +255,74 @@ class AddTransactionForm extends StatelessWidget {
               color: Theme.of(context).primaryColorDark,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 8.h),
+          GridView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              mainAxisSpacing: 8.h,
+              crossAxisSpacing: 8.w,
+              crossAxisCount: 2,
+              childAspectRatio: 3,
+            ),
+            children: chartData.asMap().entries.map<Widget>((el) {
+              int index = el.key;
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.h,
+                    horizontal: 16.w,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      color: selectedIndex == index
+                          ? widget.accentColor
+                          : Colors.transparent,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    spacing: 8.w,
+                    children: [
+                      Text(
+                        el.value.property,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Theme.of(context).primaryColorDark,
+                        ),
+                      ),
+                      Transform.scale(
+                        scale: 1.0,
+                        child: SizedBox(
+                          width: 16.w,
+                          height: 16.h,
+                          child: Radio(
+                            activeColor: widget.accentColor,
+                            value: index,
+                            groupValue: selectedIndex,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedIndex = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          SizedBox(height: 16.h),
           Text(
             LocaleKeys.transactionDescription.tr(),
             style: TextStyle(
@@ -254,9 +331,9 @@ class AddTransactionForm extends StatelessWidget {
               color: Theme.of(context).primaryColorDark,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           TextFormField(
-            maxLines: 5,
+            maxLines: 3,
             decoration: InputDecoration(
               hintText: LocaleKeys.transactionTypeHere.tr(),
               filled: true,
@@ -270,7 +347,7 @@ class AddTransactionForm extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: accentColor,
+                  color: widget.accentColor,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
@@ -282,7 +359,7 @@ class AddTransactionForm extends StatelessWidget {
             ),
             onTap: () async {},
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             LocaleKeys.transactionAttachment.tr(),
             style: TextStyle(
@@ -291,7 +368,7 @@ class AddTransactionForm extends StatelessWidget {
               color: Theme.of(context).primaryColorDark,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Container(
             width: double.infinity,
             height: 122.h,
@@ -305,7 +382,7 @@ class AddTransactionForm extends StatelessWidget {
                 SvgPicture.asset(
                   Assets.images.documentUpload,
                   colorFilter: ColorFilter.mode(
-                    accentColor,
+                    widget.accentColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -334,13 +411,13 @@ class AddTransactionForm extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           SizedBox(
             height: 54.h,
             width: double.infinity,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(accentColor),
+                backgroundColor: WidgetStatePropertyAll(widget.accentColor),
               ),
               onPressed: () {},
               child: Row(
@@ -348,7 +425,7 @@ class AddTransactionForm extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    transactionType == TransactionType.income
+                    widget.transactionType == TransactionType.income
                         ? LocaleKeys.transactionRecordIncome.tr()
                         : LocaleKeys.transactionRecordExpenses.tr(),
                   ),
@@ -365,7 +442,7 @@ class AddTransactionForm extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
         ],
       ),
     );

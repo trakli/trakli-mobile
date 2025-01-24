@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/globals.dart';
 
 class DashboardPieData extends StatefulWidget {
   const DashboardPieData({super.key});
@@ -12,14 +13,7 @@ class DashboardPieData extends StatefulWidget {
 }
 
 class _DashboardPieDataState extends State<DashboardPieData> {
-  final List<ChartData> chartData = [
-    ChartData('Food', 30, Colors.blueAccent),
-    ChartData('Education', 20, Colors.greenAccent),
-    ChartData('Clothes', 20, Colors.redAccent),
-    ChartData('Rents', 10, Colors.purpleAccent),
-    ChartData('Girls', 10, Colors.pink),
-    ChartData('Other', 10, Colors.orangeAccent),
-  ];
+
   DateFormat format = DateFormat('MMMM');
 
   @override
@@ -122,12 +116,4 @@ class _DashboardPieDataState extends State<DashboardPieData> {
       ),
     );
   }
-}
-
-class ChartData {
-  ChartData(this.property, this.value, [this.color]);
-
-  final String property;
-  final double value;
-  final Color? color;
 }
