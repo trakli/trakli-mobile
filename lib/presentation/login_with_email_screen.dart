@@ -189,7 +189,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
-                          color: Theme.of(context).highlightColor,
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
                     ],

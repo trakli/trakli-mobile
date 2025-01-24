@@ -23,7 +23,7 @@ class AppWidget extends StatelessWidget {
         primaryColor: const Color(0xFF047844),
         primaryColorLight:  const Color(0xFFDFE1E4),
         primaryColorDark: const Color(0xFF1E2448),
-        highlightColor: const Color(0xFFF7B600),
+        hintColor: const Color(0xFFF7B600),
         scaffoldBackgroundColor: const Color(0xFFEBEDEC),
         brightness: Theme.of(context).brightness,
         useMaterial3: true,
