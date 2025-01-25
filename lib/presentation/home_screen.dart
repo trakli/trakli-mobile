@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/presentation/utils/dashboard_expenses.dart';
-import 'package:trakli/presentation/utils/dashboard_pie_data.dart';
 import 'package:trakli/presentation/utils/enums.dart';
-import 'package:trakli/presentation/utils/summary_widget.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/utils/transaction_tile.dart';
 
@@ -290,24 +287,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 28.h),
-            Text(
-              LocaleKeys.transactionLast30DaysPerParties.tr(
-                args: [
-                  30.toString(),
-                  LocaleKeys.days.toString(),
-                ],
-              ),
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            SizedBox(height: 12.h),
-            const DashboardExpenses(),
-            SizedBox(height: 28.h),
-            Text(
-              "Transactions of Last 30 days In total",
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            SizedBox(height: 12.h),
-            const DashboardPieData(),
           ],
         ),
       ),

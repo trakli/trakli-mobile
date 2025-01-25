@@ -10,8 +10,9 @@ import 'package:trakli/presentation/add_transaction_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
 import 'package:trakli/presentation/home_screen.dart';
 import 'package:trakli/presentation/my_groups_screen.dart';
-import 'package:trakli/presentation/other_screen.dart';
+import 'package:trakli/presentation/profile_screen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
+import 'package:trakli/presentation/statistics_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_nav.dart';
 import 'package:trakli/presentation/utils/globals.dart';
@@ -22,9 +23,9 @@ class MainNavigationScreen extends StatelessWidget {
 
   final List<Widget> screens = const [
     HomeScreen(),
-    HistoryScreen(),
+    StatisticsScreen(),
     WalletScreen(),
-    OtherScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -181,10 +182,6 @@ class MainNavigationScreen extends StatelessWidget {
             bottomNavigationBar: FABBottomAppBar(
               state: state,
               onTabSelected: (index) {
-                if (index == 3) {
-                  scaffoldKey.currentState?.openDrawer();
-                  return;
-                }
                 cubit.updateIndex(MainNavigationPageState.values[index]);
               },
               items: [
@@ -201,8 +198,8 @@ class MainNavigationScreen extends StatelessWidget {
                   text: LocaleKeys.wallet.tr(),
                 ),
                 FABBottomAppBarItem(
-                  iconPath: Assets.images.menu,
-                  text: LocaleKeys.otherR.tr(),
+                  iconPath: Assets.images.user,
+                  text: "Profile",
                 ),
               ],
               backgroundColor: Colors.white,
