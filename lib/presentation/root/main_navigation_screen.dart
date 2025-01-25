@@ -190,7 +190,7 @@ class MainNavigationScreen extends StatelessWidget {
                   text: LocaleKeys.home.tr(),
                 ),
                 FABBottomAppBarItem(
-                  iconPath: Assets.images.refresh,
+                  iconPath: Assets.images.walletMoney,
                   text: "Statistics",
                 ),
                 FABBottomAppBarItem(

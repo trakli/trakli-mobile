@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -24,7 +23,7 @@ class GraphWidget extends StatelessWidget {
         ),
       ),
       child: SfCartesianChart(
-        title: ChartTitle(
+        title: const ChartTitle(
           text: "Statistics",
           alignment: ChartAlignment.near,
         ),

@@ -112,6 +112,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/user.svg
   String get user => 'assets/images/user.svg';
 
+  /// File path: assets/images/wallet-money.svg
+  String get walletMoney => 'assets/images/wallet-money.svg';
+
   /// File path: assets/images/wallet.svg
   String get wallet => 'assets/images/wallet.svg';
 
@@ -151,6 +154,7 @@ class $AssetsImagesGen {
         support,
         topRightCircle,
         user,
+        walletMoney,
         wallet
       ];
 }

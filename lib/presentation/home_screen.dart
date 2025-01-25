@@ -18,6 +18,12 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFEBEDEC),
         automaticallyImplyLeading: false,
         centerTitle: true,
+        // shape: UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     width: 0.5.h,
+        //     color: Theme.of(context).primaryColor,
+        //   ),
+        // ),
         leading: IconButton(
           onPressed: () {},
           padding: EdgeInsets.symmetric(
@@ -30,20 +36,34 @@ class HomeScreen extends StatelessWidget {
             color: Theme.of(context).primaryColor,
           ),
         ),
+        shape: UnderlineInputBorder(
+          borderSide: BorderSide(
+            width: 0.1.h,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
         title: SvgPicture.asset(
           Assets.images.logoGreen,
           height: 38.h,
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            padding: EdgeInsets.zero,
-            icon: Icon(
-              Icons.notifications,
-              size: 32.r,
-              color: Theme.of(context).primaryColor,
+          Container(
+            width: 40.w,
+            height: 40.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+            ),
+            padding: EdgeInsets.all(8.r),
+            child: Center(
+              child: Icon(
+                Icons.notifications,
+                size: 24.r,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ),
+          SizedBox(width: 16.w),
         ],
       ),
       body: SingleChildScrollView(

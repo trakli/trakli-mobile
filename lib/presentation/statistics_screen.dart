@@ -13,13 +13,22 @@ class StatisticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF047844),
+        toolbarHeight: 60.h,
+        backgroundColor: const Color(0xFFEBEDEC),
         automaticallyImplyLeading: false,
-        title: const Text(
+        centerTitle: true,
+        title: Text(
           "Statistics",
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 20.sp,
+          ),
+        ),
+        shape: UnderlineInputBorder(
+          borderSide: BorderSide(
+            width: 0.5.h,
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ),
