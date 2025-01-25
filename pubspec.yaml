@@ -43,6 +43,8 @@ dependencies:
   country_flags: ^3.0.0
   syncfusion_flutter_gauges: ^28.1.38
   syncfusion_flutter_charts: ^28.1.38
+  dropdown_search: ^6.0.2
+  file_picker: ^8.1.7
 
 dev_dependencies:
   flutter_gen_runner: ^5.8.0

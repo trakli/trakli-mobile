@@ -114,7 +114,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
                   spacing: 4.w,
                   children: [
                     SvgPicture.asset(
-                      Assets.images.arrowSwapDown,
+                      Assets.images.arrowSwapUp,
                       colorFilter: ColorFilter.mode(
                         (tabController.index == 0)
                             ? Colors.black

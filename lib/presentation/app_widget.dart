@@ -71,6 +71,35 @@ class AppWidget extends StatelessWidget {
             ),
           ),
         ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFFF5F6F7),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 12.h,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(
+              color: Color(0xFF047844),
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+            ),
+          ),
+          constraints: BoxConstraints(
+            minHeight: 52.h,
+          )
+        )
       ),
       home: const OnboardingScreen(),
     );

@@ -37,6 +37,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/arrow-swap-up.svg
   String get arrowSwapUp => 'assets/images/arrow-swap-up.svg';
 
+  /// File path: assets/images/arrow-up.svg
+  String get arrowUp => 'assets/images/arrow-up.svg';
+
   /// File path: assets/images/bank.svg
   String get bank => 'assets/images/bank.svg';
 
@@ -82,8 +85,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/menu.svg
   String get menu => 'assets/images/menu.svg';
 
+  /// File path: assets/images/more.svg
+  String get more => 'assets/images/more.svg';
+
   /// File path: assets/images/navEllipse.svg
   String get navEllipse => 'assets/images/navEllipse.svg';
+
+  /// File path: assets/images/notification-bing.svg
+  String get notificationBing => 'assets/images/notification-bing.svg';
 
   /// File path: assets/images/people.svg
   String get people => 'assets/images/people.svg';
@@ -114,6 +123,7 @@ class $AssetsImagesGen {
         arrowRight,
         arrowSwapDown,
         arrowSwapUp,
+        arrowUp,
         bank,
         bottomLeftCircle,
         calendar,
@@ -129,7 +139,9 @@ class $AssetsImagesGen {
         logo,
         logoGreen,
         menu,
+        more,
         navEllipse,
+        notificationBing,
         people,
         refresh,
         searchSpecial,

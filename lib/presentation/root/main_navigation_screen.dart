@@ -36,6 +36,7 @@ class MainNavigationScreen extends StatelessWidget {
           final cubit = context.read<MainNavigationCubit>();
           return Scaffold(
             key: scaffoldKey,
+            resizeToAvoidBottomInset: false,
             drawer: Drawer(
               shape: const RoundedRectangleBorder(),
               width: 0.8.sw,
@@ -53,6 +54,19 @@ class MainNavigationScreen extends StatelessWidget {
                         height: 75.sp,
                       ),
                       SizedBox(height: 24.sp),
+                      ListTile(
+                        onTap: () {
+                          AppNavigator.push(context, const HistoryScreen());
+                        },
+                        leading: SvgPicture.asset(
+                          Assets.images.refresh,
+                          colorFilter: const ColorFilter.mode(
+                            Color(0XFF3B4E45),
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        title: Text(LocaleKeys.history.tr()),
+                      ),
                       ListTile(
                         onTap: () {
                           AppNavigator.push(context, const MyGroupsScreen());
@@ -180,7 +194,7 @@ class MainNavigationScreen extends StatelessWidget {
                 ),
                 FABBottomAppBarItem(
                   iconPath: Assets.images.refresh,
-                  text: LocaleKeys.history.tr(),
+                  text: "Statistics",
                 ),
                 FABBottomAppBarItem(
                   iconPath: Assets.images.wallet,
