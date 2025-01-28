@@ -7,6 +7,7 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/globals.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 
 class AddTransactionForm extends StatefulWidget {
   final TransactionType transactionType;
@@ -28,10 +29,16 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
   DateFormat timeFormat = DateFormat('h:mm:a');
   DateTime date = DateTime.now();
   TimeOfDay time = TimeOfDay.now();
-  TextEditingController amountController = TextEditingController();
   TextEditingController dateController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    dateController.text = dateFormat.format(date);
+    timeController.text = timeFormat.format(date);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +111,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                     ),
                     TextFormField(
                       readOnly: true,
-                      initialValue: dateFormat.format(date),
+                      controller: dateController,
                       decoration: InputDecoration(
                         suffixIcon: Padding(
                           padding: const EdgeInsets.all(12),
@@ -123,7 +130,6 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                         final selectDate = await showDatePicker(
                           context: context,
                           firstDate: DateTime.now(),
-                          currentDate: DateTime.now(),
                           lastDate: DateTime.now().add(
                             const Duration(days: 30),
                           ),
@@ -131,6 +137,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                         if (selectDate != null) {
                           setState(() {
                             date = selectDate;
+                            dateController.text = dateFormat.format(date);
                           });
                         }
                       },
@@ -153,7 +160,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                     ),
                     TextFormField(
                       readOnly: true,
-                      initialValue: timeFormat.format(date),
+                      controller: timeController,
                       decoration: InputDecoration(
                         suffixIcon: Padding(
                           padding: const EdgeInsets.all(12),
@@ -176,6 +183,14 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                         if (selectTime != null) {
                           setState(() {
                             time = selectTime;
+                            date = DateTime(
+                              date.year,
+                              date.month,
+                              date.day,
+                              selectTime.hour,
+                              selectTime.minute,
+                            );
+                            timeController.text = timeFormat.format(date);
                           });
                         }
                       },
@@ -203,7 +218,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                   .map((data) => data)
                   .toList()
                   .where((ChartData el) =>
-                  el.property.toLowerCase().contains(filter.toLowerCase()))
+                      el.property.toLowerCase().contains(filter.toLowerCase()))
                   .toList();
             },
             itemAsString: (item) => item.property,
@@ -233,8 +248,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                   popUpAnimationStyle: AnimationStyle(
                     curve: Curves.decelerate,
                   ),
-                )
-            ),
+                )),
             onChanged: (value) => {
               debugPrint(value?.property),
             },
@@ -291,38 +305,37 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                   .map((data) => data)
                   .toList()
                   .where((ChartData el) =>
-                  el.property.toLowerCase().contains(filter.toLowerCase()))
+                      el.property.toLowerCase().contains(filter.toLowerCase()))
                   .toList();
             },
             itemAsString: (item) => item.property,
             popupProps: PopupProps.menu(
-              searchFieldProps: TextFieldProps(
-                decoration: InputDecoration(
-                  hintText: "Search...",
-                  fillColor: Colors.white,
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                    borderSide: BorderSide(
-                      color: widget.accentColor,
+                searchFieldProps: TextFieldProps(
+                  decoration: InputDecoration(
+                    hintText: "Search...",
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(
+                        color: widget.accentColor,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              showSearchBox: true,
-              fit: FlexFit.loose,
-              menuProps: MenuProps(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                  side: const BorderSide(
-                    color: Colors.grey,
+                showSearchBox: true,
+                fit: FlexFit.loose,
+                menuProps: MenuProps(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                    side: const BorderSide(
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
-                popUpAnimationStyle: AnimationStyle(
-                  curve: Curves.decelerate,
-                ),
-              )
-            ),
+                  popUpAnimationStyle: AnimationStyle(
+                    curve: Curves.decelerate,
+                  ),
+                )),
             onChanged: (value) => {
               debugPrint(value?.property),
             },
@@ -394,46 +407,51 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
             ),
           ),
           SizedBox(height: 8.h),
-          Container(
-            width: double.infinity,
-            height: 122.h,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  Assets.images.documentUpload,
-                  colorFilter: ColorFilter.mode(
-                    widget.accentColor,
-                    BlendMode.srcIn,
+          InkWell(
+            onTap: () async {
+              pickFile();
+            },
+            child: Container(
+              width: double.infinity,
+              height: 122.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    Assets.images.documentUpload,
+                    colorFilter: ColorFilter.mode(
+                      widget.accentColor,
+                      BlendMode.srcIn,
+                    ),
                   ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  LocaleKeys.transactionUploadHere.tr(),
-                  style: TextStyle(
-                    fontSize: 14.sp,
+                  SizedBox(height: 4.h),
+                  Text(
+                    LocaleKeys.transactionUploadHere.tr(),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                    ),
                   ),
-                ),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                        color: Colors.grey,
-                      ),
-                      text: "${LocaleKeys.transactionFileType.tr()}\n",
-                      children: [
-                        TextSpan(
-                          text:
-                              "${LocaleKeys.maxSize.tr()}: $maxUploadSizeInMB",
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          color: Colors.grey,
                         ),
-                      ]),
-                ),
-              ],
+                        text: "${LocaleKeys.transactionFileType.tr()}\n",
+                        children: [
+                          TextSpan(
+                            text:
+                                "${LocaleKeys.maxSize.tr()}: $maxUploadSizeInMB",
+                          ),
+                        ]),
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(height: 20.h),

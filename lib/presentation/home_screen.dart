@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/transaction_tile.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -18,19 +19,11 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFEBEDEC),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        // shape: UnderlineInputBorder(
-        //   borderSide: BorderSide(
-        //     width: 0.5.h,
-        //     color: Theme.of(context).primaryColor,
-        //   ),
-        // ),
-        leading: IconButton(
-          onPressed: () {},
-          padding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 16.h,
-          ),
-          icon: Icon(
+        leading: InkWell(
+          onTap: () {
+            scaffoldKey.currentState?.openDrawer();
+          },
+          child: Icon(
             Icons.grid_view_rounded,
             size: 32.r,
             color: Theme.of(context).primaryColor,
