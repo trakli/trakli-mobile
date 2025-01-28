@@ -6,11 +6,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/add_transaction_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
 import 'package:trakli/presentation/home_screen.dart';
-import 'package:trakli/presentation/other_screen.dart';
+import 'package:trakli/presentation/my_groups_screen.dart';
+import 'package:trakli/presentation/profile_screen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
-import 'package:trakli/presentation/transaction_screen.dart';
+import 'package:trakli/presentation/statistics_screen.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_nav.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/wallet_screen.dart';
@@ -20,10 +23,9 @@ class MainNavigationScreen extends StatelessWidget {
 
   final List<Widget> screens = const [
     HomeScreen(),
-    HistoryScreen(),
+    StatisticsScreen(),
     WalletScreen(),
-    OtherScreen(),
-    TransactionScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -35,6 +37,7 @@ class MainNavigationScreen extends StatelessWidget {
           final cubit = context.read<MainNavigationCubit>();
           return Scaffold(
             key: scaffoldKey,
+            resizeToAvoidBottomInset: false,
             drawer: Drawer(
               shape: const RoundedRectangleBorder(),
               width: 0.8.sw,
@@ -53,7 +56,22 @@ class MainNavigationScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 24.sp),
                       ListTile(
-                        onTap: () {},
+                        onTap: () {
+                          AppNavigator.push(context, const HistoryScreen());
+                        },
+                        leading: SvgPicture.asset(
+                          Assets.images.refresh,
+                          colorFilter: const ColorFilter.mode(
+                            Color(0XFF3B4E45),
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        title: Text(LocaleKeys.history.tr()),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          AppNavigator.push(context, const MyGroupsScreen());
+                        },
                         leading: SvgPicture.asset(
                           Assets.images.category,
                           colorFilter: const ColorFilter.mode(
@@ -149,7 +167,7 @@ class MainNavigationScreen extends StatelessWidget {
                 shape: const CircleBorder(),
                 backgroundColor: Theme.of(context).primaryColor,
                 onPressed: () {
-                  cubit.updateIndex(MainNavigationPageState.add);
+                  AppNavigator.push(context, const AddTransactionScreen());
                 },
                 elevation: 0,
                 child: SvgPicture.asset(
@@ -164,10 +182,6 @@ class MainNavigationScreen extends StatelessWidget {
             bottomNavigationBar: FABBottomAppBar(
               state: state,
               onTabSelected: (index) {
-                if (index == 3) {
-                  scaffoldKey.currentState?.openDrawer();
-                  return;
-                }
                 cubit.updateIndex(MainNavigationPageState.values[index]);
               },
               items: [
@@ -176,22 +190,21 @@ class MainNavigationScreen extends StatelessWidget {
                   text: LocaleKeys.home.tr(),
                 ),
                 FABBottomAppBarItem(
-                  iconPath: Assets.images.refresh,
-                  text: LocaleKeys.history.tr(),
+                  iconPath: Assets.images.walletMoney,
+                  text: "Statistics",
                 ),
                 FABBottomAppBarItem(
                   iconPath: Assets.images.wallet,
                   text: LocaleKeys.wallet.tr(),
                 ),
                 FABBottomAppBarItem(
-                  iconPath: Assets.images.menu,
-                  text: LocaleKeys.otherR.tr(),
+                  iconPath: Assets.images.user,
+                  text: "Profile",
                 ),
               ],
               backgroundColor: Colors.white,
               color: const Color(0xFF576760),
               selectedColor: Theme.of(context).primaryColor,
-              notchedShape: const CircularNotchedRectangle(),
             ),
           );
         },
