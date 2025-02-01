@@ -1,10 +1,10 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -210,9 +210,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
             ),
           ),
           SizedBox(height: 8.h),
-          DropdownSearch<ChartData>(
-            mode: Mode.form,
-            // Define the list of items based on your data source
+          CustomDropdownSearch<ChartData>(
+            label: "",
+            accentColor: widget.accentColor,
             items: (filter, infiniteScrollProps) {
               return chartData
                   .map((data) => data)
@@ -222,70 +222,12 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                   .toList();
             },
             itemAsString: (item) => item.property,
-            popupProps: PopupProps.menu(
-                searchFieldProps: TextFieldProps(
-                  decoration: InputDecoration(
-                    hintText: "Search...",
-                    fillColor: Colors.white,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                      borderSide: BorderSide(
-                        color: widget.accentColor,
-                      ),
-                    ),
-                  ),
-                ),
-                showSearchBox: true,
-                fit: FlexFit.loose,
-                menuProps: MenuProps(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                    side: const BorderSide(
-                      color: Colors.grey,
-                    ),
-                  ),
-                  popUpAnimationStyle: AnimationStyle(
-                    curve: Curves.decelerate,
-                  ),
-                )),
             onChanged: (value) => {
               debugPrint(value?.property),
             },
             compareFn: (i1, i2) => i1 == i2,
             filterFn: (el, filter) =>
                 el.property.toLowerCase().contains(filter.toLowerCase()),
-            decoratorProps: DropDownDecoratorProps(
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(top: 16.h),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset(
-                    Assets.images.searchSpecial,
-                    colorFilter: ColorFilter.mode(
-                      widget.accentColor,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset(
-                    Assets.images.arrowDown,
-                    colorFilter: ColorFilter.mode(
-                      widget.accentColor,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: widget.accentColor,
-                  ),
-                ),
-              ),
-            ),
           ),
           SizedBox(height: 16.h),
           Text(
@@ -297,9 +239,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
             ),
           ),
           SizedBox(height: 8.h),
-          DropdownSearch<ChartData>(
-            mode: Mode.form,
-            // Define the list of items based on your data source
+          CustomDropdownSearch<ChartData>(
+            label: "",
+            accentColor: widget.accentColor,
             items: (filter, infiniteScrollProps) {
               return chartData
                   .map((data) => data)
@@ -309,70 +251,12 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                   .toList();
             },
             itemAsString: (item) => item.property,
-            popupProps: PopupProps.menu(
-                searchFieldProps: TextFieldProps(
-                  decoration: InputDecoration(
-                    hintText: "Search...",
-                    fillColor: Colors.white,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                      borderSide: BorderSide(
-                        color: widget.accentColor,
-                      ),
-                    ),
-                  ),
-                ),
-                showSearchBox: true,
-                fit: FlexFit.loose,
-                menuProps: MenuProps(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                    side: const BorderSide(
-                      color: Colors.grey,
-                    ),
-                  ),
-                  popUpAnimationStyle: AnimationStyle(
-                    curve: Curves.decelerate,
-                  ),
-                )),
             onChanged: (value) => {
               debugPrint(value?.property),
             },
             compareFn: (i1, i2) => i1 == i2,
             filterFn: (el, filter) =>
                 el.property.toLowerCase().contains(filter.toLowerCase()),
-            decoratorProps: DropDownDecoratorProps(
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(top: 16.h),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset(
-                    Assets.images.searchSpecial,
-                    colorFilter: ColorFilter.mode(
-                      widget.accentColor,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset(
-                    Assets.images.arrowDown,
-                    colorFilter: ColorFilter.mode(
-                      widget.accentColor,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: widget.accentColor,
-                  ),
-                ),
-              ),
-            ),
           ),
           SizedBox(height: 16.h),
           Text(

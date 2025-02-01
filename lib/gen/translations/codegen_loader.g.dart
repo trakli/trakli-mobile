@@ -40,7 +40,11 @@ abstract class  LocaleKeys {
   static const homeDescText = 'homeDescText';
   static const groups = 'groups';
   static const parties = 'parties';
-  static const people = 'people';
+  static const partyAddParty = 'partyAddParty';
+  static const partyCreateParty = 'partyCreateParty';
+  static const partyPartyName = 'partyPartyName';
+  static const partyEnterPartyName = 'partyEnterPartyName';
+  static const partyPartyDescription = 'partyPartyDescription';
   static const transactionTracking = 'transactionTracking';
   static const support = 'support';
   static const transactions = 'transactions';
@@ -74,7 +78,23 @@ abstract class  LocaleKeys {
   static const transactionRecordExpenses = 'transactionRecordExpenses';
   static const transactionUploadHere = 'transactionUploadHere';
   static const transactionFileType = 'transactionFileType';
+  static const transactionAmountHint = 'transactionAmountHint';
   static const maxSize = 'maxSize';
   static const groupsMyGroups = 'groupsMyGroups';
+  static const groupGroupName = 'groupGroupName';
+  static const groupEnterGroupName = 'groupEnterGroupName';
+  static const groupGroupDescription = 'groupGroupDescription';
+  static const groupAddGroup = 'groupAddGroup';
+  static const groupCreateGroup = 'groupCreateGroup';
+  static const statistics = 'statistics';
+  static const profile = 'profile';
+  static const settings = 'settings';
+  static const typeHere = 'typeHere';
+  static const balanceAmountWithCurrency = 'balanceAmountWithCurrency';
+  static const totalBalance = 'totalBalance';
+  static const selectLanguage = 'selectLanguage';
+  static const seeAll = 'seeAll';
+  static const langEnglish = 'langEnglish';
+  static const langFrench = 'langFrench';
 
 }

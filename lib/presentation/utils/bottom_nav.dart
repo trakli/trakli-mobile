@@ -94,20 +94,22 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
           children: [
             Center(
               child: SvgPicture.asset(
-                    item.iconPath,
-                    colorFilter: ColorFilter.mode(
-                      color,
-                      BlendMode.srcIn,
-                    ),
-                  ),
+                item.iconPath,
+                colorFilter: ColorFilter.mode(
+                  color,
+                  BlendMode.srcIn,
+                ),
+              ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: widget.state == MainNavigationPageState.values[index] ? SvgPicture.asset(
-                Assets.images.navEllipse,
-                fit: BoxFit.fill,
-                height: 6.h,
-              ) : SizedBox(height: 6.h),
+              child: widget.state == MainNavigationPageState.values[index]
+                  ? SvgPicture.asset(
+                      Assets.images.navEllipse,
+                      fit: BoxFit.fill,
+                      height: 6.h,
+                    )
+                  : SizedBox(height: 6.h),
             )
           ],
         ),

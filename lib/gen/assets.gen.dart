@@ -52,6 +52,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/category.svg
   String get category => 'assets/images/category.svg';
 
+  /// File path: assets/images/chart.svg
+  String get chart => 'assets/images/chart.svg';
+
   /// File path: assets/images/clock.svg
   String get clock => 'assets/images/clock.svg';
 
@@ -103,6 +106,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/search-special.svg
   String get searchSpecial => 'assets/images/search-special.svg';
 
+  /// File path: assets/images/setting.svg
+  String get setting => 'assets/images/setting.svg';
+
   /// File path: assets/images/support.svg
   String get support => 'assets/images/support.svg';
 
@@ -134,6 +140,7 @@ class $AssetsImagesGen {
         bottomLeftCircle,
         calendar,
         category,
+        chart,
         clock,
         documentUpload,
         eyeSlash,
@@ -151,6 +158,7 @@ class $AssetsImagesGen {
         people,
         refresh,
         searchSpecial,
+        setting,
         support,
         topRightCircle,
         user,

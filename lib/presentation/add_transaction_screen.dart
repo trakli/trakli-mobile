@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/forms/add_transaction_form.dart';
 
@@ -37,13 +38,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
-          style: ButtonStyle(
-            backgroundColor: const WidgetStatePropertyAll(Colors.white),
-            foregroundColor: WidgetStatePropertyAll(
-              Theme.of(context).primaryColor,
+          style: const ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(
+              Color(0xFFEBEDEC),
             ),
           ),
           onPressed: () {
@@ -52,15 +52,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
           icon: Icon(
             Icons.arrow_back,
             size: 20.r,
+            color: Theme.of(context).primaryColor,
           ),
         ),
-        title: Text(
-          LocaleKeys.addTransaction.tr(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.sp,
-          ),
-        ),
+        headerTextColor:  const Color(0xFFEBEDEC),
+        titleText: LocaleKeys.addTransaction.tr(),
       ),
       body: Column(
         children: [

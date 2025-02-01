@@ -2,7 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/groups/add_group_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/group_tile.dart';
 
 class MyGroupsScreen extends StatelessWidget {
@@ -11,13 +13,12 @@ class MyGroupsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
-          style: ButtonStyle(
-            backgroundColor: const WidgetStatePropertyAll(Colors.white),
-            foregroundColor: WidgetStatePropertyAll(
-              Theme.of(context).primaryColor,
+          style: const ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(
+              Color(0xFFEBEDEC),
             ),
           ),
           onPressed: () {
@@ -25,16 +26,36 @@ class MyGroupsScreen extends StatelessWidget {
           },
           icon: Icon(
             Icons.arrow_back,
-            size: 20.sp,
+            size: 20.r,
+            color: Theme.of(context).primaryColor,
           ),
         ),
-        title: Text(
-          LocaleKeys.groupsMyGroups.tr(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.sp,
+        titleText: LocaleKeys.groupsMyGroups.tr(),
+        headerTextColor: const Color(0xFFEBEDEC),
+        actions: [
+          InkWell(
+            onTap: (){
+              AppNavigator.push(context, const AddGroupScreen());
+            },
+            child: Container(
+              width: 40.w,
+              height: 40.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                color:  const Color(0xFFEBEDEC),
+              ),
+              padding: EdgeInsets.all(8.r),
+              child: Center(
+                child: Icon(
+                  Icons.add,
+                  size: 24.r,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
           ),
-        ),
+          SizedBox(width: 16.w),
+        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(

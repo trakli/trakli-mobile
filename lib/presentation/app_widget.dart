@@ -11,8 +11,18 @@ import 'package:trakli/presentation/utils/globals.dart';
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
 
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
+
   @override
   Widget build(BuildContext context) {
+    rebuildAllChildren(context);
     return MaterialApp(
       navigatorKey: navigatorKey,
       title: 'Trakli',

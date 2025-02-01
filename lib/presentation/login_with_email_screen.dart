@@ -270,7 +270,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MainNavigationScreen(),
+                    builder: (context) => MainNavigationScreen(),
                   ),
                 );
               },

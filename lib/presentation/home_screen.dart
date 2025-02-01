@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/history_screen.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/gen/assets.gen.dart';
-import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/transaction_tile.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,35 +16,15 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 60.h,
-        backgroundColor: const Color(0xFFEBEDEC),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        leading: InkWell(
-          onTap: () {
-            scaffoldKey.currentState?.openDrawer();
-          },
-          child: Icon(
-            Icons.grid_view_rounded,
-            size: 32.r,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
-        shape: UnderlineInputBorder(
-          borderSide: BorderSide(
-            width: 0.1.h,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
+      appBar: CustomAppBar(
         title: SvgPicture.asset(
           Assets.images.logoGreen,
           height: 38.h,
         ),
         actions: [
           Container(
-            width: 40.w,
-            height: 40.h,
+            width: 42.r,
+            height: 42.r,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.r),
               color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
@@ -90,7 +72,7 @@ class HomeScreen extends StatelessWidget {
                           title: Row(
                             children: [
                               Text(
-                                "Total balance",
+                                LocaleKeys.totalBalance.tr(),
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: Colors.white,
@@ -119,7 +101,9 @@ class HomeScreen extends StatelessWidget {
                             ],
                           ),
                           subtitle: Text(
-                            "300,000 XAF",
+                            LocaleKeys.balanceAmountWithCurrency.tr(
+                              args: ["300,000", "XAF"],
+                            ),
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w700,
@@ -159,7 +143,9 @@ class HomeScreen extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  "150,000 XAF",
+                                  LocaleKeys.balanceAmountWithCurrency.tr(
+                                    args: ["150,000", "XAF"],
+                                  ),
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.white,
@@ -196,7 +182,9 @@ class HomeScreen extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  "150,000 XAF",
+                                  LocaleKeys.balanceAmountWithCurrency.tr(
+                                    args: ["150,000", "XAF"],
+                                  ),
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.white,
@@ -225,69 +213,46 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Transactions",
+                  LocaleKeys.transactions.tr(),
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).primaryColorDark,
                   ),
                 ),
-                Text(
-                  "See all",
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.orangeAccent,
+                InkWell(
+                  onTap: (){
+                    AppNavigator.push(context, const HistoryScreen());
+                  },
+                  child: Text(
+                    LocaleKeys.seeAll.tr(),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.orangeAccent,
+                    ),
                   ),
                 ),
               ],
             ),
             SizedBox(height: 12.h),
-            // GridView(
-            //   physics: const NeverScrollableScrollPhysics(),
-            //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //     crossAxisCount: 2,
-            //     mainAxisSpacing: 16.sp,
-            //     crossAxisSpacing: 16.sp,
-            //   ),
-            //   padding: EdgeInsets.zero,
-            //   shrinkWrap: true,
-            //   children: [
-            //     SummaryWidget(
-            //       value: "48",
-            //       description: LocaleKeys.transactions.tr(),
-            //     ),
-            //     SummaryWidget(
-            //       value: "35k",
-            //       description: LocaleKeys.moneySpent.tr(),
-            //       color: const Color(0XFFFF3B30),
-            //       showXaf: true,
-            //     ),
-            //     SummaryWidget(
-            //       value: "24k",
-            //       description: LocaleKeys.moneyReceived.tr(),
-            //       showXaf: true,
-            //     ),
-            //     SummaryWidget(
-            //       value: "124",
-            //       description: LocaleKeys.totalCompanies.tr(),
-            //     ),
-            //   ],
-            // ),
             Container(
               padding: EdgeInsets.all(16.sp),
-              height: 0.5.sh,
+              constraints: BoxConstraints(
+                maxHeight: 0.5.sh,
+                minWidth: 100.h,
+              ),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: const Color(0xFFB8BBB4),
+                  color: Colors.grey.shade300,
                 ),
               ),
               child: ListView(
                 // physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: List.generate(
-                  10,
+                  4,
                   (index) => TransactionTile(
                     transactionType: (index % 2 == 0)
                         ? TransactionType.income

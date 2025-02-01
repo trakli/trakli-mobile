@@ -45,6 +45,7 @@ dependencies:
   syncfusion_flutter_charts: ^28.1.38
   dropdown_search: ^6.0.2
   file_picker: ^8.1.7
+  font_awesome_flutter: ^10.8.0
 
 dev_dependencies:
   flutter_gen_runner: ^5.8.0
