@@ -4,14 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 
-class WalletScreen extends StatelessWidget {
-  const WalletScreen({super.key});
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: LocaleKeys.wallet.tr(),
+        titleText: LocaleKeys.profile.tr(),
         actions: [
           Container(
             width: 40.w,
@@ -23,7 +23,7 @@ class WalletScreen extends StatelessWidget {
             padding: EdgeInsets.all(8.r),
             child: Center(
               child: Icon(
-                Icons.add,
+                Icons.edit,
                 size: 24.r,
                 color: Theme.of(context).primaryColor,
               ),
@@ -33,7 +33,7 @@ class WalletScreen extends StatelessWidget {
         ],
       ),
       body: const Center(
-        child: Text("WalletScreen"),
+        child: Text("Profile Screen"),
       ),
     );
   }
