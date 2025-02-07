@@ -6,7 +6,7 @@ class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,
     required this.onPress,
-    required this.buttonText,
+    this.buttonText,
     this.iconPath,
     this.backgroundColor,
     this.borderColor,
@@ -15,7 +15,7 @@ class PrimaryButton extends StatelessWidget {
     this.buttonTextPadding,
   });
 
-  final String buttonText;
+  final String? buttonText;
   final void Function()? onPress;
   final String? iconPath;
   final MainAxisAlignment mainAxisAlignment;
@@ -52,10 +52,10 @@ class PrimaryButton extends StatelessWidget {
                 SvgPicture.asset(
                   iconPath!,
                 ),
-                Text(buttonText),
+                if (buttonText != null) Text(buttonText ?? ""),
               ],
             )
-          : Text(buttonText),
+          : Text(buttonText ?? ""),
     );
   }
 }

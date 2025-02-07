@@ -92,6 +92,9 @@
   "totalBalance": "Solde total",
   "selectLanguage": "Sélectionner la langue",
   "seeAll": "Voir tout",
+  "phone_number": "Numéro de téléphone",
+  "payment": "Paiement",
+  "notifications": "Notifications",
   "langEnglish": "Anglais",
   "langFrench": "Français"
 }

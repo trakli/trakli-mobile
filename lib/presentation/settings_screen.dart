@@ -51,18 +51,61 @@ class SettingsScreen extends StatelessWidget {
               onTap: () {
                 _showLanguageSelectionBottomSheet(context);
               },
-              leading: CountryFlag.fromLanguageCode(
-                shape: const RoundedRectangle(8),
-                context.locale.languageCode,
-                width: 24.sp,
-                height: 22.sp,
+              leading: Container(
+                width: 40.w,
+                height: 40.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                ),
+                child: Icon(
+                  Icons.payment,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               title: Text(
-                _getLanguageFromCode(context.locale),
+                LocaleKeys.payment.tr(),
               ),
               trailing: Icon(
                 Icons.arrow_forward_ios,
                 size: 16.sp,
+              ),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              onTap: () {
+                _showLanguageSelectionBottomSheet(context);
+              },
+              leading: Container(
+                width: 40.w,
+                height: 40.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                ),
+                child: Icon(
+                  Icons.language,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              title: Text(
+                _getLanguageFromCode(context.locale),
+              ),
+              trailing: Row(
+                spacing: 8.w,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CountryFlag.fromLanguageCode(
+                    shape: const RoundedRectangle(8),
+                    context.locale.languageCode,
+                    width: 24.sp,
+                    height: 22.sp,
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16.sp,
+                  ),
+                ],
               ),
             ),
           ],
@@ -92,7 +135,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   style: TextStyle(
                     color: languages.elementAt(index).languageCode ==
-                        context.locale.languageCode
+                            context.locale.languageCode
                         ? Theme.of(context).primaryColor
                         : Theme.of(context).primaryColor.withValues(alpha: 0.5),
                     fontSize: 16.sp,

@@ -47,20 +47,20 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
         horizontal: 16.w,
         vertical: 16.h,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            LocaleKeys.transactionAmount.tr(),
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).primaryColorDark,
+      child: Form(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              LocaleKeys.transactionAmount.tr(),
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).primaryColorDark,
+              ),
             ),
-          ),
-          SizedBox(height: 8.h),
-          IntrinsicHeight(
-            child: Row(
+            SizedBox(height: 8.h),
+            Row(
               spacing: 16.w,
               children: [
                 Expanded(
@@ -75,12 +75,20 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                         ),
                       ),
                     ),
-                    onTap: () async {},
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        // return LocaleKeys.transactionAmountError.tr();
+                        return "Amount is required";
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 Container(
                   width: 60.w,
-                  height: double.infinity,
+                  constraints: BoxConstraints(
+                    minHeight: 52.h,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFDEE1E0),
                     borderRadius: BorderRadius.circular(8),
@@ -91,286 +99,297 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                 )
               ],
             ),
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            spacing: 16.w,
-            children: [
-              Expanded(
-                child: Column(
-                  spacing: 8.h,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      LocaleKeys.transactionDate.tr(),
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).primaryColorDark,
-                      ),
-                    ),
-                    TextFormField(
-                      readOnly: true,
-                      controller: dateController,
-                      decoration: InputDecoration(
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: SvgPicture.asset(
-                            Assets.images.calendar,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: widget.accentColor,
-                          ),
-                        ),
-                      ),
-                      onTap: () async {
-                        final selectDate = await showDatePicker(
-                          context: context,
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime.now().add(
-                            const Duration(days: 30),
-                          ),
-                        );
-                        if (selectDate != null) {
-                          setState(() {
-                            date = selectDate;
-                            dateController.text = dateFormat.format(date);
-                          });
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  spacing: 8.h,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      LocaleKeys.transactionTime.tr(),
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).primaryColorDark,
-                      ),
-                    ),
-                    TextFormField(
-                      readOnly: true,
-                      controller: timeController,
-                      decoration: InputDecoration(
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: SvgPicture.asset(
-                            Assets.images.clock,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: widget.accentColor,
-                          ),
-                        ),
-                      ),
-                      onTap: () async {
-                        final selectTime = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-                        if (selectTime != null) {
-                          setState(() {
-                            time = selectTime;
-                            date = DateTime(
-                              date.year,
-                              date.month,
-                              date.day,
-                              selectTime.hour,
-                              selectTime.minute,
-                            );
-                            timeController.text = timeFormat.format(date);
-                          });
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            LocaleKeys.transactionParty.tr(),
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).primaryColorDark,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          CustomDropdownSearch<ChartData>(
-            label: "",
-            accentColor: widget.accentColor,
-            items: (filter, infiniteScrollProps) {
-              return chartData
-                  .map((data) => data)
-                  .toList()
-                  .where((ChartData el) =>
-                      el.property.toLowerCase().contains(filter.toLowerCase()))
-                  .toList();
-            },
-            itemAsString: (item) => item.property,
-            onChanged: (value) => {
-              debugPrint(value?.property),
-            },
-            compareFn: (i1, i2) => i1 == i2,
-            filterFn: (el, filter) =>
-                el.property.toLowerCase().contains(filter.toLowerCase()),
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            LocaleKeys.transactionCategory.tr(),
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).primaryColorDark,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          CustomDropdownSearch<ChartData>(
-            label: "",
-            accentColor: widget.accentColor,
-            items: (filter, infiniteScrollProps) {
-              return chartData
-                  .map((data) => data)
-                  .toList()
-                  .where((ChartData el) =>
-                      el.property.toLowerCase().contains(filter.toLowerCase()))
-                  .toList();
-            },
-            itemAsString: (item) => item.property,
-            onChanged: (value) => {
-              debugPrint(value?.property),
-            },
-            compareFn: (i1, i2) => i1 == i2,
-            filterFn: (el, filter) =>
-                el.property.toLowerCase().contains(filter.toLowerCase()),
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            LocaleKeys.transactionDescription.tr(),
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).primaryColorDark,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          TextFormField(
-            maxLines: 3,
-            decoration: InputDecoration(
-              hintText: LocaleKeys.transactionTypeHere.tr(),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: widget.accentColor,
-                ),
-              ),
-            ),
-            onTap: () async {},
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            LocaleKeys.transactionAttachment.tr(),
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).primaryColorDark,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          InkWell(
-            onTap: () async {
-              pickFile();
-            },
-            child: Container(
-              width: double.infinity,
-              height: 122.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    Assets.images.documentUpload,
-                    colorFilter: ColorFilter.mode(
-                      widget.accentColor,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    LocaleKeys.transactionUploadHere.tr(),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
+            SizedBox(height: 16.h),
+            Row(
+              spacing: 16.w,
+              children: [
+                Expanded(
+                  child: Column(
+                    spacing: 8.h,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        LocaleKeys.transactionDate.tr(),
                         style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.grey,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).primaryColorDark,
                         ),
-                        text: "${LocaleKeys.transactionFileType.tr()}\n",
-                        children: [
-                          TextSpan(
-                            text:
-                                "${LocaleKeys.maxSize.tr()}: $maxUploadSizeInMB",
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      TextFormField(
+                        readOnly: true,
+                        controller: dateController,
+                        decoration: InputDecoration(
+                          suffixIcon: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: SvgPicture.asset(
+                              Assets.images.calendar,
+                            ),
                           ),
-                        ]),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: widget.accentColor,
+                            ),
+                          ),
+                        ),
+                        onTap: () async {
+                          final selectDate = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(
+                              const Duration(days: 30),
+                            ),
+                          );
+                          if (selectDate != null) {
+                            setState(() {
+                              date = selectDate;
+                              dateController.text = dateFormat.format(date);
+                            });
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ],
+                ),
+                Expanded(
+                  child: Column(
+                    spacing: 8.h,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        LocaleKeys.transactionTime.tr(),
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).primaryColorDark,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      TextFormField(
+                        readOnly: true,
+                        controller: timeController,
+                        decoration: InputDecoration(
+                          suffixIcon: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: SvgPicture.asset(
+                              Assets.images.clock,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: widget.accentColor,
+                            ),
+                          ),
+                        ),
+                        onTap: () async {
+                          final selectTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (selectTime != null) {
+                            setState(() {
+                              time = selectTime;
+                              date = DateTime(
+                                date.year,
+                                date.month,
+                                date.day,
+                                selectTime.hour,
+                                selectTime.minute,
+                              );
+                              timeController.text = timeFormat.format(date);
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              LocaleKeys.transactionParty.tr(),
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
-          ),
-          SizedBox(height: 20.h),
-          SizedBox(
-            height: 54.h,
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(widget.accentColor),
+            SizedBox(height: 8.h),
+            CustomDropdownSearch<ChartData>(
+              label: "",
+              accentColor: widget.accentColor,
+              items: (filter, infiniteScrollProps) {
+                return chartData
+                    .map((data) => data)
+                    .toList()
+                    .where((ChartData el) => el.property
+                        .toLowerCase()
+                        .contains(filter.toLowerCase()))
+                    .toList();
+              },
+              itemAsString: (item) => item.property,
+              onChanged: (value) => {
+                debugPrint(value?.property),
+              },
+              compareFn: (i1, i2) => i1 == i2,
+              filterFn: (el, filter) =>
+                  el.property.toLowerCase().contains(filter.toLowerCase()),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              LocaleKeys.transactionCategory.tr(),
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).primaryColorDark,
               ),
-              onPressed: () {},
-              child: Row(
-                spacing: 8.w,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.transactionType == TransactionType.income
-                        ? LocaleKeys.transactionRecordIncome.tr()
-                        : LocaleKeys.transactionRecordExpenses.tr(),
+            ),
+            SizedBox(height: 8.h),
+            CustomDropdownSearch<ChartData>(
+              label: "",
+              accentColor: widget.accentColor,
+              items: (filter, infiniteScrollProps) {
+                return chartData
+                    .map((data) => data)
+                    .toList()
+                    .where((ChartData el) => el.property
+                        .toLowerCase()
+                        .contains(filter.toLowerCase()))
+                    .toList();
+              },
+              itemAsString: (item) => item.property,
+              onChanged: (value) => {
+                debugPrint(value?.property),
+              },
+              compareFn: (i1, i2) => i1 == i2,
+              filterFn: (el, filter) =>
+                  el.property.toLowerCase().contains(filter.toLowerCase()),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              LocaleKeys.transactionDescription.tr(),
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).primaryColorDark,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            TextFormField(
+              maxLines: 3,
+              decoration: InputDecoration(
+                hintText: LocaleKeys.transactionTypeHere.tr(),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: widget.accentColor,
                   ),
-                  SvgPicture.asset(
-                    Assets.images.add,
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
+                ),
+              ),
+              onTap: () async {},
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              LocaleKeys.transactionAttachment.tr(),
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).primaryColorDark,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            InkWell(
+              onTap: () async {
+                pickFile();
+              },
+              child: Container(
+                width: double.infinity,
+                height: 122.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      Assets.images.documentUpload,
+                      colorFilter: ColorFilter.mode(
+                        widget.accentColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
-                  )
-                ],
+                    SizedBox(height: 4.h),
+                    Text(
+                      LocaleKeys.transactionUploadHere.tr(),
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 10.sp,
+                            color: Colors.grey,
+                          ),
+                          text: "${LocaleKeys.transactionFileType.tr()}\n",
+                          children: [
+                            TextSpan(
+                              text:
+                                  "${LocaleKeys.maxSize.tr()}: $maxUploadSizeInMB",
+                            ),
+                          ]),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 20.h),
-        ],
+            SizedBox(height: 20.h),
+            SizedBox(
+              height: 54.h,
+              width: double.infinity,
+              child: Builder(
+                builder: (context) {
+                  return ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStatePropertyAll(widget.accentColor),
+                    ),
+                    onPressed: () {
+                      Form.of(context).validate();
+                    },
+                    child: Row(
+                      spacing: 8.w,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.transactionType == TransactionType.income
+                              ? LocaleKeys.transactionRecordIncome.tr()
+                              : LocaleKeys.transactionRecordExpenses.tr(),
+                        ),
+                        SvgPicture.asset(
+                          Assets.images.add,
+                          width: 24,
+                          height: 24,
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 20.h),
+          ],
+        ),
       ),
     );
   }

@@ -92,6 +92,9 @@
   "totalBalance": "Total balance",
   "selectLanguage": "Select language",
   "seeAll": "See all",
+  "phone_number": "Phone number",
+  "payment": "Payment",
+  "notifications": "Notifications",
   "langEnglish": "English",
   "langFrench": "French"
 }

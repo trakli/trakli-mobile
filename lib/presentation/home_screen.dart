@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/history_screen.dart';
+import 'package:trakli/presentation/notification_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -22,19 +23,24 @@ class HomeScreen extends StatelessWidget {
           height: 38.h,
         ),
         actions: [
-          Container(
-            width: 42.r,
-            height: 42.r,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-            ),
-            padding: EdgeInsets.all(8.r),
-            child: Center(
-              child: Icon(
-                Icons.notifications,
-                size: 24.r,
-                color: Theme.of(context).primaryColor,
+          GestureDetector(
+            onTap: (){
+              AppNavigator.push(context, const NotificationScreen());
+            },
+            child: Container(
+              width: 42.r,
+              height: 42.r,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+              ),
+              padding: EdgeInsets.all(8.r),
+              child: Center(
+                child: Icon(
+                  Icons.notifications,
+                  size: 24.r,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           ),
@@ -44,7 +50,7 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,
-          vertical: 20.h,
+          vertical: 16.h,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

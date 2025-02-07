@@ -4,7 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/home_screen.dart';
 import 'package:trakli/presentation/login_with_email_screen.dart';
+import 'package:trakli/presentation/root/main_navigation_screen.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -87,31 +90,57 @@ class LoginScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
-              width: double.infinity,
-              height: 54.h,
-              child: PrimaryButton(
-                onPress: () {},
-                iconPath: Assets.images.google,
-                buttonText: LocaleKeys.loginGoogle.tr(),
-                buttonTextColor: const Color(0xFF79828E),
-                borderColor: const Color(0xFF79828E),
-                backgroundColor: Colors.white,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 16.w,
+              children: [
+                SizedBox(
+                  height: 54.h,
+                  child: PrimaryButton(
+                    onPress: () {},
+                    iconPath: Assets.images.google,
+                    buttonTextColor: const Color(0xFF79828E),
+                    borderColor: const Color(0xFF79828E),
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+                SizedBox(
+                  height: 54.h,
+                  child: PrimaryButton(
+                    onPress: () {},
+                    iconPath: Assets.images.apple,
+                    buttonTextColor: const Color(0xFF79828E),
+                    borderColor: const Color(0xFF79828E),
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 12.h),
-            SizedBox(
-              width: double.infinity,
-              height: 54.h,
-              child: PrimaryButton(
-                onPress: () {},
-                iconPath: Assets.images.apple,
-                buttonText: LocaleKeys.loginApple.tr(),
-                buttonTextColor: const Color(0xFF79828E),
-                borderColor: const Color(0xFF79828E),
-                backgroundColor: Colors.white,
+            SizedBox(height: 16.h),
+            TextButton(
+              onPressed: () {
+                AppNavigator.removeAllPreviousAndPush(
+                  context,
+                  MainNavigationScreen(),
+                );
+              },
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                    side: const BorderSide(
+                      color: Colors.transparent,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              child: Text(
+                LocaleKeys.skip.tr(),
+                style: const TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            )
           ],
         ),
       ),

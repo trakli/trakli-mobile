@@ -94,6 +94,9 @@ abstract class  LocaleKeys {
   static const totalBalance = 'totalBalance';
   static const selectLanguage = 'selectLanguage';
   static const seeAll = 'seeAll';
+  static const phone_number = 'phone_number';
+  static const payment = 'payment';
+  static const notifications = 'notifications';
   static const langEnglish = 'langEnglish';
   static const langFrench = 'langFrench';
 
