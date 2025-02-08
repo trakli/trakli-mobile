@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:country_flags/country_flags.dart';
+import 'package:currency_picker/currency_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,15 @@ import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  Currency? currency;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +35,6 @@ class SettingsScreen extends StatelessWidget {
           onPressed: () {
             AppNavigator.pop(context);
           },
-
           icon: Icon(
             Icons.arrow_back,
             size: 20.r,
@@ -49,7 +56,24 @@ class SettingsScreen extends StatelessWidget {
           children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
-              onTap: () {},
+              onTap: () {
+                showCurrencyPicker(
+                  context: context,
+                  theme: CurrencyPickerThemeData(
+                      bottomSheetHeight: 0.7.sh,
+                      backgroundColor: Colors.white,
+                      flagSize: 24.sp,
+                      subtitleTextStyle: TextStyle(
+                        fontSize: 12.sp,
+                        color: Theme.of(context).primaryColor,
+                      )),
+                  onSelect: (Currency currencyValue) {
+                    setState(() {
+                      currency = currencyValue;
+                    });
+                  },
+                );
+              },
               leading: Container(
                 width: 40.w,
                 height: 40.h,
@@ -58,13 +82,20 @@ class SettingsScreen extends StatelessWidget {
                   color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                 ),
                 child: Icon(
-                  Icons.payment,
+                  Icons.currency_exchange,
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              title: Text(
-                LocaleKeys.payment.tr(),
+              title: const Text(
+                "Default currency",
               ),
+              subtitle: currency != null ? Text(
+                currency?.code ?? "",
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ) : null,
               trailing: Icon(
                 Icons.arrow_forward_ios,
                 size: 16.sp,
