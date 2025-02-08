@@ -27,6 +27,7 @@ class SettingsScreen extends StatelessWidget {
           onPressed: () {
             AppNavigator.pop(context);
           },
+
           icon: Icon(
             Icons.arrow_back,
             size: 20.r,
