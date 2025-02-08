@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/add_wallet_screen.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 
 class WalletScreen extends StatelessWidget {
@@ -15,19 +17,24 @@ class WalletScreen extends StatelessWidget {
       appBar: CustomAppBar(
         titleText: LocaleKeys.wallet.tr(),
         actions: [
-          Container(
-            width: 40.w,
-            height: 40.h,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-            ),
-            padding: EdgeInsets.all(8.r),
-            child: Center(
-              child: Icon(
-                Icons.add,
-                size: 24.r,
-                color: Theme.of(context).primaryColor,
+          GestureDetector(
+            onTap: (){
+              AppNavigator.push(context, const AddWalletScreen());
+            },
+            child: Container(
+              width: 40.w,
+              height: 40.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+              ),
+              padding: EdgeInsets.all(8.r),
+              child: Center(
+                child: Icon(
+                  Icons.add,
+                  size: 24.r,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           ),
