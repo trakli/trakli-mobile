@@ -48,9 +48,7 @@ class SettingsScreen extends StatelessWidget {
           children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
-              onTap: () {
-                _showLanguageSelectionBottomSheet(context);
-              },
+              onTap: () {},
               leading: Container(
                 width: 40.w,
                 height: 40.h,
