@@ -106,9 +106,6 @@ class AppWidget extends StatelessWidget {
               color: Colors.transparent,
             ),
           ),
-          constraints: BoxConstraints(
-            minHeight: 52.h,
-          )
         )
       ),
       home: const OnboardingScreen(),

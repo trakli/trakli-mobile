@@ -62,65 +62,64 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               ),
             ),
             SizedBox(height: 8.h),
-            Row(
-              spacing: 16.w,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: "Ex: 250 000",
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: widget.accentColor,
+            IntrinsicHeight(
+              child: Row(
+                spacing: 16.w,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Ex: 250 000",
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: widget.accentColor,
+                          ),
                         ),
                       ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        // return LocaleKeys.transactionAmountError.tr();
-                        return "Amount is required";
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                GestureDetector(
-                  onTap: (){
-                    showCurrencyPicker(
-                      context: context,
-                      theme: CurrencyPickerThemeData(
-                          bottomSheetHeight: 0.7.sh,
-                          backgroundColor: Colors.white,
-                          flagSize: 24.sp,
-                          subtitleTextStyle: TextStyle(
-                            fontSize: 12.sp,
-                            color: Theme.of(context).primaryColor,
-                          )
-                      ),
-                      onSelect: (Currency currencyValue) {
-                        setState(() {
-                          currency = currencyValue;
-                        });
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          // return LocaleKeys.transactionAmountError.tr();
+                          return "Amount is required";
+                        }
+                        return null;
                       },
-                    );
-                  },
-                  child: Container(
-                    width: 60.w,
-                    constraints: BoxConstraints(
-                      minHeight: 52.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDEE1E0),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(currency?.code ?? "XAF"),
                     ),
                   ),
-                )
-              ],
+                  GestureDetector(
+                    onTap: (){
+                      showCurrencyPicker(
+                        context: context,
+                        theme: CurrencyPickerThemeData(
+                            bottomSheetHeight: 0.7.sh,
+                            backgroundColor: Colors.white,
+                            flagSize: 24.sp,
+                            subtitleTextStyle: TextStyle(
+                              fontSize: 12.sp,
+                              color: Theme.of(context).primaryColor,
+                            )
+                        ),
+                        onSelect: (Currency currencyValue) {
+                          setState(() {
+                            currency = currencyValue;
+                          });
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: 60.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDEE1E0),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Text(currency?.code ?? "XAF"),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
             SizedBox(height: 16.h),
             Row(
