@@ -28,10 +28,13 @@ class AddGroupsForm extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           TextFormField(
-            keyboardType: TextInputType.number,
             decoration: InputDecoration(
               hintText: LocaleKeys.groupEnterGroupName.tr(),
             ),
+            validator: (value){
+
+              return null;
+            },
           ),
           SizedBox(height: 20.h),
           Text(
@@ -45,7 +48,6 @@ class AddGroupsForm extends StatelessWidget {
           SizedBox(height: 8.h),
           TextFormField(
             maxLines: 3,
-            keyboardType: TextInputType.number,
             decoration: InputDecoration(
               hintText: LocaleKeys.typeHere.tr(),
             ),

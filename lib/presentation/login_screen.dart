@@ -98,7 +98,6 @@ class LoginScreen extends StatelessWidget {
                   child: PrimaryButton(
                     onPress: () {},
                     iconPath: Assets.images.google,
-                    buttonTextColor: const Color(0xFF79828E),
                     borderColor: const Color(0xFF79828E),
                     backgroundColor: Colors.white,
                   ),

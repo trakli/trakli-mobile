@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
+import 'package:trakli/presentation/utils/dialogs/form_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -219,25 +221,59 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               ),
             ),
             SizedBox(height: 8.h),
-            CustomDropdownSearch<ChartData>(
-              label: "",
-              accentColor: widget.accentColor,
-              items: (filter, infiniteScrollProps) {
-                return chartData
-                    .map((data) => data)
-                    .toList()
-                    .where((ChartData el) => el.property
-                        .toLowerCase()
-                        .contains(filter.toLowerCase()))
-                    .toList();
-              },
-              itemAsString: (item) => item.property,
-              onChanged: (value) => {
-                debugPrint(value?.property),
-              },
-              compareFn: (i1, i2) => i1 == i2,
-              filterFn: (el, filter) =>
-                  el.property.toLowerCase().contains(filter.toLowerCase()),
+            Row(
+              spacing: 16.w,
+              children: [
+                Expanded(
+                  child: CustomDropdownSearch<ChartData>(
+                    label: "",
+                    accentColor: widget.accentColor,
+                    items: (filter, infiniteScrollProps) {
+                      return chartData
+                          .map((data) => data)
+                          .toList()
+                          .where((ChartData el) => el.property
+                              .toLowerCase()
+                              .contains(filter.toLowerCase()))
+                          .toList();
+                    },
+                    itemAsString: (item) => item.property,
+                    onChanged: (value) => {
+                      debugPrint(value?.property),
+                    },
+                    compareFn: (i1, i2) => i1 == i2,
+                    filterFn: (el, filter) =>
+                        el.property.toLowerCase().contains(
+                              filter.toLowerCase(),
+                            ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () async {
+                    await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const FormDialog();
+                      },
+                    );
+                  },
+                  child: Container(
+                    width: 60.w,
+                    constraints: BoxConstraints(
+                      minHeight: 52.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDEE1E0),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        Assets.images.add,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 16.h),
             Text(
@@ -249,25 +285,51 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               ),
             ),
             SizedBox(height: 8.h),
-            CustomDropdownSearch<ChartData>(
-              label: "",
-              accentColor: widget.accentColor,
-              items: (filter, infiniteScrollProps) {
-                return chartData
-                    .map((data) => data)
-                    .toList()
-                    .where((ChartData el) => el.property
+            Row(
+              spacing: 16.w,
+              children: [
+                Expanded(
+                  child: CustomDropdownSearch<ChartData>(
+                    label: "",
+                    accentColor: widget.accentColor,
+                    items: (filter, infiniteScrollProps) {
+                      return chartData
+                          .map((data) => data)
+                          .toList()
+                          .where((ChartData el) => el.property
+                              .toLowerCase()
+                              .contains(filter.toLowerCase()))
+                          .toList();
+                    },
+                    itemAsString: (item) => item.property,
+                    onChanged: (value) => {
+                      debugPrint(value?.property),
+                    },
+                    compareFn: (i1, i2) => i1 == i2,
+                    filterFn: (el, filter) => el.property
                         .toLowerCase()
-                        .contains(filter.toLowerCase()))
-                    .toList();
-              },
-              itemAsString: (item) => item.property,
-              onChanged: (value) => {
-                debugPrint(value?.property),
-              },
-              compareFn: (i1, i2) => i1 == i2,
-              filterFn: (el, filter) =>
-                  el.property.toLowerCase().contains(filter.toLowerCase()),
+                        .contains(filter.toLowerCase()),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    width: 60.w,
+                    constraints: BoxConstraints(
+                      minHeight: 52.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDEE1E0),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        Assets.images.add,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 16.h),
             Text(

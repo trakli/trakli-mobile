@@ -109,6 +109,13 @@ class AppWidget extends StatelessWidget {
           constraints: BoxConstraints(
             minHeight: 52.h,
           )
+        ),
+        dialogTheme: DialogTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r)
+          ),
+          backgroundColor: const Color(0xFFEBEDEC),
+          // insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
         )
       ),
       home: const OnboardingScreen(),

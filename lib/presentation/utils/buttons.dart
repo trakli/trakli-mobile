@@ -11,6 +11,7 @@ class PrimaryButton extends StatelessWidget {
     this.backgroundColor,
     this.borderColor,
     this.buttonTextColor,
+    this.iconColor,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.buttonTextPadding,
   });
@@ -22,6 +23,7 @@ class PrimaryButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? borderColor;
   final Color? buttonTextColor;
+  final Color? iconColor;
   final double? buttonTextPadding;
 
   @override
@@ -51,6 +53,12 @@ class PrimaryButton extends StatelessWidget {
               children: [
                 SvgPicture.asset(
                   iconPath!,
+                  colorFilter: iconColor != null
+                      ? ColorFilter.mode(
+                          iconColor!,
+                          BlendMode.srcIn,
+                        )
+                      : null,
                 ),
                 if (buttonText != null) Text(buttonText ?? ""),
               ],
