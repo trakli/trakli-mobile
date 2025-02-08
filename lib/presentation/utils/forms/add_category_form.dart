@@ -7,10 +7,10 @@ import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/helpers.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 
-class AddPartyForm extends StatelessWidget {
+class AddCategoryForm extends StatelessWidget {
   final bool showClose;
 
-  const AddPartyForm({
+  const AddCategoryForm({
     super.key,
     this.showClose = false,
   });
@@ -40,11 +40,12 @@ class AddPartyForm extends StatelessWidget {
                   ),
                   SizedBox(height: 8.h),
                   TextFormField(
-                    decoration: InputDecoration(
-                      hintText: LocaleKeys.partyEnterPartyName.tr(),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      hintText: "Enter name",
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
+                    validator: (value){
+                      if(value == null || value.isEmpty){
                         return "Name is required";
                       }
                       return null;
@@ -62,6 +63,7 @@ class AddPartyForm extends StatelessWidget {
                   SizedBox(height: 8.h),
                   TextFormField(
                     maxLines: 3,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: LocaleKeys.typeHere.tr(),
                     ),
@@ -73,11 +75,6 @@ class AddPartyForm extends StatelessWidget {
                     child: Builder(
                       builder: (context) {
                         return ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(
-                              Theme.of(context).primaryColor,
-                            ),
-                          ),
                           onPressed: () {
                             Form.of(context).validate();
                             hideKeyBoard();
@@ -86,8 +83,8 @@ class AddPartyForm extends StatelessWidget {
                             spacing: 8.w,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                LocaleKeys.partyCreateParty.tr(),
+                              const Text(
+                                "Create category",
                               ),
                               SvgPicture.asset(
                                 Assets.images.add,
@@ -97,11 +94,11 @@ class AddPartyForm extends StatelessWidget {
                                   Colors.white,
                                   BlendMode.srcIn,
                                 ),
-                              ),
+                              )
                             ],
                           ),
                         );
-                      },
+                      }
                     ),
                   ),
                 ],

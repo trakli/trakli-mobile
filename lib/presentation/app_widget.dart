@@ -31,7 +31,7 @@ class AppWidget extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       theme: ThemeData(
         primaryColor: const Color(0xFF047844),
-        primaryColorLight:  const Color(0xFFDFE1E4),
+        primaryColorLight: const Color(0xFFDFE1E4),
         primaryColorDark: const Color(0xFF1E2448),
         hintColor: const Color(0xFFF7B600),
         scaffoldBackgroundColor: const Color(0xFFEBEDEC),
@@ -67,11 +67,10 @@ class AppWidget extends StatelessWidget {
             ),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                side: const BorderSide(
-                  color: Colors.transparent,
-                )
-              ),
+                  borderRadius: BorderRadius.circular(8.r),
+                  side: const BorderSide(
+                    color: Colors.transparent,
+                  )),
             ),
             padding: WidgetStatePropertyAll(
               EdgeInsets.symmetric(
@@ -106,7 +105,16 @@ class AppWidget extends StatelessWidget {
               color: Colors.transparent,
             ),
           ),
-        )
+        ),
+        iconButtonTheme: IconButtonThemeData(
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+        ),
       ),
       home: const OnboardingScreen(),
     );

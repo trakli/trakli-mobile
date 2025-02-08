@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
+import 'package:trakli/presentation/utils/dialogs/add_category_dialog.dart';
+import 'package:trakli/presentation/utils/dialogs/add_party_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -65,6 +67,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
             IntrinsicHeight(
               child: Row(
                 spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: TextFormField(
@@ -83,12 +86,19 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                           // return LocaleKeys.transactionAmountError.tr();
                           return "Amount is required";
                         }
+                        final number = double.tryParse(value);
+                        if (number == null) {
+                          return "Must be a number";
+                        }
+                        if (number == 0) {
+                          return "Amount must not be 0";
+                        }
                         return null;
                       },
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       showCurrencyPicker(
                         context: context,
                         theme: CurrencyPickerThemeData(
@@ -98,8 +108,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                             subtitleTextStyle: TextStyle(
                               fontSize: 12.sp,
                               color: Theme.of(context).primaryColor,
-                            )
-                        ),
+                            )),
                         onSelect: (Currency currencyValue) {
                           setState(() {
                             currency = currencyValue;
@@ -109,6 +118,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                     },
                     child: Container(
                       width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFDEE1E0),
                         borderRadius: BorderRadius.circular(8),
@@ -241,25 +253,61 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               ),
             ),
             SizedBox(height: 8.h),
-            CustomDropdownSearch<ChartData>(
-              label: "",
-              accentColor: widget.accentColor,
-              items: (filter, infiniteScrollProps) {
-                return chartData
-                    .map((data) => data)
-                    .toList()
-                    .where((ChartData el) => el.property
-                        .toLowerCase()
-                        .contains(filter.toLowerCase()))
-                    .toList();
-              },
-              itemAsString: (item) => item.property,
-              onChanged: (value) => {
-                debugPrint(value?.property),
-              },
-              compareFn: (i1, i2) => i1 == i2,
-              filterFn: (el, filter) =>
-                  el.property.toLowerCase().contains(filter.toLowerCase()),
+            IntrinsicHeight(
+              child: Row(
+                spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: CustomDropdownSearch<ChartData>(
+                      label: "",
+                      accentColor: widget.accentColor,
+                      items: (filter, infiniteScrollProps) {
+                        return chartData
+                            .map((data) => data)
+                            .toList()
+                            .where((ChartData el) => el.property
+                                .toLowerCase()
+                                .contains(filter.toLowerCase()))
+                            .toList();
+                      },
+                      itemAsString: (item) => item.property,
+                      onChanged: (value) => {
+                        debugPrint(value?.property),
+                      },
+                      compareFn: (i1, i2) => i1 == i2,
+                      filterFn: (el, filter) => el.property
+                          .toLowerCase()
+                          .contains(filter.toLowerCase()),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AddPartyDialog();
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDEE1E0),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          Assets.images.add,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 16.h),
             Text(
@@ -271,25 +319,63 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               ),
             ),
             SizedBox(height: 8.h),
-            CustomDropdownSearch<ChartData>(
-              label: "",
-              accentColor: widget.accentColor,
-              items: (filter, infiniteScrollProps) {
-                return chartData
-                    .map((data) => data)
-                    .toList()
-                    .where((ChartData el) => el.property
-                        .toLowerCase()
-                        .contains(filter.toLowerCase()))
-                    .toList();
-              },
-              itemAsString: (item) => item.property,
-              onChanged: (value) => {
-                debugPrint(value?.property),
-              },
-              compareFn: (i1, i2) => i1 == i2,
-              filterFn: (el, filter) =>
-                  el.property.toLowerCase().contains(filter.toLowerCase()),
+            IntrinsicHeight(
+              child: Row(
+                spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: CustomDropdownSearch<ChartData>(
+                      label: "",
+                      accentColor: widget.accentColor,
+                      items: (filter, infiniteScrollProps) {
+                        return chartData
+                            .map((data) => data)
+                            .toList()
+                            .where((ChartData el) => el.property
+                                .toLowerCase()
+                                .contains(filter.toLowerCase()))
+                            .toList();
+                      },
+                      itemAsString: (item) => item.property,
+                      onChanged: (value) => {
+                        debugPrint(value?.property),
+                      },
+                      compareFn: (i1, i2) => i1 == i2,
+                      filterFn: (el, filter) {
+                        return el.property.toLowerCase().contains(
+                          filter.toLowerCase(),
+                        );
+                      },
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AddCategoryDialog();
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDEE1E0),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          Assets.images.add,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 16.h),
             Text(
