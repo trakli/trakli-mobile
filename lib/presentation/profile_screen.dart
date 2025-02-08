@@ -118,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 child: const Icon(Icons.phone),
               ),
-              title: Text(LocaleKeys.phone_number.tr()),
+              title: Text(LocaleKeys.phoneNumber.tr()),
               subtitle: const Text('+201234567890'),
               trailing: const Icon(Icons.keyboard_arrow_right_outlined),
             ),
