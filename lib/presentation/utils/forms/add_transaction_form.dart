@@ -1,3 +1,4 @@
+import 'package:currency_picker/currency_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,6 +32,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
   TimeOfDay time = TimeOfDay.now();
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
+  Currency? currency;
 
   @override
   void initState() {
@@ -84,17 +86,38 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                     },
                   ),
                 ),
-                Container(
-                  width: 60.w,
-                  constraints: BoxConstraints(
-                    minHeight: 52.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFDEE1E0),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Center(
-                    child: Text("XAF"),
+                GestureDetector(
+                  onTap: (){
+                    showCurrencyPicker(
+                      context: context,
+                      theme: CurrencyPickerThemeData(
+                          bottomSheetHeight: 0.7.sh,
+                          backgroundColor: Colors.white,
+                          flagSize: 24.sp,
+                          subtitleTextStyle: TextStyle(
+                            fontSize: 12.sp,
+                            color: Theme.of(context).primaryColor,
+                          )
+                      ),
+                      onSelect: (Currency currencyValue) {
+                        setState(() {
+                          currency = currencyValue;
+                        });
+                      },
+                    );
+                  },
+                  child: Container(
+                    width: 60.w,
+                    constraints: BoxConstraints(
+                      minHeight: 52.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDEE1E0),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(currency?.code ?? "XAF"),
+                    ),
                   ),
                 )
               ],

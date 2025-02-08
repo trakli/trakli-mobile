@@ -153,6 +153,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  currency_picker:
+    dependency: "direct main"
+    description:
+      name: currency_picker
+      sha256: c9ab5c0da8ae4dcc6421064dccde072b44f5b44914691b967ea4cf45a266a658
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.21"
   dart_style:
     dependency: transitive
     description:
