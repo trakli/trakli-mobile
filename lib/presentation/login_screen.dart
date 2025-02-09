@@ -118,7 +118,7 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 16.h),
             TextButton(
               onPressed: () {
-                AppNavigator.removeAllPreviousAndPush(
+                AppNavigator.push(
                   context,
                   const OnboardSettingsScreen(),
                 );

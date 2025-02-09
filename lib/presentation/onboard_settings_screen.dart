@@ -122,7 +122,7 @@ class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
               },
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 80.h),
           SizedBox(
             height: 52.h,
             width: double.infinity,
@@ -214,13 +214,16 @@ class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
               },
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 80.h),
           SizedBox(
             height: 52.h,
             width: double.infinity,
             child: PrimaryButton(
               onPress: () {
-                AppNavigator.push(context, MainNavigationScreen());
+                AppNavigator.removeAllPreviousAndPush(
+                  context,
+                  MainNavigationScreen(),
+                );
               },
               buttonText: "Done",
             ),
@@ -230,4 +233,3 @@ class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
     );
   }
 }
-
