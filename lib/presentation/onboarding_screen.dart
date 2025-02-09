@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/login_screen.dart';
@@ -105,35 +106,46 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget get animatedProgress {
-    return Stack(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: Builder(
-            builder: (context) {
-              return CircularProgressIndicator(
-                value: currentPage / 3,
-                strokeWidth: 6,
-                backgroundColor: const Color(0xFFFFFBE6),
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColor,
-                ),
-              );
-            },
+    return SfRadialGauge(
+      animationDuration: 3000,
+      axes: [
+        RadialAxis(
+          minimum: 0,
+          maximum: 100,
+          showLabels: false,
+          showTicks: false,
+          startAngle: 270,
+          endAngle: 270,
+          axisLineStyle: const AxisLineStyle(
+            thickness: 0.2,
+            cornerStyle: CornerStyle.bothFlat,
+            color: Color(0xFFFFFBE6),
+            thicknessUnit: GaugeSizeUnit.factor,
           ),
-        ),
-        Center(
-          child: Container(
-            margin: const EdgeInsets.all(8),
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
+          pointers: [
+            RangePointer(
               color: Theme.of(context).primaryColor,
-            ),
-            child: currentPage != 3
-                ? IconButton(
+              value: (currentPage/3) * 100,
+              width: 0.2,
+              sizeUnit: GaugeSizeUnit.factor,
+              enableAnimation: true,
+              animationDuration: 3500,
+            )
+          ],
+          annotations: [
+            GaugeAnnotation(
+              widget: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Container(
+                  margin: const EdgeInsets.all(8),
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  child: currentPage != 3
+                      ? IconButton(
                     onPressed: () {
                       pageController
                           .nextPage(
@@ -150,7 +162,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       color: Colors.white,
                     ),
                   )
-                : Center(
+                      : Center(
                     child: TextButton(
                       onPressed: () {
                         navigateToNextPage();
@@ -164,8 +176,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ),
                   ),
-          ),
-        ),
+                ),
+              ),
+            )
+          ],
+        )
       ],
     );
   }

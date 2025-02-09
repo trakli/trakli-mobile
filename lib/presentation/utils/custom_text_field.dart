@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
-import 'package:trakli/helpers.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 
 
 class CustomTextField extends StatefulWidget {

@@ -99,5 +99,8 @@ abstract class  LocaleKeys {
   static const notifications = 'notifications';
   static const langEnglish = 'langEnglish';
   static const langFrench = 'langFrench';
+  static const langGerman = 'langGerman';
+  static const langSpanish = 'langSpanish';
+  static const langItalian = 'langItalian';
 
 }

@@ -74,13 +74,14 @@ class _DashboardPieDataState extends State<DashboardPieData> {
                     yValueMapper: (ChartData data, _) => data.value,
                     dataLabelSettings: DataLabelSettings(
                       isVisible: true,
-                      labelPosition: ChartDataLabelPosition.inside,
-                      labelIntersectAction: LabelIntersectAction.none,
+                      labelPosition: ChartDataLabelPosition.outside,
+                      labelIntersectAction: LabelIntersectAction.shift,
                       textStyle: TextStyle(
                         fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.normal,
                       ),
                     ),
+                    legendIconType: LegendIconType.seriesType,
                   )
                 ],
               ),

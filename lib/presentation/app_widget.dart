@@ -115,6 +115,16 @@ class AppWidget extends StatelessWidget {
             ),
           ),
         ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+
+          ),
+        ),
       ),
       home: const OnboardingScreen(),
     );

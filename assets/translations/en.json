@@ -96,5 +96,8 @@
   "payment": "Payment",
   "notifications": "Notifications",
   "langEnglish": "English",
-  "langFrench": "French"
+  "langFrench": "Français",
+  "langGerman": "Deutsch",
+  "langSpanish": "Español",
+  "langItalian": "Español"
 }

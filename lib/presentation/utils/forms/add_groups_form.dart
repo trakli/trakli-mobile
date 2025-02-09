@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/helpers.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 
 class AddGroupsForm extends StatelessWidget {
   const AddGroupsForm({super.key});
