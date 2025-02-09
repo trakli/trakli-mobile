@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class GraphWidget extends StatelessWidget {
@@ -13,13 +14,15 @@ class GraphWidget extends StatelessWidget {
       ChartStatistics("week 4", 600, 30),
     ];
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      padding: EdgeInsets.symmetric(
+        vertical: 16.h,
+        horizontal: 16.w,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(
-          color: Colors.grey.withValues(alpha: 0.3),
-          width: 0.5,
+          color: Colors.grey.shade300,
         ),
       ),
       child: SfCartesianChart(
@@ -40,13 +43,15 @@ class GraphWidget extends StatelessWidget {
             dataSource: chartData,
             xValueMapper: (ChartStatistics data, _) => data.date,
             yValueMapper: (ChartStatistics data, _) => data.expense,
-            pointColorMapper: (ChartStatistics data, _) => const Color(0xFFEB5757),
+            pointColorMapper: (ChartStatistics data, _) =>
+                const Color(0xFFEB5757),
           ),
           ColumnSeries<ChartStatistics, String>(
             dataSource: chartData,
             xValueMapper: (ChartStatistics data, _) => data.date,
             yValueMapper: (ChartStatistics data, _) => data.income,
-            pointColorMapper: (ChartStatistics data, _) => Theme.of(context).primaryColor,
+            pointColorMapper: (ChartStatistics data, _) =>
+                Theme.of(context).primaryColor,
           ),
         ],
       ),

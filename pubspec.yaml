@@ -47,6 +47,7 @@ dependencies:
   file_picker: ^8.1.7
   font_awesome_flutter: ^10.8.0
   currency_picker: ^2.0.21
+  smooth_page_indicator: ^1.2.0+3
 
 dev_dependencies:
   flutter_gen_runner: ^5.8.0
