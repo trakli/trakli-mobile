@@ -5,10 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pinput/pinput.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/helpers.dart';
 import 'package:trakli/presentation/root/main_navigation_screen.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/custom_text_field.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 
 class LoginWithEmailScreen extends StatefulWidget {
   const LoginWithEmailScreen({super.key});

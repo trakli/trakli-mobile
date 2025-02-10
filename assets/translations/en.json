@@ -40,9 +40,9 @@
   "parties": "Parties",
   "partyAddParty": "Add party",
   "partyCreateParty": "Create party",
-  "partyPartyName": "Group name",
-  "partyEnterPartyName": "Enter group name",
-  "partyPartyDescription": "Group description",
+  "partyPartyName": "Party name",
+  "partyEnterPartyName": "Enter party name",
+  "partyPartyDescription": "Party description",
   "transactionTracking": "Transaction Tracking",
   "support": "Support",
   "transactions": "Transactions",
@@ -96,5 +96,8 @@
   "payment": "Payment",
   "notifications": "Notifications",
   "langEnglish": "English",
-  "langFrench": "French"
+  "langFrench": "Français",
+  "langGerman": "Deutsch",
+  "langSpanish": "Español",
+  "langItalian": "Español"
 }

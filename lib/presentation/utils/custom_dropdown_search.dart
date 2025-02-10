@@ -13,6 +13,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
   final void Function(T?) onChanged;
   final bool Function(T, T)? compareFn;
   final bool Function(T, String)? filterFn;
+  final String? Function(T?)? validator;
   final Color accentColor;
 
   const CustomDropdownSearch({
@@ -22,8 +23,9 @@ class CustomDropdownSearch<T> extends StatelessWidget {
     required this.itemAsString,
     required this.onChanged,
     required this.accentColor,
-    required this.compareFn,
-    required this.filterFn,
+    this.compareFn,
+    this.filterFn,
+    this.validator,
   });
 
   @override
@@ -34,6 +36,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
       itemAsString: itemAsString,
       compareFn: compareFn,
       filterFn: filterFn,
+      validator: validator,
       popupProps: PopupProps.menu(
         searchFieldProps: TextFieldProps(
           decoration: InputDecoration(

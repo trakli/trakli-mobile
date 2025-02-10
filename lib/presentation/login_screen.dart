@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/login_with_email_screen.dart';
-import 'package:trakli/presentation/root/main_navigation_screen.dart';
+import 'package:trakli/presentation/onboard_settings_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 
@@ -117,9 +117,9 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 16.h),
             TextButton(
               onPressed: () {
-                AppNavigator.removeAllPreviousAndPush(
+                AppNavigator.push(
                   context,
-                  MainNavigationScreen(),
+                  const OnboardSettingsScreen(),
                 );
               },
               style: ButtonStyle(

@@ -40,12 +40,15 @@ dependencies:
   flutter_screenutil: ^5.9.3
   pinput: ^5.0.0
   flutter_bloc: ^8.1.6
-  country_flags: ^3.0.0
+  country_flags: ^3.2.0
   syncfusion_flutter_gauges: ^28.1.38
   syncfusion_flutter_charts: ^28.1.38
   dropdown_search: ^6.0.2
   file_picker: ^8.1.7
   font_awesome_flutter: ^10.8.0
+  currency_picker: ^2.0.21
+  smooth_page_indicator: ^1.2.0+3
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_gen_runner: ^5.8.0

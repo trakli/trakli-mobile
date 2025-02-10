@@ -10,7 +10,7 @@ import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/utils/transaction_tile.dart';
-import 'package:trakli/presentation/utils/waller_tile.dart';
+import 'package:trakli/presentation/utils/wallet_tile.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           GestureDetector(
-            onTap: () {
+            onTap: (){
               AppNavigator.push(context, const NotificationScreen());
             },
             child: Container(
@@ -56,7 +56,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const WallerTile(),
+            const WalletTile(),
             SizedBox(height: 12.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {
+                  onTap: (){
                     AppNavigator.push(context, const HistoryScreen());
                   },
                   child: Text(
@@ -92,7 +92,7 @@ class HomeScreen extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(8.r),
                 border: Border.all(
                   color: Colors.grey.shade300,
                 ),

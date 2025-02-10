@@ -1,12 +1,13 @@
+import 'package:currency_picker/currency_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
-import 'package:trakli/presentation/utils/dialogs/form_dialog.dart';
+import 'package:trakli/presentation/utils/dialogs/add_category_dialog.dart';
+import 'package:trakli/presentation/utils/dialogs/add_party_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -33,6 +34,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
   TimeOfDay time = TimeOfDay.now();
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
+  Currency? currency;
 
   @override
   void initState() {
@@ -62,44 +64,74 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               ),
             ),
             SizedBox(height: 8.h),
-            Row(
-              spacing: 16.w,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: "Ex: 250 000",
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: widget.accentColor,
+            IntrinsicHeight(
+              child: Row(
+                spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Ex: 250 000",
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: widget.accentColor,
+                          ),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          // return LocaleKeys.transactionAmountError.tr();
+                          return "Amount is required";
+                        }
+                        final number = double.tryParse(value);
+                        if (number == null) {
+                          return "Must be a number";
+                        }
+                        if (number == 0) {
+                          return "Amount must not be 0";
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        // return LocaleKeys.transactionAmountError.tr();
-                        return "Amount is required";
-                      }
-                      return null;
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showCurrencyPicker(
+                        context: context,
+                        theme: CurrencyPickerThemeData(
+                            bottomSheetHeight: 0.7.sh,
+                            backgroundColor: Colors.white,
+                            flagSize: 24.sp,
+                            subtitleTextStyle: TextStyle(
+                              fontSize: 12.sp,
+                              color: Theme.of(context).primaryColor,
+                            )),
+                        onSelect: (Currency currencyValue) {
+                          setState(() {
+                            currency = currencyValue;
+                          });
+                        },
+                      );
                     },
-                  ),
-                ),
-                Container(
-                  width: 60.w,
-                  constraints: BoxConstraints(
-                    minHeight: 52.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFDEE1E0),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Center(
-                    child: Text("XAF"),
-                  ),
-                )
-              ],
+                    child: Container(
+                      width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDEE1E0),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Text(currency?.code ?? "XAF"),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
             SizedBox(height: 16.h),
             Row(
@@ -221,59 +253,61 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               ),
             ),
             SizedBox(height: 8.h),
-            Row(
-              spacing: 16.w,
-              children: [
-                Expanded(
-                  child: CustomDropdownSearch<ChartData>(
-                    label: "",
-                    accentColor: widget.accentColor,
-                    items: (filter, infiniteScrollProps) {
-                      return chartData
-                          .map((data) => data)
-                          .toList()
-                          .where((ChartData el) => el.property
-                              .toLowerCase()
-                              .contains(filter.toLowerCase()))
-                          .toList();
-                    },
-                    itemAsString: (item) => item.property,
-                    onChanged: (value) => {
-                      debugPrint(value?.property),
-                    },
-                    compareFn: (i1, i2) => i1 == i2,
-                    filterFn: (el, filter) =>
-                        el.property.toLowerCase().contains(
-                              filter.toLowerCase(),
-                            ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return const FormDialog();
+            IntrinsicHeight(
+              child: Row(
+                spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: CustomDropdownSearch<ChartData>(
+                      label: "",
+                      accentColor: widget.accentColor,
+                      items: (filter, infiniteScrollProps) {
+                        return chartData
+                            .map((data) => data)
+                            .toList()
+                            .where((ChartData el) => el.property
+                                .toLowerCase()
+                                .contains(filter.toLowerCase()))
+                            .toList();
                       },
-                    );
-                  },
-                  child: Container(
-                    width: 60.w,
-                    constraints: BoxConstraints(
-                      minHeight: 52.h,
+                      itemAsString: (item) => item.property,
+                      onChanged: (value) => {
+                        debugPrint(value?.property),
+                      },
+                      compareFn: (i1, i2) => i1 == i2,
+                      filterFn: (el, filter) => el.property
+                          .toLowerCase()
+                          .contains(filter.toLowerCase()),
                     ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDEE1E0),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        Assets.images.add,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AddPartyDialog();
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDEE1E0),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          Assets.images.add,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(height: 16.h),
             Text(
@@ -285,51 +319,63 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               ),
             ),
             SizedBox(height: 8.h),
-            Row(
-              spacing: 16.w,
-              children: [
-                Expanded(
-                  child: CustomDropdownSearch<ChartData>(
-                    label: "",
-                    accentColor: widget.accentColor,
-                    items: (filter, infiniteScrollProps) {
-                      return chartData
-                          .map((data) => data)
-                          .toList()
-                          .where((ChartData el) => el.property
-                              .toLowerCase()
-                              .contains(filter.toLowerCase()))
-                          .toList();
-                    },
-                    itemAsString: (item) => item.property,
-                    onChanged: (value) => {
-                      debugPrint(value?.property),
-                    },
-                    compareFn: (i1, i2) => i1 == i2,
-                    filterFn: (el, filter) => el.property
-                        .toLowerCase()
-                        .contains(filter.toLowerCase()),
+            IntrinsicHeight(
+              child: Row(
+                spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: CustomDropdownSearch<ChartData>(
+                      label: "",
+                      accentColor: widget.accentColor,
+                      items: (filter, infiniteScrollProps) {
+                        return chartData
+                            .map((data) => data)
+                            .toList()
+                            .where((ChartData el) => el.property
+                                .toLowerCase()
+                                .contains(filter.toLowerCase()))
+                            .toList();
+                      },
+                      itemAsString: (item) => item.property,
+                      onChanged: (value) => {
+                        debugPrint(value?.property),
+                      },
+                      compareFn: (i1, i2) => i1 == i2,
+                      filterFn: (el, filter) {
+                        return el.property.toLowerCase().contains(
+                          filter.toLowerCase(),
+                        );
+                      },
+                    ),
                   ),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: 60.w,
-                    constraints: BoxConstraints(
-                      minHeight: 52.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDEE1E0),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        Assets.images.add,
+                  GestureDetector(
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AddCategoryDialog();
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDEE1E0),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          Assets.images.add,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(height: 16.h),
             Text(

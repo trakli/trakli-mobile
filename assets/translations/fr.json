@@ -95,6 +95,9 @@
   "phoneNumber": "Numéro de téléphone",
   "payment": "Paiement",
   "notifications": "Notifications",
-  "langEnglish": "Anglais",
-  "langFrench": "Français"
+  "langEnglish": "English",
+  "langFrench": "Français",
+  "langGerman": "Deutsch",
+  "langSpanish": "Español",
+  "langItalian": "Español"
 }
