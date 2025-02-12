@@ -22,7 +22,7 @@ class CategoryTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Icon(
-          Icons.lock_clock,
+          category.icon,
           size: 20.sp,
           color: accentColor,
         ),
