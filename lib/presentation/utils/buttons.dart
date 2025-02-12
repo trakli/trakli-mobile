@@ -14,6 +14,7 @@ class PrimaryButton extends StatelessWidget {
     this.iconColor,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.buttonTextPadding,
+    this.textDirection,
   });
 
   final String? buttonText;
@@ -25,6 +26,7 @@ class PrimaryButton extends StatelessWidget {
   final Color? buttonTextColor;
   final Color? iconColor;
   final double? buttonTextPadding;
+  final TextDirection? textDirection;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,7 @@ class PrimaryButton extends StatelessWidget {
           ? Row(
               spacing: 16.w,
               mainAxisAlignment: mainAxisAlignment,
+              textDirection: textDirection,
               children: [
                 SvgPicture.asset(
                   iconPath!,

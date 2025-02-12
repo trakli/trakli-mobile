@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/category/category_screen.dart';
 import 'package:trakli/presentation/groups/my_groups_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
 import 'package:trakli/presentation/parties/party_screen.dart';
@@ -35,10 +36,23 @@ class CustomDrawer extends StatelessWidget {
             ),
             ListTile(
               onTap: () {
-                AppNavigator.push(context, const MyGroupsScreen());
+                AppNavigator.push(context, const CategoryScreen());
               },
               leading: SvgPicture.asset(
                 Assets.images.category,
+                colorFilter: const ColorFilter.mode(
+                  Color(0XFF3B4E45),
+                  BlendMode.srcIn,
+                ),
+              ),
+              title: const Text("Categories"),
+            ),
+            ListTile(
+              onTap: () {
+                AppNavigator.push(context, const MyGroupsScreen());
+              },
+              leading: SvgPicture.asset(
+                Assets.images.people,
                 colorFilter: const ColorFilter.mode(
                   Color(0XFF3B4E45),
                   BlendMode.srcIn,

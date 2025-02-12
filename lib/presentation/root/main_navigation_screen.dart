@@ -39,8 +39,8 @@ class MainNavigationScreen extends StatelessWidget {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: SizedBox(
-              height: 64.sp,
-              width: 64.sp,
+              height: 64.r,
+              width: 64.r,
               child: FloatingActionButton(
                 shape: const CircleBorder(),
                 backgroundColor: Theme.of(context).primaryColor,

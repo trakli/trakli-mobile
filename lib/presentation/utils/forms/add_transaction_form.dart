@@ -388,7 +388,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
             ),
             SizedBox(height: 8.h),
             TextFormField(
-              maxLines: 3,
+              maxLines: 2,
               decoration: InputDecoration(
                 hintText: LocaleKeys.transactionTypeHere.tr(),
                 focusedBorder: OutlineInputBorder(
@@ -416,13 +416,14 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               },
               child: Container(
                 width: double.infinity,
-                height: 122.h,
+                height: 52.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Column(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     SvgPicture.asset(
                       Assets.images.documentUpload,
@@ -431,27 +432,12 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                         BlendMode.srcIn,
                       ),
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(width: 4.h),
                     Text(
                       LocaleKeys.transactionUploadHere.tr(),
                       style: TextStyle(
                         fontSize: 14.sp,
                       ),
-                    ),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            color: Colors.grey,
-                          ),
-                          text: "${LocaleKeys.transactionFileType.tr()}\n",
-                          children: [
-                            TextSpan(
-                              text:
-                                  "${LocaleKeys.maxSize.tr()}: $maxUploadSizeInMB",
-                            ),
-                          ]),
                     ),
                   ],
                 ),
