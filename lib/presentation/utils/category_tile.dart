@@ -5,11 +5,13 @@ import 'package:trakli/domain/models/category_model.dart';
 class CategoryTile extends StatelessWidget {
   final Color accentColor;
   final CategoryModel category;
+  final bool showStat;
 
   const CategoryTile({
     super.key,
     required this.category,
     this.accentColor = const Color(0xFFEB5757),
+    this.showStat = false,
   });
 
   @override
@@ -36,7 +38,9 @@ class CategoryTile extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        "Here you store your office Elements",
+        showStat
+            ? "0 transactions in 2 wallets"
+            : "Here you store your office Elements",
         style: TextStyle(
           fontSize: 12.sp,
           color: const Color(0xFF576760),

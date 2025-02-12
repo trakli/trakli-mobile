@@ -210,6 +210,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         return CategoryTile(
           accentColor: Theme.of(context).primaryColor,
           category: item,
+          showStat: true,
         );
       }).toList(),
     );
@@ -221,6 +222,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
       children: expenseTransactions.map<Widget>((item) {
         return CategoryTile(
           category: item,
+          showStat: true,
         );
       }).toList(),
     );
