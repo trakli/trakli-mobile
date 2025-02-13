@@ -74,18 +74,30 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                         Icon(
                           Icons.keyboard_arrow_down,
                           size: 16.sp,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ],
                     ),
                   ),
                   const Spacer(),
-                  Text(dateFormat.format(DateTime.now())),
-                  IconButton(
-                    padding: EdgeInsets.zero,
+                  TextButton(
                     onPressed: () {},
-                    icon: Icon(
-                      Icons.keyboard_arrow_down,
-                      size: 16.sp,
+                    child: Row(
+                      spacing: 8.w,
+                      children: [
+                        Text(
+                          dateFormat.format(DateTime.now()),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_down,
+                          size: 16.sp,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -157,19 +169,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
               ),
             ),
             SizedBox(height: 12.h),
-            Container(
-              constraints: BoxConstraints(
-                maxHeight: 0.55.sh,
-              ),
-              child: TabBarView(
-                controller: tabController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  incomeList,
-                  expenseList,
-                ],
-              ),
-            ),
+            if (tabController.index == 0) incomeList else expenseList,
           ],
         ),
       ),
@@ -206,11 +206,13 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   Widget get incomeList {
     return ListView(
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       children: incomeTransactions.map<Widget>((item) {
         return CategoryTile(
           accentColor: Theme.of(context).primaryColor,
           category: item,
           showStat: true,
+          showValue: true,
         );
       }).toList(),
     );
@@ -219,10 +221,12 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   Widget get expenseList {
     return ListView(
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       children: expenseTransactions.map<Widget>((item) {
         return CategoryTile(
           category: item,
           showStat: true,
+          showValue: true,
         );
       }).toList(),
     );
