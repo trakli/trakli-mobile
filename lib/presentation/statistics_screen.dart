@@ -40,9 +40,6 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         titleText: LocaleKeys.statistics.tr(),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(
-          bottom: 60.h,
-        ),
         child: Column(
           children: [
             SizedBox(height: 16.h),
