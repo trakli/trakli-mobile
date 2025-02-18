@@ -1,9 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/presentation/utils/dashboard_expenses.dart';
-import 'package:trakli/presentation/utils/summary_widget.dart';
+import 'package:trakli/presentation/history_screen.dart';
+import 'package:trakli/presentation/notification_screen.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/enums.dart';
+import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/presentation/utils/transaction_tile.dart';
+import 'package:trakli/presentation/utils/wallet_tile.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,78 +18,102 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF047844),
-        automaticallyImplyLeading: false,
-        title: Text(
-          LocaleKeys.appName.tr(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
+      appBar: CustomAppBar(
+        title: SvgPicture.asset(
+          Assets.images.logoGreen,
+          height: 38.h,
         ),
+        actions: [
+          GestureDetector(
+            onTap: (){
+              AppNavigator.push(context, const NotificationScreen());
+            },
+            child: Container(
+              width: 42.r,
+              height: 42.r,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+              ),
+              padding: EdgeInsets.all(8.r),
+              child: Center(
+                child: Icon(
+                  Icons.notifications,
+                  size: 24.r,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 16.w),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
-          horizontal: 16.sp,
-          vertical: 20.sp,
+          horizontal: 16.w,
+          vertical: 16.h,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              LocaleKeys.transactionLast30Days.tr(
-                args: [
-                  30.toString(),
-                  LocaleKeys.days.toString(),
-                ],
-              ),
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            SizedBox(height: 12.sp),
-            GridView(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16.sp,
-                crossAxisSpacing: 16.sp,
-              ),
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
+            const WalletTile(),
+            SizedBox(height: 12.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SummaryWidget(
-                  value: "48",
-                  description: LocaleKeys.transactions.tr(),
+                Text(
+                  LocaleKeys.transactions.tr(),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).primaryColorDark,
+                  ),
                 ),
-                SummaryWidget(
-                  value: "35k",
-                  description: LocaleKeys.moneySpent.tr(),
-                  color: const Color(0XFFFF3B30),
-                  showXaf: true,
-                ),
-                SummaryWidget(
-                  value: "24k",
-                  description: LocaleKeys.moneyReceived.tr(),
-                  showXaf: true,
-                ),
-                SummaryWidget(
-                  value: "124",
-                  description: LocaleKeys.totalCompanies.tr(),
+                InkWell(
+                  onTap: (){
+                    AppNavigator.push(context, const HistoryScreen());
+                  },
+                  child: Text(
+                    LocaleKeys.seeAll.tr(),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.orangeAccent,
+                    ),
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: 20.sp),
-            Text(
-              LocaleKeys.transactionLast30DaysPerParties.tr(
-                args: [
-                  30.toString(),
-                  LocaleKeys.days.toString(),
-                ],
+            SizedBox(height: 12.h),
+            Container(
+              padding: EdgeInsets.all(16.sp),
+              constraints: BoxConstraints(
+                maxHeight: 0.5.sh,
+                minWidth: 100.h,
               ),
-              style: Theme.of(context).textTheme.headlineMedium,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                ),
+              ),
+              child: ListView(
+                // physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: List.generate(
+                  4,
+                  (index) => TransactionTile(
+                    transactionType: (index % 2 == 0)
+                        ? TransactionType.income
+                        : TransactionType.expense,
+                    accentColor: (index % 2 == 0)
+                        ? Theme.of(context).primaryColor
+                        : const Color(0xFFEB5757),
+                  ),
+                ),
+              ),
             ),
-            SizedBox(height: 12.sp),
-            const DashboardExpenses(),
-            Text(LocaleKeys.welcomeText.tr()),
+            SizedBox(height: 28.h),
           ],
         ),
       ),

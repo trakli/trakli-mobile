@@ -5,10 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pinput/pinput.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/helpers.dart';
 import 'package:trakli/presentation/root/main_navigation_screen.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/custom_text_field.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 
 class LoginWithEmailScreen extends StatefulWidget {
   const LoginWithEmailScreen({super.key});
@@ -104,7 +104,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
 
   Widget get pageOne {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.sp),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Form(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +116,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 // fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 28.sp),
+            SizedBox(height: 28.h),
             Text(
               LocaleKeys.email.tr(),
               style: TextStyle(
@@ -124,14 +124,14 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 8.sp),
+            SizedBox(height: 8.h),
             CustomTextField(
               hintText: LocaleKeys.email.tr(),
               controller: emailController,
               filled: true,
               validator: validateEmail,
             ),
-            SizedBox(height: 12.sp),
+            SizedBox(height: 12.h),
             Text(
               LocaleKeys.password.tr(),
               style: TextStyle(
@@ -139,7 +139,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 8.sp),
+            SizedBox(height: 8.h),
             CustomTextField(
               hintText: LocaleKeys.password.tr(),
               controller: passwordController,
@@ -152,10 +152,10 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 return null;
               },
             ),
-            SizedBox(height: 24.sp),
+            SizedBox(height: 24.h),
             SizedBox(
               width: double.infinity,
-              height: 54.sp,
+              height: 54.h,
               child: Builder(builder: (context) {
                 return PrimaryButton(
                   onPress: () {
@@ -170,37 +170,38 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 );
               }),
             ),
-            SizedBox(height: 4.sp),
+            SizedBox(height: 4.h),
             Align(
               alignment: Alignment.center,
               child: TextButton(
                 onPressed: () {},
                 child: RichText(
                   text: TextSpan(
-                      text: "${LocaleKeys.forgotPassword.tr()}? ",
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1E2448),
-                      ),
-                      children: [
-                        TextSpan(
-                          text: LocaleKeys.reset.tr(),
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFFF7B600),
-                          ),
+                    text: "${LocaleKeys.forgotPassword.tr()}? ",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: LocaleKeys.reset.tr(),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).hintColor,
                         ),
-                      ]),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16.sp),
-              child: const Divider(
+              child: Divider(
                 height: 0,
-                color: Color(0xFFDFE1E4),
+                color: Theme.of(context).primaryColorLight,
               ),
             ),
             Align(
@@ -213,16 +214,16 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 12.sp),
+            SizedBox(height: 12.h),
             Align(
               alignment: Alignment.center,
               child: SizedBox(
-                height: 36.sp,
+                height: 40.h,
                 child: PrimaryButton(
                   onPress: () {},
                   buttonText: LocaleKeys.createAccount.tr(),
                   buttonTextColor: Colors.black,
-                  backgroundButtonColor: const Color(0xFFDFE1E4),
+                  backgroundColor: const Color(0xFFDFE1E4),
                 ),
               ),
             ),
@@ -234,7 +235,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
 
   Widget get pageTwo {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.sp),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -245,7 +246,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
               // fontWeight: FontWeight.w700,
             ),
           ),
-          SizedBox(height: 28.sp),
+          SizedBox(height: 28.h),
           Center(
             child: Pinput(
               controller: pinController,
@@ -257,18 +258,19 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
               submittedPinTheme: defaultPinTheme.copyDecorationWith(
                 border: Border.all(color: Theme.of(context).primaryColor),
               ),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
           ),
-          SizedBox(height: 24.sp),
+          SizedBox(height: 24.h),
           SizedBox(
             width: double.infinity,
-            height: 54.sp,
+            height: 54.h,
             child: PrimaryButton(
               onPress: () {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MainNavigationScreen(),
+                    builder: (context) => MainNavigationScreen(),
                   ),
                 );
               },
@@ -276,7 +278,7 @@ class _LoginWithEmailScreenState extends State<LoginWithEmailScreen> {
               buttonTextColor: Colors.white,
             ),
           ),
-          SizedBox(height: 4.sp),
+          SizedBox(height: 4.h),
           Align(
             alignment: Alignment.center,
             child: TextButton(

@@ -11,8 +11,18 @@ import 'package:trakli/presentation/utils/globals.dart';
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
 
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
+
   @override
   Widget build(BuildContext context) {
+    rebuildAllChildren(context);
     return MaterialApp(
       navigatorKey: navigatorKey,
       title: 'Trakli',
@@ -21,6 +31,9 @@ class AppWidget extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       theme: ThemeData(
         primaryColor: const Color(0xFF047844),
+        primaryColorLight: const Color(0xFFDFE1E4),
+        primaryColorDark: const Color(0xFF1E2448),
+        hintColor: const Color(0xFFF7B600),
         scaffoldBackgroundColor: const Color(0xFFEBEDEC),
         brightness: Theme.of(context).brightness,
         useMaterial3: true,
@@ -36,6 +49,80 @@ class AppWidget extends StatelessWidget {
           labelSmall: TextStyle(
             fontSize: 12.sp,
             color: textColor,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            textStyle: WidgetStatePropertyAll(
+              TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 16.sp,
+              ),
+            ),
+            backgroundColor: const WidgetStatePropertyAll(
+              Color(0xFF047844),
+            ),
+            foregroundColor: const WidgetStatePropertyAll(
+              Colors.white,
+            ),
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                  side: const BorderSide(
+                    color: Colors.transparent,
+                  )),
+            ),
+            padding: WidgetStatePropertyAll(
+              EdgeInsets.symmetric(
+                horizontal: 32.0.w,
+                vertical: 12.h,
+              ),
+            ),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFFF5F6F7),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 12.h,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(
+              color: Color(0xFF047844),
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+            ),
+          ),
+        ),
+        iconButtonTheme: IconButtonThemeData(
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+
           ),
         ),
       ),

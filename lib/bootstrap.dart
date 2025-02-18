@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:trakli/presentation/utils/globals.dart';
 
 /// Adds a global error handler to the Flutter app.
 ///
@@ -22,10 +23,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
       runApp(
         EasyLocalization(
-          supportedLocales: const [
-            Locale('en'),
-            Locale('fr'),
-          ],
+          supportedLocales: supportedLanguages,
           path: 'assets/translations',
           fallbackLocale: const Locale('en'),
           child: ScreenUtilInit(

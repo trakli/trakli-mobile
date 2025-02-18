@@ -20,7 +20,6 @@ class FABBottomAppBar extends StatefulWidget {
     required this.backgroundColor,
     required this.color,
     required this.selectedColor,
-    required this.notchedShape,
     required this.onTabSelected,
     required this.state,
   }) {
@@ -34,7 +33,6 @@ class FABBottomAppBar extends StatefulWidget {
   final Color backgroundColor;
   final Color color;
   final Color selectedColor;
-  final NotchedShape notchedShape;
   final ValueChanged<int> onTabSelected;
 
   @override
@@ -55,8 +53,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
 
     return BottomAppBar(
       padding: EdgeInsets.zero,
-      height: 72.sp,
-      shape: widget.notchedShape,
+      height: 64.h,
       color: widget.backgroundColor,
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -93,27 +90,27 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
     return Expanded(
       child: InkWell(
         onTap: () => onPressed(index),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            SvgPicture.asset(
-              item.iconPath,
-              colorFilter: ColorFilter.mode(
-                color,
-                BlendMode.srcIn,
+        child: Stack(
+          children: [
+            Center(
+              child: SvgPicture.asset(
+                item.iconPath,
+                colorFilter: ColorFilter.mode(
+                  color,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
-            Text(
-              item.text,
-              style: TextStyle(color: color),
-            ),
-            SizedBox(height: 4.sp),
-            widget.state == MainNavigationPageState.values[index] ? SvgPicture.asset(
-              Assets.images.navEllipse,
-              fit: BoxFit.fill,
-              height: 7.sp,
-            ) : SizedBox(height: 7.sp),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: widget.state == MainNavigationPageState.values[index]
+                  ? SvgPicture.asset(
+                      Assets.images.navEllipse,
+                      fit: BoxFit.fill,
+                      height: 6.h,
+                    )
+                  : SizedBox(height: 6.h),
+            )
           ],
         ),
       ),

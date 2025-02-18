@@ -6,69 +6,67 @@ class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,
     required this.onPress,
-    required this.buttonText,
+    this.buttonText,
     this.iconPath,
-    this.backgroundButtonColor,
+    this.backgroundColor,
     this.borderColor,
     this.buttonTextColor,
+    this.iconColor,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.buttonTextPadding,
+    this.textDirection,
   });
 
-  final String buttonText;
+  final String? buttonText;
   final void Function()? onPress;
   final String? iconPath;
   final MainAxisAlignment mainAxisAlignment;
-  final Color? backgroundButtonColor;
+  final Color? backgroundColor;
   final Color? borderColor;
   final Color? buttonTextColor;
+  final Color? iconColor;
   final double? buttonTextPadding;
+  final TextDirection? textDirection;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: onPress != null
-            ? backgroundButtonColor ?? Theme.of(context).primaryColor
-            : null,
-        overlayColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            color: borderColor ?? Colors.transparent,
-          ),
-        ),
-      ),
-      onPressed: onPress,
-      child: iconPath != null
-          ? Padding(
-              padding: EdgeInsets.symmetric(vertical: 14.sp),
-              child: Row(
-                mainAxisAlignment: mainAxisAlignment,
-                children: [
-                  SvgPicture.asset(
-                    iconPath!,
-                  ),
-                  SizedBox(width: 16.sp),
-                  Text(
-                    buttonText,
-                    style: TextStyle(
-                      color: buttonTextColor ?? Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : Text(
-              buttonText,
-              style: TextStyle(
-                color: buttonTextColor ?? Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 16.sp,
+      style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: BorderSide(
+                  color: borderColor ?? Colors.transparent,
+                ),
               ),
             ),
+            backgroundColor: WidgetStatePropertyAll(
+              backgroundColor ?? Theme.of(context).primaryColor,
+            ),
+            foregroundColor: WidgetStatePropertyAll(
+              buttonTextColor ?? Colors.white,
+            ),
+          ),
+      onPressed: onPress,
+      child: iconPath != null
+          ? Row(
+              spacing: 16.w,
+              mainAxisAlignment: mainAxisAlignment,
+              textDirection: textDirection,
+              children: [
+                SvgPicture.asset(
+                  iconPath!,
+                  colorFilter: iconColor != null
+                      ? ColorFilter.mode(
+                          iconColor!,
+                          BlendMode.srcIn,
+                        )
+                      : null,
+                ),
+                if (buttonText != null) Text(buttonText ?? ""),
+              ],
+            )
+          : Text(buttonText ?? ""),
     );
   }
 }
