@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
 class TransactionTile extends StatefulWidget {
@@ -24,17 +25,27 @@ class _TransactionTileState extends State<TransactionTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.h),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(
+          width: 0.5,
+          color: transactionTileBorderColor,
+        ),
+      ),
+      padding: EdgeInsets.all(8.r),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 12.w,
+        spacing: 8.w,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(12.r),
             decoration: BoxDecoration(
-              color: widget.accentColor,
-              shape: BoxShape.circle,
+              color: widget.transactionType == TransactionType.income
+                  ? transactionTileIncomeColor
+                  : transactionTileExpenseColor,
+              borderRadius: BorderRadius.circular(8.r),
             ),
             child: SvgPicture.asset(
               widget.transactionType == TransactionType.income
@@ -42,11 +53,15 @@ class _TransactionTileState extends State<TransactionTile> {
                   : Assets.images.arrowSwapUp,
               width: 20.r,
               height: 20.r,
+              colorFilter: ColorFilter.mode(
+                widget.accentColor,
+                BlendMode.srcIn,
+              ),
             ),
           ),
           Expanded(
             child: Column(
-              spacing: 6.h,
+              spacing: 4.h,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,13 +70,13 @@ class _TransactionTileState extends State<TransactionTile> {
                     Text(
                       "Personal Elelments",
                       style: TextStyle(
-                        color: const Color(0xFF061D23),
+                        color: transactionTileTextColor,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     Text(
-                      "350 000",
+                      "350,000 XAF",
                       style: TextStyle(
                         color: widget.accentColor,
                         fontSize: 12.sp,
@@ -71,16 +86,16 @@ class _TransactionTileState extends State<TransactionTile> {
                   ],
                 ),
                 Row(
+                  spacing: 2.w,
                   children: [
                     Text(
                       "From",
                       style: TextStyle(
                         color: const Color(0xFF576760),
-                        fontSize: 12.sp,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(width: 8.w),
                     Container(
                       padding: EdgeInsets.symmetric(
                         vertical: 4.h,
@@ -93,9 +108,47 @@ class _TransactionTileState extends State<TransactionTile> {
                       child: Text(
                         "Paul Erica",
                         style: TextStyle(
-                          color: const Color(0xFF061D23),
-                          fontSize: 8.sp,
+                          color: transactionTileTextColor,
+                          fontSize: 10.sp,
                         ),
+                      ),
+                    ),
+                    Text(
+                      "-",
+                      style: TextStyle(
+                        color: transactionTileTextColor,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 4.h,
+                        horizontal: 8.w,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blueAccent.withAlpha(50),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        spacing: 4.w,
+                        children: [
+                          SvgPicture.asset(
+                            width: 12.w,
+                            height: 12.h,
+                            Assets.images.wallet,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.blueAccent,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          Text(
+                            "Paul Erica",
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontSize: 10.sp,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const Spacer(),
@@ -103,21 +156,12 @@ class _TransactionTileState extends State<TransactionTile> {
                       format.format(DateTime.now()),
                       style: TextStyle(
                         color: const Color(0xFF576760),
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      "1 hour ago",
-                      style: TextStyle(
-                        color: const Color(0xFF576760),
-                        fontSize: 12.sp,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           )
