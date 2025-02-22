@@ -37,6 +37,15 @@ class AppWidget extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFEBEDEC),
         brightness: Theme.of(context).brightness,
         useMaterial3: true,
+        datePickerTheme: DatePickerThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          headerBackgroundColor: const Color(0xFF047844),
+          headerForegroundColor: Colors.white,
+          todayBackgroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          todayForegroundColor: const WidgetStatePropertyAll(Colors.white),
+        ),
         textTheme: TextTheme(
           headlineMedium: TextStyle(
             fontWeight: FontWeight.bold,
@@ -122,7 +131,6 @@ class AppWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-
           ),
         ),
       ),
