@@ -101,6 +101,18 @@ class CustomDrawer extends StatelessWidget {
               ),
               title: Text(LocaleKeys.history.tr()),
             ),
+            const Divider(),
+            ListTile(
+              onTap: () {},
+              leading: SvgPicture.asset(
+                Assets.images.support,
+                colorFilter: const ColorFilter.mode(
+                  Color(0XFF3B4E45),
+                  BlendMode.srcIn,
+                ),
+              ),
+              title: Text(LocaleKeys.support.tr()),
+            ),
             ListTile(
               onTap: () {
                 AppNavigator.push(context, const SettingsScreen());
@@ -113,18 +125,6 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               title: Text(LocaleKeys.settings.tr()),
-            ),
-            const Divider(),
-            ListTile(
-              onTap: () {},
-              leading: SvgPicture.asset(
-                Assets.images.support,
-                colorFilter: const ColorFilter.mode(
-                  Color(0XFF3B4E45),
-                  BlendMode.srcIn,
-                ),
-              ),
-              title: Text(LocaleKeys.support.tr()),
             ),
           ],
         ),

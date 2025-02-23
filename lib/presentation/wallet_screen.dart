@@ -21,38 +21,58 @@ class WalletScreen extends StatelessWidget {
               AppNavigator.push(context, const AddWalletScreen());
             },
             child: Container(
-              width: 40.w,
-              height: 40.h,
+              width: 42.r,
+              height: 42.r,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.r),
                 color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
               ),
-              padding: EdgeInsets.all(8.r),
-              child: Center(
-                child: Icon(
-                  Icons.add,
-                  size: 24.r,
-                  color: Theme.of(context).primaryColor,
-                ),
+              // padding: EdgeInsets.all(14.r),
+              child: Icon(
+                Icons.add,
+                size: 20.sp,
+                color: Theme.of(context).primaryColor,
               ),
             ),
           ),
           SizedBox(width: 16.w),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,
           vertical: 16.h,
         ),
         child: Column(
-          spacing: 16.h,
-          children: List.generate(
-            2,
-            (index) {
-              return const WalletTile();
-            },
-          ),
+          children: [
+            Text(
+              LocaleKeys.totalBalance.tr(),
+              style: TextStyle(
+                fontSize: 14.sp,
+              ),
+            ),
+            Text(
+              LocaleKeys.balanceAmountWithCurrency.tr(
+                args: ["4,300,000", "XAF"],
+              ),
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(height: 16.h),
+            Expanded(
+              child: ListView.separated(
+                itemBuilder: (context, index) {
+                  return const WalletTile();
+                },
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 16.h);
+                },
+                itemCount: 4,
+              ),
+            )
+          ],
         ),
       ),
     );

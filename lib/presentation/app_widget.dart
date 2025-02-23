@@ -45,6 +45,12 @@ class AppWidget extends StatelessWidget {
           headerForegroundColor: Colors.white,
           todayBackgroundColor: WidgetStatePropertyAll(appPrimaryColor),
           todayForegroundColor: const WidgetStatePropertyAll(Colors.white),
+          cancelButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          ),
+          confirmButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          ),
         ),
         textTheme: TextTheme(
           headlineMedium: TextStyle(
