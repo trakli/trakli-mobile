@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:trakli/domain/models/category_model.dart';
+import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -22,6 +23,19 @@ class ChartData {
   final double value;
   final Color? color;
 }
+
+final List<ChartData> summaryData = [
+  ChartData(
+    'Total Expense',
+    24478,
+    expenseRedText,
+  ),
+  ChartData(
+    'Total Income',
+    138000,
+    const Color(0xFF047844),
+  ),
+];
 
 final List<ChartData> chartData = [
   ChartData(
@@ -155,7 +169,6 @@ List<CategoryModel> expenseTransactions = const [
     icon: Icons.flight, // Represents travel expenses
   ),
 ];
-
 
 final List<IconData> availableIcons = [
   Icons.home,

@@ -1,9 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/category_tile.dart';
+import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/dashboard_expenses.dart';
 import 'package:trakli/presentation/utils/dashboard_pie_data.dart';
@@ -50,73 +53,86 @@ class _StatisticsScreenState extends State<StatisticsScreen>
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                ),
               ),
-              child: Row(
+              child: Column(
                 children: [
-                  TextButton(
-                    onPressed: () {},
+                  SizedBox(height: 16.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                    ),
                     child: Row(
-                      spacing: 8.w,
                       children: [
-                        Text(
-                          "All wallets",
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: Theme.of(context).primaryColorDark,
+                        Container(
+                          decoration: BoxDecoration(
+                            color: statFilterColor,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          padding: EdgeInsets.all(8.r),
+                          child: Row(
+                            spacing: 8.w,
+                            children: [
+                              Text(
+                                "All wallets",
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Theme.of(context).primaryColorDark,
+                                ),
+                              ),
+                              SvgPicture.asset(
+                                Assets.images.arrowDown,
+                                width: 16.w,
+                              ),
+                            ],
                           ),
                         ),
-                        Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 16.sp,
-                          color: Theme.of(context).primaryColor,
+                        const Spacer(),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: statFilterColor,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          padding: EdgeInsets.all(8.r),
+                          child: Row(
+                            spacing: 8.w,
+                            children: [
+                              Text(
+                                dateFormat.format(DateTime.now()),
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Theme.of(context).primaryColorDark,
+                                ),
+                              ),
+                              SvgPicture.asset(
+                                Assets.images.arrowDown,
+                                width: 16.w,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () {},
-                    child: Row(
-                      spacing: 8.w,
+                  SizedBox(height: 8.h),
+                  SizedBox(
+                    height: 0.38.sh,
+                    child: PageView(
+                      controller: pageController,
                       children: [
-                        Text(
-                          dateFormat.format(DateTime.now()),
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: Theme.of(context).primaryColorDark,
-                          ),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 16.sp,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                        statOne,
+                        statTwo,
+                        statThree,
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 8.h),
-            SizedBox(
-              height: 0.4.sh,
-              child: PageView(
-                controller: pageController,
-                children: [
-                  statOne,
-                  statTwo,
-                  statThree,
-                ],
-              ),
-            ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 12.h),
             SmoothPageIndicator(
               controller: pageController,
               count: 3,
-              effect: JumpingDotEffect(
+              effect: ExpandingDotsEffect(
                 activeDotColor: Theme.of(context).primaryColor,
                 dotWidth: 8.sp,
                 dotHeight: 8.sp,
@@ -167,6 +183,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
             ),
             SizedBox(height: 12.h),
             if (tabController.index == 0) incomeList else expenseList,
+            SizedBox(height: 24.h),
           ],
         ),
       ),
@@ -201,31 +218,43 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   }
 
   Widget get incomeList {
-    return ListView(
-      shrinkWrap: true,
+    return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
-      children: incomeTransactions.map<Widget>((item) {
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      shrinkWrap: true,
+      itemCount: incomeTransactions.length,
+      itemBuilder: (context, index) {
+        final item = incomeTransactions[index];
         return CategoryTile(
           accentColor: Theme.of(context).primaryColor,
           category: item,
           showStat: true,
           showValue: true,
         );
-      }).toList(),
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(height: 8.h);
+      },
     );
   }
 
   Widget get expenseList {
-    return ListView(
-      shrinkWrap: true,
+    return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
-      children: expenseTransactions.map<Widget>((item) {
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      shrinkWrap: true,
+      itemCount: expenseTransactions.length,
+      itemBuilder: (context, index) {
+        final item = expenseTransactions[index];
         return CategoryTile(
           category: item,
           showStat: true,
           showValue: true,
         );
-      }).toList(),
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(height: 8.h);
+      },
     );
   }
 }

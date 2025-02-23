@@ -14,3 +14,6 @@ Color transactionTileBorderColor = const Color(0xFFDEE1E0);
 Color transactionTileIncomeColor = const Color(0xFFDBFFE3);
 Color transactionTileExpenseColor = const Color(0xFFFBDFDF);
 Color transactionTileTextColor = const Color(0xFF061D23);
+
+//stats page
+Color statFilterColor = const Color(0xFFF5F6F7);

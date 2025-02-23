@@ -42,19 +42,22 @@ class _CategoryScreenState extends State<CategoryScreen>
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          style: const ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(
-              Color(0xFFEBEDEC),
-            ),
-          ),
-          onPressed: () {
+        leading: InkWell(
+          onTap: () {
             AppNavigator.pop(context);
           },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 20.r,
-            color: Theme.of(context).primaryColor,
+          child: Container(
+            width: 42.r,
+            height: 42.r,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              color: const Color(0xFFEBEDEC),
+            ),
+            child: Icon(
+              Icons.arrow_back,
+              size: 20.r,
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ),
         titleText: "Categories",
@@ -158,18 +161,24 @@ class _CategoryScreenState extends State<CategoryScreen>
             ],
           ),
           Expanded(
-            child: TabBarView(
-              controller: tabController,
-              // physics: const NeverScrollableScrollPhysics(),
-              children: [
-                categoriesList(
-                  accentColor: Theme.of(context).primaryColor,
-                ),
-                categoriesList(
-                  type: TransactionType.expense,
-                  accentColor: const Color(0xFFEB5757),
-                ),
-              ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 16.h,
+              ),
+              child: TabBarView(
+                controller: tabController,
+                // physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  categoriesList(
+                    accentColor: Theme.of(context).primaryColor,
+                  ),
+                  categoriesList(
+                    type: TransactionType.expense,
+                    accentColor: const Color(0xFFEB5757),
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(height: 16.h),
@@ -183,24 +192,30 @@ class _CategoryScreenState extends State<CategoryScreen>
     required Color accentColor,
   }) {
     if (type == TransactionType.income) {
-      return ListView(
-        shrinkWrap: true,
-        children: incomeTransactions.map<Widget>((item) {
+      return ListView.separated(
+        itemBuilder: (context, index) {
           return CategoryTile(
             accentColor: accentColor,
-            category: item,
+            category: incomeTransactions[index],
           );
-        }).toList(),
+        },
+        separatorBuilder: (context, index) {
+          return SizedBox(height: 8.h);
+        },
+        itemCount: incomeTransactions.length,
       );
     } else {
-      return ListView(
-        shrinkWrap: true,
-        children: expenseTransactions.map<Widget>((item) {
+      return ListView.separated(
+        itemBuilder: (context, index) {
           return CategoryTile(
             accentColor: accentColor,
-            category: item,
+            category: expenseTransactions[index],
           );
-        }).toList(),
+        },
+        separatorBuilder: (context, index) {
+          return SizedBox(height: 8.h);
+        },
+        itemCount: expenseTransactions.length,
       );
     }
   }

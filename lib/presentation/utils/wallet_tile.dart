@@ -183,6 +183,10 @@ class WalletTile extends StatelessWidget {
             left: 0,
             child: SvgPicture.asset(
               Assets.images.bottomLeftCircle,
+              // colorFilter: ColorFilter.mode(
+              //   Colors.grey.shade300,
+              //   BlendMode.srcIn,
+              // ),
             ),
           ),
           // Positioned(child: child)

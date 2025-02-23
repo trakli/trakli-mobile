@@ -40,19 +40,22 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          style: const ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(
-              Color(0xFFEBEDEC),
-            ),
-          ),
-          onPressed: () {
+        leading: InkWell(
+          onTap: (){
             AppNavigator.pop(context);
           },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 20.r,
-            color: Theme.of(context).primaryColor,
+          child: Container(
+            width: 42.r,
+            height: 42.r,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              color:  const Color(0xFFEBEDEC),
+            ),
+            child: Icon(
+              Icons.arrow_back,
+              size: 20.r,
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ),
         headerTextColor:  const Color(0xFFEBEDEC),
