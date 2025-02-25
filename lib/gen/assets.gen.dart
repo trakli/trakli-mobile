@@ -49,6 +49,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/calendar.svg
   String get calendar => 'assets/images/calendar.svg';
 
+  /// File path: assets/images/camera.svg
+  String get camera => 'assets/images/camera.svg';
+
   /// File path: assets/images/category.svg
   String get category => 'assets/images/category.svg';
 
@@ -139,6 +142,7 @@ class $AssetsImagesGen {
         bank,
         bottomLeftCircle,
         calendar,
+        camera,
         category,
         chart,
         clock,
@@ -170,14 +174,23 @@ class $AssetsImagesGen {
 class $AssetsTranslationsGen {
   const $AssetsTranslationsGen();
 
+  /// File path: assets/translations/de.json
+  String get de => 'assets/translations/de.json';
+
   /// File path: assets/translations/en.json
   String get en => 'assets/translations/en.json';
+
+  /// File path: assets/translations/es.json
+  String get es => 'assets/translations/es.json';
 
   /// File path: assets/translations/fr.json
   String get fr => 'assets/translations/fr.json';
 
+  /// File path: assets/translations/it.json
+  String get it => 'assets/translations/it.json';
+
   /// List of all assets
-  List<String> get values => [en, fr];
+  List<String> get values => [de, en, es, fr, it];
 }
 
 class Assets {

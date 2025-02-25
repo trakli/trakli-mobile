@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
@@ -43,7 +44,7 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
                     top: 36.h,
                     left: 16.w,
                     right: 16.w,
-                    bottom: 16.w,
+                    bottom: 16.h,
                   )
                 : null,
             child: Form(
@@ -58,14 +59,30 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
                         height: 56.r,
                         width: 56.r,
                         decoration: BoxDecoration(
-                          color: widget.accentColor
-                              .withValues(alpha: 0.2),
+                          color: widget.accentColor.withValues(alpha: 0.2),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
-                          selectedIcon ?? Icons.add,
-                          color: widget.accentColor,
-                          size: 28.r,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: SvgPicture.asset(
+                                Assets.images.camera,
+                                colorFilter: ColorFilter.mode(
+                                  Theme.of(context).primaryColor,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 8.w,
+                              bottom: 8.h,
+                              child: Icon(
+                                selectedIcon ?? Icons.add,
+                                color: widget.accentColor,
+                                size: 20.r,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Expanded(
@@ -155,9 +172,9 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
                           Form.of(context).validate();
                           hideKeyBoard();
                         },
-                        buttonText:  "Create category",
+                        buttonText: "Create category",
                         backgroundColor: widget.accentColor,
-                        iconPath:  Assets.images.add,
+                        iconPath: Assets.images.add,
                         iconColor: Colors.white,
                         textDirection: ui.TextDirection.rtl,
                       );
