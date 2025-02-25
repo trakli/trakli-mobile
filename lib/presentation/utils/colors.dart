@@ -17,3 +17,7 @@ Color transactionTileTextColor = const Color(0xFF061D23);
 
 //stats page
 Color statFilterColor = const Color(0xFFF5F6F7);
+
+//Category form widget
+Color emojiBackgroundColor = const Color(0xFFFAFAFA);
+Color backButtonColor = const Color(0xFFE8E9F1);

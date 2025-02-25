@@ -9,30 +9,29 @@ import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<File?> pickFile() async {
- try{
-   final result = await FilePicker.platform.pickFiles(
-     type: FileType.custom,
-     allowedExtensions: ['png', 'jpg', 'jpeg', 'pdf'],
-     withData: true,
-   );
-   if (result != null) {
-     final fileSize = result.files.single.size;
-     const maxSize = 5 * 1024 * 1024; // 5MB
-     if (fileSize > maxSize) {
-       throw Exception('File size exceeds 5MB limit');
-     }
-     File file = File(result.files.single.path!);
-     return file;
-   } else {
-     return null;
-   }
- } catch (e) {
+  try {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['png', 'jpg', 'jpeg', 'pdf'],
+      withData: true,
+    );
+    if (result != null) {
+      final fileSize = result.files.single.size;
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (fileSize > maxSize) {
+        throw Exception('File size exceeds 5MB limit');
+      }
+      File file = File(result.files.single.path!);
+      return file;
+    } else {
+      return null;
+    }
+  } catch (e) {
     rethrow;
   }
 }
 
 Future<void> openUrl({required String url}) async {
-
   if (!await launchUrl(
     Uri.parse(url),
     mode: LaunchMode.externalApplication,
@@ -80,7 +79,6 @@ String getLanguageFromCode(Locale locale) {
   }
 }
 
-
 Widget flagWidget(Currency currency) {
   if (currency.flag == null) {
     return Image.asset(
@@ -108,4 +106,19 @@ Widget flagWidget(Currency currency) {
 
 extension StringExtensions on String {
   String get imagePath => 'lib/src/res/$this';
+}
+
+Future<void> showCustomBottomSheet(
+  context, {
+  required Widget widget,
+  Color color = Colors.white,
+}) async {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: color,
+    scrollControlDisabledMaxHeightRatio: 1,
+    builder: (context) {
+      return widget;
+    },
+  );
 }

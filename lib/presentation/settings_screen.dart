@@ -29,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
         leading: InkWell(
-          onTap: (){
+          onTap: () {
             AppNavigator.pop(context);
           },
           child: Container(
@@ -37,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             height: 42.r,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.r),
-              color:  const Color(0xFFEBEDEC),
+              color: const Color(0xFFEBEDEC),
             ),
             child: Icon(
               Icons.arrow_back,
@@ -149,13 +149,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  backgroundColor: Colors.white,
-                  scrollControlDisabledMaxHeightRatio: 1,
-                  builder: (context) {
-                    return const AboutAppBottomSheet();
-                  },
+                showCustomBottomSheet(
+                  context,
+                  widget: const AboutAppBottomSheet(),
                 );
               },
               leading: Container(
@@ -219,4 +215,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
-

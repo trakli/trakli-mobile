@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/bottom_sheets/select_icon_bottom_sheet.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -55,34 +56,42 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 8.w,
                     children: [
-                      Container(
-                        height: 56.r,
-                        width: 56.r,
-                        decoration: BoxDecoration(
-                          color: widget.accentColor.withValues(alpha: 0.2),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: SvgPicture.asset(
-                                Assets.images.camera,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context).primaryColor,
-                                  BlendMode.srcIn,
+                      GestureDetector(
+                        onTap: (){
+                          showCustomBottomSheet(
+                            context,
+                            widget: const SelectIconBottomSheet(),
+                          );
+                        },
+                        child: Container(
+                          height: 56.r,
+                          width: 56.r,
+                          decoration: BoxDecoration(
+                            color: widget.accentColor.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Stack(
+                            children: [
+                              Center(
+                                child: SvgPicture.asset(
+                                  Assets.images.camera,
+                                  colorFilter: ColorFilter.mode(
+                                    Theme.of(context).primaryColor,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Positioned(
-                              right: 8.w,
-                              bottom: 8.h,
-                              child: Icon(
-                                selectedIcon ?? Icons.add,
-                                color: widget.accentColor,
-                                size: 20.r,
+                              Positioned(
+                                right: 8.w,
+                                bottom: 8.h,
+                                child: Icon(
+                                  selectedIcon ?? Icons.add,
+                                  color: widget.accentColor,
+                                  size: 20.r,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
