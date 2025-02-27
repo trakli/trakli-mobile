@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/wallet_transfer_screen.dart';
 
 class WalletTile extends StatelessWidget {
   const WalletTile({super.key});
@@ -19,6 +21,17 @@ class WalletTile extends StatelessWidget {
       ),
       child: Stack(
         children: [
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: SvgPicture.asset(
+              Assets.images.bottomLeftCircle,
+              // colorFilter: ColorFilter.mode(
+              //   Colors.grey.shade300,
+              //   BlendMode.srcIn,
+              // ),
+            ),
+          ),
           Padding(
             padding: EdgeInsets.only(
               left: 16.w,
@@ -62,19 +75,136 @@ class WalletTile extends StatelessWidget {
                     ),
                   ),
                   trailing: Container(
+                    width: 36.w,
+                    height: 36.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.r),
                       color: walletGrey,
                     ),
-                    padding: EdgeInsets.all(8.r),
-                    child: SvgPicture.asset(
-                      height: 20.h,
-                      width: 20.w,
-                      Assets.images.more,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).primaryColor,
-                        BlendMode.srcIn,
+                    child: PopupMenuButton(
+                      icon: SvgPicture.asset(
+                        height: 20.h,
+                        width: 20.w,
+                        Assets.images.more,
+                        colorFilter: ColorFilter.mode(
+                          Theme.of(context).primaryColor,
+                          BlendMode.srcIn,
+                        ),
                       ),
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem(
+                            onTap: () {},
+                            child: Row(
+                              spacing: 8.w,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .primaryColor
+                                        .withAlpha(50),
+                                  ),
+                                  child: SvgPicture.asset(
+                                    height: 16.h,
+                                    width: 16.w,
+                                    Assets.images.edit2,
+                                    colorFilter: ColorFilter.mode(
+                                      Theme.of(context).primaryColor,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                                const Text('Edit'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            onTap: () {
+                              AppNavigator.push(
+                                context,
+                                const WalletTransferScreen(),
+                              );
+                            },
+                            height: 40.h,
+                            child: Row(
+                              spacing: 8.w,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.blueAccent.withAlpha(50),
+                                  ),
+                                  child: SvgPicture.asset(
+                                    height: 16.h,
+                                    width: 16.w,
+                                    Assets.images.arrowUpDown,
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.blueAccent,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                                const Text('Wallet transfer'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            onTap: () {},
+                            height: 40.h,
+                            child: Row(
+                              spacing: 8.w,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.redAccent.withAlpha(50),
+                                  ),
+                                  child: SvgPicture.asset(
+                                    height: 16.h,
+                                    width: 16.w,
+                                    Assets.images.trash,
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.redAccent,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                                const Text('Delete'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            onTap: () {},
+                            height: 40.h,
+                            child: Row(
+                              spacing: 8.w,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey.withAlpha(50),
+                                  ),
+                                  child: SvgPicture.asset(
+                                    height: 16.h,
+                                    width: 16.w,
+                                    Assets.images.documentCopy,
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.grey,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                                const Text('Duplicate'),
+                              ],
+                            ),
+                          ),
+                        ];
+                      },
                     ),
                   ),
                 ),
@@ -178,17 +308,7 @@ class WalletTile extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: SvgPicture.asset(
-              Assets.images.bottomLeftCircle,
-              // colorFilter: ColorFilter.mode(
-              //   Colors.grey.shade300,
-              //   BlendMode.srcIn,
-              // ),
-            ),
-          ),
+
           // Positioned(child: child)
         ],
       ),

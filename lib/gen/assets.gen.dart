@@ -34,8 +34,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/arrow-swap-down.svg
   String get arrowSwapDown => 'assets/images/arrow-swap-down.svg';
 
+  /// File path: assets/images/arrow-swap-horizontal.svg
+  String get arrowSwapHorizontal => 'assets/images/arrow-swap-horizontal.svg';
+
   /// File path: assets/images/arrow-swap-up.svg
   String get arrowSwapUp => 'assets/images/arrow-swap-up.svg';
+
+  /// File path: assets/images/arrow-up-down.svg
+  String get arrowUpDown => 'assets/images/arrow-up-down.svg';
 
   /// File path: assets/images/arrow-up.svg
   String get arrowUp => 'assets/images/arrow-up.svg';
@@ -61,8 +67,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/clock.svg
   String get clock => 'assets/images/clock.svg';
 
+  /// File path: assets/images/document-copy.svg
+  String get documentCopy => 'assets/images/document-copy.svg';
+
   /// File path: assets/images/document-upload.svg
   String get documentUpload => 'assets/images/document-upload.svg';
+
+  /// File path: assets/images/edit-2.svg
+  String get edit2 => 'assets/images/edit-2.svg';
 
   /// File path: assets/images/eye-slash.svg
   String get eyeSlash => 'assets/images/eye-slash.svg';
@@ -118,6 +130,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/top_right_circle.svg
   String get topRightCircle => 'assets/images/top_right_circle.svg';
 
+  /// File path: assets/images/trash.svg
+  String get trash => 'assets/images/trash.svg';
+
   /// File path: assets/images/user.svg
   String get user => 'assets/images/user.svg';
 
@@ -137,7 +152,9 @@ class $AssetsImagesGen {
         arrowLeft,
         arrowRight,
         arrowSwapDown,
+        arrowSwapHorizontal,
         arrowSwapUp,
+        arrowUpDown,
         arrowUp,
         bank,
         bottomLeftCircle,
@@ -146,7 +163,9 @@ class $AssetsImagesGen {
         category,
         chart,
         clock,
+        documentCopy,
         documentUpload,
+        edit2,
         eyeSlash,
         eye,
         filter,
@@ -165,6 +184,7 @@ class $AssetsImagesGen {
         setting,
         support,
         topRightCircle,
+        trash,
         user,
         walletMoney,
         wallet

@@ -139,6 +139,26 @@ class AppWidget extends StatelessWidget {
             ),
           ),
         ),
+        popupMenuTheme: PopupMenuThemeData(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            side: const BorderSide(
+              color: Color(0xFFE6E8E9),
+            ),
+          ),
+          menuPadding: EdgeInsets.symmetric(
+            vertical: 8.h,
+            horizontal: 0,
+          ),
+          position: PopupMenuPosition.under,
+          labelTextStyle: WidgetStatePropertyAll(
+            TextStyle(
+              fontSize: 14.sp,
+              color: const Color(0XFF00171F),
+            ),
+          ),
+        ),
       ),
       home: const OnboardingScreen(),
     );

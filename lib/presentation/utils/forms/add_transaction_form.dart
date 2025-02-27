@@ -5,8 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/category/add_category_screen.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
-import 'package:trakli/presentation/utils/dialogs/add_category_dialog.dart';
 import 'package:trakli/presentation/utils/dialogs/add_party_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/globals.dart';
@@ -171,9 +172,11 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                         onTap: () async {
                           final selectDate = await showDatePicker(
                             context: context,
-                            firstDate: DateTime.now(),
+                            firstDate: DateTime.now().subtract(
+                              const Duration(days: 1000),
+                            ),
                             lastDate: DateTime.now().add(
-                              const Duration(days: 30),
+                              const Duration(days: 1000),
                             ),
                           );
                           if (selectDate != null) {
@@ -344,18 +347,18 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                       compareFn: (i1, i2) => i1 == i2,
                       filterFn: (el, filter) {
                         return el.property.toLowerCase().contains(
-                          filter.toLowerCase(),
-                        );
+                              filter.toLowerCase(),
+                            );
                       },
                     ),
                   ),
                   GestureDetector(
                     onTap: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return const AddCategoryDialog();
-                        },
+                      AppNavigator.push(
+                        context,
+                        AddCategoryScreen(
+                          accentColor: widget.accentColor,
+                        ),
                       );
                     },
                     child: Container(

@@ -21,9 +21,11 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-        vertical: 16.h,
+      padding: EdgeInsets.only(
+        left: 16.w,
+        right: 16.w,
+        top: 16.h,
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -41,8 +43,13 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
           SizedBox(height: 16.h),
           if (selectedIconType == null)
             chooseSelector(context)
+          else if (selectedIconType == SelectIconType.selectFromGalleryOrCamera)
+            selectFromGalleryOrCamera(context)
           else if (selectedIconType == SelectIconType.selectEmoji)
-            selectEmoji(context),
+            selectEmoji(context)
+          else
+            selectIcon(context),
+          SizedBox(height: 16.h),
         ],
       ),
     );
@@ -70,33 +77,40 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
             crossAxisSpacing: 8.w,
           ),
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF01190E),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 8.h,
-                children: [
-                  SvgPicture.asset(
-                    width: 32.w,
-                    height: 32.h,
-                    Assets.images.camera,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedIconType = SelectIconType.selectFromGalleryOrCamera;
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF01190E),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 8.h,
+                  children: [
+                    SvgPicture.asset(
+                      width: 32.w,
+                      height: 32.h,
+                      Assets.images.camera,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "Select a photo",
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                    Text(
+                      "Select a photo",
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             GestureDetector(
@@ -138,33 +152,140 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
                 ),
               ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 8.h,
-                children: [
-                  Icon(
-                    Icons.shopping_cart,
-                    color: Colors.white,
-                    size: 32.r,
-                  ),
-                  Text(
-                    "Select icon",
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedIconType = SelectIconType.selectIcon;
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 8.h,
+                  children: [
+                    Icon(
+                      Icons.shopping_cart,
                       color: Colors.white,
+                      size: 32.r,
                     ),
-                  ),
-                ],
+                    Text(
+                      "Select icon",
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget selectFromGalleryOrCamera(context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          spacing: 16.w,
+          children: [
+            InkWell(
+              onTap: () {
+                setState(() {
+                  selectedIconType = null;
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: backButtonColor,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                padding: EdgeInsets.all(8.r),
+                child: SvgPicture.asset(
+                  width: 24.w,
+                  height: 24.w,
+                  Assets.images.arrowLeft,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              "Select photo",
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 24.h),
+        Row(
+          spacing: 0.25.sw,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Container(
+                  width: 50.w,
+                  height: 50.w,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withAlpha(50),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Icon(
+                    FontAwesomeIcons.camera,
+                    color: Theme.of(context).primaryColor,
+                    size: 20.sp,
+                  ),
+                ),
+                Text(
+                  "Camera",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              spacing: 4.h,
+              children: [
+                Container(
+                  width: 50.w,
+                  height: 50.w,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withAlpha(50),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Icon(
+                    FontAwesomeIcons.photoFilm,
+                    color: Theme.of(context).primaryColor,
+                    size: 20.sp,
+                  ),
+                ),
+                Text(
+                  "Gallery",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        // SizedBox(height: 16.h),
       ],
     );
   }
@@ -212,9 +333,7 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
         ),
         SizedBox(height: 16.h),
         EmojiPicker(
-          onEmojiSelected: (Category? category, Emoji emoji) {
-            // Do something when emoji is tapped (optional)
-          },
+          onEmojiSelected: (Category? category, Emoji emoji) {},
           config: Config(
             height: 340.h,
             checkPlatformCompatibility: true,
@@ -227,6 +346,9 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
               backgroundColor: emojiBackgroundColor,
               verticalSpacing: 6.h,
               horizontalSpacing: 6.w,
+              buttonMode: foundation.defaultTargetPlatform == TargetPlatform.iOS
+                  ? ButtonMode.CUPERTINO
+                  : ButtonMode.MATERIAL,
             ),
             skinToneConfig: const SkinToneConfig(),
             categoryViewConfig: CategoryViewConfig(
@@ -283,6 +405,52 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget selectIcon(context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          spacing: 16.w,
+          children: [
+            InkWell(
+              onTap: () {
+                setState(() {
+                  selectedIconType = null;
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: backButtonColor,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                padding: EdgeInsets.all(8.r),
+                child: SvgPicture.asset(
+                  width: 24.w,
+                  height: 24.w,
+                  Assets.images.arrowLeft,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              "Select icon",
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 16.h),
       ],
     );
   }
