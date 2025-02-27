@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:flutter/foundation.dart' as foundation;
+import 'package:trakli/presentation/utils/helpers.dart';
 
 class SelectIconBottomSheet extends StatefulWidget {
   const SelectIconBottomSheet({super.key});
@@ -238,17 +240,24 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
           children: [
             Column(
               children: [
-                Container(
-                  width: 50.w,
-                  height: 50.w,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withAlpha(50),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Icon(
-                    FontAwesomeIcons.camera,
-                    color: Theme.of(context).primaryColor,
-                    size: 20.sp,
+                GestureDetector(
+                  onTap: () {
+                    pickImageApp(
+                      sourcePick: ImageSource.camera,
+                    );
+                  },
+                  child: Container(
+                    width: 50.w,
+                    height: 50.w,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withAlpha(50),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Icon(
+                      FontAwesomeIcons.camera,
+                      color: Theme.of(context).primaryColor,
+                      size: 20.sp,
+                    ),
                   ),
                 ),
                 Text(
@@ -262,17 +271,22 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
             Column(
               spacing: 4.h,
               children: [
-                Container(
-                  width: 50.w,
-                  height: 50.w,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withAlpha(50),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Icon(
-                    FontAwesomeIcons.photoFilm,
-                    color: Theme.of(context).primaryColor,
-                    size: 20.sp,
+                GestureDetector(
+                  onTap: () {
+                    pickImageApp();
+                  },
+                  child: Container(
+                    width: 50.w,
+                    height: 50.w,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withAlpha(50),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Icon(
+                      FontAwesomeIcons.photoFilm,
+                      color: Theme.of(context).primaryColor,
+                      size: 20.sp,
+                    ),
                   ),
                 ),
                 Text(

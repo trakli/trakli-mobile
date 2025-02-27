@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<File?> pickFile() async {
@@ -138,7 +139,8 @@ Future<File?> pickImageApp({
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Cropper',
-          toolbarColor: Colors.deepOrange,
+          toolbarColor: appPrimaryColor,
+          activeControlsWidgetColor: appPrimaryColor,
           toolbarWidgetColor: Colors.white,
           aspectRatioPresets: [
             CropAspectRatioPreset.square,
