@@ -1,6 +1,7 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
@@ -17,6 +18,7 @@ class WalletTransferScreen extends StatefulWidget {
 
 class _WalletTransferScreenState extends State<WalletTransferScreen> {
   Currency? currency;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +57,152 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('wallet transfer'),
+              Stack(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Source wallet",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).primaryColorDark,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE6F2EC),
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              child: SvgPicture.asset(
+                                Assets.images.bottomLeftCircle,
+                              ),
+                            ),
+                            ListTile(
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 8.h,
+                              ),
+                              title: Text(
+                                'Orange money',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '300,000 XAF',
+                                style: TextStyle(
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              trailing: Container(
+                                padding: EdgeInsets.all(8.sp),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8.r),
+                                ),
+                                child: SvgPicture.asset(
+                                  Assets.images.arrowDown,
+                                  colorFilter: ColorFilter.mode(
+                                    Theme.of(context).primaryColor,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        "Destination wallet",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).primaryColorDark,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE6F2EC),
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              child: SvgPicture.asset(
+                                Assets.images.bottomLeftCircle,
+                              ),
+                            ),
+                            ListTile(
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 8.h,
+                              ),
+                              title: Text(
+                                'Bank account UBA',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '400,000 XAF',
+                                style: TextStyle(
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              trailing: Container(
+                                padding: EdgeInsets.all(8.sp),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8.r),
+                                ),
+                                child: SvgPicture.asset(
+                                  Assets.images.arrowDown,
+                                  colorFilter: ColorFilter.mode(
+                                    Theme.of(context).primaryColor,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    right: 0.1.sw,
+                    top: 0.14.sh,
+                    child: Container(
+                      padding: EdgeInsets.all(12.sp),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF9500),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Icon(
+                        Icons.arrow_downward,
+                        size: 30.sp,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(height: 16.h),
               Text(
                 "Amount",
@@ -83,10 +230,10 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                             return "Amount is required";
                           }
                           final number = double.tryParse(value);
-                          if(number == null){
+                          if (number == null) {
                             return "Must be a number";
                           }
-                          if(number == 0){
+                          if (number == 0) {
                             return "Amount must not be 0";
                           }
                           return null;
@@ -104,8 +251,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                               subtitleTextStyle: TextStyle(
                                 fontSize: 12.sp,
                                 color: Theme.of(context).primaryColor,
-                              )
-                          ),
+                              )),
                           onSelect: (Currency currencyValue) {
                             setState(() {
                               currency = currencyValue;
@@ -151,10 +297,10 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                     return "Value is required";
                   }
                   final number = double.tryParse(value);
-                  if(number == null){
+                  if (number == null) {
                     return "Must be a number";
                   }
-                  if(number == 0){
+                  if (number == 0) {
                     return "Amount must not be 0";
                   }
                   return null;
@@ -165,21 +311,19 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                 height: 54.h,
                 width: double.infinity,
                 child: Builder(builder: (context) {
-                  return Builder(
-                    builder: (context) {
-                      return PrimaryButton(
-                        onPress: () {
-                          Form.of(context).validate();
-                          hideKeyBoard();
-                        },
-                        buttonText: "Transfer money",
-                        backgroundColor: Theme.of(context).primaryColor,
-                        iconPath: Assets.images.arrowSwapHorizontal,
-                        iconColor: Colors.white,
-                        textDirection: ui.TextDirection.rtl,
-                      );
-                    }
-                  );
+                  return Builder(builder: (context) {
+                    return PrimaryButton(
+                      onPress: () {
+                        Form.of(context).validate();
+                        hideKeyBoard();
+                      },
+                      buttonText: "Transfer money",
+                      backgroundColor: Theme.of(context).primaryColor,
+                      iconPath: Assets.images.arrowSwapHorizontal,
+                      iconColor: Colors.white,
+                      textDirection: ui.TextDirection.rtl,
+                    );
+                  });
                 }),
               ),
             ],
