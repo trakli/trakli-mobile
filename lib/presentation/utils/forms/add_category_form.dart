@@ -105,7 +105,6 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
             SizedBox(height: 8.h),
             TextFormField(
               maxLines: 3,
-              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: LocaleKeys.typeHere.tr(),
               ),
