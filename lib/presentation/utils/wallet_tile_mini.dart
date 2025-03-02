@@ -2,6 +2,7 @@ import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'dart:math' as math;
@@ -31,22 +32,14 @@ class _WalletTileMiniState extends State<WalletTileMini> {
       ),
       padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 16.w,
         children: [
-          Container(
-            padding: EdgeInsets.all(12.r),
-            decoration: BoxDecoration(
-              color: appPrimaryColor.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: SvgPicture.asset(
-              Assets.images.wallet,
-              colorFilter: ColorFilter.mode(
-                appPrimaryColor,
-                BlendMode.srcIn,
-              ),
-            ),
+          HeroIcon(
+            HeroIcons.folder,
+            size: 48.sp,
+            style: HeroIconStyle.solid,
+            color: Theme.of(context).primaryColor,
           ),
           Expanded(
             child: Column(

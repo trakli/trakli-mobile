@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:flutter/foundation.dart' as foundation;
+import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 
 class SelectIconBottomSheet extends StatefulWidget {
@@ -465,6 +467,36 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
           ],
         ),
         SizedBox(height: 16.h),
+        Container(
+          constraints: BoxConstraints(
+            maxHeight: 340.h,
+          ),
+          child: GridView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              mainAxisSpacing: 16.h,
+              crossAxisSpacing: 16.w,
+            ),
+            itemCount: heroIconsCategories.length,
+            itemBuilder: (context, index) {
+              final icon = heroIconsCategories[index];
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: Theme.of(context).primaryColor.withAlpha(50),
+                ),
+                child: HeroIcon(
+                  icon,
+                  size: 28.sp,
+                  style: HeroIconStyle.solid,
+                  color: Theme.of(context).primaryColor,
+                ),
+              );
+            },
+          ),
+        )
       ],
     );
   }
