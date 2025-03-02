@@ -52,6 +52,26 @@ class AppWidget extends StatelessWidget {
             foregroundColor: WidgetStatePropertyAll(appPrimaryColor),
           ),
         ),
+        timePickerTheme: TimePickerThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          backgroundColor: Colors.white,
+          cancelButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          ),
+          confirmButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          ),
+          dayPeriodColor: appPrimaryColor.withAlpha(50),
+          dayPeriodBorderSide: BorderSide(
+            color: Colors.grey.shade500,
+          ),
+          dayPeriodShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          dialHandColor: appPrimaryColor,
+        ),
         textTheme: TextTheme(
           headlineMedium: TextStyle(
             fontWeight: FontWeight.bold,
