@@ -10,6 +10,7 @@ import 'package:trakli/presentation/groups/my_groups_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
 import 'package:trakli/presentation/parties/party_screen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
+import 'package:trakli/presentation/savings/my_savings_screen.dart';
 import 'package:trakli/presentation/settings_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 
@@ -59,6 +60,19 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               title: Text(LocaleKeys.groups.tr()),
+            ),
+            ListTile(
+              onTap: () {
+                AppNavigator.push(context, const MySavingsScreen());
+              },
+              leading: SvgPicture.asset(
+                Assets.images.walletAdd,
+                colorFilter: const ColorFilter.mode(
+                  Color(0XFF3B4E45),
+                  BlendMode.srcIn,
+                ),
+              ),
+              title: const Text("Savings"),
             ),
             ListTile(
               onTap: () {

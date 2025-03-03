@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 
-class GroupTile extends StatelessWidget {
-  const GroupTile({super.key});
+class SavingsTile extends StatelessWidget {
+  const SavingsTile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class GroupTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
-              Icons.groups_outlined,
+              Icons.money,
               size: 20.sp,
               color: Theme.of(context).primaryColor,
             ),

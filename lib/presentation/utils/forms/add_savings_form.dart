@@ -6,8 +6,8 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 
-class AddGroupsForm extends StatelessWidget {
-  const AddGroupsForm({super.key});
+class AddSavingsForm extends StatelessWidget {
+  const AddSavingsForm({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class AddGroupsForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              LocaleKeys.groupGroupName.tr(),
+              "Title",
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
@@ -31,7 +31,7 @@ class AddGroupsForm extends StatelessWidget {
             SizedBox(height: 8.h),
             TextFormField(
               decoration: InputDecoration(
-                hintText: LocaleKeys.groupEnterGroupName.tr(),
+                hintText: LocaleKeys.typeHere.tr(),
               ),
               validator: (value){
                 if(value == null || value.isEmpty){
@@ -42,7 +42,7 @@ class AddGroupsForm extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
             Text(
-              LocaleKeys.groupGroupDescription.tr(),
+              "Description",
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
@@ -61,32 +61,32 @@ class AddGroupsForm extends StatelessWidget {
               height: 54.h,
               width: double.infinity,
               child: Builder(
-                builder: (context) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      Form.of(context).validate();
-                      hideKeyBoard();
-                    },
-                    child: Row(
-                      spacing: 8.w,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          LocaleKeys.groupCreateGroup.tr(),
-                        ),
-                        SvgPicture.asset(
-                          Assets.images.add,
-                          width: 24,
-                          height: 24,
-                          colorFilter: const ColorFilter.mode(
-                            Colors.white,
-                            BlendMode.srcIn,
+                  builder: (context) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        Form.of(context).validate();
+                        hideKeyBoard();
+                      },
+                      child: Row(
+                        spacing: 8.w,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Create saving",
                           ),
-                        )
-                      ],
-                    ),
-                  );
-                }
+                          SvgPicture.asset(
+                            Assets.images.add,
+                            width: 24,
+                            height: 24,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }
               ),
             ),
           ],

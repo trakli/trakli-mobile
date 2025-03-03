@@ -161,24 +161,18 @@ class _CategoryScreenState extends State<CategoryScreen>
             ],
           ),
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 16.h,
-              ),
-              child: TabBarView(
-                controller: tabController,
-                // physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  categoriesList(
-                    accentColor: Theme.of(context).primaryColor,
-                  ),
-                  categoriesList(
-                    type: TransactionType.expense,
-                    accentColor: const Color(0xFFEB5757),
-                  ),
-                ],
-              ),
+            child: TabBarView(
+              controller: tabController,
+              // physics: const NeverScrollableScrollPhysics(),
+              children: [
+                categoriesList(
+                  accentColor: Theme.of(context).primaryColor,
+                ),
+                categoriesList(
+                  type: TransactionType.expense,
+                  accentColor: const Color(0xFFEB5757),
+                ),
+              ],
             ),
           ),
           SizedBox(height: 16.h),
@@ -193,6 +187,10 @@ class _CategoryScreenState extends State<CategoryScreen>
   }) {
     if (type == TransactionType.income) {
       return ListView.separated(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 16.h,
+        ),
         itemBuilder: (context, index) {
           return CategoryTile(
             accentColor: accentColor,
@@ -206,6 +204,10 @@ class _CategoryScreenState extends State<CategoryScreen>
       );
     } else {
       return ListView.separated(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 16.h,
+        ),
         itemBuilder: (context, index) {
           return CategoryTile(
             accentColor: accentColor,

@@ -9,7 +9,6 @@ import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/add_wallet_screen.dart';
 import 'package:trakli/presentation/category/add_category_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/bottom_sheets/select_wallet_bottom_sheet.dart';
 import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
 import 'package:trakli/presentation/utils/dialogs/add_party_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -27,10 +26,12 @@ class AddTransactionFormCompactLayout extends StatefulWidget {
   });
 
   @override
-  State<AddTransactionFormCompactLayout> createState() => _AddTransactionFormCompactLayoutState();
+  State<AddTransactionFormCompactLayout> createState() =>
+      _AddTransactionFormCompactLayoutState();
 }
 
-class _AddTransactionFormCompactLayoutState extends State<AddTransactionFormCompactLayout> {
+class _AddTransactionFormCompactLayoutState
+    extends State<AddTransactionFormCompactLayout> {
   int? selectedIndex;
   DateFormat dateFormat = DateFormat('dd-MM-yyy');
   DateFormat timeFormat = DateFormat('h:mm:a');
@@ -168,44 +169,30 @@ class _AddTransactionFormCompactLayoutState extends State<AddTransactionFormComp
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: TextFormField(
-                            readOnly: true,
-                            onTap: () {
-                              showCustomBottomSheet(
-                                context,
-                                widget: const SelectWalletBottomSheet(),
-                              );
+                          child: CustomDropdownSearch<ChartData>(
+                            label: "",
+                            accentColor: widget.accentColor,
+                            items: (filter, infiniteScrollProps) {
+                              return chartData
+                                  .map((data) => data)
+                                  .toList()
+                                  .where((ChartData el) => el.property
+                                      .toLowerCase()
+                                      .contains(filter.toLowerCase()))
+                                  .toList();
                             },
-                            decoration: InputDecoration(
-                              hintText: "Select wallet",
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: widget.accentColor,
-                                ),
-                              ),
-                              suffixIcon: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: SvgPicture.asset(
-                                  Assets.images.arrowDown,
-                                  colorFilter: ColorFilter.mode(
-                                    Colors.grey.shade500,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                // return LocaleKeys.transactionAmountError.tr();
-                                return "Wallet is required";
-                              }
-                              return null;
+                            itemAsString: (item) => item.property,
+                            onChanged: (value) => {
+                              debugPrint(value?.property),
                             },
+                            compareFn: (i1, i2) => i1 == i2,
+                            filterFn: (el, filter) => el.property
+                                .toLowerCase()
+                                .contains(filter.toLowerCase()),
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             AppNavigator.push(context, const AddWalletScreen());
                           },
                           child: Container(
@@ -217,11 +204,13 @@ class _AddTransactionFormCompactLayoutState extends State<AddTransactionFormComp
                               color: const Color(0xFFDEE1E0),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Center(
-                              child: Icon(Icons.add),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                Assets.images.add,
+                              ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

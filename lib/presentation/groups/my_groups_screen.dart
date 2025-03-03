@@ -16,7 +16,7 @@ class MyGroupsScreen extends StatelessWidget {
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
         leading: InkWell(
-          onTap: (){
+          onTap: () {
             AppNavigator.pop(context);
           },
           child: Container(
@@ -24,7 +24,7 @@ class MyGroupsScreen extends StatelessWidget {
             height: 42.r,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.r),
-              color:  const Color(0xFFEBEDEC),
+              color: const Color(0xFFEBEDEC),
             ),
             child: Icon(
               Icons.arrow_back,
@@ -37,7 +37,7 @@ class MyGroupsScreen extends StatelessWidget {
         headerTextColor: const Color(0xFFEBEDEC),
         actions: [
           InkWell(
-            onTap: (){
+            onTap: () {
               AppNavigator.push(context, const AddGroupScreen());
             },
             child: Container(
@@ -45,7 +45,7 @@ class MyGroupsScreen extends StatelessWidget {
               height: 40.h,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.r),
-                color:  const Color(0xFFEBEDEC),
+                color: const Color(0xFFEBEDEC),
               ),
               padding: EdgeInsets.all(8.r),
               child: Center(
@@ -65,20 +65,15 @@ class MyGroupsScreen extends StatelessWidget {
           horizontal: 16.w,
           vertical: 16.h,
         ),
-        margin: EdgeInsets.all(16.sp),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(
-            color: const Color(0xFFB8BBB4),
-          ),
-        ),
-        child: ListView(
+        child: ListView.separated(
           shrinkWrap: true,
-          children: List.generate(
-            5,
-            (index) => const GroupTile(),
-          ),
+          itemBuilder: (context, index) {
+            return const GroupTile();
+          },
+          separatorBuilder: (context, index) {
+            return SizedBox(height: 8.h);
+          },
+          itemCount: 5,
         ),
       ),
     );
