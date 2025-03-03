@@ -17,6 +17,11 @@ final List<Locale> supportedLanguages = [
   const Locale('it'),
 ];
 
+final List<String> supportedFormDisplays = [
+  'full',
+  'compact',
+];
+
 class ChartData {
   ChartData(this.property, this.value, [this.color]);
 

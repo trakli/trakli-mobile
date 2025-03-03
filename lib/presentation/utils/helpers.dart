@@ -82,6 +82,17 @@ String getLanguageFromCode(Locale locale) {
   }
 }
 
+String getFormDisplayText(String displayMode) {
+  switch (displayMode) {
+    case "full":
+      return "Full";
+    case "compact":
+      return "Compact";
+    default:
+      return "";
+  }
+}
+
 Widget flagWidget(Currency currency) {
   if (currency.flag == null) {
     return Image.asset(

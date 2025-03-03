@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/display_settings_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/about_app_bottom_sheet.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
@@ -59,6 +60,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         child: Column(
           children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              onTap: () {
+                AppNavigator.push(context, const DisplaySettingsScreen());
+              },
+              leading: Container(
+                width: 40.w,
+                height: 40.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                ),
+                child: Icon(
+                  Icons.display_settings,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              title: const Text(
+                "Display",
+              ),
+              subtitle: currency != null
+                  ? Text(
+                      currency?.code ?? "",
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    )
+                  : null,
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                size: 16.sp,
+              ),
+            ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               onTap: () {

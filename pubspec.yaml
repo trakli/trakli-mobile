@@ -54,6 +54,7 @@ dependencies:
   image_picker: ^1.1.2
   image_cropper: ^9.0.0
   heroicons: ^0.11.0
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_gen_runner: ^5.8.0
