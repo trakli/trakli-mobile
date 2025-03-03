@@ -60,7 +60,7 @@ class MyGroupsScreen extends StatelessWidget {
           SizedBox(width: 16.w),
         ],
       ),
-      body: Container(
+      body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,
           vertical: 16.h,

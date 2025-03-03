@@ -60,25 +60,20 @@ class PartyScreen extends StatelessWidget {
           SizedBox(width: 16.w),
         ],
       ),
-      body: Container(
+      body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,
           vertical: 16.h,
         ),
-        margin: EdgeInsets.all(16.sp),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(
-            color: const Color(0xFFB8BBB4),
-          ),
-        ),
-        child: ListView(
+        child: ListView.separated(
           shrinkWrap: true,
-          children: List.generate(
-            5,
-                (index) => const GroupTile(),
-          ),
+          itemBuilder: (context, index) {
+            return const GroupTile();
+          },
+          separatorBuilder: (context, index) {
+            return SizedBox(height: 8.h);
+          },
+          itemCount: 5,
         ),
       ),
     );
