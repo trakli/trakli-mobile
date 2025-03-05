@@ -2,9 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:trakli/domain/models/chart_data_model.dart';
+import 'package:trakli/domain/providers/chart_data_provider.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/colors.dart';
-import 'package:trakli/presentation/utils/globals.dart';
 
 class DashboardExpenses extends StatefulWidget {
   const DashboardExpenses({super.key});
@@ -15,6 +16,7 @@ class DashboardExpenses extends StatefulWidget {
 
 class _DashboardExpensesState extends State<DashboardExpenses> {
   DateFormat format = DateFormat('MMMM');
+  final summaryData = StatisticsProvider().getSummaryData();
 
   @override
   Widget build(BuildContext context) {

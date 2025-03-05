@@ -29,6 +29,7 @@ class CategoryTile extends StatefulWidget {
 
 class _CategoryTileState extends State<CategoryTile> {
   Currency? currency;
+  final int randomValue = math.Random().nextInt(5000);
 
   @override
   void initState() {
@@ -97,7 +98,7 @@ class _CategoryTileState extends State<CategoryTile> {
                                   text: currency?.symbol ?? "",
                                 ),
                                 TextSpan(
-                                  text: math.Random().nextInt(5000).toString(),
+                                  text: randomValue.toString(),
                                 ),
                               ],
                             ),

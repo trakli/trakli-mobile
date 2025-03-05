@@ -122,12 +122,12 @@ extension StringExtensions on String {
   String get imagePath => 'lib/src/res/$this';
 }
 
-Future<void> showCustomBottomSheet(
+Future<T?> showCustomBottomSheet<T>(
   context, {
   required Widget widget,
   Color color = Colors.white,
 }) async {
-  showModalBottomSheet(
+  return showModalBottomSheet<T>(
     context: context,
     backgroundColor: color,
     scrollControlDisabledMaxHeightRatio: 1,
@@ -186,4 +186,12 @@ class CropAspectRatioPresetCustom implements CropAspectRatioPresetData {
 
   @override
   String get name => '2x3 (customized)';
+}
+
+String formatCurrency(double amount) {
+  final format = NumberFormat.currency(
+    symbol: '',
+    decimalDigits: 0,
+  );
+  return '${format.format(amount)} XAF';
 }

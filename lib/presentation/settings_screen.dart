@@ -64,15 +64,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: const Text(
                 "Display",
               ),
-              subtitle: currency != null
-                  ? Text(
-                      currency?.code ?? "",
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    )
-                  : null,
               trailing: Icon(
                 Icons.arrow_forward_ios,
                 size: 16.sp,

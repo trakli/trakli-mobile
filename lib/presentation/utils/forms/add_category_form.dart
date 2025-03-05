@@ -116,8 +116,10 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
               child: Builder(builder: (context) {
                 return PrimaryButton(
                   onPress: () {
-                    Form.of(context).validate();
                     hideKeyBoard();
+                    if(Form.of(context).validate()){
+                      // Do something
+                    }
                   },
                   buttonText: "Create category",
                   backgroundColor: widget.accentColor,

@@ -142,7 +142,7 @@ class _TransactionTileState extends State<TransactionTile> {
                             ),
                           ),
                           Text(
-                            "Paul Erica",
+                            "James Bond",
                             style: TextStyle(
                               color: Colors.blueAccent,
                               fontSize: 10.sp,

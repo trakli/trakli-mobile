@@ -18,6 +18,16 @@ class WalletTransferScreen extends StatefulWidget {
 
 class _WalletTransferScreenState extends State<WalletTransferScreen> {
   Currency? currency;
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _exchangeRateController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _exchangeRateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +47,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
           vertical: 16.h,
         ),
         child: Form(
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -204,6 +215,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                     Expanded(
                       child: TextFormField(
                         keyboardType: TextInputType.number,
+                        controller: _amountController,
                         decoration: const InputDecoration(
                           hintText: "Ex: 250 000",
                         ),
@@ -271,6 +283,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
               SizedBox(height: 8.h),
               TextFormField(
                 keyboardType: TextInputType.number,
+                controller: _exchangeRateController,
                 decoration: const InputDecoration(
                   hintText: "Ex: 25%",
                 ),
@@ -293,21 +306,19 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
               SizedBox(
                 height: 54.h,
                 width: double.infinity,
-                child: Builder(builder: (context) {
-                  return Builder(builder: (context) {
-                    return PrimaryButton(
-                      onPress: () {
-                        Form.of(context).validate();
-                        hideKeyBoard();
-                      },
-                      buttonText: "Transfer money",
-                      backgroundColor: Theme.of(context).primaryColor,
-                      iconPath: Assets.images.arrowSwapHorizontal,
-                      iconColor: Colors.white,
-                      textDirection: ui.TextDirection.rtl,
-                    );
-                  });
-                }),
+                child: PrimaryButton(
+                  onPress: () {
+                    hideKeyBoard();
+                    if(_formKey.currentState!.validate()) {
+                      // Do something
+                    }
+                  },
+                  buttonText: "Transfer money",
+                  backgroundColor: Theme.of(context).primaryColor,
+                  iconPath: Assets.images.arrowSwapHorizontal,
+                  iconColor: Colors.white,
+                  textDirection: ui.TextDirection.rtl,
+                ),
               ),
             ],
           ),

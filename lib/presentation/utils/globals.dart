@@ -1,9 +1,6 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:trakli/domain/models/category_model.dart';
-import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -22,89 +19,6 @@ final List<String> supportedFormDisplays = [
   'compact',
 ];
 
-class ChartData {
-  ChartData(this.property, this.value, [this.color]);
-
-  final String property;
-  final double value;
-  final Color? color;
-}
-
-final List<ChartData> summaryData = [
-  ChartData(
-    'Total Expense',
-    24478,
-    expenseRedText,
-  ),
-  ChartData(
-    'Total Income',
-    138000,
-    const Color(0xFF047844),
-  ),
-];
-
-final List<ChartData> chartData = [
-  ChartData(
-    'Food',
-    30,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Education',
-    20,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Clothes',
-    20,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Rents',
-    10,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Girls',
-    10,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Other',
-    15,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-];
 
 List<CategoryModel> incomeTransactions = const [
   CategoryModel(

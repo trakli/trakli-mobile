@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:trakli/domain/providers/chart_data_provider.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 
 class GraphWidget extends StatelessWidget {
@@ -9,13 +10,7 @@ class GraphWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<ChartStatistics> chartData = [
-      ChartStatistics("10", 100, 500),
-      ChartStatistics("11", 440, 228),
-      ChartStatistics("12", 300, 50),
-      ChartStatistics("13", 550, 30),
-      ChartStatistics("14", 350, 350),
-    ];
+    final List<ChartStatistics> chartData = StatisticsProvider().getChartData();
     return SfCartesianChart(
       title: ChartTitle(
         text: "138,000 XAF",

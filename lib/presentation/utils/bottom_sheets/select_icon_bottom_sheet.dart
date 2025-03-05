@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -241,12 +244,16 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Column(
+              spacing: 4.h,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    pickImageApp(
+                  onTap: () async {
+                    File? pickedFile = await pickImageApp(
                       sourcePick: ImageSource.camera,
                     );
+                    if (pickedFile != null) {
+                      AppNavigator.pop(context, pickedFile);
+                    }
                   },
                   child: Container(
                     width: 50.w,
@@ -274,8 +281,11 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
               spacing: 4.h,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    pickImageApp();
+                  onTap: () async {
+                    File? pickedFile = await pickImageApp();
+                    if (pickedFile != null) {
+                      AppNavigator.pop(context, pickedFile);
+                    }
                   },
                   child: Container(
                     width: 50.w,
@@ -349,7 +359,9 @@ class _SelectIconBottomSheetState extends State<SelectIconBottomSheet> {
         ),
         SizedBox(height: 16.h),
         EmojiPicker(
-          onEmojiSelected: (Category? category, Emoji emoji) {},
+          onEmojiSelected: (Category? category, Emoji emoji) {
+            AppNavigator.pop(context, emoji);
+          },
           config: Config(
             height: 340.h,
             checkPlatformCompatibility: true,

@@ -90,7 +90,9 @@ class _DisplaySettingsScreenState extends State<DisplaySettingsScreen> {
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              onTap: () {},
+              onTap: () {
+                _showThemeModeSheet(context);
+              },
               leading: Container(
                 width: 40.w,
                 height: 40.h,
@@ -103,11 +105,14 @@ class _DisplaySettingsScreenState extends State<DisplaySettingsScreen> {
                   color: Colors.white,
                 ),
               ),
-              title: Text(
+              title: const Text(
                 "Theme Mode",
+              ),
+              subtitle: Text(
+                ThemeMode.system.toString().split('.').last,
                 style: TextStyle(
+                  fontSize: 12.sp,
                   color: Theme.of(context).primaryColor,
-                  fontSize: 16.sp,
                 ),
               ),
               trailing: Icon(
@@ -154,6 +159,61 @@ class _DisplaySettingsScreenState extends State<DisplaySettingsScreen> {
                 ),
               ),
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showThemeModeSheet(BuildContext context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: CupertinoActionSheet(
+            title: const Text("Select Theme Mode"),
+            actions: [
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  // TODO: Implement theme switching
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Light",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  // TODO: Implement theme switching
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Dark",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  // TODO: Implement theme switching
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "System",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },

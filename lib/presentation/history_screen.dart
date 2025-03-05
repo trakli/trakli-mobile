@@ -85,7 +85,6 @@ class HistoryScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              onTap: () async {},
             ),
             SizedBox(height: 16.h),
             ListView.separated(

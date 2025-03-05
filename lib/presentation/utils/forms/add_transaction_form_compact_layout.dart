@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:trakli/domain/models/chart_data_model.dart';
+import 'package:trakli/domain/providers/chart_data_provider.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/add_wallet_screen.dart';
@@ -12,7 +14,6 @@ import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
 import 'package:trakli/presentation/utils/dialogs/add_party_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
-import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 
 class AddTransactionFormCompactLayout extends StatefulWidget {
@@ -40,6 +41,7 @@ class _AddTransactionFormCompactLayoutState
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   Currency? currency;
+  final pieData = StatisticsProvider().getPieData;
 
   @override
   void initState() {
@@ -173,7 +175,7 @@ class _AddTransactionFormCompactLayoutState
                             label: "",
                             accentColor: widget.accentColor,
                             items: (filter, infiniteScrollProps) {
-                              return chartData
+                              return pieData
                                   .map((data) => data)
                                   .toList()
                                   .where((ChartData el) => el.property
@@ -336,7 +338,7 @@ class _AddTransactionFormCompactLayoutState
                             label: "",
                             accentColor: widget.accentColor,
                             items: (filter, infiniteScrollProps) {
-                              return chartData
+                              return pieData
                                   .map((data) => data)
                                   .toList()
                                   .where((ChartData el) => el.property
@@ -411,7 +413,7 @@ class _AddTransactionFormCompactLayoutState
                             label: "",
                             accentColor: widget.accentColor,
                             items: (filter, infiniteScrollProps) {
-                              return chartData
+                              return pieData
                                   .map((data) => data)
                                   .toList()
                                   .where((ChartData el) => el.property
@@ -592,7 +594,9 @@ class _AddTransactionFormCompactLayoutState
                           WidgetStatePropertyAll(widget.accentColor),
                     ),
                     onPressed: () {
-                      Form.of(context).validate();
+                      if(Form.of(context).validate()){
+                        // Do something
+                      }
                     },
                     child: Row(
                       spacing: 8.w,

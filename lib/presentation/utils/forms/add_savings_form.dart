@@ -64,8 +64,10 @@ class AddSavingsForm extends StatelessWidget {
                   builder: (context) {
                     return ElevatedButton(
                       onPressed: () {
-                        Form.of(context).validate();
                         hideKeyBoard();
+                        if(Form.of(context).validate()){
+                          // Do something
+                        }
                       },
                       child: Row(
                         spacing: 8.w,
