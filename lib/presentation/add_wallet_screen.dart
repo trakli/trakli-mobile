@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/forms/add_wallet_form.dart';
 class AddWalletScreen extends StatelessWidget {
@@ -13,21 +12,7 @@ class AddWalletScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         headerTextColor: Colors.white,
         titleText: "Add wallet",
-        leading: IconButton(
-          style: const ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(
-              Color(0xFFEBEDEC),
-            ),
-          ),
-          onPressed: () {
-            AppNavigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 20.r,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
+        leading: const CustomBackButton(),
       ),
       body: const AddWalletForm(),
     );

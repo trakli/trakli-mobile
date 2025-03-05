@@ -5,34 +5,36 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<File?> pickFile() async {
- try{
-   final result = await FilePicker.platform.pickFiles(
-     type: FileType.custom,
-     allowedExtensions: ['png', 'jpg', 'jpeg', 'pdf'],
-     withData: true,
-   );
-   if (result != null) {
-     final fileSize = result.files.single.size;
-     const maxSize = 5 * 1024 * 1024; // 5MB
-     if (fileSize > maxSize) {
-       throw Exception('File size exceeds 5MB limit');
-     }
-     File file = File(result.files.single.path!);
-     return file;
-   } else {
-     return null;
-   }
- } catch (e) {
+  try {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['png', 'jpg', 'jpeg', 'pdf'],
+      withData: true,
+    );
+    if (result != null) {
+      final fileSize = result.files.single.size;
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (fileSize > maxSize) {
+        throw Exception('File size exceeds 5MB limit');
+      }
+      File file = File(result.files.single.path!);
+      return file;
+    } else {
+      return null;
+    }
+  } catch (e) {
     rethrow;
   }
 }
 
 Future<void> openUrl({required String url}) async {
-
   if (!await launchUrl(
     Uri.parse(url),
     mode: LaunchMode.externalApplication,
@@ -80,6 +82,16 @@ String getLanguageFromCode(Locale locale) {
   }
 }
 
+String getFormDisplayText(String displayMode) {
+  switch (displayMode) {
+    case "full":
+      return "Full";
+    case "compact":
+      return "Compact";
+    default:
+      return "";
+  }
+}
 
 Widget flagWidget(Currency currency) {
   if (currency.flag == null) {
@@ -108,4 +120,78 @@ Widget flagWidget(Currency currency) {
 
 extension StringExtensions on String {
   String get imagePath => 'lib/src/res/$this';
+}
+
+Future<T?> showCustomBottomSheet<T>(
+  context, {
+  required Widget widget,
+  Color color = Colors.white,
+}) async {
+  return showModalBottomSheet<T>(
+    context: context,
+    backgroundColor: color,
+    scrollControlDisabledMaxHeightRatio: 1,
+    builder: (context) {
+      return widget;
+    },
+  );
+}
+
+Future<File?> pickImageApp({
+  ImageSource sourcePick = ImageSource.gallery,
+}) async {
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(
+    source: sourcePick,
+  );
+  if (pickedFile != null) {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: pickedFile.path,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: appPrimaryColor,
+          activeControlsWidgetColor: appPrimaryColor,
+          toolbarWidgetColor: Colors.white,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9,
+            CropAspectRatioPresetCustom(),
+          ],
+        ),
+        IOSUiSettings(
+          title: 'Cropper',
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPresetCustom(), // IMPORTANT: iOS supports only one custom aspect ratio in preset list
+          ],
+        ),
+      ],
+
+    );
+    if (croppedFile != null) {
+      return File(croppedFile.path);
+    }
+  }
+  return null;
+}
+
+class CropAspectRatioPresetCustom implements CropAspectRatioPresetData {
+  @override
+  (int, int)? get data => (2, 3);
+
+  @override
+  String get name => '2x3 (customized)';
+}
+
+String formatCurrency(double amount) {
+  final format = NumberFormat.currency(
+    symbol: '',
+    decimalDigits: 0,
+  );
+  return '${format.format(amount)} XAF';
 }

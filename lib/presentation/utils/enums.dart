@@ -28,3 +28,9 @@ enum NavigationScreen {
     }
   }
 }
+
+enum SelectIconType {
+  selectIcon,
+  selectEmoji,
+  selectFromGalleryOrCamera,
+}

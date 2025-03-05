@@ -2,44 +2,74 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/presentation/utils/colors.dart';
 
 class GroupTile extends StatelessWidget {
   const GroupTile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          shape: BoxShape.circle,
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(
+          width: 0.5,
+          color: transactionTileBorderColor,
         ),
-        child: Text(
-          "PE",
-          style: TextStyle(
-            fontSize: 16.sp,
-            color: Colors.white,
+      ),
+      padding: EdgeInsets.all(8.r),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16.w,
+        children: [
+          Container(
+            padding: EdgeInsets.all(12.r),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(
+              Icons.groups_outlined,
+              size: 20.sp,
+              color: Theme.of(context).primaryColor,
+            ),
           ),
-        ),
-      ),
-      title: const Text(
-        "Office Elements",
-        style: TextStyle(
-          fontSize: 14,
-          color: Color(0xFF061D23),
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      subtitle: Text(
-        "Here you store your office Elements",
-        style: TextStyle(
-          fontSize: 12.sp,
-          color: const Color(0xFF576760),
-        ),
-      ),
-      trailing: SvgPicture.asset(
-        Assets.images.arrowRight,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4.h,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Office Elements",
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: const Color(0xFF061D23),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      Assets.images.arrowRight,
+                      width: 24.w,
+                      height: 24.h,
+                    ),
+                  ],
+                ),
+                Text(
+                  "Here you store your office Elements",
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: const Color(0xFF576760),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -30,7 +30,6 @@ class AddGroupsForm extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             TextFormField(
-              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: LocaleKeys.groupEnterGroupName.tr(),
               ),
@@ -53,7 +52,6 @@ class AddGroupsForm extends StatelessWidget {
             SizedBox(height: 8.h),
             TextFormField(
               maxLines: 3,
-              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: LocaleKeys.typeHere.tr(),
               ),
@@ -66,8 +64,10 @@ class AddGroupsForm extends StatelessWidget {
                 builder: (context) {
                   return ElevatedButton(
                     onPressed: () {
-                      Form.of(context).validate();
                       hideKeyBoard();
+                      if(Form.of(context).validate()){
+                        // Do something
+                      }
                     },
                     child: Row(
                       spacing: 8.w,

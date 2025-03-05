@@ -7,7 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/display_settings_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/about_app_bottom_sheet.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/globals.dart';
@@ -28,21 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          style: const ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(
-              Color(0xFFEBEDEC),
-            ),
-          ),
-          onPressed: () {
-            AppNavigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 20.r,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
+        leading: const CustomBackButton(),
         titleText: LocaleKeys.settings.tr(),
         headerTextColor: const Color(0xFFEBEDEC),
         actions: [
@@ -56,6 +44,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         child: Column(
           children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              onTap: () {
+                AppNavigator.push(context, const DisplaySettingsScreen());
+              },
+              leading: Container(
+                width: 40.w,
+                height: 40.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                ),
+                child: Icon(
+                  Icons.display_settings,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              title: const Text(
+                "Display",
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                size: 16.sp,
+              ),
+            ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               onTap: () {
@@ -146,13 +159,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  backgroundColor: Colors.white,
-                  scrollControlDisabledMaxHeightRatio: 1,
-                  builder: (context) {
-                    return const AboutAppBottomSheet();
-                  },
+                showCustomBottomSheet(
+                  context,
+                  widget: const AboutAppBottomSheet(),
                 );
               },
               leading: Container(
@@ -216,4 +225,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
-

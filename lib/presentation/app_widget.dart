@@ -37,6 +37,41 @@ class AppWidget extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFEBEDEC),
         brightness: Theme.of(context).brightness,
         useMaterial3: true,
+        datePickerTheme: DatePickerThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          headerBackgroundColor: const Color(0xFF047844),
+          headerForegroundColor: Colors.white,
+          todayBackgroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          todayForegroundColor: const WidgetStatePropertyAll(Colors.white),
+          cancelButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          ),
+          confirmButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          ),
+        ),
+        timePickerTheme: TimePickerThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          backgroundColor: Colors.white,
+          cancelButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          ),
+          confirmButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(appPrimaryColor),
+          ),
+          dayPeriodColor: appPrimaryColor.withAlpha(50),
+          dayPeriodBorderSide: BorderSide(
+            color: Colors.grey.shade500,
+          ),
+          dayPeriodShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          dialHandColor: appPrimaryColor,
+        ),
         textTheme: TextTheme(
           headlineMedium: TextStyle(
             fontWeight: FontWeight.bold,
@@ -122,7 +157,26 @@ class AppWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-
+          ),
+        ),
+        popupMenuTheme: PopupMenuThemeData(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            side: const BorderSide(
+              color: Color(0xFFE6E8E9),
+            ),
+          ),
+          menuPadding: EdgeInsets.symmetric(
+            vertical: 8.h,
+            horizontal: 0,
+          ),
+          position: PopupMenuPosition.under,
+          labelTextStyle: WidgetStatePropertyAll(
+            TextStyle(
+              fontSize: 14.sp,
+              color: const Color(0XFF00171F),
+            ),
           ),
         ),
       ),

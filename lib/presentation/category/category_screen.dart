@@ -6,6 +6,7 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/category/add_category_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/category_tile.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -42,21 +43,7 @@ class _CategoryScreenState extends State<CategoryScreen>
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          style: const ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(
-              Color(0xFFEBEDEC),
-            ),
-          ),
-          onPressed: () {
-            AppNavigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 20.r,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
+        leading: const CustomBackButton(),
         titleText: "Categories",
         headerTextColor: const Color(0xFFEBEDEC),
         actions: [
@@ -183,24 +170,38 @@ class _CategoryScreenState extends State<CategoryScreen>
     required Color accentColor,
   }) {
     if (type == TransactionType.income) {
-      return ListView(
-        shrinkWrap: true,
-        children: incomeTransactions.map<Widget>((item) {
+      return ListView.separated(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 16.h,
+        ),
+        itemBuilder: (context, index) {
           return CategoryTile(
             accentColor: accentColor,
-            category: item,
+            category: incomeTransactions[index],
           );
-        }).toList(),
+        },
+        separatorBuilder: (context, index) {
+          return SizedBox(height: 8.h);
+        },
+        itemCount: incomeTransactions.length,
       );
     } else {
-      return ListView(
-        shrinkWrap: true,
-        children: expenseTransactions.map<Widget>((item) {
+      return ListView.separated(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 16.h,
+        ),
+        itemBuilder: (context, index) {
           return CategoryTile(
             accentColor: accentColor,
-            category: item,
+            category: expenseTransactions[index],
           );
-        }).toList(),
+        },
+        separatorBuilder: (context, index) {
+          return SizedBox(height: 8.h);
+        },
+        itemCount: expenseTransactions.length,
       );
     }
   }

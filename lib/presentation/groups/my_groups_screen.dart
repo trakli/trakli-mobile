@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/groups/add_group_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/group_tile.dart';
 
@@ -15,26 +16,12 @@ class MyGroupsScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          style: const ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(
-              Color(0xFFEBEDEC),
-            ),
-          ),
-          onPressed: () {
-            AppNavigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 20.r,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
+        leading: const CustomBackButton(),
         titleText: LocaleKeys.groupsMyGroups.tr(),
         headerTextColor: const Color(0xFFEBEDEC),
         actions: [
           InkWell(
-            onTap: (){
+            onTap: () {
               AppNavigator.push(context, const AddGroupScreen());
             },
             child: Container(
@@ -42,7 +29,7 @@ class MyGroupsScreen extends StatelessWidget {
               height: 40.h,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.r),
-                color:  const Color(0xFFEBEDEC),
+                color: const Color(0xFFEBEDEC),
               ),
               padding: EdgeInsets.all(8.r),
               child: Center(
@@ -57,25 +44,20 @@ class MyGroupsScreen extends StatelessWidget {
           SizedBox(width: 16.w),
         ],
       ),
-      body: Container(
+      body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,
           vertical: 16.h,
         ),
-        margin: EdgeInsets.all(16.sp),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(
-            color: const Color(0xFFB8BBB4),
-          ),
-        ),
-        child: ListView(
+        child: ListView.separated(
           shrinkWrap: true,
-          children: List.generate(
-            5,
-            (index) => const GroupTile(),
-          ),
+          itemBuilder: (context, index) {
+            return const GroupTile();
+          },
+          separatorBuilder: (context, index) {
+            return SizedBox(height: 8.h);
+          },
+          itemCount: 5,
         ),
       ),
     );

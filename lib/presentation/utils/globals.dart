@@ -1,6 +1,5 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:trakli/domain/models/category_model.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
@@ -15,76 +14,11 @@ final List<Locale> supportedLanguages = [
   const Locale('it'),
 ];
 
-class ChartData {
-  ChartData(this.property, this.value, [this.color]);
-
-  final String property;
-  final double value;
-  final Color? color;
-}
-
-final List<ChartData> chartData = [
-  ChartData(
-    'Food',
-    30,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Education',
-    20,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Clothes',
-    20,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Rents',
-    10,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Girls',
-    10,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
-  ChartData(
-    'Other',
-    15,
-    Color.fromARGB(
-      255,
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-      math.Random().nextInt(256),
-    ),
-  ),
+final List<String> supportedFormDisplays = [
+  'full',
+  'compact',
 ];
+
 
 List<CategoryModel> incomeTransactions = const [
   CategoryModel(
@@ -156,7 +90,6 @@ List<CategoryModel> expenseTransactions = const [
   ),
 ];
 
-
 final List<IconData> availableIcons = [
   Icons.home,
   Icons.shopping_cart,
@@ -209,4 +142,87 @@ final List<IconData> availableIcons = [
   Icons.directions_bike,
   Icons.cake,
   Icons.sanitizer,
+];
+
+final List<HeroIcons> heroIconsCategories = [
+  HeroIcons.academicCap,
+  HeroIcons.arrowTrendingDown,
+  HeroIcons.arrowTrendingUp,
+  HeroIcons.banknotes,
+  HeroIcons.battery100,
+  HeroIcons.bellAlert,
+  HeroIcons.bolt,
+  HeroIcons.bookOpen,
+  HeroIcons.briefcase,
+  HeroIcons.buildingLibrary,
+  HeroIcons.buildingOffice,
+  HeroIcons.buildingOffice2,
+  HeroIcons.cake,
+  HeroIcons.calculator,
+  HeroIcons.calendarDays,
+  HeroIcons.camera,
+  HeroIcons.chartBar,
+  HeroIcons.clock,
+  HeroIcons.cog6Tooth,
+  HeroIcons.computerDesktop,
+  HeroIcons.creditCard,
+  HeroIcons.currencyDollar,
+  HeroIcons.devicePhoneMobile,
+  HeroIcons.envelope,
+  HeroIcons.envelopeOpen,
+  HeroIcons.exclamationCircle,
+  HeroIcons.exclamationTriangle,
+  HeroIcons.eye,
+  HeroIcons.eyeDropper,
+  HeroIcons.film,
+  HeroIcons.folder,
+  HeroIcons.gift,
+  HeroIcons.globeAlt,
+  HeroIcons.heart,
+  HeroIcons.home,
+  HeroIcons.homeModern,
+  HeroIcons.identification,
+  HeroIcons.hashtag,
+  HeroIcons.lifebuoy,
+  HeroIcons.lightBulb,
+  HeroIcons.inboxArrowDown,
+  HeroIcons.mapPin,
+  HeroIcons.megaphone,
+  HeroIcons.microphone,
+  HeroIcons.moon,
+  HeroIcons.musicalNote,
+  HeroIcons.pencilSquare,
+  HeroIcons.phoneXMark,
+  HeroIcons.presentationChartLine,
+  HeroIcons.photo,
+  HeroIcons.phone,
+  HeroIcons.phoneArrowUpRight,
+  HeroIcons.printer,
+  HeroIcons.questionMarkCircle,
+  HeroIcons.radio,
+  HeroIcons.receiptPercent,
+  HeroIcons.receiptRefund,
+  HeroIcons.rectangleStack,
+  HeroIcons.rocketLaunch,
+  HeroIcons.rss,
+  HeroIcons.scissors,
+  HeroIcons.shoppingBag,
+  HeroIcons.shoppingCart,
+  HeroIcons.signal,
+  HeroIcons.share,
+  HeroIcons.star,
+  HeroIcons.sparkles,
+  HeroIcons.speakerWave,
+  HeroIcons.tag,
+  HeroIcons.ticket,
+  HeroIcons.trash,
+  HeroIcons.trophy,
+  HeroIcons.truck,
+  HeroIcons.tv,
+  HeroIcons.user,
+  HeroIcons.users,
+  HeroIcons.videoCamera,
+  HeroIcons.wifi,
+  HeroIcons.wrench,
+  HeroIcons.wrenchScrewdriver,
 ];

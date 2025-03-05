@@ -2,12 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:trakli/domain/providers/local_storage.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/forms/add_transaction_form.dart';
+import 'package:trakli/presentation/utils/forms/add_transaction_form_compact_layout.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
@@ -19,10 +21,17 @@ class AddTransactionScreen extends StatefulWidget {
 class _AddTransactionScreenState extends State<AddTransactionScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
+  String? formDisplay = 'full';
 
   @override
   void initState() {
     super.initState();
+    LocalStorage().getTransactionFormDisplay().then((val) {
+      setState(() {
+        formDisplay = val;
+      });
+    });
+
     tabController = TabController(length: 2, vsync: this);
     tabController.addListener(() {
       setState(() {});
@@ -40,22 +49,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          style: const ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(
-              Color(0xFFEBEDEC),
-            ),
-          ),
-          onPressed: () {
-            AppNavigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 20.r,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
-        headerTextColor:  const Color(0xFFEBEDEC),
+        leading: const CustomBackButton(),
+        headerTextColor: const Color(0xFFEBEDEC),
         titleText: LocaleKeys.addTransaction.tr(),
       ),
       body: Column(
@@ -129,12 +124,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
               controller: tabController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                AddTransactionForm(
-                  accentColor: Theme.of(context).primaryColor,
-                ),
-                const AddTransactionForm(
-                  transactionType: TransactionType.expense,
-                ),
+                formDisplay == 'full'
+                    ? AddTransactionForm(
+                        accentColor: Theme.of(context).primaryColor,
+                      )
+                    : AddTransactionFormCompactLayout(
+                        accentColor: Theme.of(context).primaryColor,
+                      ),
+                formDisplay == 'full'
+                    ? const AddTransactionForm(
+                        transactionType: TransactionType.expense,
+                      )
+                    : const AddTransactionFormCompactLayout(
+                        transactionType: TransactionType.expense,
+                      ),
               ],
             ),
           ),

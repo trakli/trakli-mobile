@@ -6,6 +6,7 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/add_transaction_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/transaction_tile.dart';
@@ -18,21 +19,7 @@ class HistoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          style: const ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(
-              Color(0xFFEBEDEC),
-            ),
-          ),
-          onPressed: () {
-            AppNavigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 20.r,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
+        leading: const CustomBackButton(),
         titleText: LocaleKeys.transactionHistory.tr(),
         headerTextColor: const Color(0xFFEBEDEC),
         actions: [
@@ -60,7 +47,7 @@ class HistoryScreen extends StatelessWidget {
           SizedBox(width: 16.w),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,
           vertical: 16.h,
@@ -98,32 +85,25 @@ class HistoryScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              onTap: () async {},
             ),
             SizedBox(height: 16.h),
-            Container(
-              padding: EdgeInsets.all(16.sp),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: const Color(0xFFB8BBB4),
-                ),
-              ),
-              child: ListView(
-                shrinkWrap: true,
-                children: List.generate(
-                  5,
-                  (index) => TransactionTile(
-                    transactionType: (index % 2 == 0)
-                        ? TransactionType.income
-                        : TransactionType.expense,
-                    accentColor: (index % 2 == 0)
-                        ? Theme.of(context).primaryColor
-                        : const Color(0xFFEB5757),
-                  ),
-                ),
-              ),
+            ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: 14,
+              separatorBuilder: (context, index) {
+                return SizedBox(height: 8.h);
+              },
+              itemBuilder: (context, index) {
+                return TransactionTile(
+                  transactionType: (index % 2 == 0)
+                      ? TransactionType.income
+                      : TransactionType.expense,
+                  accentColor: (index % 2 == 0)
+                      ? Theme.of(context).primaryColor
+                      : const Color(0xFFEB5757),
+                );
+              },
             ),
           ],
         ),
