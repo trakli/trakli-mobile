@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
-import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -24,24 +24,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        leading: InkWell(
-          onTap: () {
-            AppNavigator.pop(context);
-          },
-          child: Container(
-            width: 42.r,
-            height: 42.r,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
-              color: const Color(0xFFEBEDEC),
-            ),
-            child: Icon(
-              Icons.arrow_back,
-              size: 20.r,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-        ),
+        leading: const CustomBackButton(),
         titleText: 'Wallet transfer',
         headerTextColor: const Color(0xFFEBEDEC),
         actions: [

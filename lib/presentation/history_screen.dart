@@ -6,6 +6,7 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/add_transaction_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/transaction_tile.dart';
@@ -18,24 +19,7 @@ class HistoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        leading: InkWell(
-          onTap: (){
-            AppNavigator.pop(context);
-          },
-          child: Container(
-            width: 42.r,
-            height: 42.r,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
-              color:  const Color(0xFFEBEDEC),
-            ),
-            child: Icon(
-              Icons.arrow_back,
-              size: 20.r,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-        ),
+        leading: const CustomBackButton(),
         titleText: LocaleKeys.transactionHistory.tr(),
         headerTextColor: const Color(0xFFEBEDEC),
         actions: [
