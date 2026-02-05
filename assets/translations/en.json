@@ -539,5 +539,8 @@
   "appUpdateReadyToInstall": "Update ready to install",
   "appUpdateRestart": "Restart",
   "appUpdateReady": "Update ready",
-  "appUpdateRestartPrompt": "A new version has been downloaded. Restart now to apply the update?"
+  "appUpdateRestartPrompt": "A new version has been downloaded. Restart now to apply the update?",
+  "orphanedMediaCleanupLog": "Orphaned media cleanup log",
+  "orphanedMediaCleanupLogDesc": "View last run log (debug only)",
+  "orphanedMediaCleanupLogEmpty": "No log file yet. A log is written here when the cleanup runs in debug and deletes one or more orphaned files."
 }

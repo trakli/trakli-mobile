@@ -10,7 +10,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/core/constants/key_constants.dart';
+import 'package:trakli/core/services/orphaned_media_cleanup_service.dart';
 import 'package:trakli/core/sync/sync_database.dart';
+import 'package:trakli/data/datasources/media_file/media_file_local_datasource.dart';
 import 'package:trakli/core/utils/services/logger.dart';
 import 'package:trakli/data/datasources/auth/preference_manager.dart';
 import 'package:trakli/di/injection.dart';
@@ -129,6 +131,20 @@ class _AppViewState extends State<AppView> {
   initState() {
     super.initState();
     clearKeychainValues();
+    _scheduleOrphanedMediaCleanup();
+  }
+
+  void _scheduleOrphanedMediaCleanup() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 3), () async {
+        try {
+          final dataSource = getIt<MediaFileLocalDataSource>();
+          await runOrphanedMediaCleanup(
+            getAllMediaFiles: dataSource.getAllMediaFiles,
+          );
+        } catch (_) {}
+      });
+    });
   }
 
   /// Called when the update gate is done (mymo: goHome). Set flag and trigger auth

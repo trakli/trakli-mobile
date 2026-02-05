@@ -12,22 +12,22 @@ abstract class MediaFileLocalDataSource {
   /// Copies the file at [sourcePath] into the app's media directory and returns the stored path.
   /// If [sourcePath] is already under the app media directory, returns it as-is.
   /// Call this when persisting attachments so the file is moved only at save time.
+  /// This avoid creating unneccessary files in the media directory.
   Future<String> copyToStoredLocation(String sourcePath);
 
-  /// Creates and inserts a media row for a transaction attachment. Returns the inserted entity.
   Future<MediaFile> insertMediaForTransaction(
     String transactionClientId,
     String filePath,
   );
 
+  Future<List<MediaFile>> getAllMediaFiles();
+
   Future<MediaFile?> getByPath(String path);
 
-  /// Returns the media row with the given server [id], or null if not found.
   Future<MediaFile?> getById(int id);
 
   Future<List<MediaFile>> getForTransaction(String transactionClientId);
 
-  /// Deletes the media row by path. Returns the deleted entity, or null if not found.
   Future<MediaFile?> deleteByPath(String path);
 }
 
@@ -76,6 +76,11 @@ class MediaFileLocalDataSourceImpl implements MediaFileLocalDataSource {
     await database.mediaFiles
         .insertOne(media, mode: InsertMode.insertOrReplace);
     return media;
+  }
+
+  @override
+  Future<List<MediaFile>> getAllMediaFiles() async {
+    return database.select(database.mediaFiles).get();
   }
 
   @override

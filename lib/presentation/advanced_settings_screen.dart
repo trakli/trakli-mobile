@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/orphaned_media_cleanup_log_screen.dart';
 import 'package:trakli/presentation/sync_history_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/back_button.dart';
@@ -59,6 +61,43 @@ class AdvancedSettingsScreen extends StatelessWidget {
                 size: 16.sp,
               ),
             ),
+            if (kDebugMode) ...[
+              SizedBox(height: 24.h),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                onTap: () {
+                  AppNavigator.push(
+                    context,
+                    const OrphanedMediaCleanupLogScreen(),
+                  );
+                },
+                leading: Container(
+                  width: 40.w,
+                  height: 40.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    color:
+                        Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                  ),
+                  child: Icon(
+                    Icons.folder_open,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                title: Text(LocaleKeys.orphanedMediaCleanupLog.tr()),
+                subtitle: Text(
+                  LocaleKeys.orphanedMediaCleanupLogDesc.tr(),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16.sp,
+                ),
+              ),
+            ],
             SizedBox(height: 24.h),
           ],
         ),

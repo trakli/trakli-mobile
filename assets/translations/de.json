@@ -539,5 +539,8 @@
   "appUpdateReadyToInstall": "Update bereit zur Installation",
   "appUpdateRestart": "Neustart",
   "appUpdateReady": "Update bereit",
-  "appUpdateRestartPrompt": "Eine neue Version wurde heruntergeladen. Jetzt neu starten, um das Update anzuwenden?"
+  "appUpdateRestartPrompt": "Eine neue Version wurde heruntergeladen. Jetzt neu starten, um das Update anzuwenden?",
+  "orphanedMediaCleanupLog": "Bereinigung verwaister Medien (Log)",
+  "orphanedMediaCleanupLogDesc": "Letztes Lauf-Log anzeigen (nur Debug)",
+  "orphanedMediaCleanupLogEmpty": "Noch keine Logdatei. Ein Log wird hier geschrieben, wenn die Bereinigung im Debug-Modus läuft und eine oder mehrere verwaiste Dateien löscht."
 }

@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const appName = 'appName';
   static const welcomeText = 'welcomeText';
   static const welcomeTo = 'welcomeTo';
@@ -57,7 +57,8 @@ abstract class  LocaleKeys {
   static const moneyReceived = 'moneyReceived';
   static const totalCompanies = 'totalCompanies';
   static const transactionLast30Days = 'transactionLast30Days';
-  static const transactionLast30DaysPerParties = 'transactionLast30DaysPerParties';
+  static const transactionLast30DaysPerParties =
+      'transactionLast30DaysPerParties';
   static const totalExpenses = 'totalExpenses';
   static const totalSavings = 'totalSavings';
   static const totalSpent = 'totalSpent';
@@ -317,7 +318,8 @@ abstract class  LocaleKeys {
   static const partyTypePartnership = 'partyTypePartnership';
   static const partyTypeNonProfit = 'partyTypeNonProfit';
   static const partyTypeGovernmentAgency = 'partyTypeGovernmentAgency';
-  static const partyTypeEducationalInstitution = 'partyTypeEducationalInstitution';
+  static const partyTypeEducationalInstitution =
+      'partyTypeEducationalInstitution';
   static const partyTypeHealthcareProvider = 'partyTypeHealthcareProvider';
   static const selectPartyType = 'selectPartyType';
   static const selectDateOrDateRange = 'selectDateOrDateRange';
@@ -356,9 +358,11 @@ abstract class  LocaleKeys {
   static const dataDeletionEmailSubject = 'dataDeletionEmailSubject';
   static const dataDeletionEmailBody = 'dataDeletionEmailBody';
   static const dataDeletionFallbackTitle = 'dataDeletionFallbackTitle';
-  static const dataDeletionFallbackInstructions = 'dataDeletionFallbackInstructions';
+  static const dataDeletionFallbackInstructions =
+      'dataDeletionFallbackInstructions';
   static const dataDeletionFallbackEmailTo = 'dataDeletionFallbackEmailTo';
-  static const dataDeletionFallbackSubjectLabel = 'dataDeletionFallbackSubjectLabel';
+  static const dataDeletionFallbackSubjectLabel =
+      'dataDeletionFallbackSubjectLabel';
   static const dataDeletionFallbackBodyLabel = 'dataDeletionFallbackBodyLabel';
   static const copiedToClipboard = 'copiedToClipboard';
   static const partyEducationBanner = 'partyEducationBanner';
@@ -394,7 +398,8 @@ abstract class  LocaleKeys {
   static const emptyTransactionTipText = 'emptyTransactionTipText';
   static const quickStart = 'quickStart';
   static const emptyTransactionTitleOne = 'emptyTransactionTitleOne';
-  static const emptyTransactionDescriptionOne = 'emptyTransactionDescriptionOne';
+  static const emptyTransactionDescriptionOne =
+      'emptyTransactionDescriptionOne';
   static const emptyTransactionInfo1 = 'emptyTransactionInfo1';
   static const emptyTransactionInfo2 = 'emptyTransactionInfo2';
   static const emptyTransactionInfo3 = 'emptyTransactionInfo3';
@@ -532,6 +537,9 @@ abstract class  LocaleKeys {
   static const files = 'files';
   static const noImages = 'noImages';
   static const noFiles = 'noFiles';
+  static const orphanedMediaCleanupLog = 'orphanedMediaCleanupLog';
+  static const orphanedMediaCleanupLogDesc = 'orphanedMediaCleanupLogDesc';
+  static const orphanedMediaCleanupLogEmpty = 'orphanedMediaCleanupLogEmpty';
   static const appUpdateGooglePlay = 'appUpdateGooglePlay';
   static const appUpdateAppStore = 'appUpdateAppStore';
   static const appUpdateNewVersionAvailable = 'appUpdateNewVersionAvailable';
@@ -544,5 +552,4 @@ abstract class  LocaleKeys {
   static const appUpdateRestart = 'appUpdateRestart';
   static const appUpdateReady = 'appUpdateReady';
   static const appUpdateRestartPrompt = 'appUpdateRestartPrompt';
-
 }
