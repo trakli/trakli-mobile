@@ -32,6 +32,16 @@ on:
         required: false
         type: string
         default: ''
+      flutter_target:
+        description: 'Flutter target file (e.g., lib/main_development.dart). Required for flavor-based projects.'
+        required: false
+        type: string
+        default: 'lib/main_development.dart'
+      flutter_flavor:
+        description: 'Flutter/Xcode flavor (e.g., development, staging, production). Must match scheme name.'
+        required: false
+        type: string
+        default: 'development'
 
 jobs:
   build:
@@ -155,6 +165,7 @@ jobs:
           PROJECT_TYPE: ${{ steps.detect.outputs.type }}
           USE_SIGNING: ${{ inputs.use_signing }}
           CONFIGURATION: ${{ inputs.configuration }}
+          FLUTTER_FLAVOR: ${{ inputs.flutter_flavor }}
         run: |
           set -e
 
@@ -190,12 +201,13 @@ jobs:
 
           if [ "$PROJECT_TYPE" = "flutter" ]; then
             cd ..
+            FLUTTER_TARGET="${{ inputs.flutter_target }}"
             if [ "$CONFIGURATION" = "Debug" ]; then
-              echo "Building Flutter iOS Debug..."
-              flutter build ios --debug --no-codesign
+              echo "Building Flutter iOS Debug (flavor: $FLUTTER_FLAVOR)..."
+              flutter build ios --no-codesign --target "$FLUTTER_TARGET" --flavor "$FLUTTER_FLAVOR"
             else
-              echo "Building Flutter iOS Release..."
-              flutter build ios --release --no-codesign
+              echo "Building Flutter iOS Release (flavor: $FLUTTER_FLAVOR)..."
+              flutter build ios --no-codesign --target "$FLUTTER_TARGET" --flavor "$FLUTTER_FLAVOR"
             fi
             cd "$IOS_PATH"
           elif [ "$PROJECT_TYPE" = "reactnative" ] || [ "$PROJECT_TYPE" = "expo" ]; then

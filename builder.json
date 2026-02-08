@@ -2,8 +2,8 @@
   "project": "mobile",
   "platform": "ios",
   "github": {
-    "owner": "trakli",
-    "repo": "mobile"
+    "owner": "austin047",
+    "repo": "trakli-mobile"
   },
   "ios": {
     "path": "ios"

@@ -70,3 +70,4 @@ android/vendor/
 
 # macOS generated files
 **/macos/Flutter/ephemeral/
+trakli_demo/
