@@ -113,7 +113,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         );
       },
     );
-    if (picked != null) {
+    if (picked != null && mounted) {
       setState(() {
         _startDate = picked.start;
         // Set to end of day to include all transactions on the selected end date
@@ -510,7 +510,8 @@ class _StatisticsScreenState extends State<StatisticsScreen>
     // Calculate totals using helper function
     final totals = calculateIncomeExpense(
       transactions,
-      exchangeRateEntity: _selectedWalletClientId == null ? exchangeRateEntity : null,
+      exchangeRateEntity:
+          _selectedWalletClientId == null ? exchangeRateEntity : null,
     );
     final totalIncome = totals.totalIncome;
     final totalExpense = totals.totalExpense;
@@ -540,7 +541,8 @@ class _StatisticsScreenState extends State<StatisticsScreen>
     // Calculate totals using helper function
     final totals = calculateIncomeExpense(
       transactions,
-      exchangeRateEntity: _selectedWalletClientId == null ? exchangeRateEntity : null,
+      exchangeRateEntity:
+          _selectedWalletClientId == null ? exchangeRateEntity : null,
     );
     final totalIncome = totals.totalIncome;
     final totalExpense = totals.totalExpense;
