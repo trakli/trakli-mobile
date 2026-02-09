@@ -218,9 +218,9 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
+				F1R3B4S3C0N5G0000000001 /* Copy Firebase config by flavor */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				F6E451D6859606ACB7038B99 /* FlutterFire: "flutterfire upload-crashlytics-symbols" */,
 				815E79B7E22BFBC575E55C45 /* [CP] Embed Pods Frameworks */,
 				3FE48A3652FBD4FE3D47E82F /* [CP] Copy Pods Resources */,
 			);
@@ -288,7 +288,6 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
-				01BD0DA59B41CBAA414BCF80 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,7 +403,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F6E451D6859606ACB7038B99 /* FlutterFire: "flutterfire upload-crashlytics-symbols" */ = {
+		F1R3B4S3C0N5G0000000001 /* Copy Firebase config by flavor */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -413,14 +412,15 @@
 			);
 			inputPaths = (
 			);
-			name = "FlutterFire: \"flutterfire upload-crashlytics-symbols\"";
+			name = "Copy Firebase config by flavor";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\n#!/bin/bash\nPATH=\"${PATH}:$FLUTTER_ROOT/bin:${PUB_CACHE}/bin:$HOME/.pub-cache/bin\"\n\nif [ -z \"$PODS_ROOT\" ] || [ ! -d \"$PODS_ROOT/FirebaseCrashlytics\" ]; then\n  # Cannot use \"BUILD_DIR%/Build/*\" as per Firebase documentation, it points to \"flutter-project/build/ios/*\" path which doesn't have run script\n  DERIVED_DATA_PATH=$(echo \"$BUILD_ROOT\" | sed -E 's|(.*DerivedData/[^/]+).*|\\1|')\n  PATH_TO_CRASHLYTICS_UPLOAD_SCRIPT=\"${DERIVED_DATA_PATH}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\nelse\n  PATH_TO_CRASHLYTICS_UPLOAD_SCRIPT=\"$PODS_ROOT/FirebaseCrashlytics/run\"\nfi\n\n# Command to upload symbols script used to upload symbols to Firebase server\nflutterfire upload-crashlytics-symbols --upload-symbols-script-path=\"$PATH_TO_CRASHLYTICS_UPLOAD_SCRIPT\" --platform=ios --apple-project-path=\"${SRCROOT}\" --env-platform-name=\"${PLATFORM_NAME}\" --env-configuration=\"${CONFIGURATION}\" --env-project-dir=\"${PROJECT_DIR}\" --env-built-products-dir=\"${BUILT_PRODUCTS_DIR}\" --env-dwarf-dsym-folder-path=\"${DWARF_DSYM_FOLDER_PATH}\" --env-dwarf-dsym-file-name=\"${DWARF_DSYM_FILE_NAME}\" --env-infoplist-path=\"${INFOPLIST_PATH}\" --default-config=default\n";
+			shellScript = "environment=\"production\"\n# Extract flavor from Build Configuration (e.g. Debug-development -> development)\nif [[ $CONFIGURATION =~ -([^-]*)$ ]]; then\n  environment=${BASH_REMATCH[1]}\nfi\necho \"Using Firebase config: $environment\"\nGOOGLESERVICE_INFO_PLIST=GoogleService-Info.plist\nGOOGLESERVICE_INFO_FILE=${PROJECT_DIR}/config/${environment}/${GOOGLESERVICE_INFO_PLIST}\nif [ ! -f \"$GOOGLESERVICE_INFO_FILE\" ]; then\n  echo \"error: No $GOOGLESERVICE_INFO_PLIST at $GOOGLESERVICE_INFO_FILE\" >&2\n  exit 1\nfi\nPLIST_DESTINATION=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\ncp \"${GOOGLESERVICE_INFO_FILE}\" \"${PLIST_DESTINATION}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -526,6 +526,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				PODS_ROOT = "$(SRCROOT)/Pods";
 			};
 			name = "Debug-production";
 		};
@@ -580,6 +581,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				PODS_ROOT = "$(SRCROOT)/Pods";
 			};
 			name = "Release-production";
 		};
@@ -632,6 +634,7 @@
 				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				PODS_ROOT = "$(SRCROOT)/Pods";
 			};
 			name = "Profile-production";
 		};
@@ -689,6 +692,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				PODS_ROOT = "$(SRCROOT)/Pods";
 			};
 			name = "Debug-staging";
 		};
@@ -743,6 +747,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				PODS_ROOT = "$(SRCROOT)/Pods";
 			};
 			name = "Release-staging";
 		};
@@ -795,6 +800,7 @@
 				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				PODS_ROOT = "$(SRCROOT)/Pods";
 			};
 			name = "Profile-staging";
 		};
@@ -852,6 +858,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				PODS_ROOT = "$(SRCROOT)/Pods";
 			};
 			name = "Debug-development";
 		};
@@ -906,6 +913,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				PODS_ROOT = "$(SRCROOT)/Pods";
 			};
 			name = "Release-development";
 		};
@@ -958,6 +966,7 @@
 				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				PODS_ROOT = "$(SRCROOT)/Pods";
 			};
 			name = "Profile-development";
 		};

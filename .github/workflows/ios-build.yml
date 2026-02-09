@@ -91,6 +91,26 @@ jobs:
         if: steps.detect.outputs.type == 'flutter'
         run: flutter pub get
 
+      - name: Install Firebase CLI
+        if: steps.detect.outputs.type == 'flutter'
+        run: npm install -g firebase-tools
+
+      - name: Install FlutterFire CLI
+        if: steps.detect.outputs.type == 'flutter'
+        run: dart pub global activate flutterfire_cli
+
+      # Add the pub cache bin to the PATH
+      # This is crucial for the OS to find the "flutterfire" command
+      - name: Add pub cache to PATH
+        if: steps.detect.outputs.type == 'flutter'
+        run: echo "export PATH=$PATH:$HOME/.pub-cache/bin" >> $GITHUB_ENV
+
+      - name: Verify FlutterFire CLI
+        if: steps.detect.outputs.type == 'flutter'
+        run: |
+          flutterfire --version
+          echo "FlutterFire CLI verified successfully"
+
       - name: Setup Node.js
         if: steps.detect.outputs.type == 'reactnative' || steps.detect.outputs.type == 'expo'
         uses: actions/setup-node@v4

@@ -29,3 +29,11 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+<!-- 
+flutterfire configure \
+  --project=trakli \
+  --out=lib/firebase_options_dev.dart \
+  --android-app-id=com.whilesmart.trakli.dev
+  --ios-bundle-id=com.whilesmart.trakli.dev
+  --yes   -->

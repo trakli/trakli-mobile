@@ -1,1 +1,130 @@
-{"project_info":{"project_number":"212694832657","project_id":"trakli","storage_bucket":"trakli.firebasestorage.app"},"client":[{"client_info":{"mobilesdk_app_id":"1:212694832657:android:b187aba6eab17ee05743b0","android_client_info":{"package_name":"com.whilesmart.trakli.dev"}},"oauth_client":[{"client_id":"212694832657-0fefkea4n012n38qaoq9siakisdp1m9p.apps.googleusercontent.com","client_type":1,"android_info":{"package_name":"com.whilesmart.trakli.dev","certificate_hash":"faf040c1401dea78badd6d62bfbfcb83b764373a"}},{"client_id":"212694832657-nhgrvtnp8kfeuu777lnrh6s3b9lleoa1.apps.googleusercontent.com","client_type":3}],"api_key":[{"current_key":"AIzaSyB49ck6qT_7LWi6U1NI27RNVRl3ejiYj9Y"}],"services":{"appinvite_service":{"other_platform_oauth_client":[{"client_id":"212694832657-2f97pk2j28lmog8vd66l79gkbslo6j81.apps.googleusercontent.com","client_type":3},{"client_id":"212694832657-a38m8caoatmvgnlcdm900h5gu9a418i9.apps.googleusercontent.com","client_type":2,"ios_info":{"bundle_id":"com.whilesmart.trakli"}}]}}}],"configuration_version":"1"}
+{
+  "project_info": {
+    "project_number": "212694832657",
+    "project_id": "trakli",
+    "storage_bucket": "trakli.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212694832657:android:b187aba6eab17ee05743b0",
+        "android_client_info": {
+          "package_name": "com.whilesmart.trakli"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "212694832657-0fefkea4n012n38qaoq9siakisdp1m9p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whilesmart.trakli",
+            "certificate_hash": "faf040c1401dea78badd6d62bfbfcb83b764373a"
+          }
+        },
+        {
+          "client_id": "212694832657-87dpp4lsud6vmi47le4qi3p8hh5sd3l4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whilesmart.trakli",
+            "certificate_hash": "4fb25ec00a4e5ed84685cf619313c84118269c60"
+          }
+        },
+        {
+          "client_id": "212694832657-96pebkkmkp0k7scp3ov094uto5m0eke1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whilesmart.trakli",
+            "certificate_hash": "26d09140b4fbd2b02b9b56d5406a282dab496669"
+          }
+        },
+        {
+          "client_id": "212694832657-ihs8dfph99bfot9ev7jak6ughudc2qh9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whilesmart.trakli",
+            "certificate_hash": "537a62359c770aab2c66b008a93644086ee4e152"
+          }
+        },
+        {
+          "client_id": "212694832657-intg4q7sc0kep660e5j729r9ul6v3s5c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whilesmart.trakli",
+            "certificate_hash": "1806b73643719f9a912249fe0cbd1125c6cf4255"
+          }
+        },
+        {
+          "client_id": "212694832657-qp0ikkbdt83of608ect2n9q1p8qh3jto.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whilesmart.trakli",
+            "certificate_hash": "be80d022ca34a0b788951a449f36c746598a88dc"
+          }
+        },
+        {
+          "client_id": "212694832657-nhgrvtnp8kfeuu777lnrh6s3b9lleoa1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB49ck6qT_7LWi6U1NI27RNVRl3ejiYj9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "212694832657-2f97pk2j28lmog8vd66l79gkbslo6j81.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "212694832657-7er649jbpdlgocs40rntsf7f7i897gc5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whilesmart.trakli.dev"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212694832657:android:ef32b90e0fecc0bb5743b0",
+        "android_client_info": {
+          "package_name": "com.whilesmart.trakli.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "212694832657-nhgrvtnp8kfeuu777lnrh6s3b9lleoa1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB49ck6qT_7LWi6U1NI27RNVRl3ejiYj9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "212694832657-2f97pk2j28lmog8vd66l79gkbslo6j81.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "212694832657-7er649jbpdlgocs40rntsf7f7i897gc5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whilesmart.trakli.dev"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
