@@ -1,5 +1,4 @@
-git_url("https://github.com/austin047/app-certificates-and-profiles")
+git_url(ENV["MATCH_GIT_URL"] || "git@github.com:whilesmart/certificates.git")
 storage_mode("git")
-type("appstore") # The default type, can be: appstore, adhoc, enterprise or development
-
-app_identifier([ENV["APP_BUNDLE_ID"]])
+type("appstore")
+app_identifier(ENV["APP_BUNDLE_ID"] || "com.whilesmart.trakli")

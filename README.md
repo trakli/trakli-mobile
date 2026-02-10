@@ -30,6 +30,10 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## CI / GitHub Actions
+
+Fastlane is used for iOS and Android builds and releases (TestFlight, Play Store, Firebase). Required **secrets and variables** are documented in [.github/ENV_AND_SECRETS.md](.github/ENV_AND_SECRETS.md). Configure them under **Settings → Secrets and variables → Actions**.
+
 <!-- 
 flutterfire configure \
   --project=trakli \

@@ -30,24 +30,27 @@ lane :build_flutter_app do |options|
   pubspec_version_number = get_version_from_pubspec()
 
   type = options[:type]
-  build_number = options[:build_number] || get_build_number(options[:store])
+  app_identifier_arg = options[:app_identifier]
+  build_number = options[:build_number] || get_build_number(options[:store], app_identifier_arg)
   version_number = options[:version_number] || pubspec_version_number
   no_codesign = options[:no_codesign] || false
   config_only = options[:config_only] || false
   commit = last_git_commit
   
-  # Determine environment - default to dev, allow override
+  # Determine environment and flavor - default to dev/production, allow override
   environment = options[:environment] || 'dev'
+  flavor = options[:flavor] || 'production'
   dart_define = "--dart-define=ENV=#{environment}"
 
-  command = "flutter build #{type}  --release --no-pub --suppress-analytics"
+  command = "flutter build #{type} --release --no-pub --suppress-analytics"
+  command += " --flavor #{flavor}" if flavor.to_s != ""
   command += " --build-number=#{build_number}" if build_number.to_s != ""
   command += " --build-name=#{version_number}" if version_number.to_s != ""
   command += " --no-codesign" if no_codesign
   command += " --config-only" if config_only
   command += " #{dart_define}"
 
-	UI.message("Building #{type} - version: #{version_number} - build: #{build_number} - commit: #{commit[:abbreviated_commit_hash]} - env: #{environment}")
+  UI.message("Building #{type} - version: #{version_number} - build: #{build_number} - commit: #{commit[:abbreviated_commit_hash]} - env: #{environment} - flavor: #{flavor}")
 
   fetch_dependencies
 
@@ -93,11 +96,12 @@ end
 
 # Build number is a unique identifier for each build that is uploaded to the app store.
 # This method will get the latest build number from the app store and increment it by 1.
-# Ensure authenticate_apple_store is called before this method
-def get_build_number(store)
+# Ensure authenticate_apple_store is called before this method.
+# app_identifier: optional; for appstore use this bundle id (e.g. dev app); for playstore use as package name.
+def get_build_number(store, app_identifier = nil)
   return get_new_build_number(
-    bundle_identifier: store == "appstore" ? ENV["APP_BUNDLE_ID"] : nil,
-    package_name: store == "playstore" ? ENV["APP_PACKAGE_NAME"] : nil,
+    bundle_identifier: store == "appstore" ? (app_identifier || ENV["APP_BUNDLE_ID"]) : nil,
+    package_name: store == "playstore" ? (app_identifier || ENV["APP_PACKAGE_NAME"]) : nil,
     google_play_json_key_path: google_service_account_json_path
   ).to_s
 end

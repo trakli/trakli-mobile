@@ -12,73 +12,61 @@ on:
 env:
   FLUTTER_CHANNEL: "stable"
   FLUTTER_VERSION: "3.32.8"
-  RUBY_VERSION: "3.2.2" #"3.2.2"
+  RUBY_VERSION: "3.2.2"
 
 jobs:
-  # build_ios:
-  #   name: Build iOS
-  #   # See https://docs.github.com/en/actions/using-github-hosted-runners/about-larger-runners/about-larger-runners#about-macos-larger-runners
-  #   runs-on: macos-latest
-  #   timeout-minutes: 20
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  build_ios:
+    name: Build iOS (Production)
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Verify macOS version
-  #       run: |
-  #         sw_vers
+      - name: Verify macOS version
+        run: sw_vers
 
-  #     # - name: Set up Xcode
-  #     #   uses: maxim-lobanov/setup-xcode@v1
-  #     #   with:
-  #     #     xcode-version: "16.3"
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+          working-directory: "ios"
 
-  #     - name: Set up Ruby
-  #       uses: ruby/setup-ruby@v1
-  #       with:
-  #         ruby-version: ${{ env.RUBY_VERSION }}
-  #         bundler-cache: true
-  #         working-directory: "ios"
+      - name: Setup SSH Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.MATCH_DEPLOY_KEY }}
 
-  #     - name: Verify CocoaPods version
-  #       working-directory: "ios"
-  #       run: |
-  #         bundle exec pod --version
+      - name: Run Flutter tasks
+        uses: subosito/flutter-action@v2.16.0
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
 
-  #     - name: GlobalInstall CocoaPods
-  #       run: |
-  #         pod --version
+      - name: Generate Flutter iOS files
+        run: flutter pub get
 
-  #     - name: Run Flutter tasks
-  #       uses: subosito/flutter-action@v2.16.0
-  #       with:
-  #         # https://github.com/subosito/flutter-action?tab=readme-ov-file#use-version-from-pubspecyaml
-  #         # flutter-version-file: "pubspec.yaml"
-  #         flutter-version: ${{ env.FLUTTER_VERSION }}
-  #         channel: ${{ env.FLUTTER_CHANNEL }}
-  #         cache: false
+      - name: Generate code
+        run: flutter pub run build_runner build --delete-conflicting-outputs
 
-  #     - name: Generate Flutter iOS files
-  #       run: |
-  #         flutter pub get
+      - name: Install iOS pods
+        working-directory: "ios"
+        run: bundle exec pod install
 
-  #     - name: Install iOS pods
-  #       working-directory: "ios"
-  #       run: |
-  #         bundle exec pod install
-
-  #     - uses: maierj/fastlane-action@v3.1.0
-  #       with:
-  #         lane: "release_app_store"
-  #         subdirectory: "ios"
-  #         options: '{ "version_number": "${{ github.ref_name }}" }'
-  #       env:
-  #         ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-  #         ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-  #         ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
-  #         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-  #         MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
-  #         APP_BUNDLE_ID: ${{ vars.APP_BUNDLE_ID }}
+      - name: Deploy to TestFlight
+        uses: maierj/fastlane-action@v3.1.0
+        with:
+          lane: "release_app_store"
+          subdirectory: "ios"
+          options: '{ "version_number": "${{ github.ref_name }}" }'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          APP_BUNDLE_ID: ${{ vars.APP_BUNDLE_ID }}
 
   build_android:
     name: Build Android
