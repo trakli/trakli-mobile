@@ -106,7 +106,7 @@ jobs:
           INPUT_APPID: ${{secrets.FIREBASE_APP_ID}}
           INPUT_SERVICECREDENTIALSFILECONTENT: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           GOOGLE_APPLICATION_CREDENTIALS: service_credentials_content.json
-          INPUT_GROUPS: testers_tmp
+          INPUT_GROUPS: testers
           INPUT_FILE: app-staging-release.apk
         run: |
           cat <<< "${INPUT_SERVICECREDENTIALSFILECONTENT}" > service_credentials_content.json
