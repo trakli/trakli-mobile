@@ -12,13 +12,13 @@ import 'package:trakli/presentation/widgets/image_widget.dart';
 
 class PickGroupTile<T> extends StatelessWidget {
   final T value;
-  final T groupValue;
+  final T? groupValue;
   final ValueChanged<T?>? onChanged;
 
   const PickGroupTile({
     super.key,
     required this.value,
-    required this.groupValue,
+    this.groupValue,
     this.onChanged,
   });
 

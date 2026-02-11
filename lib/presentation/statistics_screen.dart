@@ -224,6 +224,100 @@ class _StatisticsScreenState extends State<StatisticsScreen>
           ],
         ),
       ),
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(
+            left: 16.w,
+            right: 16.w,
+            top: 16.h,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 8.h),
+              Align(
+                child: Container(
+                  width: 90.w,
+                  height: 6.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD9D9D9),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                LocaleKeys.pickWallet.tr(),
+                style: TextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                LocaleKeys.selectWalletInfoDesc.tr(),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: neutralN900,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16.h),
+              RadioGroup<String?>(
+                groupValue: _selectedWalletClientId,
+                onChanged: (value) {
+                  if (mounted) {
+                    setState(() {
+                      _selectedWalletClientId = value;
+                      _selectedWallet = value == null
+                          ? null
+                          : wallets.firstWhere((w) => w.clientId == value);
+                    });
+                  }
+                  Navigator.pop(context);
+                },
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 0.4.sh,
+                  ),
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount:
+                        wallets.length + 1, // +1 for "All wallets" option
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        // "All wallets" option
+                        return WalletMiniTile<String?>(
+                          value: null,
+                          isAllWallets: true,
+                          walletNameOverride: LocaleKeys.allWallets.tr(),
+                        );
+                      } else {
+                        // Individual wallet options
+                        final wallet = wallets[index - 1];
+                        return WalletMiniTile<String?>(
+                          value: wallet.clientId,
+                          wallet: wallet,
+                          isAllWallets: false,
+                        );
+                      }
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(height: 8.h);
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.h),
+            ],
+          ),
+        );
+      },
     );
   }
 

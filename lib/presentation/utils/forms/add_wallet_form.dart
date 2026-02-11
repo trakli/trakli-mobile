@@ -254,7 +254,7 @@ class _AddWalletFormState extends State<AddWalletForm> {
             ),
             SizedBox(height: 8.h),
             DropdownButtonFormField<WalletType>(
-              value: _selectedType,
+              initialValue: _selectedType,
               decoration: InputDecoration(
                 hintText: LocaleKeys.selectWalletType.tr(),
               ),

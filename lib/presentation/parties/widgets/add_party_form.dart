@@ -170,7 +170,7 @@ class _AddPartyFormState extends State<AddPartyForm> {
                     ),
                     SizedBox(height: 20.h),
                     DropdownButtonFormField<PartyType>(
-                      value: _selectedType,
+                      initialValue: _selectedType,
                       items: PartyType.values.map((type) {
                         return DropdownMenuItem<PartyType>(
                           value: type,

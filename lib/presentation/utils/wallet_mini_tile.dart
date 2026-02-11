@@ -7,8 +7,6 @@ import 'package:easy_localization/easy_localization.dart';
 
 class WalletMiniTile<T> extends StatelessWidget {
   final T value;
-  final T groupValue;
-  final ValueChanged<T?>? onChanged;
   final WalletEntity? wallet;
   final bool isAllWallets;
   final String? walletNameOverride;
@@ -16,8 +14,6 @@ class WalletMiniTile<T> extends StatelessWidget {
   const WalletMiniTile({
     super.key,
     required this.value,
-    required this.groupValue,
-    this.onChanged,
     this.wallet,
     this.isAllWallets = false,
     this.walletNameOverride,
@@ -60,8 +56,6 @@ class WalletMiniTile<T> extends StatelessWidget {
           Radio<T>(
             activeColor: appPrimaryColor,
             value: value,
-            groupValue: groupValue,
-            onChanged: onChanged,
           ),
         ],
       ),

@@ -2,11 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/core/constants/config_constants.dart';
-import 'package:trakli/domain/entities/group_entity.dart';
-import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/presentation/config/cubit/config_cubit.dart';
-import 'package:trakli/presentation/groups/cubit/group_cubit.dart';
+import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/pick_group_tile.dart';
 
@@ -90,30 +88,45 @@ class _PickGroupBottomSheetState extends State<PickGroupBottomSheet> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 16.h),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 0.4.sh,
+          SearchBar(
+            leading: SvgPicture.asset(
+              Assets.images.searchSpecial,
+              width: 24.sp,
+              colorFilter: const ColorFilter.mode(
+                Colors.grey,
+                BlendMode.srcIn,
+              ),
             ),
-            child: ListView.separated(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemCount: sortedGroups.length,
-              itemBuilder: (context, index) {
-                final group = sortedGroups[index];
-                return PickGroupTile<GroupEntity?>(
-                  value: group,
-                  groupValue: selectedGroup,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedGroup = value;
-                    });
-                  },
-                );
-              },
-              separatorBuilder: (context, index) {
-                return SizedBox(height: 8.h);
-              },
+            hintText: LocaleKeys.search.tr(),
+            onChanged: (value) {},
+          ),
+          SizedBox(height: 16.h),
+          RadioGroup<GroupEntity?>(
+            groupValue: selectedGroup,
+            onChanged: (value) {
+              setState(() {
+                selectedGroup = value;
+              });
+            },
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 0.4.sh,
+              ),
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.zero,
+                itemCount: sortedGroups.length,
+                itemBuilder: (context, index) {
+                  final group = sortedGroups[index];
+                  return PickGroupTile<GroupEntity?>(
+                    value: group,
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 8.h);
+                },
+              ),
             ),
           ),
           SizedBox(height: 32.h),

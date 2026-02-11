@@ -221,41 +221,39 @@ class _CategorySetupWidgetState extends State<CategorySetupWidget> {
                 ),
               ),
               SizedBox(height: 24.h),
-              RadioListTile<bool>(
-                title: Text(LocaleKeys.createDefaultCategories.tr()),
-                subtitle: Text(
-                  LocaleKeys.createDefaultCategoriesDesc.tr(),
-                  style:
-                      TextStyle(fontSize: 12.sp, color: Colors.grey.shade600),
-                ),
-                value: true,
+              RadioGroup<bool>(
                 groupValue: _createDefaultCategories,
                 onChanged: _isCreating
-                    ? null
+                    ? (_) {}
                     : (value) {
                         setState(() {
                           _createDefaultCategories = value ?? true;
                         });
                       },
-                activeColor: appPrimaryColor,
-              ),
-              RadioListTile<bool>(
-                title: Text(LocaleKeys.skipCategories.tr()),
-                subtitle: Text(
-                  LocaleKeys.skipCategoriesDesc.tr(),
-                  style:
-                      TextStyle(fontSize: 12.sp, color: Colors.grey.shade600),
+                child: Column(
+                  children: [
+                    RadioListTile<bool>(
+                      title: Text(LocaleKeys.createDefaultCategories.tr()),
+                      subtitle: Text(
+                        LocaleKeys.createDefaultCategoriesDesc.tr(),
+                        style: TextStyle(
+                            fontSize: 12.sp, color: Colors.grey.shade600),
+                      ),
+                      value: true,
+                      activeColor: appPrimaryColor,
+                    ),
+                    RadioListTile<bool>(
+                      title: Text(LocaleKeys.skipCategories.tr()),
+                      subtitle: Text(
+                        LocaleKeys.skipCategoriesDesc.tr(),
+                        style: TextStyle(
+                            fontSize: 12.sp, color: Colors.grey.shade600),
+                      ),
+                      value: false,
+                      activeColor: appPrimaryColor,
+                    ),
+                  ],
                 ),
-                value: false,
-                groupValue: _createDefaultCategories,
-                onChanged: _isCreating
-                    ? null
-                    : (value) {
-                        setState(() {
-                          _createDefaultCategories = value ?? false;
-                        });
-                      },
-                activeColor: appPrimaryColor,
               ),
               SizedBox(height: 24.h),
               Row(
