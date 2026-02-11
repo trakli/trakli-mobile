@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart'
 ///
 /// Example:
 /// ```dart
-/// import 'firebase_options_dev.dart';
+/// import 'firebase_options_staging.dart';
 /// // ...
 /// await Firebase.initializeApp(
 ///   options: DefaultFirebaseOptions.currentPlatform,
@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB49ck6qT_7LWi6U1NI27RNVRl3ejiYj9Y',
-    appId: '1:212694832657:android:ef32b90e0fecc0bb5743b0',
+    appId: '1:212694832657:android:4d29f865bc5df0f55743b0',
     messagingSenderId: '212694832657',
     projectId: 'trakli',
     storageBucket: 'trakli.firebasestorage.app',
@@ -59,14 +59,14 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB9K-5luMrbIIcO0jUKe7v3VDTI_qHI8TU',
-    appId: '1:212694832657:ios:64c09c09fa0f0d485743b0',
+    appId: '1:212694832657:ios:8c5a12d1181457295743b0',
     messagingSenderId: '212694832657',
     projectId: 'trakli',
     storageBucket: 'trakli.firebasestorage.app',
     androidClientId:
         '212694832657-0fefkea4n012n38qaoq9siakisdp1m9p.apps.googleusercontent.com',
     iosClientId:
-        '212694832657-7er649jbpdlgocs40rntsf7f7i897gc5.apps.googleusercontent.com',
-    iosBundleId: 'com.whilesmart.trakli.dev',
+        '212694832657-sqh95l49sd6tshurap1bs98khhm76f5o.apps.googleusercontent.com',
+    iosBundleId: 'com.whilesmart.trakli.stg',
   );
 }

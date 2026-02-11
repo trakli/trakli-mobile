@@ -124,6 +124,42 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212694832657:android:4d29f865bc5df0f55743b0",
+        "android_client_info": {
+          "package_name": "com.whilesmart.trakli.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "212694832657-nhgrvtnp8kfeuu777lnrh6s3b9lleoa1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB49ck6qT_7LWi6U1NI27RNVRl3ejiYj9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "212694832657-2f97pk2j28lmog8vd66l79gkbslo6j81.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "212694832657-7er649jbpdlgocs40rntsf7f7i897gc5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whilesmart.trakli.dev"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

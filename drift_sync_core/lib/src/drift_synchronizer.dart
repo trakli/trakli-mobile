@@ -62,22 +62,22 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   }
 
   Future<void> _updateState(SyncState state) async {
-    final previous = this._state;
+    final previous = _state;
     if (previous == state) {
       return;
     }
-    this._state = state;
+    _state = state;
     if (!previous.isSynchronizing && state.isSynchronizing) {
-      this.onStarted?.call();
+      onStarted?.call();
     }
     if (!previous.cancelRequested && state.cancelRequested) {
-      this.onCancelRequested?.call();
+      onCancelRequested?.call();
     }
     if (previous.isSynchronizing && !state.isSynchronizing) {
-      this.onStopped?.call(state);
+      onStopped?.call(state);
     }
 
-    this.onStateChanged?.call(previous, state);
+    onStateChanged?.call(previous, state);
   }
 
   /// Synchronizes pending local changes to the server and tries

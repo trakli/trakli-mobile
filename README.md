@@ -34,10 +34,33 @@ samples, guidance on mobile development, and a full API reference.
 
 Fastlane is used for iOS and Android builds and releases (TestFlight, Play Store, Firebase). Required **secrets and variables** are documented in [.github/ENV_AND_SECRETS.md](.github/ENV_AND_SECRETS.md). Configure them under **Settings → Secrets and variables → Actions**.
 
-<!-- 
+<!--
+## Firebase / FlutterFire configuration
+
+### Development
 flutterfire configure \
   --project=trakli \
   --out=lib/firebase_options_dev.dart \
-  --android-app-id=com.whilesmart.trakli.dev
-  --ios-bundle-id=com.whilesmart.trakli.dev
-  --yes   -->
+  --platforms=android,ios \
+  --android-app-id=com.whilesmart.trakli.dev \
+  --ios-bundle-id=com.whilesmart.trakli.dev \
+  --yes
+
+### Staging
+flutterfire configure \
+  --project=trakli \
+  --out=lib/firebase_options_staging.dart \
+  --platforms=android,ios \
+  --android-app-id=com.whilesmart.trakli.stg \
+  --ios-bundle-id=com.whilesmart.trakli.stg \
+  --yes
+
+### Development
+flutterfire configure \
+  --project=trakli \
+  --out=lib/firebase_options_development.dart \
+  --platforms=android,ios \
+  --android-app-id=com.whilesmart.trakli.dev \
+  --ios-bundle-id=com.whilesmart.trakli.dev \
+  --yes
+-->
