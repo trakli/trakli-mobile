@@ -83,7 +83,7 @@ platform :android do
         # Use the following to enable debug mode
         release_notes: options[:release_notes] || `git log -1 --pretty=short`.strip,
         # Groups to distribute to
-        groups: options[:groups] || "testers",
+        groups: options[:groups] || "testers_tmp",
         # Individual testers - can be passed as option
         debug: true
       )

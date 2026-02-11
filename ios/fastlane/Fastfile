@@ -287,7 +287,7 @@ platform :ios do
       ipa_path: "#{root_path}/build/ios/ipa/Runner.ipa",
       service_credentials_file: google_firebase_service_account_json_path,
       release_notes: options[:release_notes] || `git log -1 --pretty=short`.strip,
-      groups: options[:groups] || "testers",
+      groups: options[:groups] || "testers_tmp",
     )
   end
 end
