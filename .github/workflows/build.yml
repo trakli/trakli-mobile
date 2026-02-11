@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - feat/remove-stale-media
   pull_request:
 
 env:
