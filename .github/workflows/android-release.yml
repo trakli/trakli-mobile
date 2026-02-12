@@ -38,6 +38,10 @@ jobs:
           bundler-cache: true
           working-directory: android/fastlane
 
+      - name: Install Fastlane gems
+        working-directory: android/fastlane
+        run: bundle install
+
       - name: Setup Service Accounts
         run: |
           echo "${{ secrets.GOOGLE_SERVICES_ACCOUNT_BASE64 }}" | base64 --decode > google_service_account.json
