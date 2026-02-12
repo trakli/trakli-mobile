@@ -28,11 +28,6 @@ platform :ios do
       readonly: false
     )
 
-    match(
-      type: "appstore",
-      app_identifier: "com.whilesmart.trakli.dev",
-      readonly: false
-    )
 
     match(
       type: "appstore",
