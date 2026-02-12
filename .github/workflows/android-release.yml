@@ -36,7 +36,7 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
-          working-directory: android
+          working-directory: android/fastlane
 
       - name: Setup Service Accounts
         run: |
@@ -45,7 +45,7 @@ jobs:
 
       - name: Release to Firebase
         if: ${{ github.event.inputs.track == 'firebase' }}
-        working-directory: android
+        working-directory: android/fastlane
         run: bundle exec fastlane release_play_store_using_firebase
         env:
           APP_PACKAGE_NAME: ${{ vars.APP_PACKAGE_NAME }}
@@ -53,7 +53,7 @@ jobs:
 
       - name: Release to Play Store
         if: ${{ github.event.inputs.track == 'playstore' }}
-        working-directory: android
+        working-directory: android/fastlane
         run: bundle exec fastlane release_play_store
         env:
           APP_PACKAGE_NAME: ${{ vars.APP_PACKAGE_NAME }}

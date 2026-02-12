@@ -1,0 +1,3 @@
+# Eval fastlane Gemfile so bundle install from ios/ uses the same gems as ios/fastlane.
+# Required for workflows that use working-directory: ios (e.g. deploy-with-fastlane, ios-setup).
+eval_gemfile(File.join(File.dirname(__FILE__), 'fastlane', 'Gemfile'))
