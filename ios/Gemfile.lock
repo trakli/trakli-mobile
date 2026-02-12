@@ -1,9 +1,3 @@
-GIT
-  remote: https://github.com/tianhaoz95/fastlane-plugin-flutter-version
-  revision: aa92b678f4fe842d8c1428e45cea4cba837fdfea
-  specs:
-    fastlane-plugin-flutter_version (1.1.15)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -11,7 +5,6 @@ GEM
       base64
       nkf
       rexml
-    abbrev (0.1.2)
     activesupport (7.2.2.1)
       base64
       benchmark (>= 0.3)
@@ -185,6 +178,7 @@ GEM
       google-apis-firebaseappdistribution_v1alpha (~> 0.2.0)
     fastlane-plugin-get_new_build_number (0.3.3)
       fastlane-plugin-firebase_app_distribution
+    fastlane-plugin-versioning (0.7.1)
     fastlane-sirp (1.0.0)
       sysrandom (~> 1.0)
     ffi (1.17.2-aarch64-linux-gnu)
@@ -330,12 +324,11 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  abbrev
-  cocoapods (~> 1.16.0)
+  cocoapods
   fastlane
   fastlane-plugin-firebase_app_distribution
-  fastlane-plugin-flutter_version!
   fastlane-plugin-get_new_build_number
+  fastlane-plugin-versioning
 
 BUNDLED WITH
    2.7.1
