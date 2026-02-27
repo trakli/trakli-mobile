@@ -15,4 +15,10 @@ class ConfigConstants {
   static const String notificationsInsights = 'notifications-insights';
   static const String notificationsInactivity = 'notifications-inactivity';
   static const String insightsFrequency = 'insights-frequency';
+
+  /// App update (internal) config keys
+  static const String requiredMinimumVersion = 'required-minimum-version';
+  static const String recommendedMinimumVersion =
+      'recommended-minimum-version';
+  static const String updateReminderFrequency = 'update-reminder-frequency';
 }
