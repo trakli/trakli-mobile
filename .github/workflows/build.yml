@@ -96,7 +96,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Download app APK
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: apk
       - name: Upload artifact to Firebase App Distribution
