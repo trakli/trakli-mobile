@@ -22,6 +22,22 @@ abstract class PreferenceManager {
   Future<bool> setBool(String key, bool value);
   bool? getBool(String key);
   SharedPreferences get prefs;
+
+  /// App update skip info (for optional update "Later")
+  Future<void> saveAppUpdateSkipInfo(DateTime skipDate, String appVersion);
+  Future<void> resetAppUpdateSkipInfo();
+  DateTime? get appUpdateSkipDate;
+  String? get appUpdateLastSkipVersion;
+
+  /// App update config (version requirements and reminder frequency)
+  String? get appUpdateRequiredMinVersion;
+  String? get appUpdateRecommendedMinVersion;
+  int? get appUpdateReminderFrequencyDays;
+  Future<void> saveAppUpdateConfig({
+    String? requiredMinVersion,
+    String? recommendedMinVersion,
+    int? reminderFrequencyDays,
+  });
 }
 
 @Singleton(as: PreferenceManager)
@@ -110,5 +126,67 @@ class PreferenceManagerImpl implements PreferenceManager {
   @override
   Future<bool> setBool(String key, bool value) {
     return _prefs.setBool(key, value);
+  }
+
+  @override
+  Future<void> saveAppUpdateSkipInfo(
+      DateTime skipDate, String appVersion) async {
+    await _prefs.setString(
+        KeyConstants.appUpdateSkipDateKey, skipDate.toIso8601String());
+    await _prefs.setString(
+        KeyConstants.appUpdateLastSkipVersionKey, appVersion);
+  }
+
+  @override
+  Future<void> resetAppUpdateSkipInfo() async {
+    await _prefs.remove(KeyConstants.appUpdateSkipDateKey);
+    await _prefs.remove(KeyConstants.appUpdateLastSkipVersionKey);
+  }
+
+  @override
+  DateTime? get appUpdateSkipDate {
+    final s = _prefs.getString(KeyConstants.appUpdateSkipDateKey);
+    if (s == null || s.isEmpty) return null;
+    return DateTime.tryParse(s);
+  }
+
+  @override
+  String? get appUpdateLastSkipVersion {
+    return _prefs.getString(KeyConstants.appUpdateLastSkipVersionKey);
+  }
+
+  @override
+  String? get appUpdateRequiredMinVersion {
+    return _prefs.getString(KeyConstants.appUpdateRequiredMinVersionKey);
+  }
+
+  @override
+  String? get appUpdateRecommendedMinVersion {
+    return _prefs.getString(KeyConstants.appUpdateRecommendedMinVersionKey);
+  }
+
+  @override
+  int? get appUpdateReminderFrequencyDays {
+    return _prefs.getInt(KeyConstants.appUpdateReminderFrequencyDaysKey);
+  }
+
+  @override
+  Future<void> saveAppUpdateConfig({
+    String? requiredMinVersion,
+    String? recommendedMinVersion,
+    int? reminderFrequencyDays,
+  }) async {
+    if (requiredMinVersion != null) {
+      await _prefs.setString(
+          KeyConstants.appUpdateRequiredMinVersionKey, requiredMinVersion);
+    }
+    if (recommendedMinVersion != null) {
+      await _prefs.setString(KeyConstants.appUpdateRecommendedMinVersionKey,
+          recommendedMinVersion);
+    }
+    if (reminderFrequencyDays != null) {
+      await _prefs.setInt(KeyConstants.appUpdateReminderFrequencyDaysKey,
+          reminderFrequencyDays);
+    }
   }
 }

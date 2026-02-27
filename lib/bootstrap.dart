@@ -8,6 +8,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:injectable/injectable.dart';
+import 'package:trakli/config/build_env.dart' as build_config;
+import 'package:trakli/core/app_update/app_version_info.dart';
+import 'package:trakli/core/app_update/remote_update_check.dart';
 import 'package:trakli/core/error/crash_reporting.dart';
 import 'package:trakli/core/error/crash_reporting/user_context_service.dart';
 import 'package:trakli/core/error/error_handler.dart';
@@ -15,7 +18,6 @@ import 'package:trakli/core/sync/drift_sync_crash_reporting_service.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/firebase_options.dart';
 import 'package:trakli/presentation/utils/globals.dart';
-import 'package:trakli/config/build_env.dart' as build_config;
 
 /// Adds a global error handler to the Flutter app.
 ///
@@ -57,19 +59,16 @@ Future<void> bootstrap(
       // Initialize crash reporting
       crashReportingService = getIt<CrashReportingService>();
       await crashReportingService?.initialize();
-
-      // Set environment tag in Crashlytics
       await crashReportingService?.setCustomKey('environment', env);
 
-      // Initialize user context service
-      final userContextService = getIt<UserContextService>();
-      await userContextService.initialize();
-
-      // Initialize drift sync crash reporting
-      final driftSyncCrashReportingService =
-          getIt<DriftSyncCrashReportingService>();
-
-      await driftSyncCrashReportingService.initialize();
+      // Initialize independent services in parallel
+      await Future.wait([
+        getIt<UserContextService>().initialize(),
+        getIt<AppVersionInfo>().initialize(),
+        getIt<RemoteUpdateCheck>().initialize(),
+        FeatureRemoteConfig.initialize(),
+        getIt<DriftSyncCrashReportingService>().initialize(),
+      ]);
 
       // Set up error handler with crash reporting
       ErrorHandler.setCrashReportingService(crashReportingService!);

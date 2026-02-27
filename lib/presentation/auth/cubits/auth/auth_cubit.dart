@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -12,8 +13,8 @@ import 'package:trakli/domain/usecases/auth/get_loggedin_user.dart';
 import 'package:trakli/domain/usecases/auth/logout_usecase.dart';
 import 'package:trakli/domain/usecases/auth/stream_auth_status.dart';
 
-part 'auth_state.dart';
 part 'auth_cubit.freezed.dart';
+part 'auth_state.dart';
 
 @injectable
 class AuthCubit extends Cubit<AuthState> {
@@ -71,6 +72,10 @@ class AuthCubit extends Cubit<AuthState> {
     if (!success) {
       logger.w('Failed to clear user context');
     }
+  }
+
+  void triggerAuthCheck() {
+    listenToAuthStatus();
   }
 
   Future<void> logout() async {
