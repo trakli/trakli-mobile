@@ -532,5 +532,17 @@ abstract class  LocaleKeys {
   static const files = 'files';
   static const noImages = 'noImages';
   static const noFiles = 'noFiles';
+  static const appUpdateGooglePlay = 'appUpdateGooglePlay';
+  static const appUpdateAppStore = 'appUpdateAppStore';
+  static const appUpdateNewVersionAvailable = 'appUpdateNewVersionAvailable';
+  static const appUpdateOptionalMessage = 'appUpdateOptionalMessage';
+  static const appUpdateForceMessage = 'appUpdateForceMessage';
+  static const appUpdateLater = 'appUpdateLater';
+  static const appUpdateNow = 'appUpdateNow';
+  static const appUpdateError = 'appUpdateError';
+  static const appUpdateReadyToInstall = 'appUpdateReadyToInstall';
+  static const appUpdateRestart = 'appUpdateRestart';
+  static const appUpdateReady = 'appUpdateReady';
+  static const appUpdateRestartPrompt = 'appUpdateRestartPrompt';
 
 }

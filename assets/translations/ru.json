@@ -527,5 +527,17 @@
   "images": "Изображения",
   "files": "Файлы",
   "noImages": "Нет изображений",
-  "noFiles": "Нет файлов"
+  "noFiles": "Нет файлов",
+  "appUpdateGooglePlay": "Google Play",
+  "appUpdateAppStore": "App Store",
+  "appUpdateNewVersionAvailable": "Доступна новая версия приложения",
+  "appUpdateOptionalMessage": "Новая версия доступна в {store}. Обновите сейчас!",
+  "appUpdateForceMessage": "Новая обязательная версия доступна в {store}. Обновите, чтобы продолжить использование приложения!",
+  "appUpdateLater": "Позже",
+  "appUpdateNow": "Обновить сейчас",
+  "appUpdateError": "Ошибка при выполнении обновления",
+  "appUpdateReadyToInstall": "Обновление готово к установке",
+  "appUpdateRestart": "Перезапустить",
+  "appUpdateReady": "Обновление готово",
+  "appUpdateRestartPrompt": "Новая версия загружена. Перезапустить сейчас, чтобы применить обновление?"
 }

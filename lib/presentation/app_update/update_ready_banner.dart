@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/app_update/cubit/in_app_update_cubit.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 
@@ -36,10 +38,10 @@ class UpdateReadyBanner extends StatelessWidget {
                       size: 20,
                     ),
                     const SizedBox(width: 12),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Update ready to install',
-                        style: TextStyle(
+                        LocaleKeys.appUpdateReadyToInstall.tr(),
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                         ),
@@ -55,7 +57,7 @@ class UpdateReadyBanner extends StatelessWidget {
                             .read<InAppUpdateCubit>()
                             .completeFlexibleUpdate();
                       },
-                      child: const Text('RESTART'),
+                      child: Text(LocaleKeys.appUpdateRestart.tr()),
                     ),
                   ],
                 ),
@@ -71,22 +73,21 @@ class UpdateReadyBanner extends StatelessWidget {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Update ready'),
-        content: const Text(
-          'A new version has been downloaded. '
-          'Restart now to apply the update?',
+        title: Text(LocaleKeys.appUpdateReady.tr()),
+        content: Text(
+          LocaleKeys.appUpdateRestartPrompt.tr(),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Later'),
+            child: Text(LocaleKeys.appUpdateLater.tr()),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.of(ctx).pop();
               context.read<InAppUpdateCubit>().completeFlexibleUpdate();
             },
-            child: const Text('Restart'),
+            child: Text(LocaleKeys.appUpdateRestart.tr()),
           ),
         ],
       ),

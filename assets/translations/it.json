@@ -527,5 +527,17 @@
   "images": "Immagini",
   "files": "File",
   "noImages": "Nessuna immagine",
-  "noFiles": "Nessun file"
+  "noFiles": "Nessun file",
+  "appUpdateGooglePlay": "Google Play",
+  "appUpdateAppStore": "App Store",
+  "appUpdateNewVersionAvailable": "Nuova versione dell'app disponibile",
+  "appUpdateOptionalMessage": "Una nuova versione è disponibile su {store}. Aggiorna ora!",
+  "appUpdateForceMessage": "Una nuova versione obbligatoria è disponibile su {store}. Aggiorna per continuare a usare l'app!",
+  "appUpdateLater": "Più tardi",
+  "appUpdateNow": "Aggiorna ora",
+  "appUpdateError": "Errore durante l'esecuzione dell'aggiornamento",
+  "appUpdateReadyToInstall": "Aggiornamento pronto per l'installazione",
+  "appUpdateRestart": "Riavvia",
+  "appUpdateReady": "Aggiornamento pronto",
+  "appUpdateRestartPrompt": "Una nuova versione è stata scaricata. Riavviare ora per applicare l'aggiornamento?"
 }

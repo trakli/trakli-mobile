@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:trakli/core/app_update/app_version_info.dart';
 import 'package:trakli/core/app_update/in_app_update_info.dart';
 import 'package:trakli/data/datasources/auth/preference_manager.dart';
 import 'package:trakli/di/injection.dart';
+import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/app_update/cubit/app_update_cubit.dart';
 import 'package:trakli/presentation/app_update/cubit/in_app_update_cubit.dart';
 import 'package:trakli/presentation/splash_screen.dart';
@@ -123,11 +125,12 @@ class _AppUpdateGateScreenState extends State<AppUpdateGateScreen> {
     required bool isSkippable,
     InAppUpdateInfo? inAppUpdateInfo,
   }) async {
-    final store = Platform.isAndroid ? 'Google Play' : 'App Store';
+    final store = Platform.isAndroid
+        ? LocaleKeys.appUpdateGooglePlay.tr()
+        : LocaleKeys.appUpdateAppStore.tr();
     final text = isSkippable
-        ? 'A new version is available in $store. Update now!'
-        : 'A new mandatory version is available in $store. '
-            'Update to continue using the app!';
+        ? LocaleKeys.appUpdateOptionalMessage.tr(namedArgs: {'store': store})
+        : LocaleKeys.appUpdateForceMessage.tr(namedArgs: {'store': store});
 
     if (!mounted) return;
     await showDialog<void>(
@@ -137,8 +140,8 @@ class _AppUpdateGateScreenState extends State<AppUpdateGateScreen> {
         // Prevent back button from dismissing force update dialog
         canPop: false,
         child: AlertDialog(
-          title: const Text(
-            'New app version is available',
+          title: Text(
+            LocaleKeys.appUpdateNewVersionAvailable.tr(),
             textAlign: TextAlign.center,
           ),
           content: SingleChildScrollView(
@@ -148,14 +151,14 @@ class _AppUpdateGateScreenState extends State<AppUpdateGateScreen> {
             if (isSkippable)
               TextButton(
                 onPressed: _saveSkipAndContinue,
-                child: const Text('Later'),
+                child: Text(LocaleKeys.appUpdateLater.tr()),
               ),
             TextButton(
               onPressed: () => _performUpdate(
                 isSkippable: isSkippable,
                 inAppUpdateInfo: inAppUpdateInfo,
               ),
-              child: const Text('Update now'),
+              child: Text(LocaleKeys.appUpdateNow.tr()),
             ),
           ],
         ),
@@ -188,7 +191,7 @@ class _AppUpdateGateScreenState extends State<AppUpdateGateScreen> {
       unawaited(cubit.performImmediateUpdate().catchError((_) {
         _openStore(canContinue: isSkippable);
         showSnackBar(
-          message: "Error executing update",
+          message: LocaleKeys.appUpdateError.tr(),
         );
       }));
       return;
