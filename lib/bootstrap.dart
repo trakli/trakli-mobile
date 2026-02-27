@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/config/build_env.dart' as build_config;
 import 'package:trakli/core/app_update/app_version_info.dart';
+import 'package:trakli/core/app_update/feature_remote_config.dart';
 import 'package:trakli/core/app_update/remote_update_check.dart';
 import 'package:trakli/core/error/crash_reporting.dart';
 import 'package:trakli/core/error/crash_reporting/user_context_service.dart';
