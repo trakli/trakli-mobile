@@ -8,6 +8,7 @@ import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
+import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 
 class AllWalletsTile extends StatelessWidget {
@@ -21,34 +22,18 @@ class AllWalletsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final exchangeRateEntity = context.watch<ExchangeRateCubit>().state.entity;
+    final transactions = context.watch<TransactionCubit>().state.transactions;
 
-    double totalBalance = 0;
-    double totalIncome = 0;
-    double totalExpense = 0;
-
-    for (final wallet in wallets) {
-      if (exchangeRateEntity != null) {
-        totalBalance += convertAmountToDefault(
-          wallet.balance,
-          wallet.currencyCode,
-          exchangeRateEntity,
-        );
-        totalIncome += convertAmountToDefault(
-          wallet.stats?.totalIncome ?? 0,
-          wallet.currencyCode,
-          exchangeRateEntity,
-        );
-        totalExpense += convertAmountToDefault(
-          wallet.stats?.totalExpense ?? 0,
-          wallet.currencyCode,
-          exchangeRateEntity,
-        );
-      } else {
-        totalBalance += wallet.balance;
-        totalIncome += wallet.stats?.totalIncome ?? 0;
-        totalExpense += wallet.stats?.totalExpense ?? 0;
-      }
-    }
+    // Calculate income/expense from transactions
+    final totals = calculateIncomeExpense(
+      transactions,
+      exchangeRateEntity: exchangeRateEntity,
+    );
+    final totalIncome = totals.totalIncome;
+    final totalExpense = totals.totalExpense;
+    
+    // Calculate balance from transactions (income - expense)
+    final totalBalance = totalIncome - totalExpense;
 
     return Container(
       width: double.infinity,

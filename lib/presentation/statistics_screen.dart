@@ -53,7 +53,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
       setState(() {});
     });
     final now = DateTime.now();
-    _endDate = DateTime(now.year, now.month, now.day + 1);
+    _endDate = DateTime(now.year, now.month, now.day, 23, 59, 59);
     _startDate = DateTime(now.year, now.month, 1);
     super.initState();
   }
@@ -116,7 +116,15 @@ class _StatisticsScreenState extends State<StatisticsScreen>
     if (picked != null) {
       setState(() {
         _startDate = picked.start;
-        _endDate = picked.end;
+        // Set to end of day to include all transactions on the selected end date
+        _endDate = DateTime(
+          picked.end.year,
+          picked.end.month,
+          picked.end.day,
+          23,
+          59,
+          59,
+        );
       });
     }
   }
@@ -499,38 +507,13 @@ class _StatisticsScreenState extends State<StatisticsScreen>
             ))
         .toList();
 
-    // Calculate totals using helper function for accurate conversion
-    final incomeTransactions = transactions
-        .where((tx) => tx.transaction.type == TransactionType.income)
-        .toList();
-    final expenseTransactions = transactions
-        .where((tx) => tx.transaction.type == TransactionType.expense)
-        .toList();
-
-    double totalIncome;
-    double totalExpense;
-
-    if (_selectedWalletClientId == null && exchangeRateEntity != null) {
-      // All wallets: use calculateTransactionsTotal for accurate conversion
-      totalIncome = calculateTransactionsTotal(
-        incomeTransactions,
-        exchangeRateEntity,
-      );
-      totalExpense = calculateTransactionsTotal(
-        expenseTransactions,
-        exchangeRateEntity,
-      );
-    } else {
-      // Specific wallet: sum amounts directly
-      totalIncome = incomeTransactions.fold(
-        0.0,
-        (sum, tx) => sum + tx.transaction.amount,
-      );
-      totalExpense = expenseTransactions.fold(
-        0.0,
-        (sum, tx) => sum + tx.transaction.amount,
-      );
-    }
+    // Calculate totals using helper function
+    final totals = calculateIncomeExpense(
+      transactions,
+      exchangeRateEntity: _selectedWalletClientId == null ? exchangeRateEntity : null,
+    );
+    final totalIncome = totals.totalIncome;
+    final totalExpense = totals.totalExpense;
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -554,38 +537,13 @@ class _StatisticsScreenState extends State<StatisticsScreen>
       return const SizedBox.shrink();
     }
 
-    // Filter transactions by type
-    final incomeTransactions = transactions
-        .where((tx) => tx.transaction.type == TransactionType.income)
-        .toList();
-    final expenseTransactions = transactions
-        .where((tx) => tx.transaction.type == TransactionType.expense)
-        .toList();
-
-    double totalIncome;
-    double totalExpense;
-
-    if (_selectedWalletClientId == null && exchangeRateEntity != null) {
-      // All wallets selected: use calculateTransactionsTotal for accurate conversion
-      totalIncome = calculateTransactionsTotal(
-        incomeTransactions,
-        exchangeRateEntity,
-      );
-      totalExpense = calculateTransactionsTotal(
-        expenseTransactions,
-        exchangeRateEntity,
-      );
-    } else {
-      // Specific wallet selected: sum amounts directly (already in wallet currency)
-      totalIncome = incomeTransactions.fold(
-        0.0,
-        (sum, tx) => sum + tx.transaction.amount,
-      );
-      totalExpense = expenseTransactions.fold(
-        0.0,
-        (sum, tx) => sum + tx.transaction.amount,
-      );
-    }
+    // Calculate totals using helper function
+    final totals = calculateIncomeExpense(
+      transactions,
+      exchangeRateEntity: _selectedWalletClientId == null ? exchangeRateEntity : null,
+    );
+    final totalIncome = totals.totalIncome;
+    final totalExpense = totals.totalExpense;
 
     return Padding(
       padding: EdgeInsets.symmetric(

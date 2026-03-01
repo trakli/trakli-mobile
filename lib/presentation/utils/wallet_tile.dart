@@ -9,6 +9,7 @@ import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
+import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/dialogs/pop_up_dialog.dart';
@@ -39,8 +40,21 @@ class WalletTile extends StatelessWidget {
           .getConfigByKey(ConfigConstants.defaultWallet)
           ?.value as String?;
     }
+
     final isDefaultWallet =
         showDefaultWallet && wallet.clientId == defaultWalletId;
+
+    // Calculate income/expense from transactions instead of using wallet.stats
+    final transactions = context.watch<TransactionCubit>().state.transactions;
+    final totals = calculateIncomeExpense(
+      transactions,
+      walletClientId: wallet.clientId,
+    );
+    final totalIncome = totals.totalIncome;
+    final totalExpense = totals.totalExpense;
+    
+    // Calculate balance from transactions (income - expense)
+    final walletBalance = totalIncome - totalExpense;
 
     return Container(
       width: double.infinity,
@@ -295,7 +309,7 @@ class WalletTile extends StatelessWidget {
                         args: [
                           CurrencyFormater.formatAmountWithSymbol(
                             context,
-                            wallet.balance,
+                            walletBalance,
                             currency: wallet.currency,
                           )
                         ],
@@ -350,7 +364,7 @@ class WalletTile extends StatelessWidget {
                               args: [
                                 CurrencyFormater.formatAmountWithSymbol(
                                   context,
-                                  wallet.stats?.totalIncome ?? 0,
+                                  totalIncome,
                                   currency: wallet.currency,
                                 )
                               ],
@@ -402,7 +416,7 @@ class WalletTile extends StatelessWidget {
                               args: [
                                 CurrencyFormater.formatAmountWithSymbol(
                                   context,
-                                  wallet.stats?.totalExpense ?? 0,
+                                  totalExpense,
                                   currency: wallet.currency,
                                 )
                               ],

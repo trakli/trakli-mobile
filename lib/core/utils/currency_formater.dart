@@ -9,6 +9,7 @@ import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
+import 'package:trakli/presentation/utils/enums.dart';
 
 const decimalDigits = 2;
 
@@ -187,4 +188,62 @@ double calculateSingleTransactionTotal(
   final transactionRate = exchangeRateEntity.rates[transactionCurrency] ?? 1;
   final amountInBase = amount / transactionRate;
   return amountInBase;
+}
+
+/// Holds income and expense totals calculated from transactions
+class IncomeExpenseTotals {
+  final double totalIncome;
+  final double totalExpense;
+
+  const IncomeExpenseTotals({
+    required this.totalIncome,
+    required this.totalExpense,
+  });
+}
+
+/// Calculates income and expense totals from a list of transactions
+///
+/// [transactions] - List of transactions to calculate totals from
+/// [exchangeRateEntity] - Exchange rate entity for currency conversion (optional)
+/// [walletClientId] - If provided, only include transactions for this wallet
+///
+/// When [exchangeRateEntity] is provided, amounts are converted to base currency.
+/// When [walletClientId] is provided, only transactions for that wallet are included.
+IncomeExpenseTotals calculateIncomeExpense(
+  List<TransactionCompleteEntity> transactions, {
+  ExchangeRateEntity? exchangeRateEntity,
+  String? walletClientId,
+}) {
+  double totalIncome = 0;
+  double totalExpense = 0;
+
+  for (final tx in transactions) {
+    if (walletClientId != null && tx.transaction.walletClientId != walletClientId) {
+      continue;
+    }
+
+    final amount = tx.transaction.amount;
+    double convertedAmount = amount;
+
+    if (exchangeRateEntity != null) {
+      final transactionCurrency = tx.wallet.currencyCode;
+      final baseCurrency = exchangeRateEntity.baseCode;
+
+      if (transactionCurrency != baseCurrency) {
+        final transactionRate = exchangeRateEntity.rates[transactionCurrency] ?? 1;
+        convertedAmount = amount / transactionRate;
+      }
+    }
+
+    if (tx.transaction.type == TransactionType.income) {
+      totalIncome += convertedAmount;
+    } else {
+      totalExpense += convertedAmount;
+    }
+  }
+
+  return IncomeExpenseTotals(
+    totalIncome: totalIncome,
+    totalExpense: totalExpense,
+  );
 }
