@@ -11,6 +11,7 @@ import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
 import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
+import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/all_wallets_tile.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
@@ -20,18 +21,22 @@ class MockCurrencyCubit extends Mock implements CurrencyCubit {}
 
 class MockConfigCubit extends Mock implements ConfigCubit {}
 
+class MockTransactionCubit extends Mock implements TransactionCubit {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late MockExchangeRateCubit mockExchangeRateCubit;
   late MockCurrencyCubit mockCurrencyCubit;
   late MockConfigCubit mockConfigCubit;
+  late MockTransactionCubit mockTransactionCubit;
   final now = DateTime.now();
 
   setUp(() {
     mockExchangeRateCubit = MockExchangeRateCubit();
     mockCurrencyCubit = MockCurrencyCubit();
     mockConfigCubit = MockConfigCubit();
+    mockTransactionCubit = MockTransactionCubit();
 
     when(() => mockExchangeRateCubit.state).thenReturn(
       ExchangeRateState.success(
@@ -81,6 +86,14 @@ void main() {
     when(() => mockConfigCubit.stream).thenAnswer(
       (_) => Stream.value(mockConfigCubit.state),
     );
+
+    when(() => mockTransactionCubit.state).thenReturn(
+      TransactionState.initial(),
+    );
+
+    when(() => mockTransactionCubit.stream).thenAnswer(
+      (_) => Stream.value(mockTransactionCubit.state),
+    );
   });
 
   Widget createTestWidget(List<WalletEntity> wallets) {
@@ -96,6 +109,7 @@ void main() {
                   value: mockExchangeRateCubit),
               BlocProvider<CurrencyCubit>.value(value: mockCurrencyCubit),
               BlocProvider<ConfigCubit>.value(value: mockConfigCubit),
+              BlocProvider<TransactionCubit>.value(value: mockTransactionCubit),
             ],
             child: Scaffold(
               body: AllWalletsTile(wallets: wallets),
