@@ -1,0 +1,12 @@
+//
+//  Production.xcconfig
+//  Runner
+//
+//  Created by Kofi Mokome on 02/03/2026.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+#include "Generated.xcconfig"
+GOOGLESERVICE_INFO_PLIST = ${PROJECT_DIR}/Runner/Firebase/prod/GoogleService-Info.plist

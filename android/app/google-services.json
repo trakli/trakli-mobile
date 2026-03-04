@@ -98,6 +98,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "212694832657-vqvrgf1f76egbsjre4redt0mb1mkb498.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whilesmart.trakli.dev",
+            "certificate_hash": "26d09140b4fbd2b02b9b56d5406a282dab496669"
+          }
+        },
+        {
           "client_id": "212694832657-nhgrvtnp8kfeuu777lnrh6s3b9lleoa1.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -133,6 +141,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "212694832657-5gummdqjb8rni6i31iqk5qdanip1fip1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whilesmart.trakli.stg",
+            "certificate_hash": "26d09140b4fbd2b02b9b56d5406a282dab496669"
+          }
+        },
         {
           "client_id": "212694832657-nhgrvtnp8kfeuu777lnrh6s3b9lleoa1.apps.googleusercontent.com",
           "client_type": 3

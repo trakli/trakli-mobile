@@ -66,6 +66,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
+### ios setup_certificates
+
+```sh
+[bundle exec] fastlane ios setup_certificates
+```
+
+Setup certificates and profiles for all app variants
+
 ### ios build_ipa
 
 ```sh
@@ -80,7 +88,31 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane ios release_app_store
 ```
 
-Release a new build to Apple Store
+Release a new build to App Store (Production)
+
+### ios release_testflight_dev
+
+```sh
+[bundle exec] fastlane ios release_testflight_dev
+```
+
+Release to TestFlight (Dev)
+
+### ios release_testflight_staging
+
+```sh
+[bundle exec] fastlane ios release_testflight_staging
+```
+
+Release to TestFlight (Staging)
+
+### ios release_firebase
+
+```sh
+[bundle exec] fastlane ios release_firebase
+```
+
+Release to Firebase App Distribution (Dev)
 
 ----
 
