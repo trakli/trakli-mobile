@@ -142,10 +142,9 @@ platform :ios do
       }
     )
 
-    if File.file?("../Runner/GoogleService-Info.plist") && File.directory?("../Pods/FirebaseCrashlytics")
-      upload_symbols_to_crashlytics(
-        gsp_path: "../Runner/GoogleService-Info.plist"
-      )
+    gsp_path = "#{root_path}/ios/Runner/GoogleService-Info.plist"
+    if File.file?(gsp_path) && File.directory?("#{root_path}/ios/Pods/FirebaseCrashlytics")
+      upload_symbols_to_crashlytics(gsp_path: gsp_path)
     end
 
     upload_to_testflight(
