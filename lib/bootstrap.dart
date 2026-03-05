@@ -8,8 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:injectable/injectable.dart';
-import 'package:trakli/config/build_env.dart' as build_config;
 import 'package:trakli/core/app_update/app_version_info.dart';
 import 'package:trakli/core/app_update/feature_remote_config.dart';
 import 'package:trakli/core/app_update/remote_update_check.dart';
@@ -24,9 +22,13 @@ import 'package:trakli/presentation/utils/globals.dart';
 ///
 /// The error handler logs the error and its stack trace to the console.
 ///
-/// The error handler also initializes the Flutter app by calling [WidgetsFlutterBinding.ensureInitialized] and running the app in a zone guarded against errors
+/// The error handler also initializes the Flutter app by calling [WidgetsFlutterBinding.ensureInitialized] and running the app in a zone guarded against errors.
+///
+/// [environment] is the injectable environment for DI and crash reporting.
+/// Pass [Environment.dev] for development and staging; [Environment.prod] for production.
 Future<void> bootstrap(
   FutureOr<Widget> Function() builder, {
+  required String environment,
   bool sendCrashlyticsZoneErrors = true,
   FirebaseOptions? firebaseOptions,
 }) async {
@@ -49,19 +51,12 @@ Future<void> bootstrap(
         options: firebaseOptions,
       );
 
-      // Determine environment: dart-define (Android) or build config file (iOS)
-      const dartDefineEnv = String.fromEnvironment('ENV', defaultValue: '');
-      final env = dartDefineEnv.isNotEmpty
-          ? dartDefineEnv
-          : (build_config.buildEnvironment == 'prod' ? 'prod' : 'dev');
-      final environment = env == 'prod' ? Environment.prod : Environment.dev;
-
       configureDependencies(environment);
 
       // Initialize crash reporting
       crashReportingService = getIt<CrashReportingService>();
       await crashReportingService?.initialize();
-      await crashReportingService?.setCustomKey('environment', env);
+      await crashReportingService?.setCustomKey('environment', environment);
 
       // Initialize independent services in parallel
       await Future.wait([
