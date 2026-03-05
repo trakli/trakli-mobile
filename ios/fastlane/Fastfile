@@ -257,7 +257,6 @@ platform :ios do
     provisioning_profile_name = profile_mapping[app_identifier] || "match AppStore #{app_identifier}"
 
 
-    // Log profile mapping 
     UI.message("Profile mapping: #{profile_mapping}")
     UI.message("Provisioning profile name: #{provisioning_profile_name}")
 
