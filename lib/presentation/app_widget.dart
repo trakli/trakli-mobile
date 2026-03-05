@@ -39,6 +39,7 @@ import 'package:trakli/presentation/onboarding/onboarding_screen.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
 import 'package:trakli/presentation/plans/cubit/plans_cubit.dart';
 import 'package:trakli/presentation/root/main_navigation_screen.dart';
+import 'package:trakli/presentation/statistics/cubit/statistics_filter_cubit.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/globals.dart';
@@ -112,6 +113,9 @@ class AppWidget extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => getIt<InAppUpdateCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<StatisticsFilterCubit>(),
         ),
       ],
       child: const AppView(),

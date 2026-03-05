@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/home_screen.dart';
 import 'package:trakli/presentation/profile_screen.dart';
-import 'package:trakli/presentation/statistics_screen.dart';
+import 'package:trakli/presentation/statistics/statistics_screen.dart';
 import 'package:trakli/presentation/wallets/wallet_screen.dart';
 
 enum RegisterType {

@@ -198,6 +198,7 @@ import '../presentation/groups/cubit/group_cubit.dart' as _i676;
 import '../presentation/notifications/cubit/notification_cubit.dart' as _i1056;
 import '../presentation/parties/cubit/party_cubit.dart' as _i841;
 import '../presentation/plans/cubit/plans_cubit.dart' as _i977;
+import '../presentation/statistics/cubit/statistics_filter_cubit.dart' as _i1069;
 import '../presentation/transactions/cubit/transaction_cubit.dart' as _i117;
 import '../presentation/utils/sync_cubit.dart' as _i1041;
 import '../presentation/wallets/cubit/wallet_cubit.dart' as _i1068;
@@ -618,6 +619,7 @@ _i174.GetIt $initGetIt(
       ));
   gh.factory<_i977.PlansCubit>(
       () => _i977.PlansCubit(gh<_i314.FetchSubscriptionPlans>()));
+  gh.factory<_i1069.StatisticsFilterCubit>(() => _i1069.StatisticsFilterCubit());
   gh.factory<_i798.UpdateDefaultCurrencyUseCase>(() =>
       _i798.UpdateDefaultCurrencyUseCase(gh<_i1057.ExchangeRateRepository>()));
   gh.factory<_i676.GroupCubit>(() => _i676.GroupCubit(
