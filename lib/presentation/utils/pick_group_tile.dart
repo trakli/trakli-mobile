@@ -80,11 +80,13 @@ class PickGroupTile<T> extends StatelessWidget {
               ],
             ),
           ),
-          Radio<T>(
-            activeColor: appPrimaryColor,
-            value: value,
+          RadioGroup<T>(
             groupValue: groupValue,
-            onChanged: onChanged,
+            onChanged: (T? selectedValue) => onChanged?.call(selectedValue),
+            child: Radio<T>(
+              activeColor: appPrimaryColor,
+              value: value,
+            ),
           ),
         ],
       ),
