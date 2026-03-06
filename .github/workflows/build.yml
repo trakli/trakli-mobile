@@ -1,9 +1,9 @@
 name: Check, Test and Build
 
 on:
-  push:
-    branches:
-      - dev
+  # push:
+  #   branches:
+  #     - dev
   pull_request:
 
 concurrency:
@@ -148,6 +148,15 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: ${{ env.FLUTTER_CHANNEL }}
           cache: true
+
+      - name: Install FlutterFire CLI
+        run: dart pub global activate flutterfire_cli
+
+      - name: Add pub cache bin to PATH
+        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Verify FlutterFire CLI
+        run: flutterfire --version
 
       - name: Generate code
         run: flutter pub run build_runner build --delete-conflicting-outputs
