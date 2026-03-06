@@ -75,6 +75,7 @@ platform :ios do
       store: "appstore",
       environment: environment,
       flavor: flavor,
+      target: options[:target],
       app_identifier: options[:app_identifier]
     )
   end
@@ -121,6 +122,7 @@ platform :ios do
       build_number: build_number,
       version_number: version_number,
       flavor: 'production',
+      target: 'lib/main_production.dart',
       app_identifier: app_identifier
     )
 
@@ -187,6 +189,7 @@ platform :ios do
       build_number: build_number,
       version_number: version_number,
       flavor: 'development',
+      target: 'lib/main_development.dart',
       app_identifier: app_identifier
     )
 
@@ -249,6 +252,7 @@ platform :ios do
       build_number: build_number,
       version_number: version_number,
       flavor: 'staging',
+      target: 'lib/main_staging.dart',
       app_identifier: app_identifier
     )
 
@@ -286,6 +290,7 @@ platform :ios do
       build_number: options[:build_number],
       version_number: options[:version_number],
       flavor: 'development',
+      target: 'lib/main_development.dart',
       app_identifier: "com.whilesmart.trakli.dev"
     )
 

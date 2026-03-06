@@ -46,9 +46,12 @@ jobs:
         run: bundle install
 
       - name: Setup Service Accounts
+        env:
+          GOOGLE_SERVICES_ACCOUNT_BASE64: ${{ secrets.GOOGLE_SERVICES_ACCOUNT_BASE64 }}
+          CREDENTIAL_FILE_CONTENT: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
         run: |
-          echo "${{ secrets.GOOGLE_SERVICES_ACCOUNT_BASE64 }}" | base64 --decode > google_service_account.json
-          cat <<< "${{ secrets.CREDENTIAL_FILE_CONTENT }}" > service_credentials_content.json
+          printf '%s' "$GOOGLE_SERVICES_ACCOUNT_BASE64" | base64 --decode > google_service_account.json
+          printf '%s' "$CREDENTIAL_FILE_CONTENT" > service_credentials_content.json
 
       - name: Release to Firebase
         if: ${{ github.event_name == 'push' || github.event.inputs.track == 'firebase' }}

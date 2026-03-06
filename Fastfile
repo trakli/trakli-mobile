@@ -38,15 +38,15 @@ lane :build_flutter_app do |options|
   # Determine environment and flavor - default to dev/production, allow override
   environment = options[:environment] || 'dev'
   flavor = options[:flavor] || 'production'
-  dart_define = "--dart-define=ENV=#{environment}"
+  target = options[:target]
 
   command = "flutter build #{type} --release --no-pub --suppress-analytics"
   command += " --flavor #{flavor}" if flavor.to_s != ""
+  command += " --target #{target}" if target.to_s != ""
   command += " --build-number=#{build_number}" if build_number.to_s != ""
   command += " --build-name=#{version_number}" if version_number.to_s != ""
   command += " --no-codesign" if no_codesign
   command += " --config-only" if config_only
-  command += " #{dart_define}"
 
   UI.message("Building #{type} - version: #{version_number} - build: #{build_number} - commit: #{commit[:abbreviated_commit_hash]} - env: #{environment} - flavor: #{flavor}")
 
