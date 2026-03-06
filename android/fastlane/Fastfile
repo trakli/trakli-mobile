@@ -32,7 +32,9 @@ platform :android do
       build_number: options[:build_number],
       version_number: options[:version_number],
       store: "playstore",
-      environment: options[:environment] || 'dev'
+      environment: options[:environment],
+      flavor: options[:flavor],
+      target: options[:target]
     )
   end
 
@@ -45,7 +47,9 @@ platform :android do
         config_only: options[:config_only],
         build_number: options[:build_number],
         version_number: options[:version_number],
-        environment: 'prod'  # Production for Play Store releases
+        environment: 'prod',  # Production for Play Store releases
+        flavor: 'production',
+        target: 'lib/main_production.dart'
       )
 
       supply(
@@ -73,12 +77,14 @@ platform :android do
         config_only: options[:config_only],
         build_number: options[:build_number],
         version_number: options[:version_number],
-        environment: 'dev'  # Dev for Firebase Distribution
+        environment: 'staging',
+        flavor: 'staging',
+        target: 'lib/main_staging.dart'
       )
 
       firebase_app_distribution(
         app: ENV["FIREBASE_APP_ID"],
-        android_artifact_path: "#{root_path}/build/app/outputs/flutter-apk/app-release.apk",
+        android_artifact_path: "#{root_path}/build/app/outputs/flutter-apk/app-staging-release.apk",
         service_credentials_file: google_firebase_service_account_json_path,
         # Use the following to enable debug mode
         release_notes: options[:release_notes] || `git log -1 --pretty=short`.strip,

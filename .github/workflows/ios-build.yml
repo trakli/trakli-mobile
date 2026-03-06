@@ -1,4 +1,4 @@
-name: iOS Build
+name: Manual iOS Build (IPA)
 
 on:
   workflow_dispatch:
@@ -45,6 +45,7 @@ on:
 
 jobs:
   build:
+    name: Build iOS IPA
     runs-on: macos-latest
     timeout-minutes: 30
 
