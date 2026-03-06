@@ -71,7 +71,7 @@ platform :ios do
       no_codesign: is_ci || options[:no_codesign] || false,
       config_only: options[:config_only] || false,
       build_number: options[:build_number] || get_build_number('appstore', options[:app_identifier]),
-      version_number: options[:version_number] || get_version_from_pubspec(),
+      version_number: options[:version_number] || get_version_from_tag_or_pubspec(),
       store: "appstore",
       environment: environment,
       flavor: flavor,
@@ -93,7 +93,7 @@ platform :ios do
     authenticate_apple_store
 
     build_number = options.fetch(:build_number, get_build_number('appstore', app_identifier))
-    version_number = options.fetch(:version_number, get_version_from_pubspec())
+    version_number = options.fetch(:version_number, get_version_from_tag_or_pubspec())
 
     UI.message("Building version #{version_number} (from pubspec.yaml) to App Store")
     UI.message("Build number: #{build_number}")
@@ -159,7 +159,7 @@ platform :ios do
     authenticate_apple_store
 
     build_number = options.fetch(:build_number, get_build_number('appstore', app_identifier))
-    version_number = options.fetch(:version_number, get_version_from_pubspec())
+    version_number = options.fetch(:version_number, get_version_from_tag_or_pubspec())
 
     UI.message("Building version #{version_number} to TestFlight (dev)")
     UI.message("Build number: #{build_number}")
@@ -221,7 +221,7 @@ platform :ios do
     authenticate_apple_store
 
     build_number = options.fetch(:build_number, get_build_number('appstore', app_identifier))
-    version_number = options.fetch(:version_number, get_version_from_pubspec())
+    version_number = options.fetch(:version_number, get_version_from_tag_or_pubspec())
 
     UI.message("Building version #{version_number} to TestFlight (staging)")
     UI.message("Build number: #{build_number}")

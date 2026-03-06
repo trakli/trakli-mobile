@@ -3,9 +3,7 @@ name: Check, Test and Build
 on:
   push:
     branches:
-      - main
       - dev
-      - feat/remove-stale-media
   pull_request:
 
 env:

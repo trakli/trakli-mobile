@@ -1,13 +1,7 @@
 name: Publish iOS and Android release
 
 on:
-  release:
-    types: [published]
-  push:
-    tags:
-      - "v*"
-      - "v*-rc.*"
-      - "*.*.*"
+  workflow_dispatch:
 
 env:
   FLUTTER_CHANNEL: "stable"
@@ -60,7 +54,6 @@ jobs:
         with:
           lane: "release_app_store"
           subdirectory: "ios"
-          options: '{ "version_number": "${{ github.ref_name }}" }'
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
@@ -119,6 +112,6 @@ jobs:
         with:
           lane: "release_play_store"
           subdirectory: android
-          options: '{ "version_number": "${{ github.ref_name }}", "environment": "prod" }'
+          options: '{ "environment": "prod" }'
         env:
           APP_PACKAGE_NAME: ${{ vars.APP_PACKAGE_NAME }}

@@ -1,6 +1,9 @@
 name: Android Release
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       track:
@@ -48,7 +51,7 @@ jobs:
           cat <<< "${{ secrets.CREDENTIAL_FILE_CONTENT }}" > service_credentials_content.json
 
       - name: Release to Firebase
-        if: ${{ github.event.inputs.track == 'firebase' }}
+        if: ${{ github.event_name == 'push' || github.event.inputs.track == 'firebase' }}
         working-directory: android/fastlane
         run: bundle exec fastlane release_play_store_using_firebase
         env:
@@ -56,7 +59,7 @@ jobs:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
 
       - name: Release to Play Store
-        if: ${{ github.event.inputs.track == 'playstore' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.track == 'playstore' }}
         working-directory: android/fastlane
         run: bundle exec fastlane release_play_store
         env:

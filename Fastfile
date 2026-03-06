@@ -27,12 +27,10 @@ lane :lint do
 end
 
 lane :build_flutter_app do |options|
-  pubspec_version_number = get_version_from_pubspec()
-
   type = options[:type]
   app_identifier_arg = options[:app_identifier]
   build_number = options[:build_number] || get_build_number(options[:store], app_identifier_arg)
-  version_number = options[:version_number] || pubspec_version_number
+  version_number = options[:version_number] || get_version_from_tag_or_pubspec()
   no_codesign = options[:no_codesign] || false
   config_only = options[:config_only] || false
   commit = last_git_commit
@@ -132,4 +130,26 @@ def get_version_from_pubspec
   end
 
   return version_number
+end
+
+def get_version_from_tag_or_pubspec
+  # Prefer tag version in CI tag-triggered workflows.
+  raw_tag = ENV["GITHUB_REF_NAME"]
+
+  if raw_tag.to_s.empty?
+    begin
+      raw_tag = last_git_tag
+    rescue StandardError
+      raw_tag = nil
+    end
+  end
+
+  if raw_tag.to_s != ""
+    normalized = raw_tag.sub(/\Av/, "").split("-").first
+    return normalized if normalized.match?(/^\d+\.\d+\.\d+$/)
+
+    UI.message("Tag '#{raw_tag}' is not a semantic version. Falling back to pubspec.yaml version.")
+  end
+
+  get_version_from_pubspec
 end

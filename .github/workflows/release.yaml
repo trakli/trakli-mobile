@@ -1,36 +1,70 @@
-name: iOS Release
+name: Release
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
-    inputs:
-      track:
-        description: 'Release track'
-        required: true
-        default: 'testflight-dev'
-        type: choice
-        options:
-          - testflight-dev
-          - testflight-staging
-          - testflight-prod
-          - firebase
+    tags:
+      - "v*.*.*"
 
 env:
   FLUTTER_VERSION: "3.38.9"
+  XCODE_VERSION: "16.0"
+  JAVA_VERSION: "17"
+  RUBY_VERSION: "3.2"
   FLUTTER_CHANNEL: "stable"
 
 jobs:
-  build-and-release:
+  release-android:
+    name: Release Android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+          cache-key: flutter-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+          working-directory: android/fastlane
+
+      - name: Install Fastlane gems
+        working-directory: android/fastlane
+        run: bundle install
+
+      - name: Setup Service Accounts
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_ACCOUNT_BASE64 }}" | base64 --decode > google_service_account.json
+          cat <<< "${{ secrets.CREDENTIAL_FILE_CONTENT }}" > service_credentials_content.json
+
+      - name: Release to Play Store
+        working-directory: android/fastlane
+        run: bundle exec fastlane release_play_store
+        env:
+          APP_PACKAGE_NAME: ${{ vars.APP_PACKAGE_NAME }}
+
+  release-ios:
+    name: Release iOS
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26' #latest-stable
+          xcode-version: "26" #latest-stable
 
       - name: Restore DerivedData cache
         uses: actions/cache/restore@v4
@@ -40,13 +74,14 @@ jobs:
           key: deriveddata-${{ github.run_id }}
           restore-keys: |
             deriveddata-
-              
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: ${{ env.FLUTTER_CHANNEL }}
           cache: true
+          cache-key: flutter-${{ hashFiles('**/pubspec.lock') }}
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
@@ -60,7 +95,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
           working-directory: ios/fastlane
 
@@ -82,19 +117,7 @@ jobs:
       - name: Generate code
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
-
-      - name: Release to TestFlight (Staging)
-        if: ${{ github.event_name == 'push' || github.event.inputs.track == 'testflight-staging' }}
-        working-directory: ios/fastlane
-        run: bundle exec fastlane release_testflight_staging
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
-
-      - name: Release to TestFlight (Prod)
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.track == 'testflight-prod' }}
+      - name: Release to App Store
         working-directory: ios/fastlane
         run: bundle exec fastlane release_app_store
         env:
@@ -103,15 +126,3 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
           APP_BUNDLE_ID: ${{ vars.APP_BUNDLE_ID }}
-
-      - name: Release to Firebase (iOS Dev)
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.track == 'firebase' }}
-        working-directory: ios/fastlane
-        run: bundle exec fastlane release_firebase
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          FIREBASE_APP_ID_IOS_DEV: ${{ secrets.FIREBASE_APP_ID_IOS_DEV }}
