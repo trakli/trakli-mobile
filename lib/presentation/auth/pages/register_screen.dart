@@ -11,7 +11,6 @@ import 'package:trakli/presentation/auth/pages/login_with_email_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/colors.dart';
-// import 'package:trakli/presentation/utils/custom_phone_field.dart';
 import 'package:trakli/presentation/utils/custom_text_field.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -35,8 +34,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   int currentStep = 0;
   static const _registerType = RegisterType.email;
   bool canMove = true;
-  // String? _phoneNumber;
-
   @override
   void initState() {
     _recognizerTap = TapGestureRecognizer()
@@ -330,20 +327,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           filled: true,
         ),
         SizedBox(height: 16.h),
-        // Text(
-        //   LocaleKeys.phoneNumber.tr(),
-        //   style: TextStyle(
-        //     fontSize: 16.sp,
-        //     fontWeight: FontWeight.w700,
-        //   ),
-        // ),
-        // SizedBox(height: 8.h),
-        // CustomPhoneField(
-        //   onChanged: (number) {
-        //     _phoneNumber = number.completeNumber;
-        //   },
-        // ),
-        // SizedBox(height: 16.h),
         Text(
           '${LocaleKeys.password.tr()} *',
           style: TextStyle(
@@ -376,7 +359,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         firstName: firstNameController.text,
                         lastName: lastNameController.text,
                         username: usernameController.text,
-                        phone: '', // Phone input commented out
+                        phone: '',
                         password: passwordController.text,
                         email: emailController.text,
                       );
