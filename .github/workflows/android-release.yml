@@ -54,6 +54,19 @@ jobs:
           printf '%s' "$GOOGLE_SERVICES_ACCOUNT_BASE64" | base64 --decode > google_service_account.json
           printf '%s' "$CREDENTIAL_FILE_CONTENT" > service_credentials_content.json
 
+      - name: Setup Android signing keystore
+        run: |
+          printf '%s' "${{ secrets.ANDROID_KEYSTORE_FILE_BASE64 }}" | base64 --decode > android/key.jks
+
+      - name: Setup Android key.properties
+        run: |
+          cat <<EOF > android/key.properties
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyAlias=release
+          storeFile=../key.jks
+          EOF
+
       - name: Release to Firebase
         if: ${{ github.event_name == 'push' || github.event.inputs.track == 'firebase' }}
         working-directory: android/fastlane
