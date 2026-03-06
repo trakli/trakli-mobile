@@ -1,11 +1,13 @@
 import 'dart:convert';
-import 'dart:isolate';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:trakli/data/database/app_database.dart';
+import 'package:trakli/data/datasources/media_file/media_file_local_datasource.dart';
+import 'package:trakli/di/injection.dart';
 
 /// Top-level entry for the cleanup isolate. Required by [Isolate.spawn].
 /// Args: [SendPort, String mediaRootPath, List<String> validPaths].
@@ -23,15 +25,21 @@ void orphanedMediaCleanupIsolateEntry(List<dynamic> args) {
       sendPort.send(_resultMap(deleted, null));
       return;
     }
-    for (final entity in dir.listSync(recursive: true)) {
+    for (final entity in dir.listSync(recursive: true, followLinks: false)) {
       if (entity is! File) continue;
       final path = p.normalize(entity.path);
       if (!path.startsWith(normalizedRoot)) continue;
       if (!validSet.contains(path)) {
         try {
-          entity.deleteSync();
-          deleted.add(path);
-        } catch (_) {}
+          if (entity.existsSync()) {
+            entity.deleteSync();
+            deleted.add(path);
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            debugPrint('Failed to delete orphaned file $path: $e');
+          }
+        }
       }
     }
     sendPort.send(_resultMap(deleted, null));
@@ -66,12 +74,13 @@ Future<void> runOrphanedMediaCleanup({
     if (row.id == null) {
       validPaths.add(p.normalize(p.absolute(row.path)));
     } else {
-      final ext = row.path.contains('.')
-          ? row.path.split('.').last.toLowerCase()
-          : 'bin';
-      validPaths.add(p.normalize(p.join(cacheDir, 'file_${row.id}.$ext')));
+      final ext = p.extension(row.path).toLowerCase();
+      final safeExt = ext.isEmpty ? '.bin' : ext;
+      validPaths.add(p.normalize(p.join(cacheDir, 'file_${row.id}$safeExt')));
     }
   }
+
+  debugPrint('validPaths: $validPaths');
 
   final receivePort = ReceivePort();
   await Isolate.spawn(
@@ -99,6 +108,13 @@ Future<void> runOrphanedMediaCleanup({
       }),
     );
   }
+}
+
+Future<void> runOrphanedMediaCleanupFromDataSource() async {
+  final dataSource = getIt<MediaFileLocalDataSource>();
+  await runOrphanedMediaCleanup(
+    getAllMediaFiles: dataSource.getAllMediaFiles,
+  );
 }
 
 /// Log file name written in debug when cleanup deletes files.
