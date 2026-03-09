@@ -54,7 +54,7 @@ jobs:
 
       - name: Setup Java
         if: matrix.os == 'android'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
