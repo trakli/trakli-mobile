@@ -542,5 +542,10 @@
   "appUpdateReadyToInstall": "Aggiornamento pronto per l'installazione",
   "appUpdateRestart": "Riavvia",
   "appUpdateReady": "Aggiornamento pronto",
-  "appUpdateRestartPrompt": "Una nuova versione è stata scaricata. Riavviare ora per applicare l'aggiornamento?"
+  "appUpdateRestartPrompt": "Una nuova versione è stata scaricata. Riavviare ora per applicare l'aggiornamento?",
+  "deleteYourAccount": "Eliminare il tuo account?",
+  "deleteAccount": "Elimina account",
+  "deleteAccountDesc": "Questa azione è permanente. Eliminando il tuo account verranno rimossi tutti i tuoi dati e non potranno essere recuperati.",
+  "helpUsImprove": "Aiutaci a migliorare (facoltativo)",
+  "whyDeleteAccount": "Perché stai eliminando il tuo account?"
 }

@@ -542,5 +542,10 @@
   "appUpdateRestartPrompt": "A new version has been downloaded. Restart now to apply the update?",
   "orphanedMediaCleanupLog": "Orphaned media cleanup log",
   "orphanedMediaCleanupLogDesc": "View last run log (debug only)",
-  "orphanedMediaCleanupLogEmpty": "No log file yet. A log is written here when the cleanup runs in debug and deletes one or more orphaned files."
+  "orphanedMediaCleanupLogEmpty": "No log file yet. A log is written here when the cleanup runs in debug and deletes one or more orphaned files.",
+  "deleteYourAccount": "Delete your account?",
+  "deleteAccount": "Delete account",
+  "deleteAccountDesc": "This action is permanent. Deleting your account will remove all your data and cannot be undone.",
+  "helpUsImprove": "Help us improve (optional)",
+  "whyDeleteAccount": "Why are you deleting your account?"
 }

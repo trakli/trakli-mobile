@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/auth/cubits/auth/auth_cubit.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/bottom_sheets/account_deletion_sheet.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
+import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/dialogs/pop_up_dialog.dart';
+import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DataDeletionScreen extends StatefulWidget {
   const DataDeletionScreen({super.key});
@@ -114,9 +118,10 @@ class _DataDeletionScreenState extends State<DataDeletionScreen> {
 
             // Request Data Deletion Button
             SizedBox(
+              height: 52.h,
               width: double.infinity,
               child: PrimaryButton(
-                onPress: () => _requestDataDeletion(username),
+                onPress: () => _showSelfDeleteWarning(context),
                 backgroundColor: Colors.red,
                 buttonText: LocaleKeys.requestDataDeletion.tr(),
                 buttonTextColor: Colors.white,
@@ -264,6 +269,27 @@ class _DataDeletionScreenState extends State<DataDeletionScreen> {
     showSnackBar(
       message: LocaleKeys.copiedToClipboard.tr(),
       backgroundColor: Colors.green,
+    );
+  }
+
+  void _showSelfDeleteWarning(BuildContext context) {
+    showCustomDialog(
+      widget: PopUpDialog(
+        title: LocaleKeys.deleteYourAccount.tr(),
+        subTitle: LocaleKeys.deleteAccountDesc.tr(),
+        dialogType: DialogType.negative,
+        mainAction: () async {
+          final reason = await showCustomBottomSheet<String>(
+            context,
+            color: Theme.of(context).scaffoldBackgroundColor,
+            widget: const AccountDeletionSheet(),
+          );
+          if (context.mounted) {
+            AppNavigator.pop(context);
+            context.read<AuthCubit>().deleteAccount(reason: reason);
+          }
+        },
+      ),
     );
   }
 }

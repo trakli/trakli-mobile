@@ -34,7 +34,7 @@ class AllSetWidget extends StatelessWidget {
         horizontal: 16.w,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
@@ -63,7 +63,9 @@ class AllSetWidget extends StatelessWidget {
           Text(
             LocaleKeys.allSetDesc.tr(),
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade700),
+            style: TextStyle(
+              fontSize: 14.sp,
+            ),
           ),
           SizedBox(height: 16.h),
           Expanded(
@@ -71,6 +73,7 @@ class AllSetWidget extends StatelessWidget {
               spacing: 16.h,
               children: [
                 infoText(
+                  context,
                   text: walletState.wallets.length == 1
                       ? LocaleKeys.wallet.tr()
                       : LocaleKeys.wallets.tr(),
@@ -78,6 +81,7 @@ class AllSetWidget extends StatelessWidget {
                   icon: Icons.wallet,
                 ),
                 infoText(
+                  context,
                   text: cartState.categories.length == 1
                       ? LocaleKeys.category.tr()
                       : LocaleKeys.categories.tr(),
@@ -85,6 +89,7 @@ class AllSetWidget extends StatelessWidget {
                   icon: Icons.label_outline,
                 ),
                 infoText(
+                  context,
                   text: transState.transactions.length == 1
                       ? LocaleKeys.transaction.tr()
                       : LocaleKeys.transactions.tr(),
@@ -121,7 +126,8 @@ class AllSetWidget extends StatelessWidget {
     );
   }
 
-  Widget infoText({
+  Widget infoText(
+    BuildContext context, {
     required String text,
     required int count,
     required IconData icon,
@@ -139,7 +145,7 @@ class AllSetWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w500,
-              color: Colors.black87,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             text: count.toString(),
             children: [

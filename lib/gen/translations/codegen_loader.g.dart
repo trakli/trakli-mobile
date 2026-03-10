@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class LocaleKeys {
+abstract class  LocaleKeys {
   static const appName = 'appName';
   static const welcomeText = 'welcomeText';
   static const welcomeTo = 'welcomeTo';
@@ -57,8 +57,7 @@ abstract class LocaleKeys {
   static const moneyReceived = 'moneyReceived';
   static const totalCompanies = 'totalCompanies';
   static const transactionLast30Days = 'transactionLast30Days';
-  static const transactionLast30DaysPerParties =
-      'transactionLast30DaysPerParties';
+  static const transactionLast30DaysPerParties = 'transactionLast30DaysPerParties';
   static const totalExpenses = 'totalExpenses';
   static const totalSavings = 'totalSavings';
   static const totalSpent = 'totalSpent';
@@ -176,7 +175,12 @@ abstract class LocaleKeys {
   static const anonymous = 'anonymous';
   static const logOut = 'logOut';
   static const logoutConfirm = 'logoutConfirm';
+  static const alreadyHaveAccount = 'alreadyHaveAccount';
   static const dontHaveAccount = 'dontHaveAccount';
+  static const editCategory = 'editCategory';
+  static const addCategory = 'addCategory';
+  static const noCategoriesFound = 'noCategoriesFound';
+  static const noGroupsFound = 'noGroupsFound';
   static const benefitsAccount = 'benefitsAccount';
   static const createAccountNow = 'createAccountNow';
   static const pickWallet = 'pickWallet';
@@ -205,7 +209,6 @@ abstract class LocaleKeys {
   static const exchangeRateHint = 'exchangeRateHint';
   static const valueRequired = 'valueRequired';
   static const transferMoney = 'transferMoney';
-  static const databaseViewer = 'databaseViewer';
   static const unknown = 'unknown';
   static const from = 'from';
   static const to = 'to';
@@ -215,10 +218,6 @@ abstract class LocaleKeys {
   static const attachment = 'attachment';
   static const date = 'date';
   static const time = 'time';
-  static const editCategory = 'editCategory';
-  static const addCategory = 'addCategory';
-  static const noCategoriesFound = 'noCategoriesFound';
-  static const noGroupsFound = 'noGroupsFound';
   static const editWallet = 'editWallet';
   static const addWallet = 'addWallet';
   static const name = 'name';
@@ -227,7 +226,6 @@ abstract class LocaleKeys {
   static const pleaseSelectCurrency = 'pleaseSelectCurrency';
   static const confirm = 'confirm';
   static const categories = 'categories';
-  static const edit = 'edit';
   static const savings = 'savings';
   static const addSaving = 'addSaving';
   static const snapPicture = 'snapPicture';
@@ -284,6 +282,8 @@ abstract class LocaleKeys {
   static const transactionsIn = 'transactionsIn';
   static const wallets = 'wallets';
   static const noData = 'noData';
+  static const databaseViewer = 'databaseViewer';
+  static const totalExpense = 'totalExpense';
   static const thisMonth = 'thisMonth';
   static const thisWeek = 'thisWeek';
   static const lastThreeMonths = 'lastThreeMonths';
@@ -298,6 +298,7 @@ abstract class LocaleKeys {
   static const categoryNameAlreadyExists = 'categoryNameAlreadyExists';
   static const deleteWallet = 'deleteWallet';
   static const deleteWalletConfirm = 'deleteWalletConfirm';
+  static const edit = 'edit';
   static const defaultName = 'defaultName';
   static const officeElements = 'officeElements';
   static const officeElementsDesc = 'officeElementsDesc';
@@ -318,8 +319,7 @@ abstract class LocaleKeys {
   static const partyTypePartnership = 'partyTypePartnership';
   static const partyTypeNonProfit = 'partyTypeNonProfit';
   static const partyTypeGovernmentAgency = 'partyTypeGovernmentAgency';
-  static const partyTypeEducationalInstitution =
-      'partyTypeEducationalInstitution';
+  static const partyTypeEducationalInstitution = 'partyTypeEducationalInstitution';
   static const partyTypeHealthcareProvider = 'partyTypeHealthcareProvider';
   static const selectPartyType = 'selectPartyType';
   static const selectDateOrDateRange = 'selectDateOrDateRange';
@@ -358,11 +358,9 @@ abstract class LocaleKeys {
   static const dataDeletionEmailSubject = 'dataDeletionEmailSubject';
   static const dataDeletionEmailBody = 'dataDeletionEmailBody';
   static const dataDeletionFallbackTitle = 'dataDeletionFallbackTitle';
-  static const dataDeletionFallbackInstructions =
-      'dataDeletionFallbackInstructions';
+  static const dataDeletionFallbackInstructions = 'dataDeletionFallbackInstructions';
   static const dataDeletionFallbackEmailTo = 'dataDeletionFallbackEmailTo';
-  static const dataDeletionFallbackSubjectLabel =
-      'dataDeletionFallbackSubjectLabel';
+  static const dataDeletionFallbackSubjectLabel = 'dataDeletionFallbackSubjectLabel';
   static const dataDeletionFallbackBodyLabel = 'dataDeletionFallbackBodyLabel';
   static const copiedToClipboard = 'copiedToClipboard';
   static const partyEducationBanner = 'partyEducationBanner';
@@ -398,8 +396,7 @@ abstract class LocaleKeys {
   static const emptyTransactionTipText = 'emptyTransactionTipText';
   static const quickStart = 'quickStart';
   static const emptyTransactionTitleOne = 'emptyTransactionTitleOne';
-  static const emptyTransactionDescriptionOne =
-      'emptyTransactionDescriptionOne';
+  static const emptyTransactionDescriptionOne = 'emptyTransactionDescriptionOne';
   static const emptyTransactionInfo1 = 'emptyTransactionInfo1';
   static const emptyTransactionInfo2 = 'emptyTransactionInfo2';
   static const emptyTransactionInfo3 = 'emptyTransactionInfo3';
@@ -453,8 +450,6 @@ abstract class LocaleKeys {
   static const createDefaultCategoriesDesc = 'createDefaultCategoriesDesc';
   static const skipCategories = 'skipCategories';
   static const skipCategoriesDesc = 'skipCategoriesDesc';
-  static const alreadyHaveAccount = 'alreadyHaveAccount';
-  static const totalExpense = 'totalExpense';
   static const advanced = 'advanced';
   static const synchronization = 'synchronization';
   static const syncHistoryDesc = 'syncHistoryDesc';
@@ -552,4 +547,10 @@ abstract class LocaleKeys {
   static const appUpdateRestart = 'appUpdateRestart';
   static const appUpdateReady = 'appUpdateReady';
   static const appUpdateRestartPrompt = 'appUpdateRestartPrompt';
+  static const deleteYourAccount = 'deleteYourAccount';
+  static const deleteAccount = 'deleteAccount';
+  static const deleteAccountDesc = 'deleteAccountDesc';
+  static const helpUsImprove = 'helpUsImprove';
+  static const whyDeleteAccount = 'whyDeleteAccount';
+
 }

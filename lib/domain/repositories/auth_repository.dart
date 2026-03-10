@@ -67,4 +67,6 @@ abstract class AuthRepository {
   Future<Either<Failure, Unit>> onboardingCompleted();
 
   Future<void> validateAuthConsistency();
+
+  Future<Either<Failure, Unit>> deleteAccount({String? reason});
 }

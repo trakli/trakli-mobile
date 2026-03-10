@@ -57,6 +57,10 @@ abstract class AuthRemoteDataSource {
     required String type,
     required String code,
   });
+
+  Future<ApiResponse> deleteAccount({
+    String? reason,
+  });
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -228,6 +232,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final apiResponse = ApiResponse.fromJson(response.data);
 
       return AuthResponseDto.fromJson(apiResponse.data);
+    });
+  }
+
+  @override
+  Future<ApiResponse> deleteAccount({
+    String? reason,
+  }) async {
+    return ErrorHandler.handleApiCall(() async {
+      final response = await _dio.delete(
+        '/account',
+        data: {
+          "confirm_delete": true,
+          "reason": reason,
+        },
+      );
+
+      final apiResponse = ApiResponse.fromJson(response.data);
+      return apiResponse;
     });
   }
 }

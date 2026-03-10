@@ -9,6 +9,7 @@ import 'package:trakli/core/usecases/usecase.dart';
 import 'package:trakli/core/utils/services/logger.dart';
 import 'package:trakli/domain/entities/auth_status.dart';
 import 'package:trakli/domain/entities/user_entity.dart';
+import 'package:trakli/domain/usecases/auth/delete_account_usecase.dart';
 import 'package:trakli/domain/usecases/auth/get_loggedin_user.dart';
 import 'package:trakli/domain/usecases/auth/logout_usecase.dart';
 import 'package:trakli/domain/usecases/auth/stream_auth_status.dart';
@@ -22,12 +23,14 @@ class AuthCubit extends Cubit<AuthState> {
   final GetLoggedInUser _getLoggedInUser;
   StreamSubscription<AuthStatus>? _authSubscription;
   final LogoutUsecase _logoutUsecase;
+  final DeleteAccountUseCase _deleteAccountUseCase;
   final UserContextService _userContextService;
 
   AuthCubit(
     this._streamAuthStatus,
     this._getLoggedInUser,
     this._logoutUsecase,
+    this._deleteAccountUseCase,
     this._userContextService,
   ) : super(const AuthState.initial());
 
@@ -92,6 +95,18 @@ class AuthCubit extends Cubit<AuthState> {
           _clearUserContext();
         }
         // For authenticated users, stream listener already emitted, so do nothing
+      },
+    );
+  }
+
+  Future<void> deleteAccount({String? reason}) async {
+    final result =
+        await _deleteAccountUseCase(DeleteAccountParams(reason: reason));
+
+    result.fold(
+      (failure) => emit(AuthState.error(failure)),
+      (_) {
+        logout();
       },
     );
   }
