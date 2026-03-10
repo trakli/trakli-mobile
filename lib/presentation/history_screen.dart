@@ -46,364 +46,358 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.transactionHistory.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
-        actions: [
-          InkWell(
-            onTap: () {
-              AppNavigator.push(
-                context,
-                const AddTransactionScreen(),
-              );
-            },
-            child: Container(
-              width: 42.r,
-              height: 42.r,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: Theme.of(context).scaffoldBackgroundColor,
-              ),
-              padding: EdgeInsets.all(8.r),
-              child: Center(
-                child: Icon(
-                  Icons.add,
-                  size: 24.r,
-                  color: Theme.of(context).primaryColor,
+    return BlocBuilder<TransactionCubit, TransactionState>(
+      builder: (context, state) {
+        final transactions = selectedItems.isEmpty && dateRange == null
+            ? state.transactions
+            : (() {
+                final selectedCategories =
+                    selectedItems.whereType<CategoryEntity>().toList();
+                final selectedWallets =
+                    selectedItems.whereType<WalletEntity>().toList();
+
+                final hasCategoryFilter = selectedCategories.isNotEmpty;
+                final hasWalletFilter = selectedWallets.isNotEmpty;
+
+                return state.transactions.where((transaction) {
+                  final categoryMatch = hasCategoryFilter &&
+                      transaction.categories.any((cat) =>
+                          selectedCategories.any(
+                              (selected) => selected.clientId == cat.clientId));
+                  final walletMatch = hasWalletFilter &&
+                      selectedWallets.any((wallet) =>
+                          wallet.clientId == transaction.wallet.clientId);
+
+                  final dateMatch = matchTransactionDate(
+                    dateRange,
+                    transaction.transaction,
+                  );
+
+                  if (hasCategoryFilter && hasWalletFilter) {
+                    return categoryMatch && walletMatch && dateMatch;
+                  } else if (hasCategoryFilter) {
+                    return categoryMatch && dateMatch;
+                  } else if (hasWalletFilter) {
+                    return walletMatch && dateMatch;
+                  } else {
+                    return dateMatch;
+                  }
+                }).toList();
+              })();
+        final totalIncome = transactions.where((transaction) {
+          return transaction.transaction.type == TransactionType.income;
+        }).fold<double>(0, (a, b) => a + b.transaction.amount);
+
+        final totalExpense = transactions.where((transaction) {
+          return transaction.transaction.type == TransactionType.expense;
+        }).fold<double>(0, (a, b) => a + b.transaction.amount);
+
+        final totalBalance = totalIncome - totalExpense;
+
+        return Scaffold(
+          appBar: CustomAppBar(
+            backgroundColor: Theme.of(context).primaryColor,
+            leading: const CustomBackButton(),
+            titleText: LocaleKeys.transactionHistory.tr(),
+            headerTextColor: const Color(0xFFEBEDEC),
+            actions: [
+              InkWell(
+                onTap: () {
+                  AppNavigator.push(
+                    context,
+                    const AddTransactionScreen(),
+                  );
+                },
+                child: Container(
+                  width: 42.r,
+                  height: 42.r,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                  padding: EdgeInsets.all(8.r),
+                  child: Center(
+                    child: Icon(
+                      Icons.add,
+                      size: 24.r,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              SizedBox(width: 16.w),
+            ],
           ),
-          SizedBox(width: 16.w),
-        ],
-      ),
-      body: BlocBuilder<TransactionCubit, TransactionState>(
-        builder: (context, state) {
-          if (state.isLoading) {
-            return Center(
-              child: CircularProgressIndicator.adaptive(
-                valueColor: AlwaysStoppedAnimation(appPrimaryColor),
-              ),
-            );
-          }
-
-          final transactions = selectedItems.isEmpty && dateRange == null
-              ? state.transactions
-              : (() {
-                  final selectedCategories =
-                      selectedItems.whereType<CategoryEntity>().toList();
-                  final selectedWallets =
-                      selectedItems.whereType<WalletEntity>().toList();
-
-                  final hasCategoryFilter = selectedCategories.isNotEmpty;
-                  final hasWalletFilter = selectedWallets.isNotEmpty;
-
-                  return state.transactions.where((transaction) {
-                    final categoryMatch = hasCategoryFilter &&
-                        transaction.categories.any((cat) =>
-                            selectedCategories.any((selected) =>
-                                selected.clientId == cat.clientId));
-                    final walletMatch = hasWalletFilter &&
-                        selectedWallets.any((wallet) =>
-                            wallet.clientId == transaction.wallet.clientId);
-
-                    final dateMatch = matchTransactionDate(
-                      dateRange,
-                      transaction.transaction,
-                    );
-
-                    if (hasCategoryFilter && hasWalletFilter) {
-                      return categoryMatch && walletMatch && dateMatch;
-                    } else if (hasCategoryFilter) {
-                      return categoryMatch && dateMatch;
-                    } else if (hasWalletFilter) {
-                      return walletMatch && dateMatch;
-                    } else {
-                      return dateMatch;
-                    }
-                  }).toList();
-                })();
-
-          if (state.transactions.isEmpty) {
-            return InfoInterface(
-              action: () {
-                AppNavigator.push(
-                  context,
-                  const AddTransactionScreen(),
-                );
-              },
-              data: emptyTransactionData,
-            );
-          }
-
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 16.h,
-            ),
-            child: Column(
-              children: [
-                Row(
-                  spacing: 4.w,
-                  children: [
-                    if (showSearch)
-                      Expanded(
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            hintText: LocaleKeys.searchHint.tr(),
-                            suffixIcon: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: SvgPicture.asset(
-                                Assets.images.filter,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    else
-                      Expanded(
-                        child: Row(
-                          spacing: 6.w,
-                          children: [
-                            _filterType(
-                              iconPath: Assets.images.calendar,
-                              filterType: FilterType.date,
-                            ),
-                            _filterType(
-                              iconPath: Assets.images.tag2,
-                              filterType: FilterType.category,
-                            ),
-                            _filterType(
-                              iconPath: Assets.images.wallet,
-                              filterType: FilterType.wallet,
-                            ),
-                          ],
-                        ),
-                      ),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      style: IconButton.styleFrom(
-                        backgroundColor: neutralN600,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          showSearch = !showSearch;
-                        });
+          body: (state.isLoading)
+              ? Center(
+                  child: CircularProgressIndicator.adaptive(
+                    valueColor: AlwaysStoppedAnimation(appPrimaryColor),
+                  ),
+                )
+              : (state.transactions.isEmpty)
+                  ? InfoInterface(
+                      action: () {
+                        AppNavigator.push(
+                          context,
+                          const AddTransactionScreen(),
+                        );
                       },
-                      icon: SvgPicture.asset(
-                        showSearch == true
-                            ? Assets.images.close
-                            : Assets.images.searchNormal,
-                        width: 16.w,
-                        height: 16.h,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
+                      data: emptyTransactionData,
+                    )
+                  : SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 16.h,
                       ),
-                    ),
-                    PopupMenuButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: appPrimaryColor,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                        ),
-                      ),
-                      position: PopupMenuPosition.under,
-                      icon: Row(
-                        spacing: 4.w,
+                      child: Column(
                         children: [
-                          Text(
-                            LocaleKeys.export.tr(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w700,
+                          Row(
+                            spacing: 4.w,
+                            children: [
+                              if (showSearch)
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      hintText: LocaleKeys.searchHint.tr(),
+                                      suffixIcon: Padding(
+                                        padding: const EdgeInsets.all(12),
+                                        child: SvgPicture.asset(
+                                          Assets.images.filter,
+                                        ),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: const BorderSide(
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: const BorderSide(
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                Expanded(
+                                  child: Row(
+                                    spacing: 6.w,
+                                    children: [
+                                      _filterType(
+                                        iconPath: Assets.images.calendar,
+                                        filterType: FilterType.date,
+                                      ),
+                                      _filterType(
+                                        iconPath: Assets.images.tag2,
+                                        filterType: FilterType.category,
+                                      ),
+                                      _filterType(
+                                        iconPath: Assets.images.wallet,
+                                        filterType: FilterType.wallet,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                style: IconButton.styleFrom(
+                                  backgroundColor: neutralN600,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    showSearch = !showSearch;
+                                  });
+                                },
+                                icon: SvgPicture.asset(
+                                  showSearch == true
+                                      ? Assets.images.close
+                                      : Assets.images.searchNormal,
+                                  width: 16.w,
+                                  height: 16.h,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.white,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                              PopupMenuButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: appPrimaryColor,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                  ),
+                                ),
+                                position: PopupMenuPosition.under,
+                                icon: Row(
+                                  spacing: 4.w,
+                                  children: [
+                                    Text(
+                                      LocaleKeys.export.tr(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    SvgPicture.asset(
+                                      Assets.images.export,
+                                    ),
+                                  ],
+                                ),
+                                itemBuilder: (context) {
+                                  return [
+                                    PopupMenuItem(
+                                      onTap: () {},
+                                      child: Row(
+                                        spacing: 8.w,
+                                        children: [
+                                          SvgPicture.asset(
+                                            height: 16.h,
+                                            width: 16.w,
+                                            Assets.images.pdfType,
+                                          ),
+                                          Text(LocaleKeys.toPdf.tr()),
+                                        ],
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      onTap: () {},
+                                      child: Row(
+                                        spacing: 8.w,
+                                        children: [
+                                          SvgPicture.asset(
+                                            height: 16.h,
+                                            width: 16.w,
+                                            Assets.images.excelType,
+                                          ),
+                                          Text(LocaleKeys.toExcel.tr()),
+                                        ],
+                                      ),
+                                    ),
+                                  ];
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          if (selectedItems.isNotEmpty)
+                            SizedBox(
+                              height: 30.h,
+                              child: ListView.separated(
+                                itemCount: selectedItems.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  String itemName = '';
+                                  final item = selectedItems[index];
+                                  if (item is WalletEntity) {
+                                    itemName = item.name;
+                                  } else if (item is CategoryEntity) {
+                                    itemName = item.name;
+                                  } else if (item is DateFilterOption) {
+                                    if (item == DateFilterOption.custom) {
+                                      itemName = formatRange(dateRange) ?? "";
+                                    } else {
+                                      itemName = item.name.tr();
+                                    }
+                                  }
+
+                                  return _selectedItem(
+                                      iconPath: getIconPath(item),
+                                      name: itemName,
+                                      onTap: () {
+                                        setState(() {
+                                          selectedItems.removeAt(index);
+                                          if (item is DateFilterOption) {
+                                            dateRange = null;
+                                          }
+                                        });
+                                      });
+                                },
+                                separatorBuilder: (context, index) {
+                                  return SizedBox(width: 6.w);
+                                },
+                              ),
                             ),
-                          ),
-                          SvgPicture.asset(
-                            Assets.images.export,
-                          ),
+                          SizedBox(height: 16.h),
+                          transactions.isEmpty
+                              ? SizedBox(
+                                  height: 0.25.sh,
+                                  child: Center(
+                                    child: Text(
+                                      LocaleKeys.noTransactionsFound.tr(),
+                                      style: TextStyle(
+                                          fontSize: 16.sp, color: Colors.grey),
+                                    ),
+                                  ),
+                                )
+                              : ListView.separated(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: transactions.length,
+                                  separatorBuilder: (context, index) {
+                                    return SizedBox(height: 8.h);
+                                  },
+                                  itemBuilder: (context, index) {
+                                    final transaction = transactions[index];
+                                    return TransactionTile(
+                                      transaction: transaction,
+                                      accentColor:
+                                          transaction.transaction.type ==
+                                                  TransactionType.income
+                                              ? Theme.of(context).primaryColor
+                                              : const Color(0xFFEB5757),
+                                    );
+                                  },
+                                ),
                         ],
                       ),
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem(
-                            onTap: () {},
-                            child: Row(
-                              spacing: 8.w,
-                              children: [
-                                SvgPicture.asset(
-                                  height: 16.h,
-                                  width: 16.w,
-                                  Assets.images.pdfType,
-                                ),
-                                Text(LocaleKeys.toPdf.tr()),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            onTap: () {},
-                            child: Row(
-                              spacing: 8.w,
-                              children: [
-                                SvgPicture.asset(
-                                  height: 16.h,
-                                  width: 16.w,
-                                  Assets.images.excelType,
-                                ),
-                                Text(LocaleKeys.toExcel.tr()),
-                              ],
-                            ),
-                          ),
-                        ];
-                      },
                     ),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-                if (selectedItems.isNotEmpty)
-                  SizedBox(
-                    height: 30.h,
-                    child: ListView.separated(
-                      itemCount: selectedItems.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        String itemName = '';
-                        final item = selectedItems[index];
-                        if (item is WalletEntity) {
-                          itemName = item.name;
-                        } else if (item is CategoryEntity) {
-                          itemName = item.name;
-                        } else if (item is DateFilterOption) {
-                          if (item == DateFilterOption.custom) {
-                            itemName = formatRange(dateRange) ?? "";
-                          } else {
-                            itemName = item.name.tr();
-                          }
-                        }
-
-                        return _selectedItem(
-                            iconPath: getIconPath(item),
-                            name: itemName,
-                            onTap: () {
-                              setState(() {
-                                selectedItems.removeAt(index);
-                                if (item is DateFilterOption) {
-                                  dateRange = null;
-                                }
-                              });
-                            });
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(width: 6.w);
-                      },
-                    ),
-                  ),
-                SizedBox(height: 16.h),
-                transactions.isEmpty
-                    ? SizedBox(
-                        height: 0.25.sh,
-                        child: Center(
-                          child: Text(
-                            LocaleKeys.noTransactionsFound.tr(),
-                            style:
-                                TextStyle(fontSize: 16.sp, color: Colors.grey),
-                          ),
+          bottomNavigationBar: (state.transactions.isEmpty)
+              ? const SizedBox.shrink()
+              : IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _bottomTile(
+                          context,
+                          accentColor: appPrimaryColor,
+                          mainText: LocaleKeys.totalIncome.tr(),
+                          amount: totalIncome,
                         ),
-                      )
-                    : ListView.separated(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: transactions.length,
-                        separatorBuilder: (context, index) {
-                          return SizedBox(height: 8.h);
-                        },
-                        itemBuilder: (context, index) {
-                          final transaction = transactions[index];
-                          return TransactionTile(
-                            transaction: transaction,
-                            accentColor: transaction.transaction.type ==
-                                    TransactionType.income
-                                ? Theme.of(context).primaryColor
-                                : const Color(0xFFEB5757),
-                          );
-                        },
                       ),
-              ],
-            ),
-          );
-        },
-      ),
-      bottomNavigationBar: BlocBuilder<TransactionCubit, TransactionState>(
-        builder: (context, state) {
-          if (state.transactions.isEmpty) {
-            return const SizedBox.shrink();
-          }
-          return IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _bottomTile(
-                    context,
-                    accentColor: appPrimaryColor,
-                    mainText: LocaleKeys.totalIncome.tr(),
-                    amount: state.transactions.where((transaction) {
-                      return transaction.transaction.type ==
-                          TransactionType.income;
-                    }).fold<double>(0, (a, b) => a + b.transaction.amount),
+                      Expanded(
+                        child: _bottomTile(
+                          context,
+                          accentColor: appDangerColor,
+                          mainText: LocaleKeys.totalExpenses.tr(),
+                          amount: totalExpense,
+                        ),
+                      ),
+                      Expanded(
+                        child: _bottomTile(
+                          context,
+                          accentColor: appBlue,
+                          mainText: LocaleKeys.totalBalance.tr(),
+                          amount: totalBalance,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Expanded(
-                  child: _bottomTile(
-                    context,
-                    accentColor: appDangerColor,
-                    mainText: LocaleKeys.totalExpenses.tr(),
-                    amount: state.transactions.where((transaction) {
-                      return transaction.transaction.type ==
-                          TransactionType.expense;
-                    }).fold<double>(0, (a, b) => a + b.transaction.amount),
-                  ),
-                ),
-                Expanded(
-                  child: _bottomTile(
-                    context,
-                    accentColor: appBlue,
-                    mainText: LocaleKeys.totalBalance.tr(),
-                    amount:
-                        state.wallets.fold<double>(0, (a, b) => a + b.balance),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+        );
+      },
     );
   }
 
@@ -427,7 +421,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
             mainText,
             style: TextStyle(
               fontSize: 14.sp,
-              color: neutralN700,
             ),
           ),
           Text(
@@ -539,7 +532,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         vertical: 4.h,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
@@ -551,11 +544,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
               width: 16.w,
               height: 16.h,
               iconPath,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface,
+                BlendMode.srcIn,
+              ),
             ),
           Text(
             name,
             style: TextStyle(
               fontSize: 10.sp,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           GestureDetector(
