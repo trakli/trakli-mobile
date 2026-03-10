@@ -286,6 +286,33 @@ class _HomeScreenState extends State<HomeScreen> {
             defaultGroup: defaultGroup,
           );
 
+          Map<String, List<TransactionCompleteEntity>> groupTransactionsByMonth(
+            List<TransactionCompleteEntity> transactions,
+          ) {
+            final Map<String, List<TransactionCompleteEntity>> grouped = {};
+
+            transactions.sort(
+              (a, b) =>
+                  b.transaction.datetime.compareTo(a.transaction.datetime),
+            );
+
+            for (var transaction in transactions) {
+              final monthKey = DateFormat('MMMM yyyy')
+                  .format(transaction.transaction.datetime);
+
+              if (!grouped.containsKey(monthKey)) {
+                grouped[monthKey] = [];
+              }
+
+              grouped[monthKey]!.add(transaction);
+            }
+
+            return grouped;
+          }
+
+          final grouped = groupTransactionsByMonth(transactions);
+          final months = grouped.keys.toList();
+
           if (state.transactions.isEmpty) {
             return const EmptyHomeWidget();
           }
@@ -471,18 +498,37 @@ class _HomeScreenState extends State<HomeScreen> {
                     : ListView.separated(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: transactions.length,
+                        itemCount: months.length,
                         separatorBuilder: (context, index) {
                           return SizedBox(height: 8.h);
                         },
                         itemBuilder: (context, index) {
-                          final transaction = transactions[index];
-                          return TransactionTile(
-                            transaction: transaction,
-                            accentColor: transaction.transaction.type ==
-                                    TransactionType.income
-                                ? Theme.of(context).primaryColor
-                                : const Color(0xFFEB5757),
+                          final month = months[index];
+                          final monthTransactions = grouped[month]!;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                month,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              ...monthTransactions.map(
+                                (tx) => Padding(
+                                  padding: EdgeInsets.only(bottom: 8.h),
+                                  child: TransactionTile(
+                                    transaction: tx,
+                                    accentColor: tx.transaction.type ==
+                                            TransactionType.income
+                                        ? Theme.of(context).primaryColor
+                                        : const Color(0xFFEB5757),
+                                  ),
+                                ),
+                              ),
+                            ],
                           );
                         },
                       ),
