@@ -27,7 +27,7 @@ class LanguageSettingWidget extends StatelessWidget {
         horizontal: 16.w,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
@@ -56,7 +56,7 @@ class LanguageSettingWidget extends StatelessWidget {
           Text(
             LocaleKeys.selectLangDesc.tr(),
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade700),
+            style: TextStyle(fontSize: 14.sp),
           ),
           Expanded(
             child: GridView.builder(

@@ -542,5 +542,10 @@
   "appUpdateReadyToInstall": "Mise à jour prête à installer",
   "appUpdateRestart": "Redémarrer",
   "appUpdateReady": "Mise à jour prête",
-  "appUpdateRestartPrompt": "Une nouvelle version a été téléchargée. Redémarrer maintenant pour appliquer la mise à jour ?"
+  "appUpdateRestartPrompt": "Une nouvelle version a été téléchargée. Redémarrer maintenant pour appliquer la mise à jour ?",
+  "deleteYourAccount": "Supprimer votre compte ?",
+  "deleteAccount": "Supprimer le compte",
+  "deleteAccountDesc": "Cette action est permanente. La suppression de votre compte supprimera toutes vos données et ne pourra pas être annulée.",
+  "helpUsImprove": "Aidez-nous à nous améliorer (facultatif)",
+  "whyDeleteAccount": "Pourquoi supprimez-vous votre compte ?"
 }

@@ -190,7 +190,7 @@ class _CategorySetupWidgetState extends State<CategorySetupWidget> {
           vertical: 16.h,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Column(
@@ -208,7 +208,6 @@ class _CategorySetupWidgetState extends State<CategorySetupWidget> {
               LocaleKeys.setupCategoryDesc.tr(),
               style: TextStyle(
                 fontSize: 14.sp,
-                color: Colors.grey.shade700,
               ),
             ),
             SizedBox(height: 24.h),

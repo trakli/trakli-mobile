@@ -528,7 +528,7 @@
   "noFiles": "Sin archivos",
   "orphanedMediaCleanupLog": "Registro de limpieza de medios huérfanos",
   "orphanedMediaCleanupLogDesc": "Ver registro del último análisis (solo depuración)",
-  "orphanedMediaCleanupLogEmpty": "Aún no hay archivo de registro. Se escribe aquí cuando la limpieza se ejecuta en depuración y elimina uno o más archivos huérfanos.""noFiles": "Sin archivos",
+  "orphanedMediaCleanupLogEmpty": "Aún no hay archivo de registro. Se escribe aquí cuando la limpieza se ejecuta en depuración y elimina uno o más archivos huérfanos.",
   "appUpdateGooglePlay": "Google Play",
   "appUpdateAppStore": "App Store",
   "appUpdateNewVersionAvailable": "Nueva versión de la app disponible",
@@ -540,5 +540,10 @@
   "appUpdateReadyToInstall": "Actualización lista para instalar",
   "appUpdateRestart": "Reiniciar",
   "appUpdateReady": "Actualización lista",
-  "appUpdateRestartPrompt": "Se ha descargado una nueva versión. ¿Reiniciar ahora para aplicar la actualización?"
+  "appUpdateRestartPrompt": "Se ha descargado una nueva versión. ¿Reiniciar ahora para aplicar la actualización?",
+  "deleteYourAccount": "¿Eliminar tu cuenta?",
+  "deleteAccount": "Eliminar cuenta",
+  "deleteAccountDesc": "Esta acción es permanente. Al eliminar tu cuenta, todos tus datos se eliminarán y no se podrán recuperar.",
+  "helpUsImprove": "Ayúdanos a mejorar (opcional)",
+  "whyDeleteAccount": "¿Por qué estás eliminando tu cuenta?"
 }

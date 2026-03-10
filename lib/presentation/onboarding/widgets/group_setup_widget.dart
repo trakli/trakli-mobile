@@ -15,8 +15,8 @@ import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
-import 'package:trakli/presentation/utils/popovers/group_type_popover.dart';
 import 'package:trakli/presentation/utils/popovers/group_list_popover.dart';
+import 'package:trakli/presentation/utils/popovers/group_type_popover.dart';
 
 class GroupSetupWidget extends StatefulWidget {
   final VoidCallback onNext;
@@ -96,7 +96,7 @@ class _GroupSetupWidgetState extends State<GroupSetupWidget> {
             vertical: 16.h,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Column(
@@ -126,7 +126,9 @@ class _GroupSetupWidgetState extends State<GroupSetupWidget> {
               Text(
                 LocaleKeys.setupGroupDesc.tr(),
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade700),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                ),
               ),
               SizedBox(height: 16.h),
               Column(
@@ -162,10 +164,15 @@ class _GroupSetupWidgetState extends State<GroupSetupWidget> {
                         );
                       },
                       decoration: InputDecoration(
+                        fillColor: Theme.of(context).scaffoldBackgroundColor,
                         suffixIcon: Padding(
                           padding: EdgeInsets.all(10.sp),
                           child: SvgPicture.asset(
                             Assets.images.arrowDown,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.grey,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
@@ -178,6 +185,7 @@ class _GroupSetupWidgetState extends State<GroupSetupWidget> {
                       child: TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
                           hintText: LocaleKeys.enterName.tr(),
                         ),
                         validator: (value) {
@@ -192,33 +200,40 @@ class _GroupSetupWidgetState extends State<GroupSetupWidget> {
                   if (_selectedGroupOption ==
                       GroupOption.selectFromGroupList) ...[
                     SizedBox(height: 16.h),
-                    TextFormField(
-                      controller: _groupController,
-                      readOnly: true,
-                      onTap: () {
-                        showCustomPopOver(
-                          context,
-                          maxWidth: 0.8.sw,
-                          widget: GroupListPopover(
-                            label: LocaleKeys.pickGroup.tr(),
-                            onSelect: (selectedGroup) {
-                              setState(() {
-                                _selectedGroup = selectedGroup;
-                              });
-                            },
-                          ),
-                        );
-                      },
-                      decoration: InputDecoration(
-                        hintText: LocaleKeys.pickGroup.tr(),
-                        suffixIcon: Padding(
-                          padding: EdgeInsets.all(10.sp),
-                          child: SvgPicture.asset(
-                            Assets.images.arrowDown,
+                    Builder(builder: (context) {
+                      return TextFormField(
+                        controller: _groupController,
+                        readOnly: true,
+                        onTap: () {
+                          showCustomPopOver(
+                            context,
+                            maxWidth: 0.8.sw,
+                            widget: GroupListPopover(
+                              label: LocaleKeys.pickGroup.tr(),
+                              onSelect: (selectedGroup) {
+                                setState(() {
+                                  _selectedGroup = selectedGroup;
+                                });
+                              },
+                            ),
+                          );
+                        },
+                        decoration: InputDecoration(
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                          hintText: LocaleKeys.pickGroup.tr(),
+                          suffixIcon: Padding(
+                            padding: EdgeInsets.all(10.sp),
+                            child: SvgPicture.asset(
+                              Assets.images.arrowDown,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.grey,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 ],
               ),

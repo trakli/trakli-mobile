@@ -130,7 +130,7 @@ class _WalletSetupWidgetState extends State<WalletSetupWidget> {
             horizontal: 16.w,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Column(
@@ -196,10 +196,15 @@ class _WalletSetupWidgetState extends State<WalletSetupWidget> {
                           );
                         },
                         decoration: InputDecoration(
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
                           suffixIcon: Padding(
                             padding: EdgeInsets.all(10.sp),
                             child: SvgPicture.asset(
                               Assets.images.arrowDown,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.grey,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),
@@ -218,6 +223,8 @@ class _WalletSetupWidgetState extends State<WalletSetupWidget> {
                               child: TextFormField(
                                 controller: _nameController,
                                 decoration: InputDecoration(
+                                  fillColor:
+                                      Theme.of(context).scaffoldBackgroundColor,
                                   hintText: LocaleKeys.enterName.tr(),
                                 ),
                                 validator: (value) {
@@ -235,7 +242,8 @@ class _WalletSetupWidgetState extends State<WalletSetupWidget> {
                                 context: context,
                                 theme: CurrencyPickerThemeData(
                                     bottomSheetHeight: 0.7.sh,
-                                    backgroundColor: Colors.white,
+                                    backgroundColor: Theme.of(context)
+                                        .scaffoldBackgroundColor,
                                     flagSize: 24.sp,
                                     subtitleTextStyle: TextStyle(
                                       fontSize: 12.sp,
@@ -254,7 +262,8 @@ class _WalletSetupWidgetState extends State<WalletSetupWidget> {
                                 maxHeight: 50.h,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFDEE1E0),
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Center(
@@ -327,6 +336,7 @@ class _WalletSetupWidgetState extends State<WalletSetupWidget> {
                         );
                       },
                       decoration: InputDecoration(
+                        fillColor: Theme.of(context).scaffoldBackgroundColor,
                         suffixIcon: Padding(
                           padding: EdgeInsets.all(10.sp),
                           child: SvgPicture.asset(

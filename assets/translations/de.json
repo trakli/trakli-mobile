@@ -542,5 +542,10 @@
   "appUpdateRestartPrompt": "Eine neue Version wurde heruntergeladen. Jetzt neu starten, um das Update anzuwenden?",
   "orphanedMediaCleanupLog": "Bereinigung verwaister Medien (Log)",
   "orphanedMediaCleanupLogDesc": "Letztes Lauf-Log anzeigen (nur Debug)",
-  "orphanedMediaCleanupLogEmpty": "Noch keine Logdatei. Ein Log wird hier geschrieben, wenn die Bereinigung im Debug-Modus läuft und eine oder mehrere verwaiste Dateien löscht."
+  "orphanedMediaCleanupLogEmpty": "Noch keine Logdatei. Ein Log wird hier geschrieben, wenn die Bereinigung im Debug-Modus läuft und eine oder mehrere verwaiste Dateien löscht.",
+  "deleteYourAccount": "Ihr Konto löschen?",
+  "deleteAccount": "Konto löschen",
+  "deleteAccountDesc": "Diese Aktion ist endgültig. Wenn Sie Ihr Konto löschen, werden alle Ihre Daten dauerhaft entfernt und können nicht wiederhergestellt werden.",
+  "helpUsImprove": "Helfen Sie uns, uns zu verbessern (optional)",
+  "whyDeleteAccount": "Warum löschen Sie Ihr Konto?"
 }

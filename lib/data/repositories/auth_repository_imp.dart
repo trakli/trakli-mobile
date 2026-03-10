@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/core/error/error_handler.dart';
 import 'package:trakli/core/error/exceptions.dart';
 import 'package:trakli/core/error/failures/failures.dart';
@@ -20,7 +21,6 @@ import 'package:trakli/data/mappers/user_mapper.dart';
 import 'package:trakli/data/sync/config_sync_handler.dart';
 import 'package:trakli/data/sync/group_sync_handler.dart';
 import 'package:trakli/data/sync/wallet_sync_handler.dart';
-import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/domain/entities/auth_status.dart';
 import 'package:trakli/domain/entities/user_entity.dart';
 import 'package:trakli/domain/repositories/auth_repository.dart';
@@ -399,6 +399,14 @@ class AuthRepositoryImpl implements AuthRepository {
         type: type,
       );
       return authResponse;
+    });
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteAccount({String? reason}) async {
+    return RepositoryErrorHandler.handleApiCall<Unit>(() async {
+      await _remoteDataSource.deleteAccount(reason: reason);
+      return unit;
     });
   }
 }

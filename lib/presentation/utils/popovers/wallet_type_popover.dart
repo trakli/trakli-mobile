@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:popover/popover.dart';
 import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/domain/entities/config_entity.dart';
 import 'package:trakli/gen/assets.gen.dart' show Assets;
@@ -51,6 +52,7 @@ class WalletTypePopover extends StatelessWidget {
                     onSelect(option);
                     if (index == 2) {
                       await showCustomPopOver(context,
+                          direction: PopoverDirection.top,
                           // maxWidth: filterType == FilterType.date ? 0.45.sw : null,
                           widget: WalletListPopover(
                             showCurrency: true,
