@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
@@ -13,7 +12,6 @@ import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/dialogs/pop_up_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class DataDeletionScreen extends StatefulWidget {
   const DataDeletionScreen({super.key});
@@ -25,10 +23,6 @@ class DataDeletionScreen extends StatefulWidget {
 class _DataDeletionScreenState extends State<DataDeletionScreen> {
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthCubit>().state;
-    final user = authState.user;
-    final username = user?.email ?? user?.username ?? 'Unknown';
-
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -134,144 +128,6 @@ class _DataDeletionScreenState extends State<DataDeletionScreen> {
     );
   }
 
-  Future<void> _requestDataDeletion(String username) async {
-    final subject = LocaleKeys.dataDeletionEmailSubject.tr();
-    final body =
-        LocaleKeys.dataDeletionEmailBody.tr(namedArgs: {'username': username});
-
-    // Use proper URL encoding as recommended by url_launcher documentation
-    String? encodeQueryParameters(Map<String, String> params) {
-      return params.entries
-          .map((MapEntry<String, String> e) =>
-              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-          .join('&');
-    }
-
-    final Uri emailUri = Uri(
-      scheme: 'mailto',
-      path: 'deletemydata@trakli.app',
-      query: encodeQueryParameters(<String, String>{
-        'subject': subject,
-        'body': body,
-      }),
-    );
-
-    try {
-      await launchUrl(emailUri);
-    } catch (e) {
-      // Fallback: show a dialog with the email content
-      _showEmailFallbackDialog(subject, body);
-    }
-  }
-
-  void _showEmailFallbackDialog(String subject, String body) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(LocaleKeys.requestDataDeletion.tr()),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              LocaleKeys.dataDeletionFallbackEmailTo.tr(),
-              style: TextStyle(fontSize: 14.sp),
-            ),
-            SizedBox(height: 8.h),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'deletemydata@trakli.app',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => _copyToClipboard('deletemydata@trakli.app'),
-                  icon: Icon(
-                    Icons.copy,
-                    size: 18.sp,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  tooltip: 'Copy email address',
-                ),
-              ],
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              '${LocaleKeys.dataDeletionFallbackSubjectLabel.tr()}:',
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              subject,
-              style: TextStyle(fontSize: 14.sp),
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              '${LocaleKeys.dataDeletionFallbackBodyLabel.tr()}:',
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Container(
-              padding: EdgeInsets.all(8.w),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(4.r),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    body,
-                    style: TextStyle(fontSize: 12.sp),
-                  ),
-                  SizedBox(height: 8.h),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      onPressed: () => _copyToClipboard(body),
-                      icon: Icon(
-                        Icons.copy,
-                        size: 16.sp,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      tooltip: 'Copy email content',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(LocaleKeys.done.tr()),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _copyToClipboard(String text) {
-    Clipboard.setData(ClipboardData(text: text));
-    showSnackBar(
-      message: LocaleKeys.copiedToClipboard.tr(),
-      backgroundColor: Colors.green,
-    );
-  }
-
   void _showSelfDeleteWarning(BuildContext context) {
     showCustomDialog(
       widget: PopUpDialog(
@@ -279,14 +135,20 @@ class _DataDeletionScreenState extends State<DataDeletionScreen> {
         subTitle: LocaleKeys.deleteAccountDesc.tr(),
         dialogType: DialogType.negative,
         mainAction: () async {
-          final reason = await showCustomBottomSheet<String>(
-            context,
-            color: Theme.of(context).scaffoldBackgroundColor,
-            widget: const AccountDeletionSheet(),
-          );
-          if (context.mounted) {
+          final authState = context.read<AuthCubit>().state;
+          final user = authState.user;
+          if (user != null) {
+            final reason = await showCustomBottomSheet<String>(
+              context,
+              color: Theme.of(context).scaffoldBackgroundColor,
+              widget: const AccountDeletionSheet(),
+            );
+            if (context.mounted) {
+              AppNavigator.pop(context);
+              context.read<AuthCubit>().deleteAccount(reason: reason);
+            }
+          } else {
             AppNavigator.pop(context);
-            context.read<AuthCubit>().deleteAccount(reason: reason);
           }
         },
       ),
