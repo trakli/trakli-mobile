@@ -7,6 +7,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart'
     show PickerDateRange;
 import 'package:trakli/core/utils/currency_formater.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
+import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
@@ -44,46 +45,53 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.initState();
   }
 
+  List<TransactionCompleteEntity> filterTransactions({
+    required List<TransactionCompleteEntity> transactions,
+  }) {
+    final filteredTransactions = selectedItems.isEmpty && dateRange == null
+        ? transactions
+        : (() {
+            final selectedCategories =
+                selectedItems.whereType<CategoryEntity>().toList();
+            final selectedWallets =
+                selectedItems.whereType<WalletEntity>().toList();
+
+            final hasCategoryFilter = selectedCategories.isNotEmpty;
+            final hasWalletFilter = selectedWallets.isNotEmpty;
+
+            return transactions.where((transaction) {
+              final categoryMatch = hasCategoryFilter &&
+                  transaction.categories.any((cat) => selectedCategories
+                      .any((selected) => selected.clientId == cat.clientId));
+              final walletMatch = hasWalletFilter &&
+                  selectedWallets.any((wallet) =>
+                      wallet.clientId == transaction.wallet.clientId);
+
+              final dateMatch = matchTransactionDate(
+                dateRange,
+                transaction.transaction,
+              );
+
+              if (hasCategoryFilter && hasWalletFilter) {
+                return categoryMatch && walletMatch && dateMatch;
+              } else if (hasCategoryFilter) {
+                return categoryMatch && dateMatch;
+              } else if (hasWalletFilter) {
+                return walletMatch && dateMatch;
+              } else {
+                return dateMatch;
+              }
+            }).toList();
+          })();
+    return filteredTransactions;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TransactionCubit, TransactionState>(
       builder: (context, state) {
-        final transactions = selectedItems.isEmpty && dateRange == null
-            ? state.transactions
-            : (() {
-                final selectedCategories =
-                    selectedItems.whereType<CategoryEntity>().toList();
-                final selectedWallets =
-                    selectedItems.whereType<WalletEntity>().toList();
-
-                final hasCategoryFilter = selectedCategories.isNotEmpty;
-                final hasWalletFilter = selectedWallets.isNotEmpty;
-
-                return state.transactions.where((transaction) {
-                  final categoryMatch = hasCategoryFilter &&
-                      transaction.categories.any((cat) =>
-                          selectedCategories.any(
-                              (selected) => selected.clientId == cat.clientId));
-                  final walletMatch = hasWalletFilter &&
-                      selectedWallets.any((wallet) =>
-                          wallet.clientId == transaction.wallet.clientId);
-
-                  final dateMatch = matchTransactionDate(
-                    dateRange,
-                    transaction.transaction,
-                  );
-
-                  if (hasCategoryFilter && hasWalletFilter) {
-                    return categoryMatch && walletMatch && dateMatch;
-                  } else if (hasCategoryFilter) {
-                    return categoryMatch && dateMatch;
-                  } else if (hasWalletFilter) {
-                    return walletMatch && dateMatch;
-                  } else {
-                    return dateMatch;
-                  }
-                }).toList();
-              })();
+        final transactions =
+            filterTransactions(transactions: state.transactions);
         final totalIncome = transactions.where((transaction) {
           return transaction.transaction.type == TransactionType.income;
         }).fold<double>(0, (a, b) => a + b.transaction.amount);

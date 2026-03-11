@@ -119,6 +119,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return filterdTransactions;
   }
 
+  Map<String, List<TransactionCompleteEntity>> groupTransactionsByMonth(
+    List<TransactionCompleteEntity> transactions,
+  ) {
+    final Map<String, List<TransactionCompleteEntity>> grouped = {};
+
+    final transactionsToSort = transactions;
+
+    transactionsToSort.sort(
+      (a, b) => b.transaction.datetime.compareTo(a.transaction.datetime),
+    );
+
+    for (var transaction in transactionsToSort) {
+      final monthKey =
+          DateFormat('MMMM yyyy').format(transaction.transaction.datetime);
+
+      if (!grouped.containsKey(monthKey)) {
+        grouped[monthKey] = [];
+      }
+
+      grouped[monthKey]!.add(transaction);
+    }
+
+    return grouped;
+  }
+
   @override
   Widget build(BuildContext context) {
     final walletState = context.watch<WalletCubit>().state;
@@ -285,30 +310,6 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedGroup: selectedGroup,
             defaultGroup: defaultGroup,
           );
-
-          Map<String, List<TransactionCompleteEntity>> groupTransactionsByMonth(
-            List<TransactionCompleteEntity> transactions,
-          ) {
-            final Map<String, List<TransactionCompleteEntity>> grouped = {};
-
-            transactions.sort(
-              (a, b) =>
-                  b.transaction.datetime.compareTo(a.transaction.datetime),
-            );
-
-            for (var transaction in transactions) {
-              final monthKey = DateFormat('MMMM yyyy')
-                  .format(transaction.transaction.datetime);
-
-              if (!grouped.containsKey(monthKey)) {
-                grouped[monthKey] = [];
-              }
-
-              grouped[monthKey]!.add(transaction);
-            }
-
-            return grouped;
-          }
 
           final grouped = groupTransactionsByMonth(transactions);
           final months = grouped.keys.toList();
@@ -511,7 +512,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Text(
                                 month,
                                 style: TextStyle(
-                                  fontSize: 16.sp,
+                                  fontSize: 12.sp,
+                                  color: Colors.grey.shade600,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
