@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/core/utils/currency_formater.dart';
+import 'package:trakli/domain/entities/exchange_rate_entity.dart';
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
 import 'package:trakli/presentation/utils/colors.dart';
@@ -26,11 +27,7 @@ class TransactionExpansionTile extends StatefulWidget {
 class _TransactionExpansionTileState extends State<TransactionExpansionTile> {
   bool _isExpanded = false;
 
-  double? totalBalance;
-
-  @override
-  void initState() {
-    final exchangeRateEntity = context.read<ExchangeRateCubit>().state.entity;
+  double calculateBalance(ExchangeRateEntity? exchangeRateEntity) {
     final transactions = widget.transactions;
 
     final totals = calculateIncomeExpense(
@@ -39,15 +36,15 @@ class _TransactionExpansionTileState extends State<TransactionExpansionTile> {
     );
     final totalIncome = totals.totalIncome;
     final totalExpense = totals.totalExpense;
-
-    // setState(() {
-    totalBalance = totalIncome - totalExpense;
-    // });
-    super.initState();
+    final totalBalance = totalIncome - totalExpense;
+    return totalBalance;
   }
 
   @override
   Widget build(BuildContext context) {
+    final exchangeRateEntity = context.watch<ExchangeRateCubit>().state.entity;
+    final totalBalance = calculateBalance(exchangeRateEntity);
+
     return ExpansionTile(
       onExpansionChanged: (expanded) {
         setState(() {
@@ -85,22 +82,20 @@ class _TransactionExpansionTileState extends State<TransactionExpansionTile> {
         spacing: 4.w,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (totalBalance != null)
-            Text(
-              CurrencyFormater.formatAmountWithSymbol(
-                context,
-                currentDecimalDigits: 0,
-                totalBalance ?? 0,
-                compact: true,
-              ),
-              style: TextStyle(
-                fontSize: 12.5.sp,
-                fontWeight: FontWeight.w700,
-                color: (totalBalance?.isNegative ?? false)
-                    ? appDangerColor
-                    : appPrimaryColor,
-              ),
+          Text(
+            CurrencyFormater.formatAmountWithSymbol(
+              context,
+              currentDecimalDigits: 0,
+              totalBalance,
+              compact: true,
             ),
+            style: TextStyle(
+              fontSize: 12.5.sp,
+              fontWeight: FontWeight.w700,
+              color:
+                  (totalBalance.isNegative) ? appDangerColor : appPrimaryColor,
+            ),
+          ),
           Icon(
             _isExpanded
                 ? Icons.keyboard_arrow_up_outlined
