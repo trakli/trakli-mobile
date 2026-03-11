@@ -502,6 +502,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           return TransactionExpansionTile(
                             title: month,
                             transactions: monthTransactions,
+                            isExpanded: index == 0,
                           );
                         },
                       ),
