@@ -133,11 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final monthKey =
           DateFormat('MMMM yyyy').format(transaction.transaction.datetime);
 
-      if (!grouped.containsKey(monthKey)) {
-        grouped[monthKey] = [];
-      }
-
-      grouped[monthKey]!.add(transaction);
+      grouped.putIfAbsent(monthKey, () => []).add(transaction);
     }
 
     return grouped;
