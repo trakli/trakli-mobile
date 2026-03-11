@@ -136,17 +136,13 @@ class BenefitsWidget extends StatelessWidget {
                   ),
                   Text(
                     state.cloudBenefits?.overview.description ?? "",
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: neutralN700,
-                    ),
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                   Text(
                     state.cloudBenefits?.overview.title ?? "",
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
-                      color: neutralN700,
                     ),
                   ),
                   if (benefits.isNotEmpty)
