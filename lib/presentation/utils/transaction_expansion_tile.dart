@@ -12,11 +12,13 @@ import 'package:trakli/presentation/utils/transaction_tile.dart';
 class TransactionExpansionTile extends StatefulWidget {
   final String title;
   final List<TransactionCompleteEntity> transactions;
+  final bool isExpanded;
 
   const TransactionExpansionTile({
     super.key,
     required this.title,
     required this.transactions,
+    this.isExpanded = false,
   });
 
   @override
@@ -46,6 +48,7 @@ class _TransactionExpansionTileState extends State<TransactionExpansionTile> {
     final totalBalance = calculateBalance(exchangeRateEntity);
 
     return ExpansionTile(
+      initiallyExpanded: widget.isExpanded,
       onExpansionChanged: (expanded) {
         setState(() {
           _isExpanded = expanded;
