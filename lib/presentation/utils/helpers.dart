@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:currency_picker/currency_picker.dart';
-import 'package:pdfx/pdfx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:pdfx/pdfx.dart';
 import 'package:popover/popover.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:trakli/core/error/failures/failures.dart';
@@ -386,7 +386,7 @@ void showSnackBar({
   );
 }
 
-Widget bulletPoint(String text) {
+Widget bulletPoint(BuildContext context, String text) {
   return Row(
     spacing: 4.w,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -398,10 +398,9 @@ Widget bulletPoint(String text) {
       Expanded(
         child: Text(
           text,
-          style: TextStyle(
-            fontSize: 12.5.sp,
-            color: neutralN700,
-          ),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                fontSize: 12.5.sp,
+              ),
         ),
       ),
     ],

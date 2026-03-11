@@ -28,12 +28,12 @@ class BenefitTile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.r),
       ),
-      backgroundColor: Colors.white,
-      collapsedBackgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      collapsedBackgroundColor: Theme.of(context).colorScheme.surface,
       iconColor: appOrange,
-      collapsedIconColor: neutralN700,
+      collapsedIconColor: Theme.of(context).colorScheme.onSurface,
       textColor: appOrange,
-      collapsedTextColor: neutralN700,
+      collapsedTextColor: Theme.of(context).colorScheme.onSurface,
       title: Text(
         benefit.title,
         style: TextStyle(
@@ -46,7 +46,7 @@ class BenefitTile extends StatelessWidget {
         size: 32.sp,
       ),
       children: [
-        bulletPoint(benefit.description),
+        bulletPoint(context, benefit.description),
       ],
     );
   }

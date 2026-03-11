@@ -26,9 +26,8 @@ import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/pick_group_bottom_sheet.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
-import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
-import 'package:trakli/presentation/utils/transaction_tile.dart';
+import 'package:trakli/presentation/utils/transaction_expansion_tile.dart';
 import 'package:trakli/presentation/utils/wallet_tile.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 import 'package:trakli/presentation/widgets/image_widget.dart';
@@ -496,41 +495,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       )
-                    : ListView.separated(
+                    : ListView.builder(
+                        padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: months.length,
-                        separatorBuilder: (context, index) {
-                          return SizedBox(height: 8.h);
-                        },
                         itemBuilder: (context, index) {
                           final month = months[index];
                           final monthTransactions = grouped[month]!;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                month,
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: Colors.grey.shade600,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              ...monthTransactions.map(
-                                (tx) => Padding(
-                                  padding: EdgeInsets.only(bottom: 8.h),
-                                  child: TransactionTile(
-                                    transaction: tx,
-                                    accentColor: tx.transaction.type ==
-                                            TransactionType.income
-                                        ? Theme.of(context).primaryColor
-                                        : const Color(0xFFEB5757),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          return TransactionExpansionTile(
+                            title: month,
+                            transactions: monthTransactions,
                           );
                         },
                       ),

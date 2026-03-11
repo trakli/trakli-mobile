@@ -12,6 +12,7 @@ import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/add_transaction_screen.dart';
+import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
 import 'package:trakli/presentation/info_interfaces/data.dart';
 import 'package:trakli/presentation/info_interfaces/info_interface.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
@@ -90,15 +91,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<TransactionCubit, TransactionState>(
       builder: (context, state) {
+        final exchangeRateEntity =
+            context.read<ExchangeRateCubit>().state.entity;
+
         final transactions =
             filterTransactions(transactions: state.transactions);
-        final totalIncome = transactions.where((transaction) {
-          return transaction.transaction.type == TransactionType.income;
-        }).fold<double>(0, (a, b) => a + b.transaction.amount);
 
-        final totalExpense = transactions.where((transaction) {
-          return transaction.transaction.type == TransactionType.expense;
-        }).fold<double>(0, (a, b) => a + b.transaction.amount);
+        final totals = calculateIncomeExpense(
+          transactions,
+          exchangeRateEntity: exchangeRateEntity,
+        );
+        final totalIncome = totals.totalIncome;
+        final totalExpense = totals.totalExpense;
 
         final totalBalance = totalIncome - totalExpense;
 
