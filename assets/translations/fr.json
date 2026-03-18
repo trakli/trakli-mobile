@@ -547,5 +547,10 @@
   "deleteAccount": "Supprimer le compte",
   "deleteAccountDesc": "Cette action est permanente. La suppression de votre compte supprimera toutes vos données et ne pourra pas être annulée.",
   "helpUsImprove": "Aidez-nous à nous améliorer (facultatif)",
-  "whyDeleteAccount": "Pourquoi supprimez-vous votre compte ?"
+  "whyDeleteAccount": "Pourquoi supprimez-vous votre compte ?",
+  "transactionsDesc": "Tous les mouvements d'argent en un seul endroit",
+  "categoryDesc": "Organisez les transactions par type",
+  "groupsDesc": "Regroupez les transactions associées",
+  "partiesDesc": "Personnes et organisations avec lesquelles vous effectuez des transactions",
+  "walletsDesc": "Comptes par lesquels l'argent circule"
 }

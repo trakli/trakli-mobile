@@ -76,91 +76,69 @@ class CustomDrawer extends StatelessWidget {
                 height: 44.sp,
               ),
             ),
-            ListTile(
+            _listItem(
+              context,
               onTap: () {
                 AppNavigator.push(context, const CategoryScreen());
               },
-              leading: SvgPicture.asset(
-                Assets.images.category,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.onSurface,
-                  BlendMode.srcIn,
-                ),
-              ),
-              title: Text(LocaleKeys.categories.tr()),
+              title: LocaleKeys.categories.tr(),
+              iconPath: Assets.images.category,
+              subtitle: LocaleKeys.categoryDesc.tr(),
             ),
-            ListTile(
+            _listItem(
+              context,
               onTap: () {
                 AppNavigator.push(context, const MyGroupsScreen());
               },
-              leading: Icon(
-                Icons.folder_outlined,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-              title: Text(LocaleKeys.groups.tr()),
+              title: LocaleKeys.groups.tr(),
+              iconPath: Assets.images.people,
+              subtitle: LocaleKeys.groupsDesc.tr(),
             ),
-            ListTile(
+            _listItem(
+              context,
               onTap: () {
                 AppNavigator.push(context, const PartyScreen());
               },
-              leading: Icon(
-                Icons.handshake_outlined,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-              title: Text(LocaleKeys.parties.tr()),
+              title: LocaleKeys.parties.tr(),
+              iconPath: Assets.images.people,
+              subtitle: LocaleKeys.partiesDesc.tr(),
             ),
-            ListTile(
+            _listItem(
+              context,
               onTap: () {
                 final cubit = context.read<MainNavigationCubit>();
                 cubit.updateIndex(MainNavigationPageState.wallet);
                 AppNavigator.pop(context);
               },
-              leading: SvgPicture.asset(
-                Assets.images.wallet,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.onSurface,
-                  BlendMode.srcIn,
-                ),
-              ),
-              title: Text(LocaleKeys.wallets.tr()),
+              title: LocaleKeys.wallets.tr(),
+              iconPath: Assets.images.wallet,
+              subtitle: LocaleKeys.walletsDesc.tr(),
             ),
-            ListTile(
+            _listItem(
+              context,
               onTap: () {
                 AppNavigator.push(context, const HistoryScreen());
               },
-              leading: SvgPicture.asset(
-                Assets.images.refresh,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.onSurface,
-                  BlendMode.srcIn,
-                ),
-              ),
-              title: Text(LocaleKeys.history.tr()),
+              title: LocaleKeys.transactions.tr(),
+              iconPath: Assets.images.refresh,
+              subtitle: LocaleKeys.transactionsDesc.tr(),
             ),
-            const Divider(),
-            ListTile(
+            Divider(
+              color: Colors.grey.shade500,
+            ),
+            _listItem(
+              context,
               onTap: () => _launchSupportEmail(context),
-              leading: SvgPicture.asset(
-                Assets.images.support,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.onSurface,
-                  BlendMode.srcIn,
-                ),
-              ),
-              title: Text(LocaleKeys.support.tr()),
+              title: LocaleKeys.support.tr(),
+              iconPath: Assets.images.support,
             ),
-            ListTile(
+            _listItem(
+              context,
               onTap: () {
                 AppNavigator.push(context, const SettingsScreen());
               },
-              leading: SvgPicture.asset(
-                Assets.images.setting,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.onSurface,
-                  BlendMode.srcIn,
-                ),
-              ),
-              title: Text(LocaleKeys.settings.tr()),
+              title: LocaleKeys.settings.tr(),
+              iconPath: Assets.images.setting,
             ),
             if (kDebugMode) ...[
               const Divider(),
@@ -182,6 +160,30 @@ class CustomDrawer extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _listItem(
+    BuildContext context, {
+    VoidCallback? onTap,
+    required String title,
+    required String iconPath,
+    String? subtitle,
+  }) {
+    return ListTile(
+      onTap: onTap,
+      leading: SvgPicture.asset(
+        iconPath,
+        colorFilter: ColorFilter.mode(
+          Theme.of(context).colorScheme.onSurface,
+          BlendMode.srcIn,
+        ),
+      ),
+      title: Text(title),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      subtitleTextStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Colors.grey.shade500,
+          ),
     );
   }
 }
