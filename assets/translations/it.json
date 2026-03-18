@@ -547,5 +547,10 @@
   "deleteAccount": "Elimina account",
   "deleteAccountDesc": "Questa azione è permanente. Eliminando il tuo account verranno rimossi tutti i tuoi dati e non potranno essere recuperati.",
   "helpUsImprove": "Aiutaci a migliorare (facoltativo)",
-  "whyDeleteAccount": "Perché stai eliminando il tuo account?"
+  "whyDeleteAccount": "Perché stai eliminando il tuo account?",
+  "transactionsDesc": "Tutti i movimenti di denaro in un unico posto",
+  "categoryDesc": "Organizza le transazioni per tipo",
+  "groupsDesc": "Raggruppa le transazioni correlate",
+  "partiesDesc": "Persone e organizzazioni con cui effettui transazioni",
+  "walletsDesc": "Conti attraverso cui si muove il denaro"
 }

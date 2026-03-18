@@ -552,5 +552,10 @@ abstract class  LocaleKeys {
   static const deleteAccountDesc = 'deleteAccountDesc';
   static const helpUsImprove = 'helpUsImprove';
   static const whyDeleteAccount = 'whyDeleteAccount';
+  static const transactionsDesc = 'transactionsDesc';
+  static const categoryDesc = 'categoryDesc';
+  static const groupsDesc = 'groupsDesc';
+  static const partiesDesc = 'partiesDesc';
+  static const walletsDesc = 'walletsDesc';
 
 }
