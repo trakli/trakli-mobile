@@ -244,7 +244,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         '/account',
         data: {
           "confirm_delete": true,
-          "reason": reason,
+          if (reason != null && reason.isNotEmpty) "reason": reason,
         },
       );
 

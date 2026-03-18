@@ -52,7 +52,7 @@ class OnboardSettingsScreen extends StatefulWidget {
 }
 
 class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
-  PageController pageController = PageController();
+  late PageController pageController;
   List<Currency> currencies = [];
 
   int _currentPage = 0;
@@ -104,48 +104,57 @@ class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
           value: true,
         );
   }
+  int _getInitialStep({
+    required bool hasDefaultLang,
+    required bool hasDefaultGroup,
+    required bool hasDefaultWallet,
+    required bool hasDefaultCurrency,
+  }) {
+    if (!hasDefaultLang) return 0;
+    if (!hasDefaultGroup) return 1;
+    if (!hasDefaultWallet || !hasDefaultCurrency) return 2;
+
+    // category setup always shown (you can also make this conditional)
+    return 3;
+  }
 
   Future<void> _determineSteps() async {
     final entityResult = await getIt<ConfigRepository>().getAllConfigs();
     final entityConfigs = entityResult.fold(
-      (failure) => [],
-      (entity) => entity,
+          (failure) => [],
+          (entity) => entity,
     );
 
     final hasDefaultLang = entityConfigs
-        .any((config) => config.key == ConfigConstants.defaultLang);
+        .any((c) => c.key == ConfigConstants.defaultLang);
 
     final hasDefaultWallet = entityConfigs
-        .any((config) => config.key == ConfigConstants.defaultWallet);
+        .any((c) => c.key == ConfigConstants.defaultWallet);
 
     final hasDefaultCurrency = entityConfigs
-        .any((config) => config.key == ConfigConstants.defaultCurrency);
+        .any((c) => c.key == ConfigConstants.defaultCurrency);
 
     final hasDefaultGroup = entityConfigs
-        .any((config) => config.key == ConfigConstants.defaultGroup);
+        .any((c) => c.key == ConfigConstants.defaultGroup);
 
-    final List<Widget> nextPages = [];
+    final pages = [
+      pageOne,
+      pageTwo,
+      pageThree,
+      pageFive,
+      pageFour,
+    ];
 
-    if (!hasDefaultLang) {
-      nextPages.add(pageOne);
-    }
+    final initialIndex = _getInitialStep(
+      hasDefaultLang: hasDefaultLang,
+      hasDefaultGroup: hasDefaultGroup,
+      hasDefaultWallet: hasDefaultWallet,
+      hasDefaultCurrency: hasDefaultCurrency,
+    );
 
-    if (!hasDefaultGroup) {
-      nextPages.add(pageTwo);
-    }
+    final isComplete = initialIndex >= pages.length - 1;
 
-    if (!hasDefaultWallet || !hasDefaultCurrency) {
-      nextPages.add(pageThree);
-    }
-
-    // Add category setup page
-    nextPages.add(pageFive);
-
-    nextPages.add(pageFour);
-
-    final shouldShow = nextPages.length >= 2;
-
-    if (!shouldShow) {
+    if (isComplete) {
       await _saveOnboardingComplete();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -154,28 +163,21 @@ class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
           const MainNavigationScreen(),
         );
       });
-    } else {
-      if (mounted) {
-        setState(() {
-          pendingPages = nextPages;
-          _totalSteps = nextPages.length;
-          if (shouldShow) {
-            _currentPage = 0;
-          } else if (_currentPage >= pendingPages.length) {
-            _currentPage = pendingPages.length - 1;
-          }
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted || !pageController.hasClients) return;
-            pageController.jumpToPage(_currentPage);
-          });
-        });
-      }
-
-      setState(() {
-        isSettingComplete = true;
-      });
+      return;
     }
+
+    setState(() {
+      pendingPages = pages;
+      _totalSteps = pages.length;
+      _currentPage = initialIndex;
+      pageController = PageController(initialPage: initialIndex);
+      isSettingComplete = true;
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !pageController.hasClients) return;
+      pageController.jumpToPage(initialIndex);
+    });
   }
 
   @override
