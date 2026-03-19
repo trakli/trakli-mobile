@@ -47,6 +47,7 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
       {DateTime? syncedSince, bool? noClientId}) async {
     final allItems = <TransactionCompleteDto>[];
     int currentPage = 1;
+    int limit = 10;
 
     while (true) {
       final queryParams = <String, dynamic>{
@@ -58,6 +59,10 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
       if (noClientId != null) {
         queryParams['no_client_id'] = noClientId;
       }
+
+      queryParams['limit'] = limit;
+
+
 
       final response =
           await dio.get('transactions', queryParameters: queryParams);

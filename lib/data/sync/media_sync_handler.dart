@@ -48,7 +48,7 @@ class MediaSyncHandler extends SyncTypeHandler<MediaFile, String, int>
   }
 
   @override
-  bool shouldPersistRemote(MediaFile entity) => true;
+  Future<bool> shouldPersistRemote(MediaFile entity) async => true;
 
   @override
   Future<List<MediaFile>> restGetAllRemote({

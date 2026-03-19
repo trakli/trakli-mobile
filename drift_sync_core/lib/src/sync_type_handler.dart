@@ -45,7 +45,7 @@ abstract class SyncTypeHandler<TEntity, TKey, TServerKey> {
   Future<TEntity> unmarshal(Map<String, dynamic> entityBytes);
   Map<String, dynamic> marshal(TEntity entity);
 
-  bool shouldPersistRemote(TEntity entity);
+  Future<bool> shouldPersistRemote(TEntity entity);
 
   Future<TEntity> assignClientId(TEntity item);
 
