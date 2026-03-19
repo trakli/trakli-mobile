@@ -70,6 +70,8 @@ import '../data/datasources/transaction/transaction_local_datasource.dart'
     as _i662;
 import '../data/datasources/transaction/transaction_remote_datasource.dart'
     as _i79;
+import '../data/datasources/transfer/transfer_local_datasource.dart' as _i432;
+import '../data/datasources/transfer/transfer_remote_datasource.dart' as _i783;
 import '../data/datasources/wallet/wallet_local_datasource.dart' as _i849;
 import '../data/datasources/wallet/wallet_remote_datasource.dart' as _i624;
 import '../data/repositories/auth_repository_imp.dart' as _i135;
@@ -83,6 +85,7 @@ import '../data/repositories/notification_repository_impl.dart' as _i888;
 import '../data/repositories/party_repository_impl.dart' as _i168;
 import '../data/repositories/subscription_repository_imp.dart' as _i1047;
 import '../data/repositories/transaction_repository_impl.dart' as _i114;
+import '../data/repositories/transfer_repository_impl.dart' as _i268;
 import '../data/repositories/wallet_repository_impl.dart' as _i305;
 import '../data/sync/category_sync_handler.dart' as _i463;
 import '../data/sync/config_sync_handler.dart' as _i480;
@@ -91,6 +94,7 @@ import '../data/sync/media_sync_handler.dart' as _i382;
 import '../data/sync/notification_sync_handler.dart' as _i217;
 import '../data/sync/party_sync_handler.dart' as _i280;
 import '../data/sync/transaction_sync_handler.dart' as _i893;
+import '../data/sync/transfer_sync_handler.dart' as _i225;
 import '../data/sync/wallet_sync_handler.dart' as _i849;
 import '../domain/repositories/auth_repository.dart' as _i800;
 import '../domain/repositories/category_repository.dart' as _i410;
@@ -103,10 +107,11 @@ import '../domain/repositories/notification_repository.dart' as _i965;
 import '../domain/repositories/party_repository.dart' as _i661;
 import '../domain/repositories/subscription_repository.dart' as _i804;
 import '../domain/repositories/transaction_repository.dart' as _i118;
+import '../domain/repositories/transfer_repository.dart' as _i55;
 import '../domain/repositories/wallet_repository.dart' as _i368;
 import '../domain/usecases/app_update/check_app_update_usecase.dart' as _i150;
-import '../domain/usecases/app_update/get_app_update_config_usecase.dart'
-    as _i854;
+import '../domain/usecases/remote_config/get_remote_feature_config_usecase.dart'
+    as _i1070;
 import '../domain/usecases/auth/delete_account_usecase.dart' as _i684;
 import '../domain/usecases/auth/get_loggedin_user.dart' as _i880;
 import '../domain/usecases/auth/get_otp_usecase.dart' as _i402;
@@ -175,6 +180,10 @@ import '../domain/usecases/transaction/listen_to_transactions_usecase.dart'
 import '../domain/usecases/transaction/update_transaction_usecase.dart'
     as _i241;
 import '../domain/usecases/transaction/usecase.dart' as _i1022;
+import '../domain/usecases/transfer/add_transfer_usecase.dart' as _i453;
+import '../domain/usecases/transfer/create_transfer_with_transactions_usecase.dart'
+    as _i1004;
+import '../domain/usecases/transfer/listen_to_transfers_usecase.dart' as _i744;
 import '../domain/usecases/wallet/add_wallet_usecase.dart' as _i80;
 import '../domain/usecases/wallet/delete_wallet_usecase.dart' as _i62;
 import '../domain/usecases/wallet/ensure_default_wallet_exists_usecase.dart'
@@ -199,8 +208,10 @@ import '../presentation/groups/cubit/group_cubit.dart' as _i676;
 import '../presentation/notifications/cubit/notification_cubit.dart' as _i1056;
 import '../presentation/parties/cubit/party_cubit.dart' as _i841;
 import '../presentation/plans/cubit/plans_cubit.dart' as _i977;
+import '../presentation/remote_config/cubit/remote_config_cubit.dart' as _i1071;
 import '../presentation/statistics/cubit/statistics_filter_cubit.dart' as _i363;
 import '../presentation/transactions/cubit/transaction_cubit.dart' as _i117;
+import '../presentation/transfers/cubit/transfer_cubit.dart' as _i611;
 import '../presentation/utils/sync_cubit.dart' as _i1041;
 import '../presentation/wallets/cubit/wallet_cubit.dart' as _i1068;
 
@@ -220,14 +231,14 @@ _i174.GetIt $initGetIt(
   );
   final syncModule = _$SyncModule();
   final injectHttpClientModule = _$InjectHttpClientModule();
+  gh.factory<_i624.OAuthService>(() => _i624.OAuthService());
   gh.factory<_i1041.SyncCubit>(() => _i1041.SyncCubit());
   gh.factory<_i363.StatisticsFilterCubit>(() => _i363.StatisticsFilterCubit());
-  gh.factory<_i624.OAuthService>(() => _i624.OAuthService());
-  gh.singleton<_i957.SyncService>(() => _i957.SyncService());
   gh.singleton<_i196.FeatureRemoteConfig>(() => _i196.FeatureRemoteConfig());
-  gh.lazySingleton<_i627.ThemeCubit>(() => _i627.ThemeCubit());
+  gh.singleton<_i957.SyncService>(() => _i957.SyncService());
   gh.lazySingleton<_i877.SyncDependencyManagerBase>(
       () => syncModule.provideSyncDependencyManager());
+  gh.lazySingleton<_i627.ThemeCubit>(() => _i627.ThemeCubit());
   gh.factory<_i6.NetworkInfo>(() => _i6.NetworkInfoImpl()..init());
   gh.factory<_i91.OAuthCubit>(() => _i91.OAuthCubit(gh<_i624.OAuthService>()));
   gh.singleton<_i1063.AppVersionInfo>(() => _i1063.AppVersionInfoImpl());
@@ -257,16 +268,18 @@ _i174.GetIt $initGetIt(
       () => _i655.PartyLocalDataSourceImpl(gh<_i704.AppDatabase>()));
   gh.factory<_i937.NotificationLocalDataSource>(
       () => _i937.NotificationLocalDataSourceImpl(gh<_i704.AppDatabase>()));
-  gh.factory<_i78.InAppUpdateCubit>(
-      () => _i78.InAppUpdateCubit(gh<_i47.InAppUpdateService>()));
   gh.factory<_i288.InAppUpdateCubit>(
       () => _i288.InAppUpdateCubit(gh<_i47.InAppUpdateService>()));
+  gh.factory<_i78.InAppUpdateCubit>(
+      () => _i78.InAppUpdateCubit(gh<_i47.InAppUpdateService>()));
   gh.factory<_i276.AuthLocalDataSource>(
       () => _i276.AuthLocalDataSourceImpl(gh<_i704.AppDatabase>()));
   gh.factory<_i216.MediaFileLocalDataSource>(
       () => _i216.MediaFileLocalDataSourceImpl(gh<_i704.AppDatabase>()));
   gh.factory<_i873.GroupLocalDataSource>(
       () => _i873.GroupLocalDataSourceImpl(database: gh<_i704.AppDatabase>()));
+  gh.factory<_i432.TransferLocalDataSource>(
+      () => _i432.TransferLocalDataSourceImpl(gh<_i704.AppDatabase>()));
   gh.factory<_i849.WalletLocalDataSource>(
       () => _i849.WalletLocalDataSourceImpl(database: gh<_i704.AppDatabase>()));
   gh.factory<_i514.ConfigLocalDataSource>(
@@ -284,8 +297,8 @@ _i174.GetIt $initGetIt(
       () => _i558.CategoryRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.factory<_i656.PartyRemoteDataSource>(
       () => _i656.PartyRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
-  gh.factory<_i854.GetAppUpdateConfigUseCase>(
-      () => _i854.GetAppUpdateConfigUseCase(gh<_i196.FeatureRemoteConfig>()));
+  gh.factory<_i1070.GetRemoteFeatureConfigUseCase>(() =>
+      _i1070.GetRemoteFeatureConfigUseCase(gh<_i196.FeatureRemoteConfig>()));
   gh.lazySingleton<_i463.CategorySyncHandler>(() => _i463.CategorySyncHandler(
         gh<_i704.AppDatabase>(),
         gh<_i558.CategoryRemoteDataSource>(),
@@ -312,7 +325,7 @@ _i174.GetIt $initGetIt(
       ));
   gh.factory<_i150.CheckAppUpdateUseCase>(() => _i150.CheckAppUpdateUseCase(
         gh<_i1063.AppVersionInfo>(),
-        gh<_i854.GetAppUpdateConfigUseCase>(),
+        gh<_i1070.GetRemoteFeatureConfigUseCase>(),
         gh<_i683.PreferenceManager>(),
         gh<_i47.InAppUpdateService>(),
         gh<_i493.RemoteUpdateCheck>(),
@@ -348,14 +361,14 @@ _i174.GetIt $initGetIt(
           ));
   gh.factory<_i478.GroupRemoteDataSource>(
       () => _i478.GroupRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
+  gh.factory<_i292.DeleteCategoryUseCase>(
+      () => _i292.DeleteCategoryUseCase(gh<_i410.CategoryRepository>()));
+  gh.factory<_i961.GetCategoriesUseCase>(
+      () => _i961.GetCategoriesUseCase(gh<_i410.CategoryRepository>()));
   gh.factory<_i445.AddCategoryUseCase>(
       () => _i445.AddCategoryUseCase(gh<_i410.CategoryRepository>()));
   gh.factory<_i986.UpdateCategoryUseCase>(
       () => _i986.UpdateCategoryUseCase(gh<_i410.CategoryRepository>()));
-  gh.factory<_i961.GetCategoriesUseCase>(
-      () => _i961.GetCategoriesUseCase(gh<_i410.CategoryRepository>()));
-  gh.factory<_i292.DeleteCategoryUseCase>(
-      () => _i292.DeleteCategoryUseCase(gh<_i410.CategoryRepository>()));
   gh.singleton<_i11.CloudBenefitRepository>(() =>
       _i415.CloudBenefitRepositoryImpl(
           gh<_i61.CloudBenefitRemoteDataSource>()));
@@ -365,6 +378,8 @@ _i174.GetIt $initGetIt(
         gh<_i704.AppDatabase>(),
         gh<_i587.ConfigRemoteDataSource>(),
       ));
+  gh.factory<_i783.TransferRemoteDataSource>(
+      () => _i783.TransferRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.factory<_i500.ListenToCategoriesUseCase>(
       () => _i500.ListenToCategoriesUseCase(gh<_i410.CategoryRepository>()));
   gh.factory<_i849.WalletSyncHandler>(() => _i849.WalletSyncHandler(
@@ -401,6 +416,11 @@ _i174.GetIt $initGetIt(
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
+  gh.lazySingleton<_i225.TransferSyncHandler>(() => _i225.TransferSyncHandler(
+        gh<_i704.AppDatabase>(),
+        gh<_i783.TransferRemoteDataSource>(),
+        gh<_i662.TransactionLocalDataSource>(),
+      ));
   gh.singleton<_i800.AuthRepository>(() => _i135.AuthRepositoryImpl(
         remoteDataSource: gh<_i496.AuthRemoteDataSource>(),
         localDataSource: gh<_i276.AuthLocalDataSource>(),
@@ -420,22 +440,22 @@ _i174.GetIt $initGetIt(
         gh<_i961.GetCategoriesUseCase>(),
         gh<_i500.ListenToCategoriesUseCase>(),
       ));
-  gh.factory<_i768.LoginWithEmailPassword>(
-      () => _i768.LoginWithEmailPassword(gh<_i800.AuthRepository>()));
   gh.factory<_i723.LoginWithPhonePassword>(
       () => _i723.LoginWithPhonePassword(gh<_i800.AuthRepository>()));
-  gh.factory<_i880.GetLoggedInUser>(
-      () => _i880.GetLoggedInUser(gh<_i800.AuthRepository>()));
-  gh.factory<_i2.OnboardingCompleted>(
-      () => _i2.OnboardingCompleted(gh<_i800.AuthRepository>()));
-  gh.factory<_i828.IsOnboardingCompleted>(
-      () => _i828.IsOnboardingCompleted(gh<_i800.AuthRepository>()));
   gh.factory<_i498.LoginByPhoneUsecase>(
       () => _i498.LoginByPhoneUsecase(gh<_i800.AuthRepository>()));
+  gh.factory<_i768.LoginWithEmailPassword>(
+      () => _i768.LoginWithEmailPassword(gh<_i800.AuthRepository>()));
+  gh.factory<_i828.IsOnboardingCompleted>(
+      () => _i828.IsOnboardingCompleted(gh<_i800.AuthRepository>()));
   gh.factory<_i42.LoginByEmailUsecase>(
       () => _i42.LoginByEmailUsecase(gh<_i800.AuthRepository>()));
   gh.factory<_i444.StreamAuthStatus>(
       () => _i444.StreamAuthStatus(gh<_i800.AuthRepository>()));
+  gh.factory<_i2.OnboardingCompleted>(
+      () => _i2.OnboardingCompleted(gh<_i800.AuthRepository>()));
+  gh.factory<_i880.GetLoggedInUser>(
+      () => _i880.GetLoggedInUser(gh<_i800.AuthRepository>()));
   gh.lazySingleton<_i118.TransactionRepository>(() =>
       _i114.TransactionRepositoryImpl(
         syncHandler: gh<_i893.TransactionSyncHandler>(),
@@ -443,16 +463,31 @@ _i174.GetIt $initGetIt(
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
+  gh.lazySingleton<_i55.TransferRepository>(() => _i268.TransferRepositoryImpl(
+        syncHandler: gh<_i225.TransferSyncHandler>(),
+        localDataSource: gh<_i432.TransferLocalDataSource>(),
+        transactionLocalDataSource: gh<_i662.TransactionLocalDataSource>(),
+        transactionRepository: gh<_i114.TransactionRepositoryImpl>(),
+        db: gh<_i704.AppDatabase>(),
+        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
+      ));
+  gh.factory<_i1004.CreateTransferWithTransactionsUseCase>(() =>
+      _i1004.CreateTransferWithTransactionsUseCase(
+          gh<_i55.TransferRepository>()));
+  gh.factory<_i744.ListenToTransfersUseCase>(
+      () => _i744.ListenToTransfersUseCase(gh<_i55.TransferRepository>()));
+  gh.factory<_i453.AddTransferUseCase>(
+      () => _i453.AddTransferUseCase(gh<_i55.TransferRepository>()));
+  gh.factory<_i911.UpdatePartyUseCase>(
+      () => _i911.UpdatePartyUseCase(gh<_i661.PartyRepository>()));
+  gh.factory<_i714.ListenToPartiesUseCase>(
+      () => _i714.ListenToPartiesUseCase(gh<_i661.PartyRepository>()));
   gh.factory<_i56.DeletePartyUseCase>(
       () => _i56.DeletePartyUseCase(gh<_i661.PartyRepository>()));
   gh.factory<_i12.GetPartiesUseCase>(
       () => _i12.GetPartiesUseCase(gh<_i661.PartyRepository>()));
-  gh.factory<_i911.UpdatePartyUseCase>(
-      () => _i911.UpdatePartyUseCase(gh<_i661.PartyRepository>()));
   gh.factory<_i84.AddPartyUseCase>(
       () => _i84.AddPartyUseCase(gh<_i661.PartyRepository>()));
-  gh.factory<_i714.ListenToPartiesUseCase>(
-      () => _i714.ListenToPartiesUseCase(gh<_i661.PartyRepository>()));
   gh.lazySingleton<_i965.NotificationRepository>(() =>
       _i888.NotificationRepositoryImpl(
         syncHandler: gh<_i217.NotificationSyncHandler>(),
@@ -462,42 +497,49 @@ _i174.GetIt $initGetIt(
       ));
   gh.factory<_i88.BenefitsCubit>(
       () => _i88.BenefitsCubit(gh<_i61.FetchBenefits>()));
-  gh.factory<_i684.DeleteAccountUseCase>(
-      () => _i684.DeleteAccountUseCase(gh<_i800.AuthRepository>()));
   gh.factory<_i640.LogoutUsecase>(
       () => _i640.LogoutUsecase(gh<_i800.AuthRepository>()));
+  gh.factory<_i684.DeleteAccountUseCase>(
+      () => _i684.DeleteAccountUseCase(gh<_i800.AuthRepository>()));
+  gh.factory<_i611.TransferCubit>(() => _i611.TransferCubit(
+        createTransferWithTransactionsUseCase:
+            gh<_i1004.CreateTransferWithTransactionsUseCase>(),
+        listenToTransfersUseCase: gh<_i744.ListenToTransfersUseCase>(),
+      ));
+  gh.factory<_i1071.RemoteConfigCubit>(
+      () => _i1071.RemoteConfigCubit(gh<_i1070.GetRemoteFeatureConfigUseCase>()));
   gh.lazySingleton<_i368.WalletRepository>(() => _i305.WalletRepositoryImpl(
         syncHandler: gh<_i849.WalletSyncHandler>(),
         localDataSource: gh<_i849.WalletLocalDataSource>(),
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
-  gh.factory<_i163.DeleteTransactionUseCase>(
-      () => _i163.DeleteTransactionUseCase(gh<_i118.TransactionRepository>()));
-  gh.factory<_i973.ListenToTransactionsUseCase>(() =>
-      _i973.ListenToTransactionsUseCase(gh<_i118.TransactionRepository>()));
   gh.factory<_i241.UpdateTransactionUseCase>(
       () => _i241.UpdateTransactionUseCase(gh<_i118.TransactionRepository>()));
+  gh.factory<_i973.ListenToTransactionsUseCase>(() =>
+      _i973.ListenToTransactionsUseCase(gh<_i118.TransactionRepository>()));
+  gh.factory<_i163.DeleteTransactionUseCase>(
+      () => _i163.DeleteTransactionUseCase(gh<_i118.TransactionRepository>()));
   gh.factory<_i947.GetAllTransactionsUseCase>(
       () => _i947.GetAllTransactionsUseCase(gh<_i118.TransactionRepository>()));
-  gh.factory<_i837.MarkNotificationAsReadUseCase>(() =>
-      _i837.MarkNotificationAsReadUseCase(gh<_i965.NotificationRepository>()));
   gh.factory<_i422.GetNotificationsUseCase>(
       () => _i422.GetNotificationsUseCase(gh<_i965.NotificationRepository>()));
+  gh.factory<_i837.MarkNotificationAsReadUseCase>(() =>
+      _i837.MarkNotificationAsReadUseCase(gh<_i965.NotificationRepository>()));
   gh.lazySingleton<_i957.GroupRepository>(() => _i875.GroupRepositoryImpl(
         syncHandler: gh<_i235.GroupSyncHandler>(),
         localDataSource: gh<_i873.GroupLocalDataSource>(),
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
-  gh.factory<_i418.UpdateWalletUseCase>(
-      () => _i418.UpdateWalletUseCase(gh<_i368.WalletRepository>()));
-  gh.factory<_i62.DeleteWalletUseCase>(
-      () => _i62.DeleteWalletUseCase(gh<_i368.WalletRepository>()));
   gh.factory<_i80.AddWalletUseCase>(
       () => _i80.AddWalletUseCase(gh<_i368.WalletRepository>()));
   gh.factory<_i713.GetWalletsUseCase>(
       () => _i713.GetWalletsUseCase(gh<_i368.WalletRepository>()));
+  gh.factory<_i62.DeleteWalletUseCase>(
+      () => _i62.DeleteWalletUseCase(gh<_i368.WalletRepository>()));
+  gh.factory<_i418.UpdateWalletUseCase>(
+      () => _i418.UpdateWalletUseCase(gh<_i368.WalletRepository>()));
   gh.factory<_i314.FetchSubscriptionPlans>(
       () => _i314.FetchSubscriptionPlans(gh<_i804.SubscriptionRepository>()));
   gh.lazySingleton<_i382.MediaSyncHandler>(() => _i382.MediaSyncHandler(
@@ -506,42 +548,42 @@ _i174.GetIt $initGetIt(
         gh<_i79.TransactionRemoteDataSource>(),
         gh<_i893.TransactionSyncHandler>(),
       ));
-  gh.factory<_i833.SaveConfigUseCase>(
-      () => _i833.SaveConfigUseCase(gh<_i899.ConfigRepository>()));
-  gh.factory<_i933.GetConfigUseCase>(
-      () => _i933.GetConfigUseCase(gh<_i899.ConfigRepository>()));
-  gh.factory<_i608.ListenToConfigsUseCase>(
-      () => _i608.ListenToConfigsUseCase(gh<_i899.ConfigRepository>()));
-  gh.factory<_i436.UpdateConfigUseCase>(
-      () => _i436.UpdateConfigUseCase(gh<_i899.ConfigRepository>()));
   gh.factory<_i132.GetConfigsUseCase>(
       () => _i132.GetConfigsUseCase(gh<_i899.ConfigRepository>()));
   gh.factory<_i536.DeleteConfigUseCase>(
       () => _i536.DeleteConfigUseCase(gh<_i899.ConfigRepository>()));
+  gh.factory<_i833.SaveConfigUseCase>(
+      () => _i833.SaveConfigUseCase(gh<_i899.ConfigRepository>()));
+  gh.factory<_i608.ListenToConfigsUseCase>(
+      () => _i608.ListenToConfigsUseCase(gh<_i899.ConfigRepository>()));
+  gh.factory<_i436.UpdateConfigUseCase>(
+      () => _i436.UpdateConfigUseCase(gh<_i899.ConfigRepository>()));
+  gh.factory<_i933.GetConfigUseCase>(
+      () => _i933.GetConfigUseCase(gh<_i899.ConfigRepository>()));
   gh.singleton<_i1057.ExchangeRateRepository>(
       () => _i827.ExchangeRateRepositoryImpl(
             remoteDataSource: gh<_i632.ExchangeRateRemoteDataSource>(),
             localDataSource: gh<_i900.ExchangeRateLocalDataSource>(),
             configRepository: gh<_i899.ConfigRepository>(),
           ));
-  gh.factory<_i225.EnsureDefaultWalletExistsUseCase>(() =>
-      _i225.EnsureDefaultWalletExistsUseCase(gh<_i368.WalletRepository>()));
   gh.factory<_i82.ListenToWalletsUseCase>(
       () => _i82.ListenToWalletsUseCase(gh<_i368.WalletRepository>()));
+  gh.factory<_i225.EnsureDefaultWalletExistsUseCase>(() =>
+      _i225.EnsureDefaultWalletExistsUseCase(gh<_i368.WalletRepository>()));
   gh.factory<_i100.VerifyEmailUseCase>(
       () => _i100.VerifyEmailUseCase(gh<_i800.AuthRepository>()));
-  gh.factory<_i400.LoginWithPhoneUseCase>(
-      () => _i400.LoginWithPhoneUseCase(gh<_i800.AuthRepository>()));
-  gh.factory<_i494.PasswordResetUseCase>(
-      () => _i494.PasswordResetUseCase(gh<_i800.AuthRepository>()));
   gh.factory<_i402.GetOtpCodeUseCase>(
       () => _i402.GetOtpCodeUseCase(gh<_i800.AuthRepository>()));
-  gh.factory<_i705.RegisterUseCase>(
-      () => _i705.RegisterUseCase(gh<_i800.AuthRepository>()));
   gh.factory<_i542.PasswordResetCodeUseCase>(
       () => _i542.PasswordResetCodeUseCase(gh<_i800.AuthRepository>()));
+  gh.factory<_i705.RegisterUseCase>(
+      () => _i705.RegisterUseCase(gh<_i800.AuthRepository>()));
   gh.factory<_i524.LoginWithEmailUseCase>(
       () => _i524.LoginWithEmailUseCase(gh<_i800.AuthRepository>()));
+  gh.factory<_i494.PasswordResetUseCase>(
+      () => _i494.PasswordResetUseCase(gh<_i800.AuthRepository>()));
+  gh.factory<_i400.LoginWithPhoneUseCase>(
+      () => _i400.LoginWithPhoneUseCase(gh<_i800.AuthRepository>()));
   gh.factory<_i841.PartyCubit>(() => _i841.PartyCubit(
         getPartiesUseCase: gh<_i12.GetPartiesUseCase>(),
         addPartyUseCase: gh<_i84.AddPartyUseCase>(),
@@ -588,27 +630,16 @@ _i174.GetIt $initGetIt(
       ));
   gh.factory<_i397.ListenExchangeRate>(
       () => _i397.ListenExchangeRate(gh<_i1057.ExchangeRateRepository>()));
-  gh.factory<_i759.DeleteGroupUseCase>(
-      () => _i759.DeleteGroupUseCase(gh<_i957.GroupRepository>()));
-  gh.factory<_i820.UpdateGroupUseCase>(
-      () => _i820.UpdateGroupUseCase(gh<_i957.GroupRepository>()));
-  gh.factory<_i353.AddGroupUseCase>(
-      () => _i353.AddGroupUseCase(gh<_i957.GroupRepository>()));
-  gh.factory<_i982.GetGroupsUseCase>(
-      () => _i982.GetGroupsUseCase(gh<_i957.GroupRepository>()));
   gh.factory<_i146.ListenToGroupsUseCase>(
       () => _i146.ListenToGroupsUseCase(gh<_i957.GroupRepository>()));
-  gh.lazySingleton<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(
-      () => syncModule.provideSyncTypeHandlers(
-            gh<_i463.CategorySyncHandler>(),
-            gh<_i480.ConfigSyncHandler>(),
-            gh<_i849.WalletSyncHandler>(),
-            gh<_i280.PartySyncHandler>(),
-            gh<_i235.GroupSyncHandler>(),
-            gh<_i217.NotificationSyncHandler>(),
-            gh<_i893.TransactionSyncHandler>(),
-            gh<_i382.MediaSyncHandler>(),
-          ));
+  gh.factory<_i982.GetGroupsUseCase>(
+      () => _i982.GetGroupsUseCase(gh<_i957.GroupRepository>()));
+  gh.factory<_i759.DeleteGroupUseCase>(
+      () => _i759.DeleteGroupUseCase(gh<_i957.GroupRepository>()));
+  gh.factory<_i353.AddGroupUseCase>(
+      () => _i353.AddGroupUseCase(gh<_i957.GroupRepository>()));
+  gh.factory<_i820.UpdateGroupUseCase>(
+      () => _i820.UpdateGroupUseCase(gh<_i957.GroupRepository>()));
   gh.factory<_i408.ConfigCubit>(() => _i408.ConfigCubit(
         gh<_i132.GetConfigsUseCase>(),
         gh<_i933.GetConfigUseCase>(),
@@ -624,6 +655,18 @@ _i174.GetIt $initGetIt(
       ));
   gh.factory<_i977.PlansCubit>(
       () => _i977.PlansCubit(gh<_i314.FetchSubscriptionPlans>()));
+  gh.lazySingleton<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(
+      () => syncModule.provideSyncTypeHandlers(
+            gh<_i463.CategorySyncHandler>(),
+            gh<_i480.ConfigSyncHandler>(),
+            gh<_i849.WalletSyncHandler>(),
+            gh<_i280.PartySyncHandler>(),
+            gh<_i235.GroupSyncHandler>(),
+            gh<_i217.NotificationSyncHandler>(),
+            gh<_i893.TransactionSyncHandler>(),
+            gh<_i225.TransferSyncHandler>(),
+            gh<_i382.MediaSyncHandler>(),
+          ));
   gh.factory<_i798.UpdateDefaultCurrencyUseCase>(() =>
       _i798.UpdateDefaultCurrencyUseCase(gh<_i1057.ExchangeRateRepository>()));
   gh.factory<_i676.GroupCubit>(() => _i676.GroupCubit(
@@ -648,14 +691,14 @@ _i174.GetIt $initGetIt(
         networkInfo: gh<_i6.NetworkInfo>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
-  gh.factory<_i843.AddMediaToTransactionUseCase>(
-      () => _i843.AddMediaToTransactionUseCase(gh<_i442.MediaRepository>()));
+  gh.factory<_i1026.GetMediaForTransactionUseCase>(
+      () => _i1026.GetMediaForTransactionUseCase(gh<_i442.MediaRepository>()));
   gh.factory<_i150.GetFileContentUseCase>(
       () => _i150.GetFileContentUseCase(gh<_i442.MediaRepository>()));
   gh.factory<_i706.DeleteMediaUseCase>(
       () => _i706.DeleteMediaUseCase(gh<_i442.MediaRepository>()));
-  gh.factory<_i1026.GetMediaForTransactionUseCase>(
-      () => _i1026.GetMediaForTransactionUseCase(gh<_i442.MediaRepository>()));
+  gh.factory<_i843.AddMediaToTransactionUseCase>(
+      () => _i843.AddMediaToTransactionUseCase(gh<_i442.MediaRepository>()));
   gh.factory<_i484.CurrencyCubit>(() => _i484.CurrencyCubit(
         gh<_i933.GetConfigUseCase>(),
         gh<_i833.SaveConfigUseCase>(),
