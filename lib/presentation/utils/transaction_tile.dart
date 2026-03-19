@@ -118,13 +118,28 @@ class _TransactionTileState extends State<TransactionTile> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  PartyDisplayWidget(
-                    type: transaction.type,
-                    party: widget.transaction.party,
-                    walletEntity: widget.transaction.wallet,
-                  ),
-                  Column(
+                   PartyDisplayWidget(
+                      type: transaction.type,
+                      party: widget.transaction.party,
+                      walletEntity: widget.transaction.wallet,
+                    ),
+                  // Expanded(
+               
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      if (
+                          (widget.transaction.transaction.transferClientId != null &&
+                              widget.transaction.transaction.transferClientId!.isNotEmpty)) ...[
+                        Padding(
+                          padding: EdgeInsets.only(right: 4.w),
+                          child: Icon(
+                            Icons.swap_horiz,
+                            size: 18.sp,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ],
                       Text(
                         CurrencyFormater.formatAmountWithSymbol(
                           context,
@@ -139,7 +154,7 @@ class _TransactionTileState extends State<TransactionTile> {
                         ),
                       ),
                     ],
-                  ),
+                  )
                 ],
               ),
               Row(
