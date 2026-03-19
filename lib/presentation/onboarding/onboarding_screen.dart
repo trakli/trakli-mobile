@@ -201,7 +201,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             LocaleKeys.go.tr().toUpperCase(),
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16.sp,
+                              fontSize: 12.sp,
                             ),
                           ),
                   ),
