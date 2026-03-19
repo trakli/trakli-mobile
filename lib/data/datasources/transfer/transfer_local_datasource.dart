@@ -7,11 +7,7 @@ import 'package:trakli/data/database/app_database.dart';
 abstract class TransferLocalDataSource {
   Future<List<Transfer>> getAllTransfers();
   Future<Transfer?> getTransfer(String clientId);
-  /// Persists a transfer created upstream (e.g. in presentation/use case).
-  /// [companion] should already have clientId, createdAt, updatedAt set; if
-  /// clientId is missing/empty, this will generate one.
   Future<Transfer> insertTransfer(TransfersCompanion companion);
-  /// Updates an existing transfer by clientId. [transfer] is the full row to write.
   Future<Transfer> updateTransfer(Transfer transfer);
   Future<Transfer> deleteTransfer(String clientId);
   Future<void> deleteAllTransfers();

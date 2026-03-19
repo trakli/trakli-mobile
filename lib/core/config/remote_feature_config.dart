@@ -1,7 +1,4 @@
 /// Single source of remote-config values used across the app.
-///
-/// Add new keys here and in [FeatureRemoteConfig] / [GetRemoteFeatureConfigUseCase]
-/// instead of creating a new config class per feature.
 class RemoteFeatureConfig {
   final String requiredMinimumVersion;
   final String recommendedMinimumVersion;

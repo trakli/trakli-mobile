@@ -9,10 +9,6 @@ import 'package:trakli/data/datasources/transfer/dto/transfer_dto.dart';
 import 'package:trakli/data/datasources/transfer/transfer_remote_datasource.dart';
 import 'package:trakli/data/datasources/transaction/transaction_local_datasource.dart';
 
-/// Sync handler for transfers.
-///
-/// Handles up/down sync between the local [Transfers] table and the remote
-/// transfer endpoints using [TransferRemoteDataSource].
 @lazySingleton
 class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
     with RestSyncTypeHandler<Transfer, String, int> {

@@ -41,10 +41,7 @@ class FeatureRemoteConfig {
   int get updateReminderFrequency =>
       _remoteConfig.getInt('updateReminderFrequency');
 
-  /// Minimum amount required to allow a transfer.
-  ///
-  /// Comes from Firebase Remote Config key `minimumTransferAmount`.
-  /// Falls back to `0.1` when missing/invalid.
+
   double get minimumTransferAmount {
     const fallback = defaultMinimumTransferAmount;
 
@@ -59,7 +56,6 @@ class FeatureRemoteConfig {
       final asString = _remoteConfig.getString('minimumTransferAmount');
       if (asString.isEmpty) return fallback;
 
-      // Backend might return numbers with commas.
       final normalized = asString.replaceAll(',', '.');
       final parsed = double.tryParse(normalized);
       if (parsed != null && parsed > 0) return parsed;
