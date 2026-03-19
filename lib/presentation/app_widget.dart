@@ -46,6 +46,8 @@ import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/utils/sync_cubit.dart';
 import 'package:trakli/presentation/utils/theme.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
+import 'package:trakli/presentation/remote_config/cubit/remote_config_cubit.dart';
+import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
 
 // Global flag to track if we're in onboarding mode
 bool _isInOnboardingMode = false;
@@ -115,6 +117,12 @@ class AppWidget extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => getIt<StatisticsFilterCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<TransferCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<RemoteConfigCubit>(),
         ),
       ],
       child: const AppView(),
