@@ -7,6 +7,7 @@ import 'package:trakli/core/utils/services/logger.dart';
 @singleton
 class FeatureRemoteConfig {
   final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
+  static const double defaultMinimumTransferAmount = 0.1;
 
   /// Initialize remote config with defaults, fetch, and listen for updates.
   /// Call this once at app startup (in bootstrap).
@@ -39,4 +40,33 @@ class FeatureRemoteConfig {
 
   int get updateReminderFrequency =>
       _remoteConfig.getInt('updateReminderFrequency');
+
+  /// Minimum amount required to allow a transfer.
+  ///
+  /// Comes from Firebase Remote Config key `minimumTransferAmount`.
+  /// Falls back to `0.1` when missing/invalid.
+  double get minimumTransferAmount {
+    const fallback = defaultMinimumTransferAmount;
+
+    try {
+      final asDouble = _remoteConfig.getDouble('minimumTransferAmount');
+      if (asDouble > 0) return asDouble;
+    } catch (_) {
+      // Ignore and try parsing from string below.
+    }
+
+    try {
+      final asString = _remoteConfig.getString('minimumTransferAmount');
+      if (asString.isEmpty) return fallback;
+
+      // Backend might return numbers with commas.
+      final normalized = asString.replaceAll(',', '.');
+      final parsed = double.tryParse(normalized);
+      if (parsed != null && parsed > 0) return parsed;
+    } catch (_) {
+      // Ignore and fall back.
+    }
+
+    return fallback;
+  }
 }

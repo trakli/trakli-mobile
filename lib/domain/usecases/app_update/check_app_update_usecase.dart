@@ -6,20 +6,20 @@ import 'package:trakli/core/app_update/in_app_update_service.dart';
 import 'package:trakli/core/app_update/remote_update_check.dart';
 import 'package:trakli/core/utils/version_util.dart';
 import 'package:trakli/data/datasources/auth/preference_manager.dart';
-import 'package:trakli/domain/usecases/app_update/get_app_update_config_usecase.dart';
+import 'package:trakli/domain/usecases/remote_config/get_remote_feature_config_usecase.dart';
 import 'package:update_available/update_available.dart';
 
 @injectable
 class CheckAppUpdateUseCase {
   final AppVersionInfo _appVersionInfo;
-  final GetAppUpdateConfigUseCase _getAppUpdateConfigUseCase;
+  final GetRemoteFeatureConfigUseCase _getRemoteFeatureConfig;
   final PreferenceManager _preferenceManager;
   final InAppUpdateService _inAppUpdateService;
   final RemoteUpdateCheck _remoteUpdateCheck;
 
   CheckAppUpdateUseCase(
     this._appVersionInfo,
-    this._getAppUpdateConfigUseCase,
+    this._getRemoteFeatureConfig,
     this._preferenceManager,
     this._inAppUpdateService,
     this._remoteUpdateCheck,
@@ -39,7 +39,7 @@ class CheckAppUpdateUseCase {
   }
 
   Future<AppUpdateCheckResult> _handleUpdateAvailable() async {
-    final config = _getAppUpdateConfigUseCase();
+    final config = _getRemoteFeatureConfig();
     final appVersion = getExtendedVersionNumber(_appVersionInfo.version);
     final requiredMin = getExtendedVersionNumber(config.requiredMinimumVersion);
     final recommendedMin =
