@@ -9,6 +9,7 @@ import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart
 import 'package:trakli/presentation/info_interfaces/data.dart';
 import 'package:trakli/presentation/info_interfaces/info_interface.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/wallet_tile.dart';
 import 'package:trakli/presentation/wallets/add_wallet_screen.dart';
@@ -33,17 +34,12 @@ class WalletScreen extends StatelessWidget {
       builder: (context, state) {
         final exchangeRateEntity =
             context.read<ExchangeRateCubit>().state.entity;
-        // Calculate total balance
-        final totalBalance = state.wallets.fold<double>(0, (sum, wallet) {
-          final amount = CurrencyFormater.convertAmountFromDefault(
-            wallet.balance,
-            wallet.currency,
-            exchangeRateEntity,
-            useDefaultCurrency: true,
-          );
-
-          return sum + amount;
-        });
+        final transactions = context.watch<TransactionCubit>().state.transactions;
+        final totals = calculateIncomeExpense(
+          transactions,
+          exchangeRateEntity: exchangeRateEntity,
+        );
+        final totalBalance = totals.totalIncome - totals.totalExpense;
 
         return Scaffold(
           appBar: CustomAppBar(

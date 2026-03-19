@@ -15,6 +15,7 @@ import 'package:trakli/core/utils/date_util.dart';
 import 'package:trakli/domain/entities/transfer_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/core/utils/currency_formater.dart';
+import 'package:trakli/core/utils/exchange_rate_formatter.dart';
 import 'package:trakli/data/datasources/core/amount_parser.dart';
 import 'package:trakli/presentation/remote_config/cubit/remote_config_cubit.dart';
 import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
@@ -40,16 +41,6 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _exchangeRateController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  /// Formats an exchange rate for the editable field without losing precision.
-  /// Very small rates (e.g. LBP→USD ≈ 0.000011) need more than 4 decimal places.
-  static String _formatExchangeRateForDisplay(double rate) {
-    if (rate == 0) return '0';
-    // Use enough decimals for very small or large rates, then trim trailing zeros
-    const maxDecimals = 14;
-    final s = rate.toStringAsFixed(maxDecimals);
-    return s.replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
-  }
 
   double _minimumTransferAmount(BuildContext context) =>
       context.read<RemoteConfigCubit>().state.config.minimumTransferAmount;
@@ -99,7 +90,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
             defaultRate = toRate / fromRate;
           }
           _exchangeRateController.text =
-              _formatExchangeRateForDisplay(defaultRate);
+              formatExchangeRateForDisplay(defaultRate);
         });
       }
     });
@@ -212,7 +203,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                           defaultRate = toRate / fromRate;
                         }
                         _exchangeRateController.text =
-                            _formatExchangeRateForDisplay(defaultRate);
+                            formatExchangeRateForDisplay(defaultRate);
                       });
                       Navigator.pop(context);
                     },
@@ -312,9 +303,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
         exchangeRate = parsedRate > 0 ? parsedRate : 1.0;
       }
 
-      // Hard guard (in addition to validators) so we never dispatch a transfer
-      // when either the entered amount or the computed destination amount
-      // would be <= the configured minimum.
+  
       final receiveAmount = (selectedFromWallet != null &&
               selectedToWallet != null &&
               selectedFromWallet!.currencyCode ==
