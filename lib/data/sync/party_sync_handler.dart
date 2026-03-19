@@ -39,7 +39,7 @@ class PartySyncHandler extends SyncTypeHandler<Party, String, int>
   }
 
   @override
-  bool shouldPersistRemote(Party entity) => true;
+  Future<bool> shouldPersistRemote(Party entity) async => true;
 
   @override
   Future<List<Party>> restGetAllRemote(

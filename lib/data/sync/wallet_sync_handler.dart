@@ -158,7 +158,7 @@ class WalletSyncHandler extends SyncTypeHandler<Wallet, String, int>
   Map<String, dynamic> marshal(Wallet entity) => entity.toJson();
 
   @override
-  bool shouldPersistRemote(Wallet entity) => true;
+  Future<bool> shouldPersistRemote(Wallet entity) async => true;
 
   @override
   Future<Wallet> unmarshal(Map<String, dynamic> data) async {

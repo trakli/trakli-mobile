@@ -39,7 +39,7 @@ class ConfigSyncHandler extends SyncTypeHandler<Config, String, int>
   }
 
   @override
-  bool shouldPersistRemote(Config entity) => true;
+  Future<bool> shouldPersistRemote(Config entity) async => true;
 
   @override
   Future<List<Config>> restGetAllRemote({

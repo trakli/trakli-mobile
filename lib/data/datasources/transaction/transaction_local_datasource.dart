@@ -11,6 +11,7 @@ import 'package:trakli/core/utils/id_helper.dart';
 
 abstract class TransactionLocalDataSource {
   Future<List<TransactionCompleteDto>> getAllTransactions();
+  Future<Transaction?> getTransactionByClientId(String clientId);
   Future<TransactionCompleteDto> insertTransaction(
     double amount,
     String description,
@@ -24,13 +25,15 @@ abstract class TransactionLocalDataSource {
   });
   Future<TransactionCompleteDto> updateTransaction(
     String id,
+    {
     double? amount,
     String? description,
     List<String>? categoryIds,
     DateTime? datetime,
-    String? walletClientId, {
+    String? walletClientId,
     String? partyClientId,
     String? groupClientId,
+    String? transferClientId,
   });
 
   Future<TransactionCompleteDto> deleteTransaction(String id);
@@ -233,6 +236,13 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   }
 
   @override
+  Future<Transaction?> getTransactionByClientId(String clientId) async {
+    return (database.select(database.transactions)
+          ..where((t) => t.clientId.equals(clientId)))
+        .getSingleOrNull();
+  }
+
+  @override
   Future<TransactionCompleteDto> insertTransaction(
     double amount,
     String description,
@@ -380,13 +390,15 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   @override
   Future<TransactionCompleteDto> updateTransaction(
     String id,
+    {
     double? amount,
     String? description,
     List<String>? categoryIds,
     DateTime? datetime,
-    String? walletClientId, {
+    String? walletClientId,
     String? partyClientId,
     String? groupClientId,
+    String? transferClientId,
   }) async {
     return database.transaction(() async {
       final originalTransaction = await (database.select(database.transactions)
@@ -467,6 +479,9 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
               : const Value.absent(),
           groupClientId: groupClientId != null
               ? Value(groupClientId)
+              : const Value.absent(),
+          transferClientId: transferClientId != null
+              ? Value(transferClientId)
               : const Value.absent(),
         ),
       );

@@ -39,7 +39,7 @@ class GroupSyncHandler extends SyncTypeHandler<Group, String, int>
   }
 
   @override
-  bool shouldPersistRemote(Group entity) => true;
+  Future<bool> shouldPersistRemote(Group entity) async => true;
 
   @override
   Future<List<Group>> restGetAllRemote({

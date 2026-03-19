@@ -8,6 +8,7 @@ import 'package:trakli/data/sync/notification_sync_handler.dart';
 import 'package:trakli/data/sync/party_sync_handler.dart';
 import 'package:trakli/data/sync/media_sync_handler.dart';
 import 'package:trakli/data/sync/transaction_sync_handler.dart';
+import 'package:trakli/data/sync/transfer_sync_handler.dart';
 import 'package:trakli/data/sync/wallet_sync_handler.dart';
 
 @module
@@ -21,6 +22,7 @@ abstract class SyncModule {
     GroupSyncHandler groupTypeHandler,
     NotificationSyncHandler notificationTypeHandler,
     TransactionSyncHandler transactionTypeHandler,
+    TransferSyncHandler transferTypeHandler,
     MediaSyncHandler mediaSyncHandler,
   ) {
     return {
@@ -31,6 +33,7 @@ abstract class SyncModule {
       groupTypeHandler,
       notificationTypeHandler,
       transactionTypeHandler,
+      transferTypeHandler,
       mediaSyncHandler,
     };
   }

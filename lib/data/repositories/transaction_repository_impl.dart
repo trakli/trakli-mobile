@@ -41,11 +41,11 @@ class TransactionRepositoryImpl extends SyncEntityRepository<AppDatabase,
     try {
       final transaction = await localDataSource.updateTransaction(
         id,
-        amount,
-        description,
-        categoryIds,
-        datetime,
-        walletClientId,
+        amount: amount,
+        description: description,
+        categoryIds: categoryIds,
+        datetime: datetime,
+        walletClientId: walletClientId,
         partyClientId: partyClientId,
         groupClientId: groupClientId,
       );

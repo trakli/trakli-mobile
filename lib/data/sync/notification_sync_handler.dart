@@ -39,7 +39,7 @@ class NotificationSyncHandler extends SyncTypeHandler<Notification, String, int>
   }
 
   @override
-  bool shouldPersistRemote(Notification entity) => true;
+  Future<bool> shouldPersistRemote(Notification entity) async => true;
 
   @override
   Future<List<Notification>> restGetAllRemote({

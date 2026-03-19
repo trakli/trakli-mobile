@@ -98,7 +98,7 @@ abstract class SyncEntityRepository<TAppDatabase extends SynchronizerDb,
   @protected
   Future<TEntity?> putRemote(TEntity entity) async {
     try {
-      if (syncHandler.shouldPersistRemote(entity)) {
+      if (await syncHandler.shouldPersistRemote(entity)) {
         return await syncHandler.putRemote(entity);
       }
       return null;
