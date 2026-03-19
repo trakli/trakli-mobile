@@ -86,3 +86,4 @@ $ flutter run --flavor staging --target lib/main_staging.dart
 # Production
 $ flutter run --flavor production --target lib/main_production.dart -d  7BDA2460-2347-447E-95B6-8D9C26A5E4C6 
 ```
+
