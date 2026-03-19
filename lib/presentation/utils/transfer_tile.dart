@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/core/utils/currency_formater.dart';
+import 'package:trakli/core/utils/exchange_rate_formatter.dart';
 import 'package:trakli/domain/entities/transfer_entity.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
@@ -305,7 +306,7 @@ class TransferTile extends StatelessWidget {
                         SizedBox(width: 10.w),
                         Expanded(
                           child: Text(
-                            '${LocaleKeys.exchangeRate.tr()}: ${transfer.exchangeRate != null ? transfer.exchangeRate!.toStringAsFixed(4) : "—"}',
+                            '${LocaleKeys.exchangeRate.tr()}: ${transfer.exchangeRate != null ? formatExchangeRateForDisplay(transfer.exchangeRate!) : "—"}',
                             style: TextStyle(
                               fontSize: 13.sp,
                               color: Theme.of(sheetContext).colorScheme.onSurface,
@@ -413,7 +414,7 @@ class TransferTile extends StatelessWidget {
                   if (hasExchangeRate) ...[
                     SizedBox(height: 2.h),
                     Text(
-                      '≈ ${transfer.exchangeRate!.toStringAsFixed(2)}',
+                      '≈ ${formatExchangeRateForDisplay(transfer.exchangeRate!)}',
                       style: TextStyle(
                         fontSize: 10.sp,
                         color: Theme.of(context)
