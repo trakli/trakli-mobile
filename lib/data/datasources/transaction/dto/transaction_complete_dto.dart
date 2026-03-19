@@ -209,6 +209,8 @@ class TransactionCompleteDto with _$TransactionCompleteDto {
       deletedAt: transactionDto.deletedAt,
       partyId: party?.id,
       groupId: group?.id,
+      transferId: transactionDto.transferId,
+      transferClientId: transactionDto.transferClientId,
     );
 
     final filesRaw = json['files'] is List<dynamic>

@@ -19,6 +19,8 @@ class TransactionEntity with _$TransactionEntity {
     required String walletClientId,
     String? partyClientId,
     String? groupClientId,
+    int? transferId,
+    String? transferClientId,
   }) = _TransactionEntity;
 
   factory TransactionEntity.fromJson(Map<String, dynamic> json) =>

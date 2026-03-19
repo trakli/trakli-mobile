@@ -5,13 +5,6 @@ import 'package:trakli/data/database/tables/sync_table.dart';
 import 'package:trakli/data/database/tables/wallets.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
-// typedef Transaction = ({
-//   int id,
-//   double amount,
-//   TransactionType type,
-//   String description,
-//   DateTime datetime,
-// });
 
 @DataClassName('Transaction')
 
@@ -48,4 +41,10 @@ class Transactions extends Table with SyncTable {
       text().references(Parties, #clientId).nullable()();
   TextColumn get groupClientId =>
       text().references(Groups, #clientId).nullable()();
+
+  @JsonKey('transfer_id')
+  IntColumn get transferId => integer().nullable()();
+
+  @JsonKey('transfer_client_id')
+  TextColumn get transferClientId => text().nullable()();
 }

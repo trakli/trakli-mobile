@@ -23,6 +23,8 @@ _$TransactionEntityImpl _$$TransactionEntityImplFromJson(
       walletClientId: json['walletClientId'] as String,
       partyClientId: json['partyClientId'] as String?,
       groupClientId: json['groupClientId'] as String?,
+      transferId: (json['transferId'] as num?)?.toInt(),
+      transferClientId: json['transferClientId'] as String?,
     );
 
 Map<String, dynamic> _$$TransactionEntityImplToJson(
@@ -40,6 +42,8 @@ Map<String, dynamic> _$$TransactionEntityImplToJson(
       'walletClientId': instance.walletClientId,
       'partyClientId': instance.partyClientId,
       'groupClientId': instance.groupClientId,
+      'transferId': instance.transferId,
+      'transferClientId': instance.transferClientId,
     };
 
 const _$TransactionTypeEnumMap = {
