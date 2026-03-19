@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final transactionsToSort = transactions;
 
     transactionsToSort.sort(
-      (a, b) => b.transaction.datetime.compareTo(a.transaction.datetime),
+      (a, b) => b.transaction.createdAt.compareTo(a.transaction.createdAt),
     );
 
     for (var transaction in transactionsToSort) {

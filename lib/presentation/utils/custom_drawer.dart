@@ -17,6 +17,7 @@ import 'package:trakli/presentation/settings_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/premium_tile.dart';
 import 'package:trakli/presentation/widgets/database_viewer.dart';
+import 'package:trakli/presentation/transfers/transfers_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const String _supportEmail = 'support@trakli.app';
@@ -140,6 +141,7 @@ class CustomDrawer extends StatelessWidget {
               title: LocaleKeys.settings.tr(),
               iconPath: Assets.images.setting,
             ),
+            
             if (kDebugMode) ...[
               const Divider(),
               ListTile(
