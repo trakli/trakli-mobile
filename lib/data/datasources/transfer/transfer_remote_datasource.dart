@@ -6,7 +6,6 @@ import 'package:trakli/data/datasources/core/api_response.dart';
 import 'package:trakli/data/datasources/core/pagination_response.dart';
 import 'package:trakli/data/datasources/transfer/dto/transfer_dto.dart';
 
-/// Remote data source for transfer-related API calls.
 abstract class TransferRemoteDataSource {
   Future<List<Transfer>> getAllTransfers({
     bool? noClientId,
@@ -96,7 +95,6 @@ class TransferRemoteDataSourceImpl implements TransferRemoteDataSource {
   }
 }
 
-/// Builds the POST/PUT body for a transfer from a [Transfer] row.
 Map<String, dynamic> toServerJson(Transfer transfer) {
   return <String, dynamic>{
     'client_id': transfer.clientId,

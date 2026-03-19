@@ -135,9 +135,7 @@ class TransferRepositoryImpl
       late TransactionCompleteDto incomeDto;
       late Transfer transferRow;
 
-      // Atomic local creation of the two transactions + transfer record.
       await db.transaction(() async {
-        // Expense transaction from source wallet (money going out)
         expenseDto = await transactionLocalDataSource.insertTransaction(
           amount,
           '',
@@ -179,7 +177,6 @@ class TransferRepositoryImpl
 
         transferRow = await localDataSource.insertTransfer(transferCompanion);
 
-        // Ensure the created transactions are linked back to this transfer.
         final transferClientId = transferRow.clientId;
 
         expenseDto = await transactionLocalDataSource.updateTransaction(
@@ -195,7 +192,6 @@ class TransferRepositoryImpl
        
       });
 
-      // Fire-and-forget sync in the correct order using the already loaded objects.
       unawaited(
         _syncTransferWithDependencies(
           expenseDto: expenseDto,
