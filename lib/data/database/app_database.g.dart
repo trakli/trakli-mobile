@@ -1741,6 +1741,14 @@ class $TransactionsTable extends Transactions
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES "groups" (client_id)'));
   @override
+  late final GeneratedColumn<int> transferId = GeneratedColumn<int>(
+      'transfer_id', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<String> transferClientId = GeneratedColumn<String>(
+      'transfer_client_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
   List<GeneratedColumn> get $columns => [
         id,
         userId,
@@ -1759,7 +1767,9 @@ class $TransactionsTable extends Transactions
         groupId,
         walletClientId,
         partyClientId,
-        groupClientId
+        groupClientId,
+        transferId,
+        transferClientId
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1809,6 +1819,10 @@ class $TransactionsTable extends Transactions
           .read(DriftSqlType.string, data['${effectivePrefix}party_client_id']),
       groupClientId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}group_client_id']),
+      transferId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}transfer_id']),
+      transferClientId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}transfer_client_id']),
     );
   }
 
@@ -1840,6 +1854,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final String walletClientId;
   final String? partyClientId;
   final String? groupClientId;
+  final int? transferId;
+  final String? transferClientId;
   const Transaction(
       {this.id,
       this.userId,
@@ -1858,7 +1874,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       this.groupId,
       required this.walletClientId,
       this.partyClientId,
-      this.groupClientId});
+      this.groupClientId,
+      this.transferId,
+      this.transferClientId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1907,6 +1925,12 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     if (!nullToAbsent || groupClientId != null) {
       map['group_client_id'] = Variable<String>(groupClientId);
     }
+    if (!nullToAbsent || transferId != null) {
+      map['transfer_id'] = Variable<int>(transferId);
+    }
+    if (!nullToAbsent || transferClientId != null) {
+      map['transfer_client_id'] = Variable<String>(transferClientId);
+    }
     return map;
   }
 
@@ -1949,6 +1973,12 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       groupClientId: groupClientId == null && nullToAbsent
           ? const Value.absent()
           : Value(groupClientId),
+      transferId: transferId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transferId),
+      transferClientId: transferClientId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transferClientId),
     );
   }
 
@@ -1975,6 +2005,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       walletClientId: serializer.fromJson<String>(json['walletClientId']),
       partyClientId: serializer.fromJson<String?>(json['partyClientId']),
       groupClientId: serializer.fromJson<String?>(json['groupClientId']),
+      transferId: serializer.fromJson<int?>(json['transfer_id']),
+      transferClientId:
+          serializer.fromJson<String?>(json['transfer_client_id']),
     );
   }
   @override
@@ -2000,6 +2033,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'walletClientId': serializer.toJson<String>(walletClientId),
       'partyClientId': serializer.toJson<String?>(partyClientId),
       'groupClientId': serializer.toJson<String?>(groupClientId),
+      'transfer_id': serializer.toJson<int?>(transferId),
+      'transfer_client_id': serializer.toJson<String?>(transferClientId),
     };
   }
 
@@ -2021,7 +2056,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           Value<int?> groupId = const Value.absent(),
           String? walletClientId,
           Value<String?> partyClientId = const Value.absent(),
-          Value<String?> groupClientId = const Value.absent()}) =>
+          Value<String?> groupClientId = const Value.absent(),
+          Value<int?> transferId = const Value.absent(),
+          Value<String?> transferClientId = const Value.absent()}) =>
       Transaction(
         id: id.present ? id.value : this.id,
         userId: userId.present ? userId.value : this.userId,
@@ -2044,6 +2081,10 @@ class Transaction extends DataClass implements Insertable<Transaction> {
             partyClientId.present ? partyClientId.value : this.partyClientId,
         groupClientId:
             groupClientId.present ? groupClientId.value : this.groupClientId,
+        transferId: transferId.present ? transferId.value : this.transferId,
+        transferClientId: transferClientId.present
+            ? transferClientId.value
+            : this.transferClientId,
       );
   Transaction copyWithCompanion(TransactionsCompanion data) {
     return Transaction(
@@ -2074,6 +2115,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       groupClientId: data.groupClientId.present
           ? data.groupClientId.value
           : this.groupClientId,
+      transferId:
+          data.transferId.present ? data.transferId.value : this.transferId,
+      transferClientId: data.transferClientId.present
+          ? data.transferClientId.value
+          : this.transferClientId,
     );
   }
 
@@ -2097,7 +2143,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('groupId: $groupId, ')
           ..write('walletClientId: $walletClientId, ')
           ..write('partyClientId: $partyClientId, ')
-          ..write('groupClientId: $groupClientId')
+          ..write('groupClientId: $groupClientId, ')
+          ..write('transferId: $transferId, ')
+          ..write('transferClientId: $transferClientId')
           ..write(')'))
         .toString();
   }
@@ -2121,7 +2169,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       groupId,
       walletClientId,
       partyClientId,
-      groupClientId);
+      groupClientId,
+      transferId,
+      transferClientId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2143,7 +2193,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.groupId == this.groupId &&
           other.walletClientId == this.walletClientId &&
           other.partyClientId == this.partyClientId &&
-          other.groupClientId == this.groupClientId);
+          other.groupClientId == this.groupClientId &&
+          other.transferId == this.transferId &&
+          other.transferClientId == this.transferClientId);
 }
 
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
@@ -2165,6 +2217,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<String> walletClientId;
   final Value<String?> partyClientId;
   final Value<String?> groupClientId;
+  final Value<int?> transferId;
+  final Value<String?> transferClientId;
   final Value<int> rowid;
   const TransactionsCompanion({
     this.id = const Value.absent(),
@@ -2185,6 +2239,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.walletClientId = const Value.absent(),
     this.partyClientId = const Value.absent(),
     this.groupClientId = const Value.absent(),
+    this.transferId = const Value.absent(),
+    this.transferClientId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TransactionsCompanion.insert({
@@ -2206,6 +2262,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     required String walletClientId,
     this.partyClientId = const Value.absent(),
     this.groupClientId = const Value.absent(),
+    this.transferId = const Value.absent(),
+    this.transferClientId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : amount = Value(amount),
         type = Value(type),
@@ -2229,6 +2287,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Expression<String>? walletClientId,
     Expression<String>? partyClientId,
     Expression<String>? groupClientId,
+    Expression<int>? transferId,
+    Expression<String>? transferClientId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2250,6 +2310,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       if (walletClientId != null) 'wallet_client_id': walletClientId,
       if (partyClientId != null) 'party_client_id': partyClientId,
       if (groupClientId != null) 'group_client_id': groupClientId,
+      if (transferId != null) 'transfer_id': transferId,
+      if (transferClientId != null) 'transfer_client_id': transferClientId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2273,6 +2335,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       Value<String>? walletClientId,
       Value<String?>? partyClientId,
       Value<String?>? groupClientId,
+      Value<int?>? transferId,
+      Value<String?>? transferClientId,
       Value<int>? rowid}) {
     return TransactionsCompanion(
       id: id ?? this.id,
@@ -2293,6 +2357,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       walletClientId: walletClientId ?? this.walletClientId,
       partyClientId: partyClientId ?? this.partyClientId,
       groupClientId: groupClientId ?? this.groupClientId,
+      transferId: transferId ?? this.transferId,
+      transferClientId: transferClientId ?? this.transferClientId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2355,6 +2421,12 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (groupClientId.present) {
       map['group_client_id'] = Variable<String>(groupClientId.value);
     }
+    if (transferId.present) {
+      map['transfer_id'] = Variable<int>(transferId.value);
+    }
+    if (transferClientId.present) {
+      map['transfer_client_id'] = Variable<String>(transferClientId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2382,6 +2454,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
           ..write('walletClientId: $walletClientId, ')
           ..write('partyClientId: $partyClientId, ')
           ..write('groupClientId: $groupClientId, ')
+          ..write('transferId: $transferId, ')
+          ..write('transferClientId: $transferClientId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5673,6 +5747,747 @@ class MediaFilesCompanion extends UpdateCompanion<MediaFile> {
   }
 }
 
+class $TransfersTable extends Transfers
+    with TableInfo<$TransfersTable, Transfer> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TransfersTable(this.attachedDatabase, [this._alias]);
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  @override
+  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
+      'user_id', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<String> clientId = GeneratedColumn<String>(
+      'client_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(defaultClientId));
+  @override
+  late final GeneratedColumn<String> rev = GeneratedColumn<String>(
+      'rev', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('1'));
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<DateTime> lastSyncedAt = GeneratedColumn<DateTime>(
+      'last_synced_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
+      'amount', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<int> fromWalletId = GeneratedColumn<int>(
+      'from_wallet_id', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<int> toWalletId = GeneratedColumn<int>(
+      'to_wallet_id', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<String> fromWalletClientId =
+      GeneratedColumn<String>('from_wallet_client_id', aliasedName, true,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'REFERENCES wallets (client_id)'));
+  @override
+  late final GeneratedColumn<String> toWalletClientId = GeneratedColumn<String>(
+      'to_wallet_client_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES wallets (client_id)'));
+  @override
+  late final GeneratedColumn<double> exchangeRate = GeneratedColumn<double>(
+      'exchange_rate', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<DateTime> datetime = GeneratedColumn<DateTime>(
+      'datetime', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<String> expenseTransactionClientId =
+      GeneratedColumn<String>(
+          'expense_transaction_client_id', aliasedName, true,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'REFERENCES transactions (client_id)'));
+  @override
+  late final GeneratedColumn<String> incomeTransactionClientId =
+      GeneratedColumn<String>('income_transaction_client_id', aliasedName, true,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'REFERENCES transactions (client_id)'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        userId,
+        clientId,
+        rev,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        lastSyncedAt,
+        amount,
+        fromWalletId,
+        toWalletId,
+        fromWalletClientId,
+        toWalletClientId,
+        exchangeRate,
+        datetime,
+        expenseTransactionClientId,
+        incomeTransactionClientId
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'transfers';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {clientId};
+  @override
+  Transfer map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Transfer(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id']),
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}user_id']),
+      clientId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}client_id'])!,
+      rev: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}rev']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      lastSyncedAt: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}last_synced_at']),
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
+      fromWalletId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}from_wallet_id']),
+      toWalletId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}to_wallet_id']),
+      fromWalletClientId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}from_wallet_client_id']),
+      toWalletClientId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}to_wallet_client_id']),
+      exchangeRate: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}exchange_rate']),
+      datetime: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}datetime'])!,
+      expenseTransactionClientId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}expense_transaction_client_id']),
+      incomeTransactionClientId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}income_transaction_client_id']),
+    );
+  }
+
+  @override
+  $TransfersTable createAlias(String alias) {
+    return $TransfersTable(attachedDatabase, alias);
+  }
+}
+
+class Transfer extends DataClass implements Insertable<Transfer> {
+  final int? id;
+  final int? userId;
+  final String clientId;
+  final String? rev;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final DateTime? lastSyncedAt;
+  final double amount;
+  final int? fromWalletId;
+  final int? toWalletId;
+  final String? fromWalletClientId;
+  final String? toWalletClientId;
+  final double? exchangeRate;
+  final DateTime datetime;
+  final String? expenseTransactionClientId;
+  final String? incomeTransactionClientId;
+  const Transfer(
+      {this.id,
+      this.userId,
+      required this.clientId,
+      this.rev,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      this.lastSyncedAt,
+      required this.amount,
+      this.fromWalletId,
+      this.toWalletId,
+      this.fromWalletClientId,
+      this.toWalletClientId,
+      this.exchangeRate,
+      required this.datetime,
+      this.expenseTransactionClientId,
+      this.incomeTransactionClientId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<int>(userId);
+    }
+    map['client_id'] = Variable<String>(clientId);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<String>(rev);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || lastSyncedAt != null) {
+      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt);
+    }
+    map['amount'] = Variable<double>(amount);
+    if (!nullToAbsent || fromWalletId != null) {
+      map['from_wallet_id'] = Variable<int>(fromWalletId);
+    }
+    if (!nullToAbsent || toWalletId != null) {
+      map['to_wallet_id'] = Variable<int>(toWalletId);
+    }
+    if (!nullToAbsent || fromWalletClientId != null) {
+      map['from_wallet_client_id'] = Variable<String>(fromWalletClientId);
+    }
+    if (!nullToAbsent || toWalletClientId != null) {
+      map['to_wallet_client_id'] = Variable<String>(toWalletClientId);
+    }
+    if (!nullToAbsent || exchangeRate != null) {
+      map['exchange_rate'] = Variable<double>(exchangeRate);
+    }
+    map['datetime'] = Variable<DateTime>(datetime);
+    if (!nullToAbsent || expenseTransactionClientId != null) {
+      map['expense_transaction_client_id'] =
+          Variable<String>(expenseTransactionClientId);
+    }
+    if (!nullToAbsent || incomeTransactionClientId != null) {
+      map['income_transaction_client_id'] =
+          Variable<String>(incomeTransactionClientId);
+    }
+    return map;
+  }
+
+  TransfersCompanion toCompanion(bool nullToAbsent) {
+    return TransfersCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      userId:
+          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      clientId: Value(clientId),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      lastSyncedAt: lastSyncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncedAt),
+      amount: Value(amount),
+      fromWalletId: fromWalletId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fromWalletId),
+      toWalletId: toWalletId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toWalletId),
+      fromWalletClientId: fromWalletClientId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fromWalletClientId),
+      toWalletClientId: toWalletClientId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toWalletClientId),
+      exchangeRate: exchangeRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exchangeRate),
+      datetime: Value(datetime),
+      expenseTransactionClientId:
+          expenseTransactionClientId == null && nullToAbsent
+              ? const Value.absent()
+              : Value(expenseTransactionClientId),
+      incomeTransactionClientId:
+          incomeTransactionClientId == null && nullToAbsent
+              ? const Value.absent()
+              : Value(incomeTransactionClientId),
+    );
+  }
+
+  factory Transfer.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Transfer(
+      id: serializer.fromJson<int?>(json['id']),
+      userId: serializer.fromJson<int?>(json['user_id']),
+      clientId: serializer.fromJson<String>(json['client_generated_id']),
+      rev: serializer.fromJson<String?>(json['rev']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
+      lastSyncedAt: serializer.fromJson<DateTime?>(json['last_synced_at']),
+      amount: serializer.fromJson<double>(json['amount']),
+      fromWalletId: serializer.fromJson<int?>(json['from_wallet_id']),
+      toWalletId: serializer.fromJson<int?>(json['to_wallet_id']),
+      fromWalletClientId:
+          serializer.fromJson<String?>(json['from_wallet_client_id']),
+      toWalletClientId:
+          serializer.fromJson<String?>(json['to_wallet_client_id']),
+      exchangeRate: serializer.fromJson<double?>(json['exchange_rate']),
+      datetime: serializer.fromJson<DateTime>(json['datetime']),
+      expenseTransactionClientId:
+          serializer.fromJson<String?>(json['expense_transaction_client_id']),
+      incomeTransactionClientId:
+          serializer.fromJson<String?>(json['income_transaction_client_id']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int?>(id),
+      'user_id': serializer.toJson<int?>(userId),
+      'client_generated_id': serializer.toJson<String>(clientId),
+      'rev': serializer.toJson<String?>(rev),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
+      'last_synced_at': serializer.toJson<DateTime?>(lastSyncedAt),
+      'amount': serializer.toJson<double>(amount),
+      'from_wallet_id': serializer.toJson<int?>(fromWalletId),
+      'to_wallet_id': serializer.toJson<int?>(toWalletId),
+      'from_wallet_client_id': serializer.toJson<String?>(fromWalletClientId),
+      'to_wallet_client_id': serializer.toJson<String?>(toWalletClientId),
+      'exchange_rate': serializer.toJson<double?>(exchangeRate),
+      'datetime': serializer.toJson<DateTime>(datetime),
+      'expense_transaction_client_id':
+          serializer.toJson<String?>(expenseTransactionClientId),
+      'income_transaction_client_id':
+          serializer.toJson<String?>(incomeTransactionClientId),
+    };
+  }
+
+  Transfer copyWith(
+          {Value<int?> id = const Value.absent(),
+          Value<int?> userId = const Value.absent(),
+          String? clientId,
+          Value<String?> rev = const Value.absent(),
+          DateTime? createdAt,
+          DateTime? updatedAt,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          Value<DateTime?> lastSyncedAt = const Value.absent(),
+          double? amount,
+          Value<int?> fromWalletId = const Value.absent(),
+          Value<int?> toWalletId = const Value.absent(),
+          Value<String?> fromWalletClientId = const Value.absent(),
+          Value<String?> toWalletClientId = const Value.absent(),
+          Value<double?> exchangeRate = const Value.absent(),
+          DateTime? datetime,
+          Value<String?> expenseTransactionClientId = const Value.absent(),
+          Value<String?> incomeTransactionClientId = const Value.absent()}) =>
+      Transfer(
+        id: id.present ? id.value : this.id,
+        userId: userId.present ? userId.value : this.userId,
+        clientId: clientId ?? this.clientId,
+        rev: rev.present ? rev.value : this.rev,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        lastSyncedAt:
+            lastSyncedAt.present ? lastSyncedAt.value : this.lastSyncedAt,
+        amount: amount ?? this.amount,
+        fromWalletId:
+            fromWalletId.present ? fromWalletId.value : this.fromWalletId,
+        toWalletId: toWalletId.present ? toWalletId.value : this.toWalletId,
+        fromWalletClientId: fromWalletClientId.present
+            ? fromWalletClientId.value
+            : this.fromWalletClientId,
+        toWalletClientId: toWalletClientId.present
+            ? toWalletClientId.value
+            : this.toWalletClientId,
+        exchangeRate:
+            exchangeRate.present ? exchangeRate.value : this.exchangeRate,
+        datetime: datetime ?? this.datetime,
+        expenseTransactionClientId: expenseTransactionClientId.present
+            ? expenseTransactionClientId.value
+            : this.expenseTransactionClientId,
+        incomeTransactionClientId: incomeTransactionClientId.present
+            ? incomeTransactionClientId.value
+            : this.incomeTransactionClientId,
+      );
+  Transfer copyWithCompanion(TransfersCompanion data) {
+    return Transfer(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      clientId: data.clientId.present ? data.clientId.value : this.clientId,
+      rev: data.rev.present ? data.rev.value : this.rev,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      lastSyncedAt: data.lastSyncedAt.present
+          ? data.lastSyncedAt.value
+          : this.lastSyncedAt,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      fromWalletId: data.fromWalletId.present
+          ? data.fromWalletId.value
+          : this.fromWalletId,
+      toWalletId:
+          data.toWalletId.present ? data.toWalletId.value : this.toWalletId,
+      fromWalletClientId: data.fromWalletClientId.present
+          ? data.fromWalletClientId.value
+          : this.fromWalletClientId,
+      toWalletClientId: data.toWalletClientId.present
+          ? data.toWalletClientId.value
+          : this.toWalletClientId,
+      exchangeRate: data.exchangeRate.present
+          ? data.exchangeRate.value
+          : this.exchangeRate,
+      datetime: data.datetime.present ? data.datetime.value : this.datetime,
+      expenseTransactionClientId: data.expenseTransactionClientId.present
+          ? data.expenseTransactionClientId.value
+          : this.expenseTransactionClientId,
+      incomeTransactionClientId: data.incomeTransactionClientId.present
+          ? data.incomeTransactionClientId.value
+          : this.incomeTransactionClientId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Transfer(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('clientId: $clientId, ')
+          ..write('rev: $rev, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('lastSyncedAt: $lastSyncedAt, ')
+          ..write('amount: $amount, ')
+          ..write('fromWalletId: $fromWalletId, ')
+          ..write('toWalletId: $toWalletId, ')
+          ..write('fromWalletClientId: $fromWalletClientId, ')
+          ..write('toWalletClientId: $toWalletClientId, ')
+          ..write('exchangeRate: $exchangeRate, ')
+          ..write('datetime: $datetime, ')
+          ..write('expenseTransactionClientId: $expenseTransactionClientId, ')
+          ..write('incomeTransactionClientId: $incomeTransactionClientId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      userId,
+      clientId,
+      rev,
+      createdAt,
+      updatedAt,
+      deletedAt,
+      lastSyncedAt,
+      amount,
+      fromWalletId,
+      toWalletId,
+      fromWalletClientId,
+      toWalletClientId,
+      exchangeRate,
+      datetime,
+      expenseTransactionClientId,
+      incomeTransactionClientId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Transfer &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.clientId == this.clientId &&
+          other.rev == this.rev &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.lastSyncedAt == this.lastSyncedAt &&
+          other.amount == this.amount &&
+          other.fromWalletId == this.fromWalletId &&
+          other.toWalletId == this.toWalletId &&
+          other.fromWalletClientId == this.fromWalletClientId &&
+          other.toWalletClientId == this.toWalletClientId &&
+          other.exchangeRate == this.exchangeRate &&
+          other.datetime == this.datetime &&
+          other.expenseTransactionClientId == this.expenseTransactionClientId &&
+          other.incomeTransactionClientId == this.incomeTransactionClientId);
+}
+
+class TransfersCompanion extends UpdateCompanion<Transfer> {
+  final Value<int?> id;
+  final Value<int?> userId;
+  final Value<String> clientId;
+  final Value<String?> rev;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<DateTime?> lastSyncedAt;
+  final Value<double> amount;
+  final Value<int?> fromWalletId;
+  final Value<int?> toWalletId;
+  final Value<String?> fromWalletClientId;
+  final Value<String?> toWalletClientId;
+  final Value<double?> exchangeRate;
+  final Value<DateTime> datetime;
+  final Value<String?> expenseTransactionClientId;
+  final Value<String?> incomeTransactionClientId;
+  final Value<int> rowid;
+  const TransfersCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.clientId = const Value.absent(),
+    this.rev = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.lastSyncedAt = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.fromWalletId = const Value.absent(),
+    this.toWalletId = const Value.absent(),
+    this.fromWalletClientId = const Value.absent(),
+    this.toWalletClientId = const Value.absent(),
+    this.exchangeRate = const Value.absent(),
+    this.datetime = const Value.absent(),
+    this.expenseTransactionClientId = const Value.absent(),
+    this.incomeTransactionClientId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TransfersCompanion.insert({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.clientId = const Value.absent(),
+    this.rev = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.lastSyncedAt = const Value.absent(),
+    required double amount,
+    this.fromWalletId = const Value.absent(),
+    this.toWalletId = const Value.absent(),
+    this.fromWalletClientId = const Value.absent(),
+    this.toWalletClientId = const Value.absent(),
+    this.exchangeRate = const Value.absent(),
+    required DateTime datetime,
+    this.expenseTransactionClientId = const Value.absent(),
+    this.incomeTransactionClientId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : amount = Value(amount),
+        datetime = Value(datetime);
+  static Insertable<Transfer> custom({
+    Expression<int>? id,
+    Expression<int>? userId,
+    Expression<String>? clientId,
+    Expression<String>? rev,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<DateTime>? lastSyncedAt,
+    Expression<double>? amount,
+    Expression<int>? fromWalletId,
+    Expression<int>? toWalletId,
+    Expression<String>? fromWalletClientId,
+    Expression<String>? toWalletClientId,
+    Expression<double>? exchangeRate,
+    Expression<DateTime>? datetime,
+    Expression<String>? expenseTransactionClientId,
+    Expression<String>? incomeTransactionClientId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (clientId != null) 'client_id': clientId,
+      if (rev != null) 'rev': rev,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (lastSyncedAt != null) 'last_synced_at': lastSyncedAt,
+      if (amount != null) 'amount': amount,
+      if (fromWalletId != null) 'from_wallet_id': fromWalletId,
+      if (toWalletId != null) 'to_wallet_id': toWalletId,
+      if (fromWalletClientId != null)
+        'from_wallet_client_id': fromWalletClientId,
+      if (toWalletClientId != null) 'to_wallet_client_id': toWalletClientId,
+      if (exchangeRate != null) 'exchange_rate': exchangeRate,
+      if (datetime != null) 'datetime': datetime,
+      if (expenseTransactionClientId != null)
+        'expense_transaction_client_id': expenseTransactionClientId,
+      if (incomeTransactionClientId != null)
+        'income_transaction_client_id': incomeTransactionClientId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TransfersCompanion copyWith(
+      {Value<int?>? id,
+      Value<int?>? userId,
+      Value<String>? clientId,
+      Value<String?>? rev,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<DateTime?>? deletedAt,
+      Value<DateTime?>? lastSyncedAt,
+      Value<double>? amount,
+      Value<int?>? fromWalletId,
+      Value<int?>? toWalletId,
+      Value<String?>? fromWalletClientId,
+      Value<String?>? toWalletClientId,
+      Value<double?>? exchangeRate,
+      Value<DateTime>? datetime,
+      Value<String?>? expenseTransactionClientId,
+      Value<String?>? incomeTransactionClientId,
+      Value<int>? rowid}) {
+    return TransfersCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      clientId: clientId ?? this.clientId,
+      rev: rev ?? this.rev,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
+      amount: amount ?? this.amount,
+      fromWalletId: fromWalletId ?? this.fromWalletId,
+      toWalletId: toWalletId ?? this.toWalletId,
+      fromWalletClientId: fromWalletClientId ?? this.fromWalletClientId,
+      toWalletClientId: toWalletClientId ?? this.toWalletClientId,
+      exchangeRate: exchangeRate ?? this.exchangeRate,
+      datetime: datetime ?? this.datetime,
+      expenseTransactionClientId:
+          expenseTransactionClientId ?? this.expenseTransactionClientId,
+      incomeTransactionClientId:
+          incomeTransactionClientId ?? this.incomeTransactionClientId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<int>(userId.value);
+    }
+    if (clientId.present) {
+      map['client_id'] = Variable<String>(clientId.value);
+    }
+    if (rev.present) {
+      map['rev'] = Variable<String>(rev.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (lastSyncedAt.present) {
+      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<double>(amount.value);
+    }
+    if (fromWalletId.present) {
+      map['from_wallet_id'] = Variable<int>(fromWalletId.value);
+    }
+    if (toWalletId.present) {
+      map['to_wallet_id'] = Variable<int>(toWalletId.value);
+    }
+    if (fromWalletClientId.present) {
+      map['from_wallet_client_id'] = Variable<String>(fromWalletClientId.value);
+    }
+    if (toWalletClientId.present) {
+      map['to_wallet_client_id'] = Variable<String>(toWalletClientId.value);
+    }
+    if (exchangeRate.present) {
+      map['exchange_rate'] = Variable<double>(exchangeRate.value);
+    }
+    if (datetime.present) {
+      map['datetime'] = Variable<DateTime>(datetime.value);
+    }
+    if (expenseTransactionClientId.present) {
+      map['expense_transaction_client_id'] =
+          Variable<String>(expenseTransactionClientId.value);
+    }
+    if (incomeTransactionClientId.present) {
+      map['income_transaction_client_id'] =
+          Variable<String>(incomeTransactionClientId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TransfersCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('clientId: $clientId, ')
+          ..write('rev: $rev, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('lastSyncedAt: $lastSyncedAt, ')
+          ..write('amount: $amount, ')
+          ..write('fromWalletId: $fromWalletId, ')
+          ..write('toWalletId: $toWalletId, ')
+          ..write('fromWalletClientId: $fromWalletClientId, ')
+          ..write('toWalletClientId: $toWalletClientId, ')
+          ..write('exchangeRate: $exchangeRate, ')
+          ..write('datetime: $datetime, ')
+          ..write('expenseTransactionClientId: $expenseTransactionClientId, ')
+          ..write('incomeTransactionClientId: $incomeTransactionClientId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5688,6 +6503,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CategorizablesTable categorizables = $CategorizablesTable(this);
   late final $NotificationsTable notifications = $NotificationsTable(this);
   late final $MediaFilesTable mediaFiles = $MediaFilesTable(this);
+  late final $TransfersTable transfers = $TransfersTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5704,7 +6520,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         syncMetadata,
         categorizables,
         notifications,
-        mediaFiles
+        mediaFiles,
+        transfers
       ];
   @override
   DriftDatabaseOptions get options =>
@@ -6846,6 +7663,8 @@ typedef $$TransactionsTableCreateCompanionBuilder = TransactionsCompanion
   required String walletClientId,
   Value<String?> partyClientId,
   Value<String?> groupClientId,
+  Value<int?> transferId,
+  Value<String?> transferClientId,
   Value<int> rowid,
 });
 typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
@@ -6868,6 +7687,8 @@ typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
   Value<String> walletClientId,
   Value<String?> partyClientId,
   Value<String?> groupClientId,
+  Value<int?> transferId,
+  Value<String?> transferClientId,
   Value<int> rowid,
 });
 
@@ -6976,6 +7797,13 @@ class $$TransactionsTableFilterComposer
 
   ColumnFilters<int> get groupId => $composableBuilder(
       column: $table.groupId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get transferId => $composableBuilder(
+      column: $table.transferId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get transferClientId => $composableBuilder(
+      column: $table.transferClientId,
+      builder: (column) => ColumnFilters(column));
 
   $$WalletsTableFilterComposer get walletClientId {
     final $$WalletsTableFilterComposer composer = $composerBuilder(
@@ -7093,6 +7921,13 @@ class $$TransactionsTableOrderingComposer
   ColumnOrderings<int> get groupId => $composableBuilder(
       column: $table.groupId, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get transferId => $composableBuilder(
+      column: $table.transferId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get transferClientId => $composableBuilder(
+      column: $table.transferClientId,
+      builder: (column) => ColumnOrderings(column));
+
   $$WalletsTableOrderingComposer get walletClientId {
     final $$WalletsTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -7208,6 +8043,12 @@ class $$TransactionsTableAnnotationComposer
   GeneratedColumn<int> get groupId =>
       $composableBuilder(column: $table.groupId, builder: (column) => column);
 
+  GeneratedColumn<int> get transferId => $composableBuilder(
+      column: $table.transferId, builder: (column) => column);
+
+  GeneratedColumn<String> get transferClientId => $composableBuilder(
+      column: $table.transferClientId, builder: (column) => column);
+
   $$WalletsTableAnnotationComposer get walletClientId {
     final $$WalletsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -7311,6 +8152,8 @@ class $$TransactionsTableTableManager extends RootTableManager<
             Value<String> walletClientId = const Value.absent(),
             Value<String?> partyClientId = const Value.absent(),
             Value<String?> groupClientId = const Value.absent(),
+            Value<int?> transferId = const Value.absent(),
+            Value<String?> transferClientId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TransactionsCompanion(
@@ -7332,6 +8175,8 @@ class $$TransactionsTableTableManager extends RootTableManager<
             walletClientId: walletClientId,
             partyClientId: partyClientId,
             groupClientId: groupClientId,
+            transferId: transferId,
+            transferClientId: transferClientId,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -7353,6 +8198,8 @@ class $$TransactionsTableTableManager extends RootTableManager<
             required String walletClientId,
             Value<String?> partyClientId = const Value.absent(),
             Value<String?> groupClientId = const Value.absent(),
+            Value<int?> transferId = const Value.absent(),
+            Value<String?> transferClientId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TransactionsCompanion.insert(
@@ -7374,6 +8221,8 @@ class $$TransactionsTableTableManager extends RootTableManager<
             walletClientId: walletClientId,
             partyClientId: partyClientId,
             groupClientId: groupClientId,
+            transferId: transferId,
+            transferClientId: transferClientId,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -9483,6 +10332,709 @@ typedef $$MediaFilesTableProcessedTableManager = ProcessedTableManager<
     (MediaFile, BaseReferences<_$AppDatabase, $MediaFilesTable, MediaFile>),
     MediaFile,
     PrefetchHooks Function()>;
+typedef $$TransfersTableCreateCompanionBuilder = TransfersCompanion Function({
+  Value<int?> id,
+  Value<int?> userId,
+  Value<String> clientId,
+  Value<String?> rev,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<DateTime?> lastSyncedAt,
+  required double amount,
+  Value<int?> fromWalletId,
+  Value<int?> toWalletId,
+  Value<String?> fromWalletClientId,
+  Value<String?> toWalletClientId,
+  Value<double?> exchangeRate,
+  required DateTime datetime,
+  Value<String?> expenseTransactionClientId,
+  Value<String?> incomeTransactionClientId,
+  Value<int> rowid,
+});
+typedef $$TransfersTableUpdateCompanionBuilder = TransfersCompanion Function({
+  Value<int?> id,
+  Value<int?> userId,
+  Value<String> clientId,
+  Value<String?> rev,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<DateTime?> lastSyncedAt,
+  Value<double> amount,
+  Value<int?> fromWalletId,
+  Value<int?> toWalletId,
+  Value<String?> fromWalletClientId,
+  Value<String?> toWalletClientId,
+  Value<double?> exchangeRate,
+  Value<DateTime> datetime,
+  Value<String?> expenseTransactionClientId,
+  Value<String?> incomeTransactionClientId,
+  Value<int> rowid,
+});
+
+final class $$TransfersTableReferences
+    extends BaseReferences<_$AppDatabase, $TransfersTable, Transfer> {
+  $$TransfersTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $WalletsTable _fromWalletClientIdTable(_$AppDatabase db) =>
+      db.wallets.createAlias($_aliasNameGenerator(
+          db.transfers.fromWalletClientId, db.wallets.clientId));
+
+  $$WalletsTableProcessedTableManager? get fromWalletClientId {
+    final $_column = $_itemColumn<String>('from_wallet_client_id');
+    if ($_column == null) return null;
+    final manager = $$WalletsTableTableManager($_db, $_db.wallets)
+        .filter((f) => f.clientId.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_fromWalletClientIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $WalletsTable _toWalletClientIdTable(_$AppDatabase db) =>
+      db.wallets.createAlias($_aliasNameGenerator(
+          db.transfers.toWalletClientId, db.wallets.clientId));
+
+  $$WalletsTableProcessedTableManager? get toWalletClientId {
+    final $_column = $_itemColumn<String>('to_wallet_client_id');
+    if ($_column == null) return null;
+    final manager = $$WalletsTableTableManager($_db, $_db.wallets)
+        .filter((f) => f.clientId.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_toWalletClientIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $TransactionsTable _expenseTransactionClientIdTable(
+          _$AppDatabase db) =>
+      db.transactions.createAlias($_aliasNameGenerator(
+          db.transfers.expenseTransactionClientId, db.transactions.clientId));
+
+  $$TransactionsTableProcessedTableManager? get expenseTransactionClientId {
+    final $_column = $_itemColumn<String>('expense_transaction_client_id');
+    if ($_column == null) return null;
+    final manager = $$TransactionsTableTableManager($_db, $_db.transactions)
+        .filter((f) => f.clientId.sqlEquals($_column));
+    final item =
+        $_typedResult.readTableOrNull(_expenseTransactionClientIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $TransactionsTable _incomeTransactionClientIdTable(_$AppDatabase db) =>
+      db.transactions.createAlias($_aliasNameGenerator(
+          db.transfers.incomeTransactionClientId, db.transactions.clientId));
+
+  $$TransactionsTableProcessedTableManager? get incomeTransactionClientId {
+    final $_column = $_itemColumn<String>('income_transaction_client_id');
+    if ($_column == null) return null;
+    final manager = $$TransactionsTableTableManager($_db, $_db.transactions)
+        .filter((f) => f.clientId.sqlEquals($_column));
+    final item =
+        $_typedResult.readTableOrNull(_incomeTransactionClientIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$TransfersTableFilterComposer
+    extends Composer<_$AppDatabase, $TransfersTable> {
+  $$TransfersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get clientId => $composableBuilder(
+      column: $table.clientId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get rev => $composableBuilder(
+      column: $table.rev, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get lastSyncedAt => $composableBuilder(
+      column: $table.lastSyncedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get fromWalletId => $composableBuilder(
+      column: $table.fromWalletId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get toWalletId => $composableBuilder(
+      column: $table.toWalletId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get exchangeRate => $composableBuilder(
+      column: $table.exchangeRate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get datetime => $composableBuilder(
+      column: $table.datetime, builder: (column) => ColumnFilters(column));
+
+  $$WalletsTableFilterComposer get fromWalletClientId {
+    final $$WalletsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.fromWalletClientId,
+        referencedTable: $db.wallets,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$WalletsTableFilterComposer(
+              $db: $db,
+              $table: $db.wallets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$WalletsTableFilterComposer get toWalletClientId {
+    final $$WalletsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.toWalletClientId,
+        referencedTable: $db.wallets,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$WalletsTableFilterComposer(
+              $db: $db,
+              $table: $db.wallets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$TransactionsTableFilterComposer get expenseTransactionClientId {
+    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.expenseTransactionClientId,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableFilterComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$TransactionsTableFilterComposer get incomeTransactionClientId {
+    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.incomeTransactionClientId,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableFilterComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$TransfersTableOrderingComposer
+    extends Composer<_$AppDatabase, $TransfersTable> {
+  $$TransfersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get clientId => $composableBuilder(
+      column: $table.clientId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get rev => $composableBuilder(
+      column: $table.rev, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get lastSyncedAt => $composableBuilder(
+      column: $table.lastSyncedAt,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get fromWalletId => $composableBuilder(
+      column: $table.fromWalletId,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get toWalletId => $composableBuilder(
+      column: $table.toWalletId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get exchangeRate => $composableBuilder(
+      column: $table.exchangeRate,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get datetime => $composableBuilder(
+      column: $table.datetime, builder: (column) => ColumnOrderings(column));
+
+  $$WalletsTableOrderingComposer get fromWalletClientId {
+    final $$WalletsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.fromWalletClientId,
+        referencedTable: $db.wallets,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$WalletsTableOrderingComposer(
+              $db: $db,
+              $table: $db.wallets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$WalletsTableOrderingComposer get toWalletClientId {
+    final $$WalletsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.toWalletClientId,
+        referencedTable: $db.wallets,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$WalletsTableOrderingComposer(
+              $db: $db,
+              $table: $db.wallets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$TransactionsTableOrderingComposer get expenseTransactionClientId {
+    final $$TransactionsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.expenseTransactionClientId,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableOrderingComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$TransactionsTableOrderingComposer get incomeTransactionClientId {
+    final $$TransactionsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.incomeTransactionClientId,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableOrderingComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$TransfersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TransfersTable> {
+  $$TransfersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get clientId =>
+      $composableBuilder(column: $table.clientId, builder: (column) => column);
+
+  GeneratedColumn<String> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncedAt => $composableBuilder(
+      column: $table.lastSyncedAt, builder: (column) => column);
+
+  GeneratedColumn<double> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<int> get fromWalletId => $composableBuilder(
+      column: $table.fromWalletId, builder: (column) => column);
+
+  GeneratedColumn<int> get toWalletId => $composableBuilder(
+      column: $table.toWalletId, builder: (column) => column);
+
+  GeneratedColumn<double> get exchangeRate => $composableBuilder(
+      column: $table.exchangeRate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get datetime =>
+      $composableBuilder(column: $table.datetime, builder: (column) => column);
+
+  $$WalletsTableAnnotationComposer get fromWalletClientId {
+    final $$WalletsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.fromWalletClientId,
+        referencedTable: $db.wallets,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$WalletsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.wallets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$WalletsTableAnnotationComposer get toWalletClientId {
+    final $$WalletsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.toWalletClientId,
+        referencedTable: $db.wallets,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$WalletsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.wallets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$TransactionsTableAnnotationComposer get expenseTransactionClientId {
+    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.expenseTransactionClientId,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$TransactionsTableAnnotationComposer get incomeTransactionClientId {
+    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.incomeTransactionClientId,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.clientId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$TransfersTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TransfersTable,
+    Transfer,
+    $$TransfersTableFilterComposer,
+    $$TransfersTableOrderingComposer,
+    $$TransfersTableAnnotationComposer,
+    $$TransfersTableCreateCompanionBuilder,
+    $$TransfersTableUpdateCompanionBuilder,
+    (Transfer, $$TransfersTableReferences),
+    Transfer,
+    PrefetchHooks Function(
+        {bool fromWalletClientId,
+        bool toWalletClientId,
+        bool expenseTransactionClientId,
+        bool incomeTransactionClientId})> {
+  $$TransfersTableTableManager(_$AppDatabase db, $TransfersTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TransfersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TransfersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TransfersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int?> id = const Value.absent(),
+            Value<int?> userId = const Value.absent(),
+            Value<String> clientId = const Value.absent(),
+            Value<String?> rev = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<DateTime?> lastSyncedAt = const Value.absent(),
+            Value<double> amount = const Value.absent(),
+            Value<int?> fromWalletId = const Value.absent(),
+            Value<int?> toWalletId = const Value.absent(),
+            Value<String?> fromWalletClientId = const Value.absent(),
+            Value<String?> toWalletClientId = const Value.absent(),
+            Value<double?> exchangeRate = const Value.absent(),
+            Value<DateTime> datetime = const Value.absent(),
+            Value<String?> expenseTransactionClientId = const Value.absent(),
+            Value<String?> incomeTransactionClientId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TransfersCompanion(
+            id: id,
+            userId: userId,
+            clientId: clientId,
+            rev: rev,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            lastSyncedAt: lastSyncedAt,
+            amount: amount,
+            fromWalletId: fromWalletId,
+            toWalletId: toWalletId,
+            fromWalletClientId: fromWalletClientId,
+            toWalletClientId: toWalletClientId,
+            exchangeRate: exchangeRate,
+            datetime: datetime,
+            expenseTransactionClientId: expenseTransactionClientId,
+            incomeTransactionClientId: incomeTransactionClientId,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            Value<int?> id = const Value.absent(),
+            Value<int?> userId = const Value.absent(),
+            Value<String> clientId = const Value.absent(),
+            Value<String?> rev = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<DateTime?> lastSyncedAt = const Value.absent(),
+            required double amount,
+            Value<int?> fromWalletId = const Value.absent(),
+            Value<int?> toWalletId = const Value.absent(),
+            Value<String?> fromWalletClientId = const Value.absent(),
+            Value<String?> toWalletClientId = const Value.absent(),
+            Value<double?> exchangeRate = const Value.absent(),
+            required DateTime datetime,
+            Value<String?> expenseTransactionClientId = const Value.absent(),
+            Value<String?> incomeTransactionClientId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TransfersCompanion.insert(
+            id: id,
+            userId: userId,
+            clientId: clientId,
+            rev: rev,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            lastSyncedAt: lastSyncedAt,
+            amount: amount,
+            fromWalletId: fromWalletId,
+            toWalletId: toWalletId,
+            fromWalletClientId: fromWalletClientId,
+            toWalletClientId: toWalletClientId,
+            exchangeRate: exchangeRate,
+            datetime: datetime,
+            expenseTransactionClientId: expenseTransactionClientId,
+            incomeTransactionClientId: incomeTransactionClientId,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$TransfersTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {fromWalletClientId = false,
+              toWalletClientId = false,
+              expenseTransactionClientId = false,
+              incomeTransactionClientId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (fromWalletClientId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.fromWalletClientId,
+                    referencedTable:
+                        $$TransfersTableReferences._fromWalletClientIdTable(db),
+                    referencedColumn: $$TransfersTableReferences
+                        ._fromWalletClientIdTable(db)
+                        .clientId,
+                  ) as T;
+                }
+                if (toWalletClientId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.toWalletClientId,
+                    referencedTable:
+                        $$TransfersTableReferences._toWalletClientIdTable(db),
+                    referencedColumn: $$TransfersTableReferences
+                        ._toWalletClientIdTable(db)
+                        .clientId,
+                  ) as T;
+                }
+                if (expenseTransactionClientId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.expenseTransactionClientId,
+                    referencedTable: $$TransfersTableReferences
+                        ._expenseTransactionClientIdTable(db),
+                    referencedColumn: $$TransfersTableReferences
+                        ._expenseTransactionClientIdTable(db)
+                        .clientId,
+                  ) as T;
+                }
+                if (incomeTransactionClientId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.incomeTransactionClientId,
+                    referencedTable: $$TransfersTableReferences
+                        ._incomeTransactionClientIdTable(db),
+                    referencedColumn: $$TransfersTableReferences
+                        ._incomeTransactionClientIdTable(db)
+                        .clientId,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$TransfersTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TransfersTable,
+    Transfer,
+    $$TransfersTableFilterComposer,
+    $$TransfersTableOrderingComposer,
+    $$TransfersTableAnnotationComposer,
+    $$TransfersTableCreateCompanionBuilder,
+    $$TransfersTableUpdateCompanionBuilder,
+    (Transfer, $$TransfersTableReferences),
+    Transfer,
+    PrefetchHooks Function(
+        {bool fromWalletClientId,
+        bool toWalletClientId,
+        bool expenseTransactionClientId,
+        bool incomeTransactionClientId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9511,4 +11063,6 @@ class $AppDatabaseManager {
       $$NotificationsTableTableManager(_db, _db.notifications);
   $$MediaFilesTableTableManager get mediaFiles =>
       $$MediaFilesTableTableManager(_db, _db.mediaFiles);
+  $$TransfersTableTableManager get transfers =>
+      $$TransfersTableTableManager(_db, _db.transfers);
 }

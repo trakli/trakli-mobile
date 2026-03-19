@@ -32,6 +32,8 @@ mixin _$TransactionEntity {
   String get walletClientId => throw _privateConstructorUsedError;
   String? get partyClientId => throw _privateConstructorUsedError;
   String? get groupClientId => throw _privateConstructorUsedError;
+  int? get transferId => throw _privateConstructorUsedError;
+  String? get transferClientId => throw _privateConstructorUsedError;
 
   /// Serializes this TransactionEntity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -61,7 +63,9 @@ abstract class $TransactionEntityCopyWith<$Res> {
       String rev,
       String walletClientId,
       String? partyClientId,
-      String? groupClientId});
+      String? groupClientId,
+      int? transferId,
+      String? transferClientId});
 }
 
 /// @nodoc
@@ -91,6 +95,8 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
     Object? walletClientId = null,
     Object? partyClientId = freezed,
     Object? groupClientId = freezed,
+    Object? transferId = freezed,
+    Object? transferClientId = freezed,
   }) {
     return _then(_value.copyWith(
       clientId: null == clientId
@@ -141,6 +147,14 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
           ? _value.groupClientId
           : groupClientId // ignore: cast_nullable_to_non_nullable
               as String?,
+      transferId: freezed == transferId
+          ? _value.transferId
+          : transferId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      transferClientId: freezed == transferClientId
+          ? _value.transferClientId
+          : transferClientId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -165,7 +179,9 @@ abstract class _$$TransactionEntityImplCopyWith<$Res>
       String rev,
       String walletClientId,
       String? partyClientId,
-      String? groupClientId});
+      String? groupClientId,
+      int? transferId,
+      String? transferClientId});
 }
 
 /// @nodoc
@@ -193,6 +209,8 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
     Object? walletClientId = null,
     Object? partyClientId = freezed,
     Object? groupClientId = freezed,
+    Object? transferId = freezed,
+    Object? transferClientId = freezed,
   }) {
     return _then(_$TransactionEntityImpl(
       clientId: null == clientId
@@ -243,6 +261,14 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
           ? _value.groupClientId
           : groupClientId // ignore: cast_nullable_to_non_nullable
               as String?,
+      transferId: freezed == transferId
+          ? _value.transferId
+          : transferId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      transferClientId: freezed == transferClientId
+          ? _value.transferClientId
+          : transferClientId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -262,7 +288,9 @@ class _$TransactionEntityImpl implements _TransactionEntity {
       this.rev = '1',
       required this.walletClientId,
       this.partyClientId,
-      this.groupClientId});
+      this.groupClientId,
+      this.transferId,
+      this.transferClientId});
 
   factory _$TransactionEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$TransactionEntityImplFromJson(json);
@@ -292,10 +320,14 @@ class _$TransactionEntityImpl implements _TransactionEntity {
   final String? partyClientId;
   @override
   final String? groupClientId;
+  @override
+  final int? transferId;
+  @override
+  final String? transferClientId;
 
   @override
   String toString() {
-    return 'TransactionEntity(clientId: $clientId, amount: $amount, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, datetime: $datetime, type: $type, lastSyncedAt: $lastSyncedAt, rev: $rev, walletClientId: $walletClientId, partyClientId: $partyClientId, groupClientId: $groupClientId)';
+    return 'TransactionEntity(clientId: $clientId, amount: $amount, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, datetime: $datetime, type: $type, lastSyncedAt: $lastSyncedAt, rev: $rev, walletClientId: $walletClientId, partyClientId: $partyClientId, groupClientId: $groupClientId, transferId: $transferId, transferClientId: $transferClientId)';
   }
 
   @override
@@ -323,7 +355,11 @@ class _$TransactionEntityImpl implements _TransactionEntity {
             (identical(other.partyClientId, partyClientId) ||
                 other.partyClientId == partyClientId) &&
             (identical(other.groupClientId, groupClientId) ||
-                other.groupClientId == groupClientId));
+                other.groupClientId == groupClientId) &&
+            (identical(other.transferId, transferId) ||
+                other.transferId == transferId) &&
+            (identical(other.transferClientId, transferClientId) ||
+                other.transferClientId == transferClientId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -341,7 +377,9 @@ class _$TransactionEntityImpl implements _TransactionEntity {
       rev,
       walletClientId,
       partyClientId,
-      groupClientId);
+      groupClientId,
+      transferId,
+      transferClientId);
 
   /// Create a copy of TransactionEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -373,7 +411,9 @@ abstract class _TransactionEntity implements TransactionEntity {
       final String rev,
       required final String walletClientId,
       final String? partyClientId,
-      final String? groupClientId}) = _$TransactionEntityImpl;
+      final String? groupClientId,
+      final int? transferId,
+      final String? transferClientId}) = _$TransactionEntityImpl;
 
   factory _TransactionEntity.fromJson(Map<String, dynamic> json) =
       _$TransactionEntityImpl.fromJson;
@@ -402,6 +442,10 @@ abstract class _TransactionEntity implements TransactionEntity {
   String? get partyClientId;
   @override
   String? get groupClientId;
+  @override
+  int? get transferId;
+  @override
+  String? get transferClientId;
 
   /// Create a copy of TransactionEntity
   /// with the given fields replaced by the non-null parameter values.

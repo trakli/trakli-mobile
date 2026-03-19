@@ -15,7 +15,7 @@ TransactionDTO _$TransactionDTOFromJson(Map<String, dynamic> json) =>
       datetime: json['datetime'] as String?,
       createdAt: json['created_at'] as String,
       updatedAt: json['updated_at'] as String,
-      walletId: (json['wallet_id'] as num?)?.toInt(),
+      walletId: parseInt(json['wallet_id']),
       userId: (json['user_id'] as num).toInt(),
       wallet: json['wallet'] == null
           ? null
@@ -28,6 +28,8 @@ TransactionDTO _$TransactionDTOFromJson(Map<String, dynamic> json) =>
       clientGeneratedId: json['client_generated_id'] as String? ?? '',
       syncState:
           SyncStateDto.fromJson(json['sync_state'] as Map<String, dynamic>),
+      transferId: (json['transfer_id'] as num?)?.toInt(),
+      transferClientId: json['transfer_client_generated_id'] as String?,
     );
 
 Map<String, dynamic> _$TransactionDTOToJson(TransactionDTO instance) =>
@@ -47,6 +49,8 @@ Map<String, dynamic> _$TransactionDTOToJson(TransactionDTO instance) =>
       'deleted_at': instance.deletedAt?.toIso8601String(),
       'client_generated_id': instance.clientGeneratedId,
       'sync_state': instance.syncState.toJson(),
+      'transfer_id': instance.transferId,
+      'transfer_client_generated_id': instance.transferClientId,
     };
 
 const _$TransactionTypeEnumMap = {

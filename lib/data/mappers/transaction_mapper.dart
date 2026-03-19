@@ -22,6 +22,8 @@ class _TransactionMapper {
       walletClientId: row.walletClientId,
       partyClientId: row.partyClientId,
       groupClientId: row.groupClientId,
+      transferId: row.transferId,
+      transferClientId: row.transferClientId,
     );
   }
 }

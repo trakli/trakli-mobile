@@ -27,9 +27,11 @@ import 'tables/sync_meta_data.dart';
 import 'package:trakli/data/database/tables/categorizables.dart';
 import 'package:trakli/data/database/tables/notifications.dart';
 import 'package:trakli/data/database/tables/media_files.dart';
+import 'package:trakli/data/database/tables/transfers.dart';
 import 'app_database.steps.dart';
 
 part 'app_database.g.dart';
+
 
 @DriftDatabase(tables: [
   Transactions,
@@ -44,6 +46,7 @@ part 'app_database.g.dart';
   Categorizables,
   Notifications,
   MediaFiles,
+  Transfers,
 ])
 class AppDatabase extends _$AppDatabase with SynchronizerDb {
   final Set<SyncTypeHandler> typeHandlers;
@@ -55,7 +58,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
         super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -266,6 +269,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     await categorizables.deleteAll();
     await notifications.deleteAll();
     await mediaFiles.deleteAll();
+    await transfers.deleteAll();
   }
 }
 
@@ -279,6 +283,14 @@ extension Migrations on GeneratedDatabase {
         },
         from2To3: (m, schema) async {
           await m.createTable(schema.mediaFiles);
+        },
+        from3To4: (m, schema) async {
+          await m.createTable(schema.transfers);
+          await m.addColumn(schema.transactions, schema.transactions.transferId);
+          await m.addColumn(
+            schema.transactions,
+            schema.transactions.transferClientId,
+          );
         },
       );
 }

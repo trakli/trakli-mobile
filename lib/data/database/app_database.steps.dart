@@ -1091,9 +1091,470 @@ i1.GeneratedColumn<String> _column_57(String aliasedName) =>
 i1.GeneratedColumn<String> _column_58(String aliasedName) =>
     i1.GeneratedColumn<String>('local_fileable_id', aliasedName, true,
         type: i1.DriftSqlType.string);
+
+final class Schema4 extends i0.VersionedSchema {
+  Schema4({required super.database}) : super(version: 4);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    wallets,
+    parties,
+    groups,
+    transactions,
+    categories,
+    configs,
+    users,
+    localChanges,
+    syncMetadata,
+    categorizables,
+    notifications,
+    mediaFiles,
+    transfers,
+  ];
+  late final Shape0 wallets = Shape0(
+      source: i0.VersionedTable(
+        entityName: 'wallets',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(client_id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_8,
+          _column_9,
+          _column_10,
+          _column_11,
+          _column_12,
+          _column_13,
+          _column_14,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape1 parties = Shape1(
+      source: i0.VersionedTable(
+        entityName: 'parties',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(client_id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_8,
+          _column_12,
+          _column_14,
+          _column_15,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape2 groups = Shape2(
+      source: i0.VersionedTable(
+        entityName: 'groups',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(client_id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_8,
+          _column_12,
+          _column_14,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape12 transactions = Shape12(
+      source: i0.VersionedTable(
+        entityName: 'transactions',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(client_id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_16,
+          _column_9,
+          _column_12,
+          _column_17,
+          _column_18,
+          _column_19,
+          _column_20,
+          _column_21,
+          _column_22,
+          _column_23,
+          _column_59,
+          _column_60,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape4 categories = Shape4(
+      source: i0.VersionedTable(
+        entityName: 'categories',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(client_id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_24,
+          _column_25,
+          _column_12,
+          _column_9,
+          _column_14,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape5 configs = Shape5(
+      source: i0.VersionedTable(
+        entityName: 'configs',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(client_id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_26,
+          _column_9,
+          _column_27,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape6 users = Shape6(
+      source: i0.VersionedTable(
+        entityName: 'users',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_28,
+          _column_29,
+          _column_30,
+          _column_31,
+          _column_32,
+          _column_33,
+          _column_34,
+          _column_35,
+          _column_36,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape7 localChanges = Shape7(
+      source: i0.VersionedTable(
+        entityName: 'local_changes',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(entity_id, entity_type)',
+        ],
+        columns: [
+          _column_37,
+          _column_38,
+          _column_39,
+          _column_40,
+          _column_41,
+          _column_42,
+          _column_43,
+          _column_44,
+          _column_45,
+          _column_46,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape8 syncMetadata = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'sync_metadata',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(entity_type)',
+        ],
+        columns: [
+          _column_37,
+          _column_7,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape9 categorizables = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'categorizables',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(categorizable_id, categorizable_type, category_client_id)',
+        ],
+        columns: [
+          _column_47,
+          _column_48,
+          _column_49,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape10 notifications = Shape10(
+      source: i0.VersionedTable(
+        entityName: 'notifications',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(client_id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_9,
+          _column_50,
+          _column_51,
+          _column_41,
+          _column_52,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape11 mediaFiles = Shape11(
+      source: i0.VersionedTable(
+        entityName: 'media_files',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(path)',
+        ],
+        columns: [
+          _column_53,
+          _column_54,
+          _column_15,
+          _column_55,
+          _column_56,
+          _column_57,
+          _column_58,
+          _column_35,
+          _column_36,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape13 transfers = Shape13(
+      source: i0.VersionedTable(
+        entityName: 'transfers',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(client_id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_16,
+          _column_61,
+          _column_62,
+          _column_63,
+          _column_64,
+          _column_65,
+          _column_66,
+          _column_67,
+          _column_68,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+}
+
+class Shape12 extends i0.VersionedTable {
+  Shape12({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get clientId =>
+      columnsByName['client_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get rev =>
+      columnsByName['rev']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get updatedAt =>
+      columnsByName['updated_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get lastSyncedAt =>
+      columnsByName['last_synced_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<double> get amount =>
+      columnsByName['amount']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<String> get type =>
+      columnsByName['type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get description =>
+      columnsByName['description']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get datetime =>
+      columnsByName['datetime']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get partyId =>
+      columnsByName['party_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get walletId =>
+      columnsByName['wallet_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get groupId =>
+      columnsByName['group_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get walletClientId =>
+      columnsByName['wallet_client_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get partyClientId =>
+      columnsByName['party_client_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get groupClientId =>
+      columnsByName['group_client_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get transferId =>
+      columnsByName['transfer_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get transferClientId =>
+      columnsByName['transfer_client_id']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<int> _column_59(String aliasedName) =>
+    i1.GeneratedColumn<int>('transfer_id', aliasedName, true,
+        type: i1.DriftSqlType.int);
+i1.GeneratedColumn<String> _column_60(String aliasedName) =>
+    i1.GeneratedColumn<String>('transfer_client_id', aliasedName, true,
+        type: i1.DriftSqlType.string);
+
+class Shape13 extends i0.VersionedTable {
+  Shape13({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get clientId =>
+      columnsByName['client_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get rev =>
+      columnsByName['rev']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get updatedAt =>
+      columnsByName['updated_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get lastSyncedAt =>
+      columnsByName['last_synced_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<double> get amount =>
+      columnsByName['amount']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<int> get fromWalletId =>
+      columnsByName['from_wallet_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get toWalletId =>
+      columnsByName['to_wallet_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get fromWalletClientId =>
+      columnsByName['from_wallet_client_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get toWalletClientId =>
+      columnsByName['to_wallet_client_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<double> get exchangeRate =>
+      columnsByName['exchange_rate']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<DateTime> get datetime =>
+      columnsByName['datetime']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get expenseTransactionClientId =>
+      columnsByName['expense_transaction_client_id']!
+          as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get incomeTransactionClientId =>
+      columnsByName['income_transaction_client_id']!
+          as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<int> _column_61(String aliasedName) =>
+    i1.GeneratedColumn<int>('from_wallet_id', aliasedName, true,
+        type: i1.DriftSqlType.int);
+i1.GeneratedColumn<int> _column_62(String aliasedName) =>
+    i1.GeneratedColumn<int>('to_wallet_id', aliasedName, true,
+        type: i1.DriftSqlType.int);
+i1.GeneratedColumn<String> _column_63(String aliasedName) =>
+    i1.GeneratedColumn<String>('from_wallet_client_id', aliasedName, true,
+        type: i1.DriftSqlType.string,
+        defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+            'REFERENCES wallets (client_id)'));
+i1.GeneratedColumn<String> _column_64(String aliasedName) =>
+    i1.GeneratedColumn<String>('to_wallet_client_id', aliasedName, true,
+        type: i1.DriftSqlType.string,
+        defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+            'REFERENCES wallets (client_id)'));
+i1.GeneratedColumn<double> _column_65(String aliasedName) =>
+    i1.GeneratedColumn<double>('exchange_rate', aliasedName, true,
+        type: i1.DriftSqlType.double);
+i1.GeneratedColumn<DateTime> _column_66(String aliasedName) =>
+    i1.GeneratedColumn<DateTime>('datetime', aliasedName, false,
+        type: i1.DriftSqlType.dateTime);
+i1.GeneratedColumn<String> _column_67(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+        'expense_transaction_client_id', aliasedName, true,
+        type: i1.DriftSqlType.string,
+        defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+            'REFERENCES transactions (client_id)'));
+i1.GeneratedColumn<String> _column_68(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+        'income_transaction_client_id', aliasedName, true,
+        type: i1.DriftSqlType.string,
+        defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+            'REFERENCES transactions (client_id)'));
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
+  required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -1107,6 +1568,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from2To3(migrator, schema);
         return 3;
+      case 3:
+        final schema = Schema4(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from3To4(migrator, schema);
+        return 4;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -1116,9 +1582,11 @@ i0.MigrationStepWithVersion migrationSteps({
 i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
+  required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
       from1To2: from1To2,
       from2To3: from2To3,
+      from3To4: from3To4,
     ));

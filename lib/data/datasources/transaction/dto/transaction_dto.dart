@@ -19,7 +19,7 @@ class TransactionDTO {
   final String createdAt;
   @JsonKey(name: 'updated_at')
   final String updatedAt;
-  @JsonKey(name: 'wallet_id')
+  @JsonKey(name: 'wallet_id', fromJson: parseInt)
   final int? walletId;
   @JsonKey(name: 'user_id')
   final int userId;
@@ -33,6 +33,10 @@ class TransactionDTO {
   final String clientGeneratedId;
   @JsonKey(name: 'sync_state')
   final SyncStateDto syncState;
+  @JsonKey(name: 'transfer_id')
+  final int? transferId;
+  @JsonKey(name: 'transfer_client_generated_id')
+  final String? transferClientId;
 
   TransactionDTO({
     required this.id,
@@ -50,6 +54,8 @@ class TransactionDTO {
     this.deletedAt,
     required this.clientGeneratedId,
     required this.syncState,
+    this.transferId,
+    this.transferClientId,
   });
 
   factory TransactionDTO.fromJson(Map<String, dynamic> json) =>
