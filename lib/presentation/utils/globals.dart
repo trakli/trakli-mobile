@@ -26,9 +26,7 @@ final List<String> supportedFormDisplays = [
   'compact',
 ];
 
-final List<HeroIcons> heroIconsCategories = HeroIcons.values.map((icon) {
-  return icon;
-}).toList();
+final List<HeroIcons> heroIconsCategories = HeroIcons.values.toList();
 
 const String loremIpsum =
     "Lorem ipsum dolor sit amet consectetur. Aliquam integer at sed a at leo vulputate at. Etiam blandit proin amet.";
