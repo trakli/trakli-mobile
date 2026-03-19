@@ -81,7 +81,7 @@ class TransactionSyncHandler
   }
 
   @override
-  bool shouldPersistRemote(TransactionCompleteDto entity) {
+  Future<bool> shouldPersistRemote(TransactionCompleteDto entity) async {
     // Check if any of the categories is null or wallet is null
     final hasNullCategory = entity.categories.map((c) => c.id).contains(null);
     final hasNullWalletId = entity.wallet.id == null;
@@ -150,6 +150,17 @@ class TransactionSyncHandler
   @override
   Future<void> upsertLocal(TransactionCompleteDto entity) async {
     return db.transaction(() async {
+      final existingRow = await (db.select(table)
+            ..where((t) => t.clientId.equals(entity.transaction.clientId)))
+          .getSingleOrNull();
+
+      // Server provides these values → use them; otherwise preserve existing local values.
+      final transferId = entity.transaction.transferId ?? existingRow?.transferId;
+      final transferClientId =
+          (entity.transaction.transferClientId?.isNotEmpty ?? false)
+              ? entity.transaction.transferClientId
+              : existingRow?.transferClientId;
+
       final transaction = TransactionsCompanion(
         id: Value(entity.transaction.id),
         amount: Value(entity.transaction.amount),
@@ -159,7 +170,6 @@ class TransactionSyncHandler
         datetime: Value(entity.transaction.datetime),
         createdAt: Value(entity.transaction.createdAt),
         lastSyncedAt: Value(entity.transaction.lastSyncedAt),
-        // updatedAt: Value(entity.transaction.updatedAt),
         walletClientId: Value(entity.wallet.clientId),
         partyClientId: Value(entity.party?.clientId),
         groupClientId: Value(entity.group?.clientId),
@@ -169,6 +179,8 @@ class TransactionSyncHandler
         userId: Value(entity.transaction.userId),
         rev: Value(entity.transaction.rev),
         deletedAt: Value(entity.transaction.deletedAt),
+        transferId: Value(transferId),
+        transferClientId: Value(transferClientId),
       );
 
       await table.insertOne(transaction, mode: InsertMode.insertOrReplace);
