@@ -270,7 +270,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
     }
 
     if (selectedFromWallet != null && amount > selectedFromWallet!.balance) {
-      return LocaleKeys.amountMustNotBeZero.tr(); // fallback until locale keys update
+      return LocaleKeys.insufficientBalance.tr();
     }
 
     return null;

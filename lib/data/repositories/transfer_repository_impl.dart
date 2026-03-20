@@ -188,8 +188,6 @@ class TransferRepositoryImpl
           incomeDto.transaction.clientId,
           transferClientId: transferClientId,
         );
-
-       
       });
 
       unawaited(

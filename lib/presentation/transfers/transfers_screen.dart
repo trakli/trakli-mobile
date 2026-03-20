@@ -38,67 +38,69 @@ class TransfersScreen extends StatelessWidget {
         titleText: LocaleKeys.transfers.tr(),
         headerTextColor: const Color(0xFFEBEDEC),
       ),
-      body: BlocBuilder<TransferCubit, TransferState>(
-        builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator.adaptive());
-          }
-
-          if (state.transfers.isEmpty) {
-            return Center(
-              child: Text(
-                LocaleKeys.noTransfersFound.tr(),
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: Colors.grey,
+      body: SafeArea(
+        child: BlocBuilder<TransferCubit, TransferState>(
+          builder: (context, state) {
+            if (state.isLoading) {
+              return const Center(child: CircularProgressIndicator.adaptive());
+            }
+        
+            if (state.transfers.isEmpty) {
+              return Center(
+                child: Text(
+                  LocaleKeys.noTransfersFound.tr(),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-            );
-          }
-
-          final transfers = List<TransferEntity>.from(state.transfers)
-            ..sort(
-              (a, b) => b.datetime.compareTo(a.datetime),
-            );
-
-          return BlocBuilder<WalletCubit, WalletState>(
-            builder: (context, walletState) {
-              return ListView.separated(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 16.h,
-                ),
-                itemCount: transfers.length,
-                separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                itemBuilder: (context, index) {
-                  final transfer = transfers[index];
-
-                  // Find wallet information (prefer server id, fall back to clientId)
-                  final fromWallet = _findWallet(
-                    wallets: walletState.wallets,
-                    id: transfer.fromWalletId,
-                    clientId: transfer.fromWalletClientId,
-                  );
-                  final toWallet = _findWallet(
-                    wallets: walletState.wallets,
-                    id: transfer.toWalletId,
-                    clientId: transfer.toWalletClientId,
-                  );
-
-                  return TransferTile(
-                    transfer: transfer,
-                    fromWalletName: fromWallet?.name,
-                    toWalletName: toWallet?.name,
-                    fromWalletCurrency: fromWallet?.currencyCode,
-                    toWalletCurrency: toWallet?.currencyCode,
-                    onTap: () {
-                    },
-                  );
-                },
               );
-            },
-          );
-        },
+            }
+        
+            final transfers = List<TransferEntity>.from(state.transfers)
+              ..sort(
+                (a, b) => b.datetime.compareTo(a.datetime),
+              );
+        
+            return BlocBuilder<WalletCubit, WalletState>(
+              builder: (context, walletState) {
+                return ListView.separated(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 16.h,
+                  ),
+                  itemCount: transfers.length,
+                  separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                  itemBuilder: (context, index) {
+                    final transfer = transfers[index];
+        
+                    // Find wallet information (prefer server id, fall back to clientId)
+                    final fromWallet = _findWallet(
+                      wallets: walletState.wallets,
+                      id: transfer.fromWalletId,
+                      clientId: transfer.fromWalletClientId,
+                    );
+                    final toWallet = _findWallet(
+                      wallets: walletState.wallets,
+                      id: transfer.toWalletId,
+                      clientId: transfer.toWalletClientId,
+                    );
+        
+                    return TransferTile(
+                      transfer: transfer,
+                      fromWalletName: fromWallet?.name,
+                      toWalletName: toWallet?.name,
+                      fromWalletCurrency: fromWallet?.currencyCode,
+                      toWalletCurrency: toWallet?.currencyCode,
+                      onTap: () {
+                      },
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
