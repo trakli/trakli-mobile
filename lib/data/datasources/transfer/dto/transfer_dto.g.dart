@@ -23,6 +23,13 @@ _$TransferDtoImpl _$$TransferDtoImplFromJson(Map<String, dynamic> json) =>
       amount: parseAmount(json['amount']),
       fromWalletId: (json['from_wallet_id'] as num?)?.toInt(),
       toWalletId: (json['to_wallet_id'] as num?)?.toInt(),
+      sourceWallet: json['source_wallet'] == null
+          ? null
+          : WalletDto.fromJson(json['source_wallet'] as Map<String, dynamic>),
+      destinationWallet: json['destination_wallet'] == null
+          ? null
+          : WalletDto.fromJson(
+              json['destination_wallet'] as Map<String, dynamic>),
       fromWalletClientId: json['from_wallet_client_id'] as String?,
       toWalletClientId: json['to_wallet_client_id'] as String?,
       exchangeRate: parseAmountNullable(json['exchange_rate']),
@@ -46,6 +53,8 @@ Map<String, dynamic> _$$TransferDtoImplToJson(_$TransferDtoImpl instance) =>
       'amount': instance.amount,
       'from_wallet_id': instance.fromWalletId,
       'to_wallet_id': instance.toWalletId,
+      'source_wallet': instance.sourceWallet?.toJson(),
+      'destination_wallet': instance.destinationWallet?.toJson(),
       'from_wallet_client_id': instance.fromWalletClientId,
       'to_wallet_client_id': instance.toWalletClientId,
       'exchange_rate': instance.exchangeRate,

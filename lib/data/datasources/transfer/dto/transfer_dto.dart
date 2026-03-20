@@ -2,12 +2,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:trakli/data/database/app_database.dart';
 import 'package:trakli/data/database/tables/sync_table.dart';
 import 'package:trakli/data/datasources/core/amount_parser.dart';
+import 'package:trakli/data/datasources/wallet/dtos/wallet_dto.dart';
 
 part 'transfer_dto.freezed.dart';
 part 'transfer_dto.g.dart';
 
 @freezed
 class TransferDto with _$TransferDto {
+  @JsonSerializable(explicitToJson: true)
   const factory TransferDto({
     int? id,
     @JsonKey(name: 'user_id') int? userId,
@@ -21,6 +23,8 @@ class TransferDto with _$TransferDto {
     @JsonKey(fromJson: parseAmount) required double amount,
     @JsonKey(name: 'from_wallet_id') int? fromWalletId,
     @JsonKey(name: 'to_wallet_id') int? toWalletId,
+    @JsonKey(name: 'source_wallet') WalletDto? sourceWallet,
+    @JsonKey(name: 'destination_wallet') WalletDto? destinationWallet,
     @JsonKey(name: 'from_wallet_client_id') String? fromWalletClientId,
     @JsonKey(name: 'to_wallet_client_id') String? toWalletClientId,
     @JsonKey(name: 'exchange_rate', fromJson: parseAmountNullable)
@@ -49,8 +53,8 @@ class TransferDto with _$TransferDto {
         amount: amount,
         fromWalletId: fromWalletId,
         toWalletId: toWalletId,
-        fromWalletClientId: fromWalletClientId,
-        toWalletClientId: toWalletClientId,
+        fromWalletClientId: sourceWallet?.clientId ?? fromWalletClientId,
+        toWalletClientId: destinationWallet?.clientId ?? toWalletClientId,
         exchangeRate: exchangeRate,
         datetime: datetime,
         expenseTransactionClientId: expenseTransactionClientId,
