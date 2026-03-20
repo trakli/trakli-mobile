@@ -22,7 +22,9 @@ class TransferLocalDataSourceImpl implements TransferLocalDataSource {
 
   @override
   Future<List<Transfer>> getAllTransfers() async {
-    return (database.select(database.transfers)).get();
+    return (database.select(database.transfers)
+          ..orderBy([(t) => OrderingTerm.desc(t.datetime)]))
+        .get();
   }
 
   @override
@@ -88,7 +90,7 @@ class TransferLocalDataSourceImpl implements TransferLocalDataSource {
   @override
   Stream<List<Transfer>> listenToTransfers() {
     return (database.select(database.transfers)
-          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+          ..orderBy([(t) => OrderingTerm.desc(t.datetime)]))
         .watch();
   }
 }
