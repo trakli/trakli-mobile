@@ -11,6 +11,12 @@ abstract class TransferRemoteDataSource {
     bool? noClientId,
     DateTime? syncedSince,
   });
+
+  Stream<List<Transfer>> getAllTransfersStream({
+    bool? noClientId,
+    DateTime? syncedSince,
+  });
+
   Future<Transfer?> getTransfer(int id);
   Future<Transfer> insertTransfer(Transfer transfer);
   Future<Transfer> updateTransfer(Transfer transfer);
@@ -29,10 +35,27 @@ class TransferRemoteDataSourceImpl implements TransferRemoteDataSource {
     DateTime? syncedSince,
   }) async {
     final allItems = <Transfer>[];
+    await for (final page in getAllTransfersStream(
+      noClientId: noClientId,
+      syncedSince: syncedSince,
+    )) {
+      allItems.addAll(page);
+    }
+    return allItems;
+  }
+
+  @override
+  Stream<List<Transfer>> getAllTransfersStream({
+    bool? noClientId,
+    DateTime? syncedSince,
+  }) async* {
     int currentPage = 1;
 
     while (true) {
-      final queryParams = <String, dynamic>{'page': currentPage};
+      final queryParams = <String, dynamic>{
+        'page': currentPage,
+      };
+
       if (syncedSince != null) {
         queryParams['synced_since'] =
             formatServerIsoDateTimeString(syncedSince);
@@ -51,13 +74,13 @@ class TransferRemoteDataSourceImpl implements TransferRemoteDataSource {
             .toTransfer(),
       );
 
-      allItems.addAll(paginatedResponse.data);
+      if (paginatedResponse.data.isNotEmpty) {
+        yield paginatedResponse.data;
+      }
 
       if (!paginatedResponse.hasMore) break;
       currentPage++;
     }
-
-    return allItems;
   }
 
   @override
