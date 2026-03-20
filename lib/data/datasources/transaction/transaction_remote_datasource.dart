@@ -12,30 +12,24 @@ abstract class TransactionRemoteDataSource {
   Future<List<TransactionCompleteDto>> getAllTransactions(
       {DateTime? syncedSince, bool? noClientId});
 
-  /// Stream-based pagination: yields one page of transactions at a time.
-  ///
-  /// This is useful for sync flows that want to keep memory bounded by
-  /// processing each page immediately instead of accumulating everything.
   Stream<List<TransactionCompleteDto>> getAllTransactionsStream(
       {DateTime? syncedSince, bool? noClientId});
+
   Future<TransactionCompleteDto> getTransaction(int id);
   Future<TransactionCompleteDto> insertTransaction(
       TransactionCompleteDto transaction);
 
   Future<TransactionCompleteDto> updateTransaction(
       TransactionCompleteDto transaction);
+
   Future<void> deleteTransaction(int id);
 
-  /// Adds one media item to a transaction. Endpoint: POST transactions/{transactionId}/files.
-  /// Uses [media.path] as the local file path. Builds multipart/form-data with files[]. Returns the full transaction.
-  Future<TransactionCompleteDto> addMediaToTransaction(
+ Future<TransactionCompleteDto> addMediaToTransaction(
     int transactionId,
     MediaFile media,
   );
 
-  /// Deletes a file from a transaction. Endpoint: DELETE transactions/{transactionId}/files/{fileId}.
-  /// Returns the full transaction (same shape as add media).
-  Future<TransactionCompleteDto> deleteMediaFromTransaction(
+ Future<TransactionCompleteDto> deleteMediaFromTransaction(
     int transactionId,
     int fileId,
   );
@@ -91,7 +85,6 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
             json! as Map<String, dynamic>),
       );
 
-      // Emit the current page.
       if (paginatedResponse.data.isNotEmpty) {
         yield paginatedResponse.data;
       }
@@ -102,7 +95,6 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
       currentPage++;
     }
 
-    // When the loop exits, all pages have been emitted.
   }
 
   @override

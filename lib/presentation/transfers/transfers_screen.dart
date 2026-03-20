@@ -15,6 +15,7 @@ import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 class TransfersScreen extends StatelessWidget {
   const TransfersScreen({super.key});
 
+  // Find wallet information (prefer server id, fall back to clientId)
   WalletEntity? _findWallet({
     required List<WalletEntity> wallets,
     int? id,
@@ -74,7 +75,6 @@ class TransfersScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final transfer = transfers[index];
         
-                    // Find wallet information (prefer server id, fall back to clientId)
                     final fromWallet = _findWallet(
                       wallets: walletState.wallets,
                       id: transfer.fromWalletId,
