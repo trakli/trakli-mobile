@@ -19,7 +19,11 @@ class MockTransactionRemoteDataSource implements TransactionRemoteDataSource {
   @override
   Future<List<TransactionCompleteDto>> getAllTransactions(
       {DateTime? syncedSince, bool? noClientId}) async {
-    return _simulateDelay(() async => _transactions);
+    return _simulateDelay(() async => _applyFilters(
+          _transactions,
+          syncedSince: syncedSince,
+          noClientId: noClientId,
+        ));
   }
 
   @override
@@ -111,14 +115,49 @@ class MockTransactionRemoteDataSource implements TransactionRemoteDataSource {
   @override
   Future<TransactionCompleteDto> deleteMediaFromTransaction(
       int transactionId, int fileId) {
-    // TODO: implement delete   MediaFromTransaction
-    throw UnimplementedError();
+    return _simulateDelay(() async {
+      final index =
+          _transactions.indexWhere((t) => t.transaction.id == transactionId);
+      if (index == -1) {
+        throw Exception('Transaction not found');
+      }
+      final dto = _transactions[index];
+      final updated = dto.copyWith(
+        files: dto.files.where((f) => f.id != fileId).toList(),
+      );
+      _transactions[index] = updated;
+      _notifyListeners();
+      return updated;
+    });
   }
-  
+
+  List<TransactionCompleteDto> _applyFilters(
+    List<TransactionCompleteDto> source, {
+    DateTime? syncedSince,
+    bool? noClientId,
+  }) {
+    var list = List<TransactionCompleteDto>.from(source);
+    if (syncedSince != null) {
+      list = list.where((t) {
+        final ls = t.transaction.lastSyncedAt;
+        return ls == null || !ls.isBefore(syncedSince);
+      }).toList();
+    }
+    if (noClientId == true) {
+      list = list.where((t) => t.transaction.clientId.isEmpty).toList();
+    }
+    return list;
+  }
+
   @override
-  Stream<List<TransactionCompleteDto>> getAllTransactionsStream({DateTime? syncedSince, bool? noClientId}) {
-    // TODO: implement getAllTransactionsStream
-    throw UnimplementedError();
+  Stream<List<TransactionCompleteDto>> getAllTransactionsStream(
+      {DateTime? syncedSince, bool? noClientId}) async* {
+    await Future.delayed(const Duration(milliseconds: 500));
+    yield _applyFilters(
+      _transactions,
+      syncedSince: syncedSince,
+      noClientId: noClientId,
+    );
   }
 
   // Simulate network error
