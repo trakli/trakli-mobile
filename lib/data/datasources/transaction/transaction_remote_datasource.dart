@@ -58,7 +58,6 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
   Stream<List<TransactionCompleteDto>> getAllTransactionsStream(
       {DateTime? syncedSince, bool? noClientId}) async* {
     int currentPage = 1;
-    int limit = 10;
 
     while (true) {
       final queryParams = <String, dynamic>{
@@ -70,8 +69,6 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
       if (noClientId != null) {
         queryParams['no_client_id'] = noClientId;
       }
-
-      // queryParams['limit'] = limit;
 
 
 

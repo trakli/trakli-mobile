@@ -40,6 +40,10 @@ mixin _$TransferDto {
   int? get fromWalletId => throw _privateConstructorUsedError;
   @JsonKey(name: 'to_wallet_id')
   int? get toWalletId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'source_wallet')
+  WalletDto? get sourceWallet => throw _privateConstructorUsedError;
+  @JsonKey(name: 'destination_wallet')
+  WalletDto? get destinationWallet => throw _privateConstructorUsedError;
   @JsonKey(name: 'from_wallet_client_id')
   String? get fromWalletClientId => throw _privateConstructorUsedError;
   @JsonKey(name: 'to_wallet_client_id')
@@ -81,6 +85,8 @@ abstract class $TransferDtoCopyWith<$Res> {
       @JsonKey(fromJson: parseAmount) double amount,
       @JsonKey(name: 'from_wallet_id') int? fromWalletId,
       @JsonKey(name: 'to_wallet_id') int? toWalletId,
+      @JsonKey(name: 'source_wallet') WalletDto? sourceWallet,
+      @JsonKey(name: 'destination_wallet') WalletDto? destinationWallet,
       @JsonKey(name: 'from_wallet_client_id') String? fromWalletClientId,
       @JsonKey(name: 'to_wallet_client_id') String? toWalletClientId,
       @JsonKey(name: 'exchange_rate', fromJson: parseAmountNullable)
@@ -90,6 +96,9 @@ abstract class $TransferDtoCopyWith<$Res> {
       String? expenseTransactionClientId,
       @JsonKey(name: 'income_transaction_client_id')
       String? incomeTransactionClientId});
+
+  $WalletDtoCopyWith<$Res>? get sourceWallet;
+  $WalletDtoCopyWith<$Res>? get destinationWallet;
 }
 
 /// @nodoc
@@ -118,6 +127,8 @@ class _$TransferDtoCopyWithImpl<$Res, $Val extends TransferDto>
     Object? amount = null,
     Object? fromWalletId = freezed,
     Object? toWalletId = freezed,
+    Object? sourceWallet = freezed,
+    Object? destinationWallet = freezed,
     Object? fromWalletClientId = freezed,
     Object? toWalletClientId = freezed,
     Object? exchangeRate = freezed,
@@ -170,6 +181,14 @@ class _$TransferDtoCopyWithImpl<$Res, $Val extends TransferDto>
           ? _value.toWalletId
           : toWalletId // ignore: cast_nullable_to_non_nullable
               as int?,
+      sourceWallet: freezed == sourceWallet
+          ? _value.sourceWallet
+          : sourceWallet // ignore: cast_nullable_to_non_nullable
+              as WalletDto?,
+      destinationWallet: freezed == destinationWallet
+          ? _value.destinationWallet
+          : destinationWallet // ignore: cast_nullable_to_non_nullable
+              as WalletDto?,
       fromWalletClientId: freezed == fromWalletClientId
           ? _value.fromWalletClientId
           : fromWalletClientId // ignore: cast_nullable_to_non_nullable
@@ -196,6 +215,34 @@ class _$TransferDtoCopyWithImpl<$Res, $Val extends TransferDto>
               as String?,
     ) as $Val);
   }
+
+  /// Create a copy of TransferDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WalletDtoCopyWith<$Res>? get sourceWallet {
+    if (_value.sourceWallet == null) {
+      return null;
+    }
+
+    return $WalletDtoCopyWith<$Res>(_value.sourceWallet!, (value) {
+      return _then(_value.copyWith(sourceWallet: value) as $Val);
+    });
+  }
+
+  /// Create a copy of TransferDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WalletDtoCopyWith<$Res>? get destinationWallet {
+    if (_value.destinationWallet == null) {
+      return null;
+    }
+
+    return $WalletDtoCopyWith<$Res>(_value.destinationWallet!, (value) {
+      return _then(_value.copyWith(destinationWallet: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -219,6 +266,8 @@ abstract class _$$TransferDtoImplCopyWith<$Res>
       @JsonKey(fromJson: parseAmount) double amount,
       @JsonKey(name: 'from_wallet_id') int? fromWalletId,
       @JsonKey(name: 'to_wallet_id') int? toWalletId,
+      @JsonKey(name: 'source_wallet') WalletDto? sourceWallet,
+      @JsonKey(name: 'destination_wallet') WalletDto? destinationWallet,
       @JsonKey(name: 'from_wallet_client_id') String? fromWalletClientId,
       @JsonKey(name: 'to_wallet_client_id') String? toWalletClientId,
       @JsonKey(name: 'exchange_rate', fromJson: parseAmountNullable)
@@ -228,6 +277,11 @@ abstract class _$$TransferDtoImplCopyWith<$Res>
       String? expenseTransactionClientId,
       @JsonKey(name: 'income_transaction_client_id')
       String? incomeTransactionClientId});
+
+  @override
+  $WalletDtoCopyWith<$Res>? get sourceWallet;
+  @override
+  $WalletDtoCopyWith<$Res>? get destinationWallet;
 }
 
 /// @nodoc
@@ -254,6 +308,8 @@ class __$$TransferDtoImplCopyWithImpl<$Res>
     Object? amount = null,
     Object? fromWalletId = freezed,
     Object? toWalletId = freezed,
+    Object? sourceWallet = freezed,
+    Object? destinationWallet = freezed,
     Object? fromWalletClientId = freezed,
     Object? toWalletClientId = freezed,
     Object? exchangeRate = freezed,
@@ -306,6 +362,14 @@ class __$$TransferDtoImplCopyWithImpl<$Res>
           ? _value.toWalletId
           : toWalletId // ignore: cast_nullable_to_non_nullable
               as int?,
+      sourceWallet: freezed == sourceWallet
+          ? _value.sourceWallet
+          : sourceWallet // ignore: cast_nullable_to_non_nullable
+              as WalletDto?,
+      destinationWallet: freezed == destinationWallet
+          ? _value.destinationWallet
+          : destinationWallet // ignore: cast_nullable_to_non_nullable
+              as WalletDto?,
       fromWalletClientId: freezed == fromWalletClientId
           ? _value.fromWalletClientId
           : fromWalletClientId // ignore: cast_nullable_to_non_nullable
@@ -335,7 +399,8 @@ class __$$TransferDtoImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$TransferDtoImpl extends _TransferDto {
   const _$TransferDtoImpl(
       {this.id,
@@ -350,6 +415,8 @@ class _$TransferDtoImpl extends _TransferDto {
       @JsonKey(fromJson: parseAmount) required this.amount,
       @JsonKey(name: 'from_wallet_id') this.fromWalletId,
       @JsonKey(name: 'to_wallet_id') this.toWalletId,
+      @JsonKey(name: 'source_wallet') this.sourceWallet,
+      @JsonKey(name: 'destination_wallet') this.destinationWallet,
       @JsonKey(name: 'from_wallet_client_id') this.fromWalletClientId,
       @JsonKey(name: 'to_wallet_client_id') this.toWalletClientId,
       @JsonKey(name: 'exchange_rate', fromJson: parseAmountNullable)
@@ -396,6 +463,12 @@ class _$TransferDtoImpl extends _TransferDto {
   @JsonKey(name: 'to_wallet_id')
   final int? toWalletId;
   @override
+  @JsonKey(name: 'source_wallet')
+  final WalletDto? sourceWallet;
+  @override
+  @JsonKey(name: 'destination_wallet')
+  final WalletDto? destinationWallet;
+  @override
   @JsonKey(name: 'from_wallet_client_id')
   final String? fromWalletClientId;
   @override
@@ -415,7 +488,7 @@ class _$TransferDtoImpl extends _TransferDto {
 
   @override
   String toString() {
-    return 'TransferDto(id: $id, userId: $userId, clientId: $clientId, rev: $rev, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, lastSyncedAt: $lastSyncedAt, amount: $amount, fromWalletId: $fromWalletId, toWalletId: $toWalletId, fromWalletClientId: $fromWalletClientId, toWalletClientId: $toWalletClientId, exchangeRate: $exchangeRate, datetime: $datetime, expenseTransactionClientId: $expenseTransactionClientId, incomeTransactionClientId: $incomeTransactionClientId)';
+    return 'TransferDto(id: $id, userId: $userId, clientId: $clientId, rev: $rev, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, lastSyncedAt: $lastSyncedAt, amount: $amount, fromWalletId: $fromWalletId, toWalletId: $toWalletId, sourceWallet: $sourceWallet, destinationWallet: $destinationWallet, fromWalletClientId: $fromWalletClientId, toWalletClientId: $toWalletClientId, exchangeRate: $exchangeRate, datetime: $datetime, expenseTransactionClientId: $expenseTransactionClientId, incomeTransactionClientId: $incomeTransactionClientId)';
   }
 
   @override
@@ -441,6 +514,10 @@ class _$TransferDtoImpl extends _TransferDto {
                 other.fromWalletId == fromWalletId) &&
             (identical(other.toWalletId, toWalletId) ||
                 other.toWalletId == toWalletId) &&
+            (identical(other.sourceWallet, sourceWallet) ||
+                other.sourceWallet == sourceWallet) &&
+            (identical(other.destinationWallet, destinationWallet) ||
+                other.destinationWallet == destinationWallet) &&
             (identical(other.fromWalletClientId, fromWalletClientId) ||
                 other.fromWalletClientId == fromWalletClientId) &&
             (identical(other.toWalletClientId, toWalletClientId) ||
@@ -460,25 +537,28 @@ class _$TransferDtoImpl extends _TransferDto {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      userId,
-      clientId,
-      rev,
-      createdAt,
-      updatedAt,
-      deletedAt,
-      lastSyncedAt,
-      amount,
-      fromWalletId,
-      toWalletId,
-      fromWalletClientId,
-      toWalletClientId,
-      exchangeRate,
-      datetime,
-      expenseTransactionClientId,
-      incomeTransactionClientId);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        userId,
+        clientId,
+        rev,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        lastSyncedAt,
+        amount,
+        fromWalletId,
+        toWalletId,
+        sourceWallet,
+        destinationWallet,
+        fromWalletClientId,
+        toWalletClientId,
+        exchangeRate,
+        datetime,
+        expenseTransactionClientId,
+        incomeTransactionClientId
+      ]);
 
   /// Create a copy of TransferDto
   /// with the given fields replaced by the non-null parameter values.
@@ -510,6 +590,8 @@ abstract class _TransferDto extends TransferDto {
       @JsonKey(fromJson: parseAmount) required final double amount,
       @JsonKey(name: 'from_wallet_id') final int? fromWalletId,
       @JsonKey(name: 'to_wallet_id') final int? toWalletId,
+      @JsonKey(name: 'source_wallet') final WalletDto? sourceWallet,
+      @JsonKey(name: 'destination_wallet') final WalletDto? destinationWallet,
       @JsonKey(name: 'from_wallet_client_id') final String? fromWalletClientId,
       @JsonKey(name: 'to_wallet_client_id') final String? toWalletClientId,
       @JsonKey(name: 'exchange_rate', fromJson: parseAmountNullable)
@@ -555,6 +637,12 @@ abstract class _TransferDto extends TransferDto {
   @override
   @JsonKey(name: 'to_wallet_id')
   int? get toWalletId;
+  @override
+  @JsonKey(name: 'source_wallet')
+  WalletDto? get sourceWallet;
+  @override
+  @JsonKey(name: 'destination_wallet')
+  WalletDto? get destinationWallet;
   @override
   @JsonKey(name: 'from_wallet_client_id')
   String? get fromWalletClientId;
