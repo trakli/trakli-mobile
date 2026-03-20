@@ -11,6 +11,13 @@ import 'package:trakli/data/datasources/transaction/dto/transaction_complete_dto
 abstract class TransactionRemoteDataSource {
   Future<List<TransactionCompleteDto>> getAllTransactions(
       {DateTime? syncedSince, bool? noClientId});
+
+  /// Stream-based pagination: yields one page of transactions at a time.
+  ///
+  /// This is useful for sync flows that want to keep memory bounded by
+  /// processing each page immediately instead of accumulating everything.
+  Stream<List<TransactionCompleteDto>> getAllTransactionsStream(
+      {DateTime? syncedSince, bool? noClientId});
   Future<TransactionCompleteDto> getTransaction(int id);
   Future<TransactionCompleteDto> insertTransaction(
       TransactionCompleteDto transaction);
@@ -46,6 +53,16 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
   Future<List<TransactionCompleteDto>> getAllTransactions(
       {DateTime? syncedSince, bool? noClientId}) async {
     final allItems = <TransactionCompleteDto>[];
+    await for (final page
+        in getAllTransactionsStream(syncedSince: syncedSince, noClientId: noClientId)) {
+      allItems.addAll(page);
+    }
+    return allItems;
+  }
+
+  @override
+  Stream<List<TransactionCompleteDto>> getAllTransactionsStream(
+      {DateTime? syncedSince, bool? noClientId}) async* {
     int currentPage = 1;
     int limit = 10;
 
@@ -60,7 +77,7 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
         queryParams['no_client_id'] = noClientId;
       }
 
-      queryParams['limit'] = limit;
+      // queryParams['limit'] = limit;
 
 
 
@@ -74,7 +91,10 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
             json! as Map<String, dynamic>),
       );
 
-      allItems.addAll(paginatedResponse.data);
+      // Emit the current page.
+      if (paginatedResponse.data.isNotEmpty) {
+        yield paginatedResponse.data;
+      }
 
       if (!paginatedResponse.hasMore) {
         break;
@@ -82,7 +102,7 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
       currentPage++;
     }
 
-    return allItems;
+    // When the loop exits, all pages have been emitted.
   }
 
   @override

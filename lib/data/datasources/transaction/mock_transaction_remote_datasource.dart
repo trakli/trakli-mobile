@@ -114,6 +114,12 @@ class MockTransactionRemoteDataSource implements TransactionRemoteDataSource {
     // TODO: implement delete   MediaFromTransaction
     throw UnimplementedError();
   }
+  
+  @override
+  Stream<List<TransactionCompleteDto>> getAllTransactionsStream({DateTime? syncedSince, bool? noClientId}) {
+    // TODO: implement getAllTransactionsStream
+    throw UnimplementedError();
+  }
 
   // Simulate network error
 }

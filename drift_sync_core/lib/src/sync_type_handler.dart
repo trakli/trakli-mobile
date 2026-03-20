@@ -54,6 +54,14 @@ abstract class SyncTypeHandler<TEntity, TKey, TServerKey> {
   }
 }
 
+/// Optional capability for handlers that can stream remote entities in pages.
+///
+/// This allows the synchronizer to process changes incrementally instead of
+/// loading all remote items into memory at once.
+abstract class PagedSyncTypeHandler<TEntity> {
+  Stream<List<TEntity>> getAllRemoteStream({DateTime? syncedSince, bool? noClientId});
+}
+
 // Helper typedefs for clarity
 typedef StringSyncTypeHandler<TEntity> = SyncTypeHandler<TEntity, String, int>;
 typedef IntSyncTypeHandler<TEntity> = SyncTypeHandler<TEntity, int, int>;

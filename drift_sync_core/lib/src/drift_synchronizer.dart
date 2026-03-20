@@ -431,51 +431,107 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         }
 
         try {
-          // 2. Fetch changed items from remote since last sync (or all if full)
-          final changedItems = await handler.getAllRemote(
-              syncedSince: isFull != true ? lastSyncedAt : null);
-
-          if (changedItems.isEmpty) {
-            _dependencyManager.markSuccessfullySynced(handler);
-            continue;
-          }
-
-          // 3. Upsert items first, then delete stale items (safer order)
-          // This ensures we don't lose data if upsert fails
-          await appDatabase.transaction(() async {
-            // First upsert all changed items
-            await handler.upsertAllLocal(changedItems);
-
-            // For full sync, delete items not in the response
-            // This is safer than deleting first because we preserve data on failure
-            if (isFull == true) {
-              final remoteClientIds = <String>{};
-              for (final item in changedItems) {
-                final clientId = handler.getClientId(item);
-                if (clientId.isNotEmpty) {
-                  remoteClientIds.add(clientId);
-                }
-              }
-              await handler.deleteLocalNotIn(remoteClientIds);
-            }
-
-            // Find the maximum lastSyncedAt timestamp from all changed items
+          // Prefer streaming handlers to keep memory bounded.
+          if (handler is PagedSyncTypeHandler) {
+            final pagedHandler = handler as PagedSyncTypeHandler<dynamic>;
+            final remoteClientIds = <String>{};
             DateTime? maxLastSyncedAt;
-            for (final item in changedItems) {
-              final itemLastSyncedAt = handler.getlastSyncedAt(item);
-              if (itemLastSyncedAt != null) {
-                if (maxLastSyncedAt == null ||
-                    itemLastSyncedAt.isAfter(maxLastSyncedAt)) {
-                  maxLastSyncedAt = itemLastSyncedAt;
+            var sawAny = false;
+
+            await for (final page in pagedHandler.getAllRemoteStream(
+              syncedSince: isFull != true ? lastSyncedAt : null,
+            )) {
+              if (page.isEmpty) continue;
+              sawAny = true;
+
+              await appDatabase.transaction(() async {
+                for (final item in page) {
+      
+                  await handler.upsertLocal(item as dynamic);
+
+                  // Collect client IDs for full-sync deletion.
+                  if (isFull == true) {
+                    final clientId = handler.getClientId(item);
+                    if (clientId.isNotEmpty) {
+                      remoteClientIds.add(clientId);
+                    }
+                  }
+
+                  // Track max lastSyncedAt for metadata update.
+                  final itemLastSyncedAt = handler.getlastSyncedAt(item);
+                  if (itemLastSyncedAt != null) {
+                    final currentMax = maxLastSyncedAt;
+                    if (currentMax == null ||
+                        itemLastSyncedAt.isAfter(currentMax)) {
+                      maxLastSyncedAt = itemLastSyncedAt;
+                    }
+                  }
                 }
-              }
+              });
             }
 
-            await appDatabase.updateEnityLocalSyncMetadata(
-              entityType: handler.entityType,
-              lastSyncedAt: maxLastSyncedAt,
-            );
-          });
+            if (!sawAny) {
+              _dependencyManager.markSuccessfullySynced(handler);
+              continue;
+            }
+
+            await appDatabase.transaction(() async {
+              if (isFull == true) {
+                await handler.deleteLocalNotIn(remoteClientIds);
+              }
+
+              await appDatabase.updateEnityLocalSyncMetadata(
+                entityType: handler.entityType,
+                lastSyncedAt: maxLastSyncedAt,
+              );
+            });
+          } else {
+            final changedItems = await handler.getAllRemote(
+                syncedSince: isFull != true ? lastSyncedAt : null);
+
+            if (changedItems.isEmpty) {
+              _dependencyManager.markSuccessfullySynced(handler);
+              continue;
+            }
+
+            // 3. Upsert items first, then delete stale items (safer order)
+            // This ensures we don't lose data if upsert fails
+            await appDatabase.transaction(() async {
+              // First upsert all changed items
+              await handler.upsertAllLocal(changedItems);
+
+              // For full sync, delete items not in the response
+              // This is safer than deleting first because we preserve data on failure
+              if (isFull == true) {
+                final remoteClientIds = <String>{};
+                for (final item in changedItems) {
+                  final clientId = handler.getClientId(item);
+                  if (clientId.isNotEmpty) {
+                    remoteClientIds.add(clientId);
+                  }
+                }
+                await handler.deleteLocalNotIn(remoteClientIds);
+              }
+
+              // Find the maximum lastSyncedAt timestamp from all changed items
+              DateTime? maxLastSyncedAt;
+              for (final item in changedItems) {
+                final itemLastSyncedAt = handler.getlastSyncedAt(item);
+                if (itemLastSyncedAt != null) {
+                  if (maxLastSyncedAt == null ||
+                      itemLastSyncedAt
+                          .isAfter(maxLastSyncedAt)) {
+                    maxLastSyncedAt = itemLastSyncedAt;
+                  }
+                }
+              }
+
+              await appDatabase.updateEnityLocalSyncMetadata(
+                entityType: handler.entityType,
+                lastSyncedAt: maxLastSyncedAt,
+              );
+            });
+          }
 
           _dependencyManager.markSuccessfullySynced(handler);
           DriftSyncLogger.logger.info(

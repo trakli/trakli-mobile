@@ -13,7 +13,9 @@ import 'package:trakli/core/utils/id_helper.dart';
 @lazySingleton
 class TransactionSyncHandler
     extends SyncTypeHandler<TransactionCompleteDto, String, int>
-    with RestSyncTypeHandler<TransactionCompleteDto, String, int> {
+    with
+        RestSyncTypeHandler<TransactionCompleteDto, String, int>
+    implements PagedSyncTypeHandler<TransactionCompleteDto> {
   static const String entity = 'transaction';
 
   TransactionSyncHandler(
@@ -104,6 +106,15 @@ class TransactionSyncHandler
     return remoteDataSource.getAllTransactions(
       noClientId: noClientId,
       syncedSince: syncedSince,
+    );
+  }
+
+  @override
+  Stream<List<TransactionCompleteDto>> getAllRemoteStream(
+      {DateTime? syncedSince, bool? noClientId}) {
+    return remoteDataSource.getAllTransactionsStream(
+      syncedSince: syncedSince,
+      noClientId: noClientId,
     );
   }
 
