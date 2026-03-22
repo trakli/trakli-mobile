@@ -563,6 +563,7 @@
   "helpUsImprove": "Help us improve (optional)",
   "whyDeleteAccount": "Why are you deleting your account?",
   "transactionsDesc": "All money movements in one place",
+  "transfersDesc": "Move money between your wallets",
   "categoryDesc": "Organize transactions by type",
   "groupsDesc": "Bundle related transactions",
   "partiesDesc": "People and organizations you transact with",
