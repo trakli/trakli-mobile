@@ -124,6 +124,15 @@ class CustomDrawer extends StatelessWidget {
               iconPath: Assets.images.refresh,
               subtitle: LocaleKeys.transactionsDesc.tr(),
             ),
+            _listItem(
+              context,
+              onTap: () {
+                AppNavigator.push(context, const TransfersScreen());
+              },
+              title: LocaleKeys.transfers.tr(),
+              iconPath: Assets.images.arrowUpDown,
+              subtitle: LocaleKeys.transfersDesc.tr(),
+            ),
             Divider(
               color: Colors.grey.shade500,
             ),

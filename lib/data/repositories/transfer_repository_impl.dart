@@ -1,23 +1,24 @@
 import 'dart:async';
+
 import 'package:drift/drift.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:drift_sync_core/drift_sync_core.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/core/error/repository_error_handler.dart';
 import 'package:trakli/core/utils/date_util.dart';
 import 'package:trakli/core/utils/id_helper.dart';
-import 'package:trakli/data/database/app_database.dart';
-import 'package:trakli/data/datasources/transfer/transfer_local_datasource.dart';
-import 'package:trakli/data/datasources/transaction/transaction_local_datasource.dart';
-import 'package:trakli/data/datasources/transaction/dto/transaction_complete_dto.dart';
-import 'package:trakli/data/repositories/transaction_repository_impl.dart';
-import 'package:trakli/presentation/utils/enums.dart';
-import 'package:trakli/data/mappers/transfer_mapper.dart';
-import 'package:trakli/data/sync/transfer_sync_handler.dart';
 import 'package:trakli/core/utils/services/logger.dart';
+import 'package:trakli/data/database/app_database.dart';
+import 'package:trakli/data/datasources/transaction/dto/transaction_complete_dto.dart';
+import 'package:trakli/data/datasources/transaction/transaction_local_datasource.dart';
+import 'package:trakli/data/datasources/transfer/transfer_local_datasource.dart';
+import 'package:trakli/data/mappers/transfer_mapper.dart';
+import 'package:trakli/data/repositories/transaction_repository_impl.dart';
+import 'package:trakli/data/sync/transfer_sync_handler.dart';
 import 'package:trakli/domain/entities/transfer_entity.dart';
 import 'package:trakli/domain/repositories/transfer_repository.dart';
+import 'package:trakli/presentation/utils/enums.dart';
 
 @LazySingleton(as: TransferRepository)
 class TransferRepositoryImpl
@@ -55,8 +56,10 @@ class TransferRepositoryImpl
   @override
   Future<Either<Failure, Unit>> insertTransfer(TransferEntity entity) {
     return RepositoryErrorHandler.handleApiCall(() async {
+      final clientId = await generateDeviceScopedId();
+
       final companion = TransfersCompanion.insert(
-        clientId: Value(entity.clientId.isEmpty ? await generateDeviceScopedId() : entity.clientId),
+        clientId: Value(clientId),
         amount: entity.amount,
         fromWalletId: Value(entity.fromWalletId),
         toWalletId: Value(entity.toWalletId),
@@ -170,8 +173,7 @@ class TransferRepositoryImpl
           createdAt: Value(now),
           updatedAt: Value(now),
           exchangeRate: Value(exchangeRate),
-          expenseTransactionClientId:
-              Value(expenseDto.transaction.clientId),
+          expenseTransactionClientId: Value(expenseDto.transaction.clientId),
           incomeTransactionClientId: Value(incomeDto.transaction.clientId),
         );
 
@@ -215,7 +217,8 @@ class TransferRepositoryImpl
 
       await post(transfer);
     } catch (e, st) {
-      logger.w('Transfer sync failed (transactions then transfer)', error: e, stackTrace: st);
+      logger.w('Transfer sync failed (transactions then transfer)',
+          error: e, stackTrace: st);
     }
   }
 }
