@@ -194,10 +194,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
             children: [
               Text(
                 LocaleKeys.transactionAmount.tr(),
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
               SizedBox(height: 8.h),
               IntrinsicHeight(
@@ -273,10 +272,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               SizedBox(height: 16.h),
               Text(
                 LocaleKeys.wallet.tr(),
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
               SizedBox(height: 8.h),
               IntrinsicHeight(
@@ -369,10 +367,10 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                       children: [
                         Text(
                           LocaleKeys.transactionDate.tr(),
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
                           overflow: TextOverflow.ellipsis,
                         ),
                         TextFormField(
@@ -420,10 +418,10 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                       children: [
                         Text(
                           LocaleKeys.transactionTime.tr(),
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
                           overflow: TextOverflow.ellipsis,
                         ),
                         TextFormField(
@@ -473,10 +471,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                 widget.transactionType == TransactionType.expense
                     ? '${LocaleKeys.transactionSentTo.tr()} (${LocaleKeys.party.tr()})'
                     : '${LocaleKeys.transactionReceivedFrom.tr()} (${LocaleKeys.party.tr()})',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
               SizedBox(height: 8.h),
               IntrinsicHeight(
@@ -537,10 +534,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               SizedBox(height: 16.h),
               Text(
                 LocaleKeys.transactionCategory.tr(),
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
               SizedBox(height: 8.h),
               IntrinsicHeight(
@@ -655,10 +651,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               SizedBox(height: 16.h),
               Text(
                 LocaleKeys.transactionDescription.tr(),
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
               SizedBox(height: 8.h),
               TextFormField(
@@ -676,10 +671,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               SizedBox(height: 16.h),
               Text(
                 LocaleKeys.transactionAttachment.tr(),
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
               SizedBox(height: 8.h),
               AttachmentSourceRow(
