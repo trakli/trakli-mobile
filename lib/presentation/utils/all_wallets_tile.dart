@@ -31,7 +31,7 @@ class AllWalletsTile extends StatelessWidget {
     );
     final totalIncome = totals.totalIncome;
     final totalExpense = totals.totalExpense;
-    
+
     // Calculate balance from transactions (income - expense)
     final totalBalance = totalIncome - totalExpense;
 
@@ -46,8 +46,13 @@ class AllWalletsTile extends StatelessWidget {
           Positioned(
             bottom: 0,
             left: 0,
-            child: SvgPicture.asset(
-              Assets.images.bottomLeftCircle,
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16.r),
+              ),
+              child: SvgPicture.asset(
+                Assets.images.bottomLeftCircle,
+              ),
             ),
           ),
           Padding(

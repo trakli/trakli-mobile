@@ -39,9 +39,9 @@ class DashboardExpenses extends StatelessWidget {
                 legendItemBuilder:
                     (String name, dynamic series, dynamic point, int index) {
                   final Color color = index == 0
-                      ? Theme.of(context).primaryColor
-                      : expenseRedText;
-                  final double value = index == 0 ? totalIncome : totalExpense;
+                      ? expenseRedText
+                      : Theme.of(context).primaryColor;
+                  final double value = index == 0 ? totalExpense : totalIncome;
                   return Row(
                     spacing: 6.w,
                     children: [

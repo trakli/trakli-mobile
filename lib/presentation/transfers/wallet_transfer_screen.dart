@@ -1,25 +1,26 @@
+import 'dart:ui' as ui;
+
 import 'package:currency_picker/currency_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:trakli/core/utils/currency_formater.dart';
+import 'package:trakli/core/utils/date_util.dart';
+import 'package:trakli/core/utils/exchange_rate_formatter.dart';
+import 'package:trakli/data/datasources/core/amount_parser.dart';
+import 'package:trakli/domain/entities/transfer_entity.dart';
+import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/gen/translations/locale_keys.g.dart';
+import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
+import 'package:trakli/presentation/remote_config/cubit/remote_config_cubit.dart';
+import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
 import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
 import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
-import 'dart:ui' as ui;
-import 'package:easy_localization/easy_localization.dart';
-import 'package:trakli/gen/translations/locale_keys.g.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trakli/core/utils/date_util.dart';
-import 'package:trakli/domain/entities/transfer_entity.dart';
-import 'package:trakli/domain/entities/wallet_entity.dart';
-import 'package:trakli/core/utils/currency_formater.dart';
-import 'package:trakli/core/utils/exchange_rate_formatter.dart';
-import 'package:trakli/data/datasources/core/amount_parser.dart';
-import 'package:trakli/presentation/remote_config/cubit/remote_config_cubit.dart';
-import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
-import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 
 class WalletTransferScreen extends StatefulWidget {
@@ -85,8 +86,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                 exchangeRateEntity.rates[selectedFromWallet!.currencyCode] ??
                     1.0;
             final toRate =
-                exchangeRateEntity.rates[selectedToWallet!.currencyCode] ??
-                    1.0;
+                exchangeRateEntity.rates[selectedToWallet!.currencyCode] ?? 1.0;
             defaultRate = toRate / fromRate;
           }
           _exchangeRateController.text =
@@ -258,8 +258,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
     }
     final receiveAmount = (selectedFromWallet != null &&
             selectedToWallet != null &&
-            selectedFromWallet!.currencyCode ==
-                selectedToWallet!.currencyCode)
+            selectedFromWallet!.currencyCode == selectedToWallet!.currencyCode)
         ? amount
         : amount * exchangeRate;
 
@@ -278,7 +277,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
 
   void _performTransfer() {
     hideKeyBoard();
-    
+
     final validationError = _validateForm();
     if (validationError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -298,12 +297,10 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
       if (selectedFromWallet != null &&
           selectedToWallet != null &&
           selectedFromWallet!.currencyCode != selectedToWallet!.currencyCode) {
-        final parsedRate =
-            parseAmount(_exchangeRateController.text.trim());
+        final parsedRate = parseAmount(_exchangeRateController.text.trim());
         exchangeRate = parsedRate > 0 ? parsedRate : 1.0;
       }
 
-  
       final receiveAmount = (selectedFromWallet != null &&
               selectedToWallet != null &&
               selectedFromWallet!.currencyCode ==
@@ -317,7 +314,9 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
           SnackBar(
             content: Text(
               LocaleKeys.amountNotZero.tr(
-                namedArgs: {'minAmount': _minimumTransferAmountForLocale(context)},
+                namedArgs: {
+                  'minAmount': _minimumTransferAmountForLocale(context)
+                },
               ),
             ),
             backgroundColor: Colors.red,
@@ -370,7 +369,10 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 14.r, vertical: 12.h),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(102),
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withAlpha(102),
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
           color: Theme.of(context).colorScheme.outline.withAlpha(51),
@@ -387,7 +389,8 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              LocaleKeys.destinationWalletWillReceive.tr(namedArgs: {'amount': formatted}),
+              LocaleKeys.destinationWalletWillReceive
+                  .tr(namedArgs: {'amount': formatted}),
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
@@ -408,18 +411,18 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
     final wallets = context.watch<WalletCubit>().state.wallets;
     final availableWallets = isFromWallet
         ? wallets
-        : wallets.where((w) => w.clientId != selectedFromWallet?.clientId).toList();
+        : wallets
+            .where((w) => w.clientId != selectedFromWallet?.clientId)
+            .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w700,
-            color: Theme.of(context).primaryColorDark,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
         ),
         SizedBox(height: 8.h),
         GestureDetector(
@@ -432,7 +435,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(0xFFE6F2EC),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16.r),
               border: selectedWallet == null
                   ? Border.all(color: Colors.red.withAlpha(102), width: 1)
@@ -443,7 +446,18 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                 Positioned(
                   bottom: 0,
                   left: 0,
-                  child: SvgPicture.asset(Assets.images.bottomLeftCircle),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(16.r),
+                    ),
+                    child: SvgPicture.asset(
+                      Assets.images.bottomLeftCircle,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.onSurface,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ),
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(
@@ -500,7 +514,8 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
         if (state.failure.hasError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(LocaleKeys.transferFailedWithMessage.tr(namedArgs: {'message': state.failure.customMessage})),
+              content: Text(LocaleKeys.transferFailedWithMessage
+                  .tr(namedArgs: {'message': state.failure.customMessage})),
               backgroundColor: Colors.red,
             ),
           );
@@ -520,8 +535,11 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
         ),
         body: BlocBuilder<TransferCubit, TransferState>(
           builder: (context, transferState) {
-            final minTransferAmount =
-                context.read<RemoteConfigCubit>().state.config.minimumTransferAmount;
+            final minTransferAmount = context
+                .read<RemoteConfigCubit>()
+                .state
+                .config
+                .minimumTransferAmount;
             final minTransferAmountForLocale = minTransferAmount
                 .toStringAsFixed(6)
                 .replaceAll(RegExp(r'0+$'), '')
@@ -556,7 +574,8 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                           top: 0.14.sh,
                           child: GestureDetector(
                             onTap: () {
-                              if (selectedFromWallet != null && selectedToWallet != null) {
+                              if (selectedFromWallet != null &&
+                                  selectedToWallet != null) {
                                 setState(() {
                                   final temp = selectedFromWallet;
                                   selectedFromWallet = selectedToWallet;
@@ -583,11 +602,9 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                     SizedBox(height: 24.h),
                     Text(
                       LocaleKeys.amount.tr(),
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).primaryColorDark,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
                     ),
                     SizedBox(height: 8.h),
                     TextFormField(
@@ -612,22 +629,24 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                             },
                           );
                         }
-                        if (selectedFromWallet != null && number > selectedFromWallet!.balance) {
-                          return LocaleKeys.amountMustNotBeZero.tr(); // fallback until locale keys update
+                        if (selectedFromWallet != null &&
+                            number > selectedFromWallet!.balance) {
+                          return LocaleKeys.amountMustNotBeZero
+                              .tr(); // fallback until locale keys update
                         }
                         return null;
                       },
                     ),
-                    if (selectedFromWallet != null && selectedToWallet != null && 
-                        selectedFromWallet!.currencyCode != selectedToWallet!.currencyCode) ...[
+                    if (selectedFromWallet != null &&
+                        selectedToWallet != null &&
+                        selectedFromWallet!.currencyCode !=
+                            selectedToWallet!.currencyCode) ...[
                       SizedBox(height: 12.h),
                       Text(
                         LocaleKeys.exchangeRate.tr(),
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).primaryColorDark,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                       SizedBox(height: 6.h),
                       TextFormField(
@@ -644,7 +663,10 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                       Container(
                         padding: EdgeInsets.all(12.r),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondaryContainer.withAlpha(102),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .secondaryContainer
+                              .withAlpha(102),
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Row(
@@ -652,7 +674,6 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                             Icon(
                               Icons.currency_exchange,
                               size: 16.sp,
-                              color: Theme.of(context).colorScheme.onSecondaryContainer,
                             ),
                             SizedBox(width: 8.w),
                             Expanded(
@@ -660,7 +681,6 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                                 '${LocaleKeys.convertingFrom.tr()} ${selectedFromWallet!.currencyCode} ${LocaleKeys.to.tr()} ${selectedToWallet!.currencyCode}',
                                 style: TextStyle(
                                   fontSize: 12.sp,
-                                  color: Theme.of(context).colorScheme.onSecondaryContainer,
                                 ),
                               ),
                             ),
@@ -680,7 +700,8 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                       height: 54.h,
                       width: double.infinity,
                       child: PrimaryButton(
-                        onPress: transferState.isSaving ? null : _performTransfer,
+                        onPress:
+                            transferState.isSaving ? null : _performTransfer,
                         buttonText: transferState.isSaving
                             ? LocaleKeys.processing.tr()
                             : LocaleKeys.transferMoney.tr(),
