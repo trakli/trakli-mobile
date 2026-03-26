@@ -39,7 +39,7 @@ class StatisticsScreen extends StatefulWidget {
 class _StatisticsScreenState extends State<StatisticsScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-  PageController pageController = PageController();
+  late PageController pageController;
   DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 
   @override
@@ -49,6 +49,8 @@ class _StatisticsScreenState extends State<StatisticsScreen>
     tabController.addListener(() {
       setState(() {});
     });
+    final statCubit = context.read<StatisticsFilterCubit>();
+    pageController = PageController(initialPage: statCubit.state.statViewIndex);
   }
 
   List<TransactionCompleteEntity> _filterTransactions(
@@ -184,8 +186,8 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                         child: ListView.separated(
                           shrinkWrap: true,
                           physics: const BouncingScrollPhysics(),
-                          itemCount:
-                              wallets.length + 1, // +1 for "All wallets" option
+                          itemCount: wallets.length + 1,
+                          // +1 for "All wallets" option
                           itemBuilder: (context, index) {
                             if (index == 0) {
                               // "All wallets" option
@@ -393,6 +395,11 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                             height: 0.38.sh,
                             child: PageView(
                               controller: pageController,
+                              onPageChanged: (index) {
+                                final statCubit =
+                                    context.read<StatisticsFilterCubit>();
+                                statCubit.setViewIndex(index);
+                              },
                               children: [
                                 statOne(
                                   transactions: transactions,

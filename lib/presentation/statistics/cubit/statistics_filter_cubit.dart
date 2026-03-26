@@ -31,4 +31,8 @@ class StatisticsFilterCubit extends Cubit<StatisticsFilterState> {
   void setWallet(String? clientId) {
     emit(state.copyWith(walletClientId: clientId));
   }
+
+  void setViewIndex(int index) {
+    emit(state.copyWith(statViewIndex: index));
+  }
 }
