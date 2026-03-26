@@ -4,11 +4,13 @@ class StatisticsFilterState {
     this.startDate,
     this.endDate,
     this.walletClientId,
+    this.statViewIndex = 0,
   });
 
   final DateTime? startDate;
   final DateTime? endDate;
   final String? walletClientId;
+  final int statViewIndex;
 
   static const _unchanged = Object();
 
@@ -16,12 +18,15 @@ class StatisticsFilterState {
     DateTime? startDate,
     DateTime? endDate,
     Object? walletClientId = _unchanged,
+    int? statViewIndex,
   }) {
     return StatisticsFilterState(
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
-      walletClientId:
-          walletClientId == _unchanged ? this.walletClientId : walletClientId as String?,
+      walletClientId: walletClientId == _unchanged
+          ? this.walletClientId
+          : walletClientId as String?,
+      statViewIndex: statViewIndex ?? this.statViewIndex,
     );
   }
 }
