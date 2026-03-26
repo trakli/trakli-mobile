@@ -10,13 +10,13 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
+import 'package:trakli/presentation/transfers/wallet_transfer_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/dialogs/pop_up_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/wallets/add_wallet_screen.dart';
-import 'package:trakli/presentation/transfers/wallet_transfer_screen.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 
 class WalletTile extends StatelessWidget {
@@ -53,7 +53,7 @@ class WalletTile extends StatelessWidget {
     );
     final totalIncome = totals.totalIncome;
     final totalExpense = totals.totalExpense;
-    
+
     // Calculate balance from transactions (income - expense)
     final walletBalance = totalIncome - totalExpense;
 
@@ -68,8 +68,13 @@ class WalletTile extends StatelessWidget {
           Positioned(
             bottom: 0,
             left: 0,
-            child: SvgPicture.asset(
-              Assets.images.bottomLeftCircle,
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(8.r),
+              ),
+              child: SvgPicture.asset(
+                Assets.images.bottomLeftCircle,
+              ),
             ),
           ),
           Padding(

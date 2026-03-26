@@ -5,19 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
+import 'package:trakli/domain/entities/media_file_entity.dart';
+import 'package:trakli/domain/entities/party_entity.dart';
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
-import 'package:trakli/core/constants/config_constants.dart';
+import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/category/add_category_screen.dart';
 import 'package:trakli/presentation/category/cubit/category_cubit.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
-import 'package:trakli/providers/chart_data_provider.dart';
-import 'package:trakli/gen/assets.gen.dart';
-import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/presentation/wallets/add_wallet_screen.dart';
-import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
-import 'package:trakli/presentation/category/add_category_screen.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/select_wallet_bottom_sheet.dart';
@@ -25,12 +24,13 @@ import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
 import 'package:trakli/presentation/utils/dialogs/add_party_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
-import 'package:trakli/domain/entities/party_entity.dart';
-import 'package:trakli/domain/entities/media_file_entity.dart';
+import 'package:trakli/presentation/wallets/add_wallet_screen.dart';
+import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_display_cache.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_list_item.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_list_view.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_source_row.dart';
+import 'package:trakli/providers/chart_data_provider.dart';
 
 class AddTransactionForm extends StatefulWidget {
   final TransactionType transactionType;
@@ -60,6 +60,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController walletController = TextEditingController();
+
   // TextEditingController partyController = TextEditingController();
   Currency? currency;
   WalletEntity? selectedWallet;
@@ -196,7 +197,6 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
               SizedBox(height: 8.h),
@@ -259,7 +259,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                           maxHeight: 50.h,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFDEE1E0),
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Center(
@@ -276,7 +276,6 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
               SizedBox(height: 8.h),
@@ -292,6 +291,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                         onTap: () {
                           showCustomBottomSheet(
                             context,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                             widget: BlocBuilder<WalletCubit, WalletState>(
                               builder: (context, state) {
                                 return SelectWalletBottomSheet(
@@ -347,7 +347,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                           maxHeight: 50.h,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFDEE1E0),
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Center(
@@ -372,7 +372,6 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
-                            color: Theme.of(context).primaryColorDark,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -424,7 +423,6 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
-                            color: Theme.of(context).primaryColorDark,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -478,7 +476,6 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
               SizedBox(height: 8.h),
@@ -526,13 +523,11 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                           maxHeight: 50.h,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFDEE1E0),
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            Assets.images.add,
-                          ),
+                        child: const Center(
+                          child: Icon(Icons.add),
                         ),
                       ),
                     ),
@@ -545,7 +540,6 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
               SizedBox(height: 8.h),
@@ -647,13 +641,11 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                           maxHeight: 50.h,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFDEE1E0),
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            Assets.images.add,
-                          ),
+                        child: const Center(
+                          child: Icon(Icons.add),
                         ),
                       ),
                     ),
@@ -666,7 +658,6 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
               SizedBox(height: 8.h),
@@ -688,7 +679,6 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
               SizedBox(height: 8.h),
