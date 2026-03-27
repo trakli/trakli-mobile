@@ -3,11 +3,11 @@ import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/utils/id_helper.dart';
 import 'package:trakli/data/database/app_database.dart';
-import 'package:trakli/data/database/tables/transfers.dart';
 import 'package:trakli/data/database/tables/sync_table.dart';
+import 'package:trakli/data/database/tables/transfers.dart';
+import 'package:trakli/data/datasources/transaction/transaction_local_datasource.dart';
 import 'package:trakli/data/datasources/transfer/dto/transfer_dto.dart';
 import 'package:trakli/data/datasources/transfer/transfer_remote_datasource.dart';
-import 'package:trakli/data/datasources/transaction/transaction_local_datasource.dart';
 
 @lazySingleton
 class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
@@ -110,13 +110,14 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
 
   @override
   Future<void> upsertLocal(Transfer entity) async {
+    // if (entity.clientId.isEmpty) return;
     await table.insertOne(entity, mode: InsertMode.insertOrReplace);
   }
 
   @override
   Future<void> upsertAllLocal(List<Transfer> list) async {
     for (final entity in list) {
-      if (entity.clientId.isEmpty) continue;
+      // if (entity.clientId.isEmpty) continue;
       if (entity.deletedAt != null) {
         await table.deleteWhere((t) => t.clientId.equals(entity.clientId));
       } else {
@@ -133,9 +134,7 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
   @override
   Future<void> deleteLocalNotIn(Set<String> clientIds) async {
     if (clientIds.isEmpty) return;
-    await (db.delete(table)
-          ..where((t) => t.clientId.isNotIn(clientIds)))
-        .go();
+    await (db.delete(table)..where((t) => t.clientId.isNotIn(clientIds))).go();
   }
 
   @override
@@ -176,4 +175,3 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
   @override
   DateTime? getlastSyncedAt(Transfer entity) => entity.lastSyncedAt;
 }
-
