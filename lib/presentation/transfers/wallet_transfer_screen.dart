@@ -39,8 +39,12 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
   Currency? currency;
   WalletEntity? selectedFromWallet;
   WalletEntity? selectedToWallet;
+  DateTime _selectedTransferDate = DateTime.now();
+  TimeOfDay _selectedTransferTime = TimeOfDay.now();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _exchangeRateController = TextEditingController();
+  final TextEditingController _transferDateController = TextEditingController();
+  final TextEditingController _transferTimeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   double _minimumTransferAmount(BuildContext context) =>
@@ -52,11 +56,27 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
     return fixed.replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
   }
 
+  final DateFormat _transferDateFormat = DateFormat('dd-MM-yyyy');
+  final DateFormat _transferTimeFormat = DateFormat('h:mm a');
+
+  void _syncTransferDateTimeControllers() {
+    final combinedDateTime = DateTime(
+      _selectedTransferDate.year,
+      _selectedTransferDate.month,
+      _selectedTransferDate.day,
+      _selectedTransferTime.hour,
+      _selectedTransferTime.minute,
+    );
+    _transferDateController.text = _transferDateFormat.format(combinedDateTime);
+    _transferTimeController.text = _transferTimeFormat.format(combinedDateTime);
+  }
+
   @override
   void initState() {
     super.initState();
     _amountController.addListener(() => setState(() {}));
     _exchangeRateController.addListener(() => setState(() {}));
+    _syncTransferDateTimeControllers();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final wallets = context.read<WalletCubit>().state.wallets;
       if (wallets.isNotEmpty) {
@@ -100,6 +120,8 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
   void dispose() {
     _amountController.dispose();
     _exchangeRateController.dispose();
+    _transferDateController.dispose();
+    _transferTimeController.dispose();
     super.dispose();
   }
 
@@ -326,11 +348,20 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
       }
 
       final now = getNewFormattedUtcDateTime();
+      final selectedDateTime = DateTime(
+        _selectedTransferDate.year,
+        _selectedTransferDate.month,
+        _selectedTransferDate.day,
+        _selectedTransferTime.hour,
+        _selectedTransferTime.minute,
+      );
+      final transferDateTime =
+          getFormattedUtcDateTimeFromUtc(selectedDateTime.toUtc());
 
       final transfer = TransferEntity(
         clientId: '',
         amount: amount,
-        datetime: now,
+        datetime: transferDateTime,
         createdAt: now,
         updatedAt: now,
         exchangeRate: exchangeRate,
@@ -695,6 +726,96 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                       SizedBox(height: 20.h),
                       _buildDestinationReceives(context),
                     ],
+                    SizedBox(height: 24.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                LocaleKeys.transactionDate.tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                              SizedBox(height: 8.h),
+                              TextFormField(
+                                readOnly: true,
+                                controller: _transferDateController,
+                                decoration: InputDecoration(
+                                  suffixIcon: Icon(
+                                    Icons.calendar_today_outlined,
+                                    size: 20.sp,
+                                  ),
+                                ),
+                                onTap: () async {
+                                  final selectedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: _selectedTransferDate,
+                                    firstDate: DateTime.now().subtract(
+                                      const Duration(days: 3650),
+                                    ),
+                                    lastDate: DateTime.now().add(
+                                      const Duration(days: 3650),
+                                    ),
+                                  );
+                                  if (selectedDate != null) {
+                                    setState(() {
+                                      _selectedTransferDate = selectedDate;
+                                      _syncTransferDateTimeControllers();
+                                    });
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                LocaleKeys.transactionTime.tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                              SizedBox(height: 8.h),
+                              TextFormField(
+                                readOnly: true,
+                                controller: _transferTimeController,
+                                decoration: InputDecoration(
+                                  suffixIcon: Icon(
+                                    Icons.access_time_outlined,
+                                    size: 20.sp,
+                                  ),
+                                ),
+                                onTap: () async {
+                                  final selectedTime = await showTimePicker(
+                                    context: context,
+                                    initialTime: _selectedTransferTime,
+                                  );
+                                  if (selectedTime != null) {
+                                    setState(() {
+                                      _selectedTransferTime = selectedTime;
+                                      _syncTransferDateTimeControllers();
+                                    });
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 24.h),
                     SizedBox(
                       height: 54.h,

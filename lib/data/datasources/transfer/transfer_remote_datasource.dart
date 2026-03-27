@@ -60,18 +60,18 @@ class TransferRemoteDataSourceImpl implements TransferRemoteDataSource {
         queryParams['synced_since'] =
             formatServerIsoDateTimeString(syncedSince);
       }
+
       if (noClientId != null) {
         queryParams['no_client_id'] = noClientId;
       }
 
-      final response =
-          await dio.get('transfers', queryParameters: queryParams);
+      final response = await dio.get('transfers', queryParameters: queryParams);
       final apiResponse = ApiResponse.fromJson(response.data);
 
       final paginatedResponse = PaginationResponse.fromJson(
         apiResponse.data as Map<String, dynamic>,
-        (Object? json) => TransferDto.fromJson(json! as Map<String, dynamic>)
-            .toTransfer(),
+        (Object? json) =>
+            TransferDto.fromJson(json! as Map<String, dynamic>).toTransfer(),
       );
 
       if (paginatedResponse.data.isNotEmpty) {
