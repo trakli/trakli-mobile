@@ -14,6 +14,7 @@ class PartyDisplayWidget extends StatelessWidget {
   final TransactionType type;
   final PartyEntity? party;
   final WalletEntity walletEntity;
+  final WalletEntity? transferCounterpartWallet;
   final int maxNameLength;
   final EdgeInsets? padding;
   final double? fromTextSize;
@@ -25,6 +26,7 @@ class PartyDisplayWidget extends StatelessWidget {
   const PartyDisplayWidget({
     super.key,
     required this.party,
+    this.transferCounterpartWallet,
     this.maxNameLength = 10,
     this.padding,
     this.fromTextSize,
@@ -38,6 +40,8 @@ class PartyDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final counterpart = transferCounterpartWallet;
+    final useCounterpart = counterpart != null;
     return Container(
       padding: padding,
       decoration: BoxDecoration(
@@ -58,34 +62,42 @@ class PartyDisplayWidget extends StatelessWidget {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 4.w),
             padding: EdgeInsets.symmetric(
-              vertical: 1.h,
-              horizontal: 1.w,
+              vertical: 4.h,
+              horizontal: 8.w,
             ),
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(4),
+              color: useCounterpart
+                  ? Colors.blueAccent.withAlpha(50)
+                  : Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
               spacing: 4.w,
               children: [
                 ImageWidget(
-                  mediaEntity: party?.icon,
-                  // selectedIcon: Icons.person,
-                  placeholderIcon: Icons.person,
+                  mediaEntity: useCounterpart ? counterpart.icon : party?.icon,
+                  placeholderIcon: useCounterpart ? null : Icons.person,
+                  placeholderImageAsset:
+                      useCounterpart ? Assets.images.wallet : null,
                   placeholderSize: toIconSize ?? 12.sp,
-                  accentColor: transactionTileTextColor,
+                  accentColor: useCounterpart
+                      ? Colors.blueAccent
+                      : transactionTileTextColor,
                   iconSize: toIconSize ?? 12.sp,
                   emojiSize: toIconSize ?? 12.sp,
                 ),
                 SizedBox(
                   // width: 50.w,
                   child: Text(
-                    (party?.name ?? LocaleKeys.unknown.tr())
+                    (useCounterpart
+                            ? counterpart.name
+                            : (party?.name ?? LocaleKeys.unknown.tr()))
                         .extractWords(maxSize: maxNameLength),
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: fromTextSize ?? 12.sp,
+                      fontSize: fromTextSize ?? 9.sp,
                       fontWeight: FontWeight.w700,
+                      color: useCounterpart ? Colors.blueAccent : null,
                     ),
                   ),
                 ),
