@@ -19,6 +19,7 @@ abstract class TransferRepository {
     required String fromWalletClientId,
     required String toWalletClientId,
     required DateTime datetime,
+    required String transactionDescription,
     double? exchangeRate,
   });
 }

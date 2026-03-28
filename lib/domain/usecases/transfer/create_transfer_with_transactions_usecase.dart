@@ -18,6 +18,7 @@ class CreateTransferWithTransactionsUseCase
       fromWalletClientId: params.fromWalletClientId,
       toWalletClientId: params.toWalletClientId,
       datetime: params.datetime,
+      transactionDescription: params.transactionDescription,
       exchangeRate: params.exchangeRate,
     );
   }
@@ -28,6 +29,7 @@ class CreateTransferParams {
   final String fromWalletClientId;
   final String toWalletClientId;
   final DateTime datetime;
+  final String transactionDescription;
   final double? exchangeRate;
 
   CreateTransferParams({
@@ -35,6 +37,7 @@ class CreateTransferParams {
     required this.fromWalletClientId,
     required this.toWalletClientId,
     required this.datetime,
+    required this.transactionDescription,
     this.exchangeRate,
   });
 }
