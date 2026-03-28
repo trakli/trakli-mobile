@@ -11,7 +11,8 @@ import 'package:trakli/data/datasources/transfer/transfer_remote_datasource.dart
 
 @lazySingleton
 class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
-    with RestSyncTypeHandler<Transfer, String, int> {
+    with RestSyncTypeHandler<Transfer, String, int>
+    implements PagedSyncTypeHandler<Transfer> {
   static const String entity = 'transfer';
 
   TransferSyncHandler(
@@ -83,6 +84,17 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
   }
 
   @override
+  Stream<List<Transfer>> getAllRemoteStream({
+    DateTime? syncedSince,
+    bool? noClientId,
+  }) {
+    return remoteDataSource.getAllTransfersStream(
+      syncedSince: syncedSince,
+      noClientId: noClientId,
+    );
+  }
+
+  @override
   Future<Transfer?> restGetRemote(int id) async {
     return remoteDataSource.getTransfer(id);
   }
@@ -110,14 +122,12 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
 
   @override
   Future<void> upsertLocal(Transfer entity) async {
-    // if (entity.clientId.isEmpty) return;
     await table.insertOne(entity, mode: InsertMode.insertOrReplace);
   }
 
   @override
   Future<void> upsertAllLocal(List<Transfer> list) async {
     for (final entity in list) {
-      // if (entity.clientId.isEmpty) continue;
       if (entity.deletedAt != null) {
         await table.deleteWhere((t) => t.clientId.equals(entity.clientId));
       } else {
