@@ -51,7 +51,10 @@ class TransferCubit extends Cubit<TransferState> {
     );
   }
 
-  Future<void> addTransfer(TransferEntity transfer) async {
+  Future<void> addTransfer(
+    TransferEntity transfer, {
+    required String transactionDescription,
+  }) async {
     emit(state.copyWith(isSaving: true, saveSuccess: false, failure: const Failure.none()));
     final result = await createTransferWithTransactionsUseCase(
       CreateTransferParams(
@@ -59,6 +62,7 @@ class TransferCubit extends Cubit<TransferState> {
         fromWalletClientId: transfer.fromWalletClientId ?? '',
         toWalletClientId: transfer.toWalletClientId ?? '',
         datetime: transfer.datetime,
+        transactionDescription: transactionDescription,
         exchangeRate: transfer.exchangeRate,
       ),
     );

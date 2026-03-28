@@ -128,6 +128,7 @@ class TransferRepositoryImpl
     required String fromWalletClientId,
     required String toWalletClientId,
     required DateTime datetime,
+    required String transactionDescription,
     double? exchangeRate,
   }) {
     return RepositoryErrorHandler.handleApiCall(() async {
@@ -141,7 +142,7 @@ class TransferRepositoryImpl
       await db.transaction(() async {
         expenseDto = await transactionLocalDataSource.insertTransaction(
           amount,
-          '',
+          transactionDescription,
           const [],
           TransactionType.expense,
           datetime,
@@ -154,7 +155,7 @@ class TransferRepositoryImpl
 
         incomeDto = await transactionLocalDataSource.insertTransaction(
           incomeAmount,
-          '',
+          transactionDescription,
           const [],
           TransactionType.income,
           datetime,
