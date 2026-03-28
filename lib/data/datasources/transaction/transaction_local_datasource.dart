@@ -660,6 +660,6 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     ])
       ..orderBy([OrderingTerm.desc(database.transactions.createdAt)]);
 
-    return query.watch().map((rows) => mapTransactionAndComplete(rows));
+    return query.watch().map(mapTransactionAndComplete);
   }
 }

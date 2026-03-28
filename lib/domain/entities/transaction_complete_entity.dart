@@ -24,6 +24,12 @@ class TransactionCompleteEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props =>
-      [transaction, categories, wallet, party, group, files];
+  List<Object?> get props => [
+        transaction,
+        categories,
+        wallet,
+        party,
+        group,
+        files,
+      ];
 }
