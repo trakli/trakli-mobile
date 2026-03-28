@@ -190,6 +190,7 @@
   "about": "Über",
   "switchDefaultGroup": "Standardgruppe wechseln",
   "walletTransfer": "Wallet-Überweisung",
+  "walletTransferDefaultDescription": "Geldtransfer von {fromCurrency}-Wallet zu {toCurrency}-Wallet",
   "sourceWallet": "Quell-Wallet",
   "orangeMoney": "Orange money",
   "orangeMoneyAmount": "300.000 XAF",

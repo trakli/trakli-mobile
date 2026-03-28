@@ -188,6 +188,7 @@
   "about": "О приложении",
   "switchDefaultGroup": "Сменить группу по умолчанию",
   "walletTransfer": "Перевод между кошельками",
+  "walletTransferDefaultDescription": "Перевод средств с кошелька {fromCurrency} на кошелек {toCurrency}",
   "sourceWallet": "Исходный кошелек",
   "orangeMoney": "Orange Money",
   "orangeMoneyAmount": "300,000 XAF",

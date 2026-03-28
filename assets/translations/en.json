@@ -188,6 +188,7 @@
   "about": "About",
   "switchDefaultGroup": "Switch default group",
   "walletTransfer": "Wallet transfer",
+  "walletTransferDefaultDescription": "Money transfer from {fromCurrency} wallet to {toCurrency} wallet",
   "sourceWallet": "Source wallet",
   "orangeMoney": "Orange money",
   "orangeMoneyAmount": "300,000 XAF",
