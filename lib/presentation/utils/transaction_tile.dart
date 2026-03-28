@@ -9,12 +9,15 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/add_transaction_screen.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
+import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/transaction_details_bottom_sheet.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/dialogs.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
+import 'package:trakli/presentation/utils/transfer_counterpart_wallet.dart';
+import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 import 'package:trakli/presentation/widgets/categories_widget.dart';
 import 'package:trakli/presentation/widgets/party_display_widget.dart';
 
@@ -56,6 +59,9 @@ class _TransactionTileState extends State<TransactionTile> {
           accentColor: widget.accentColor,
           onDelete: _handleDelete,
           onEdit: _handleEdit,
+          hideActions:
+              widget.transaction.transaction.transferClientId != null &&
+                  widget.transaction.transaction.transferClientId!.isNotEmpty,
         ),
       ),
     );
@@ -78,6 +84,14 @@ class _TransactionTileState extends State<TransactionTile> {
 
   @override
   Widget build(BuildContext context) {
+    final wallets = context.watch<WalletCubit>().state.wallets;
+    final transfers = context.watch<TransferCubit>().state.transfers;
+    final transferCounterpartWallet = transferCounterpartWalletFor(
+      widget.transaction,
+      transfers,
+      wallets,
+    );
+
     final transaction = widget.transaction.transaction;
     final categories = widget.transaction.categories;
 
@@ -87,7 +101,7 @@ class _TransactionTileState extends State<TransactionTile> {
         child: ListTile(
           contentPadding: EdgeInsets.zero,
           horizontalTitleGap: 4.w,
-          isThreeLine: true,
+          isThreeLine: categories.isNotEmpty,
           minVerticalPadding: 8.h,
           onTap: _handleViewDetails,
           leading: Container(
@@ -118,19 +132,19 @@ class _TransactionTileState extends State<TransactionTile> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   PartyDisplayWidget(
-                      type: transaction.type,
-                      party: widget.transaction.party,
-                      walletEntity: widget.transaction.wallet,
-                    ),
-                  // Expanded(
-               
+                  PartyDisplayWidget(
+                    type: transaction.type,
+                    party: widget.transaction.party,
+                    walletEntity: widget.transaction.wallet,
+                    transferCounterpartWallet: transferCounterpartWallet,
+                  ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (
-                          (widget.transaction.transaction.transferClientId != null &&
-                              widget.transaction.transaction.transferClientId!.isNotEmpty)) ...[
+                      if ((widget.transaction.transaction.transferClientId !=
+                              null &&
+                          widget.transaction.transaction.transferClientId!
+                              .isNotEmpty)) ...[
                         Padding(
                           padding: EdgeInsets.only(right: 4.w),
                           child: Icon(

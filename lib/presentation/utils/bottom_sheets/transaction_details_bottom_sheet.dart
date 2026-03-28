@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/core/utils/currency_formater.dart';
@@ -16,6 +17,9 @@ import 'package:trakli/presentation/utils/path_helper.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_list_item.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_list_view.dart';
 import 'package:trakli/presentation/widgets/categories_widget.dart';
+import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
+import 'package:trakli/presentation/utils/transfer_counterpart_wallet.dart';
+import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 import 'package:trakli/presentation/widgets/party_display_widget.dart';
 
 class TransactionDetailsBottomSheet extends StatefulWidget {
@@ -25,12 +29,14 @@ class TransactionDetailsBottomSheet extends StatefulWidget {
     required this.accentColor,
     required this.onDelete,
     required this.onEdit,
+    this.hideActions = false,
   });
 
   final TransactionCompleteEntity transaction;
   final Color accentColor;
   final VoidCallback onDelete;
   final VoidCallback onEdit;
+  final bool hideActions;
 
   @override
   State<TransactionDetailsBottomSheet> createState() =>
@@ -48,6 +54,14 @@ class _TransactionDetailsBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final wallets = context.watch<WalletCubit>().state.wallets;
+    final transfers = context.watch<TransferCubit>().state.transfers;
+    final transferCounterpartWallet = transferCounterpartWalletFor(
+      widget.transaction,
+      transfers,
+      wallets,
+    );
+
     final transaction = widget.transaction.transaction;
     final category = widget.transaction.categories;
     final party = widget.transaction.party;
@@ -159,6 +173,7 @@ class _TransactionDetailsBottomSheetState
                 type: widget.transaction.transaction.type,
                 party: party,
                 walletEntity: wallet,
+                transferCounterpartWallet: transferCounterpartWallet,
                 maxNameLength: 15,
                 fromTextSize: 16.sp,
                 labelSize: 12.sp,
@@ -218,39 +233,41 @@ class _TransactionDetailsBottomSheetState
                 SizedBox(height: 16.h),
               ],
               SizedBox(height: 16.h),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                spacing: 16.w,
-                children: [
-                  Expanded(
-                    child: PrimaryButton(
-                      onPress: () {
-                        Navigator.of(context).pop();
-                        widget.onEdit();
-                      },
-                      buttonText: LocaleKeys.edit.tr(),
-                      backgroundColor: Theme.of(context).primaryColor,
-                      iconPath: Assets.images.edit2,
-                      iconColor: Colors.white,
-                      textDirection: ui.TextDirection.rtl,
+              if (!widget.hideActions) ...[
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  spacing: 16.w,
+                  children: [
+                    Expanded(
+                      child: PrimaryButton(
+                        onPress: () {
+                          Navigator.of(context).pop();
+                          widget.onEdit();
+                        },
+                        buttonText: LocaleKeys.edit.tr(),
+                        backgroundColor: Theme.of(context).primaryColor,
+                        iconPath: Assets.images.edit2,
+                        iconColor: Colors.white,
+                        textDirection: ui.TextDirection.rtl,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: PrimaryButton(
-                      onPress: () {
-                        Navigator.of(context).pop();
-                        widget.onDelete();
-                      },
-                      buttonText: LocaleKeys.delete.tr(),
-                      backgroundColor: expenseRed,
-                      iconPath: Assets.images.trash,
-                      iconColor: const Color(0xFFEB5757),
-                      textDirection: ui.TextDirection.rtl,
-                      buttonTextColor: const Color(0xFFEB5757),
+                    Expanded(
+                      child: PrimaryButton(
+                        onPress: () {
+                          Navigator.of(context).pop();
+                          widget.onDelete();
+                        },
+                        buttonText: LocaleKeys.delete.tr(),
+                        backgroundColor: expenseRed,
+                        iconPath: Assets.images.trash,
+                        iconColor: const Color(0xFFEB5757),
+                        textDirection: ui.TextDirection.rtl,
+                        buttonTextColor: const Color(0xFFEB5757),
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
               SizedBox(height: 36.h),
             ],
           ),
