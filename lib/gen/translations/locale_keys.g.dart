@@ -192,6 +192,7 @@ abstract class  LocaleKeys {
   static const about = 'about';
   static const switchDefaultGroup = 'switchDefaultGroup';
   static const walletTransfer = 'walletTransfer';
+  static const walletTransferDefaultDescription = 'walletTransferDefaultDescription';
   static const sourceWallet = 'sourceWallet';
   static const orangeMoney = 'orangeMoney';
   static const orangeMoneyAmount = 'orangeMoneyAmount';

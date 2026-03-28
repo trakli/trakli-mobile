@@ -189,6 +189,7 @@
   "about": "Acerca de",
   "switchDefaultGroup": "Cambiar grupo predeterminado",
   "walletTransfer": "Transferencia de billetera",
+  "walletTransferDefaultDescription": "Transferencia de dinero de la billetera {fromCurrency} a la billetera {toCurrency}",
   "sourceWallet": "Billetera de origen",
   "orangeMoney": "Orange money",
   "orangeMoneyAmount": "300,000 XAF",

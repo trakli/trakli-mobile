@@ -187,6 +187,7 @@
   "about": "À propos",
   "switchDefaultGroup": "Changer de groupe par défaut",
   "walletTransfer": "Transfert de portefeuille",
+  "walletTransferDefaultDescription": "Transfert d'argent du portefeuille {fromCurrency} vers le portefeuille {toCurrency}",
   "sourceWallet": "Portefeuille source",
   "orangeMoney": "Orange money",
   "orangeMoneyAmount": "300 000 XAF",

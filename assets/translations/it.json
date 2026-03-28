@@ -192,6 +192,7 @@
   "about": "Informazioni",
   "switchDefaultGroup": "Cambia gruppo predefinito",
   "walletTransfer": "Trasferimento portafoglio",
+  "walletTransferDefaultDescription": "Trasferimento di denaro dal portafoglio {fromCurrency} al portafoglio {toCurrency}",
   "sourceWallet": "Portafoglio di origine",
   "orangeMoney": "Orange money",
   "orangeMoneyAmount": "300.000 XAF",
