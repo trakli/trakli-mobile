@@ -45,11 +45,17 @@ class _LoginScreenState extends State<LoginScreen> {
           },
           error: (failure) {
             hideLoader();
-            showSnackBar(
-              message: failure.customMessage,
-              borderRadius: 8.r,
-              backgroundColor: appDangerColor,
-              isFloating: false,
+
+            failure.maybeWhen(
+              orElse: () {
+                showSnackBar(
+                  message: failure.customMessage,
+                  borderRadius: 8.r,
+                  backgroundColor: appDangerColor,
+                  isFloating: false,
+                );
+              },
+              cancel: () {},
             );
           },
         );

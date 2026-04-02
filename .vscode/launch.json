@@ -5,77 +5,85 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "mobile",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "Launch development",
-            "request": "launch",
-            "type": "dart",
+            "name": "mobile:development",
+            "cwd": "${workspaceFolder}",
             "program": "lib/main_development.dart",
-            "args": [
-                "--flavor",
-                "development",
-                "--target",
-                "lib/main_development.dart"
-            ]
-        },
-        {
-            "name": "Launch staging",
             "request": "launch",
             "type": "dart",
+            "flutterMode": "debug",
+            "args": ["--flavor", "development", "--target", "lib/main_development.dart"]
+        },
+        {
+            "name": "mobile:staging",
+            "cwd": "${workspaceFolder}",
             "program": "lib/main_staging.dart",
-            "args": [
-                "--flavor",
-                "staging",
-                "--target",
-                "lib/main_staging.dart"
-            ]
-        },
-        {
-            "name": "Launch production",
             "request": "launch",
             "type": "dart",
+            "flutterMode": "debug",
+            "args": ["--flavor", "staging", "--target", "lib/main_staging.dart"]
+        },
+        {
+            "name": "mobile:production",
+            "cwd": "${workspaceFolder}",
             "program": "lib/main_production.dart",
-            "args": [
-                "--flavor",
-                "production",
-                "--target",
-                "lib/main_production.dart"
-            ]
-        },
-        {
-            "name": "mobile (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "debug",
+            "args": ["--flavor", "production", "--target", "lib/main_production.dart"]
         },
         {
-            "name": "mobile (release mode)",
+            "name": "mobile:development (profile)",
+            "cwd": "${workspaceFolder}",
+            "program": "lib/main_development.dart",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "profile",
+            "args": ["--flavor", "development", "--target", "lib/main_development.dart"]
         },
         {
-            "name": "drift_sync_core",
-            "cwd": "drift_sync_core",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "drift_sync_core (profile mode)",
-            "cwd": "drift_sync_core",
+            "name": "mobile:staging (profile)",
+            "cwd": "${workspaceFolder}",
+            "program": "lib/main_staging.dart",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "args": ["--flavor", "staging", "--target", "lib/main_staging.dart"]
         },
         {
-            "name": "drift_sync_core (release mode)",
-            "cwd": "drift_sync_core",
+            "name": "mobile:production (profile)",
+            "cwd": "${workspaceFolder}",
+            "program": "lib/main_production.dart",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "profile",
+            "args": ["--flavor", "production", "--target", "lib/main_production.dart"]
+        },
+        {
+            "name": "mobile:development (release)",
+            "cwd": "${workspaceFolder}",
+            "program": "lib/main_development.dart",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": ["--flavor", "development", "--target", "lib/main_development.dart"]
+        },
+        {
+            "name": "mobile:staging (release)",
+            "cwd": "${workspaceFolder}",
+            "program": "lib/main_staging.dart",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": ["--flavor", "staging", "--target", "lib/main_staging.dart"]
+        },
+        {
+            "name": "mobile:production (release)",
+            "cwd": "${workspaceFolder}",
+            "program": "lib/main_production.dart",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": ["--flavor", "production", "--target", "lib/main_production.dart"]
         }
     ]
 }

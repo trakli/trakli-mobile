@@ -568,5 +568,6 @@
   "categoryDesc": "Organize transactions by type",
   "groupsDesc": "Bundle related transactions",
   "partiesDesc": "People and organizations you transact with",
-  "walletsDesc": "Accounts money moves through"
+  "walletsDesc": "Accounts money moves through",
+  "cancelled": "Cancelled"
 }

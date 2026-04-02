@@ -52,7 +52,8 @@ class RepositoryErrorHandler {
       },
       none: (_) => ServerException('No error'),
       notFound: (_) => NotFoundException('Resource not found'),
-      duplicate: (DuplicateFailure f) => DuplicateException(f.message),
+      duplicate: (DuplicateFailure f) => DuplicateException(f.message), 
+      cancel: (CancelFailure value) => CancelException('Operation cancelled'),
     );
   }
 }

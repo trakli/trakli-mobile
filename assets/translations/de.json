@@ -562,10 +562,12 @@
   "deleteAccount": "Konto löschen",
   "deleteAccountDesc": "Diese Aktion ist endgültig. Wenn Sie Ihr Konto löschen, werden alle Ihre Daten dauerhaft entfernt und können nicht wiederhergestellt werden.",
   "helpUsImprove": "Helfen Sie uns, uns zu verbessern (optional)",
+  "whyDeleteAccount": "Warum löschen Sie Ihren Account?",
   "transactionsDesc": "Alle Geldbewegungen an einem Ort",
   "transfersDesc": "Geld zwischen Ihren Wallets bewegen",
   "categoryDesc": "Transaktionen nach Typ organisieren",
   "groupsDesc": "Zusammengehörige Transaktionen bündeln",
   "partiesDesc": "Personen und Organisationen, mit denen Sie Transaktionen durchführen",
-  "walletsDesc": "Konten, über die sich Geld bewegt"
+  "walletsDesc": "Konten, über die sich Geld bewegt",
+  "cancelled": "Abgebrochen"
 }
