@@ -152,12 +152,15 @@ class ProfileScreen extends StatelessWidget {
                     "cm",
                     width: 24.w,
                   ),
-                  Text(
-                    user.email,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[400],
+                  Flexible(
+                    child: Text(
+                      user.email,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[400],
+                      ),
                     ),
                   ),
                 ],
@@ -177,12 +180,12 @@ class ProfileScreen extends StatelessWidget {
                       AppNavigator.push(context, const AccountInfoScreen());
                     },
                   ),
-                  ActionTile(
-                    title: LocaleKeys.phoneNumber.tr(),
-                    subTitle: user.phone ?? LocaleKeys.notSet.tr(),
-                    iconPath: Assets.images.call,
-                    actionColor: appPrimaryColor,
-                  ),
+                  // ActionTile(
+                  //   title: LocaleKeys.phoneNumber.tr(),
+                  //   subTitle: user.phone ?? LocaleKeys.notSet.tr(),
+                  //   iconPath: Assets.images.call,
+                  //   actionColor: appPrimaryColor,
+                  // ),
                   ActionTile(
                     title: LocaleKeys.logOut.tr(),
                     iconPath: Assets.images.logout,
