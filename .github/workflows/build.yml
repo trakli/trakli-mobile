@@ -95,23 +95,8 @@ jobs:
           channel: ${{ env.FLUTTER_CHANNEL }}
           cache: true
 
-      - name: Create key.jks
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_FILE_BASE64 }}" | base64 --decode > android/key.jks
-
-      - name: Create key.properties
-        run: |
-          cat <<EOF > android/key.properties
-          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyPassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyAlias=release
-          storeFile=../key.jks
-          EOF
-        env:
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-
       - name: Build APK
-        run: flutter build apk --flavor staging --target lib/main_staging.dart
+        run: flutter build apk --flavor staging --target lib/main_staging.dart --debug
 
       # - name: Upload APK
       #   uses: actions/upload-artifact@v4
