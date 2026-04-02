@@ -22,6 +22,7 @@ class Failure with _$Failure {
   const factory Failure.none() = NoneFailure;
   const factory Failure.notFound() = NotFoundFailure;
   const factory Failure.duplicate(String message) = DuplicateFailure;
+  const factory Failure.cancel() = CancelFailure;
 
   const Failure._();
 
@@ -51,6 +52,7 @@ class Failure with _$Failure {
         serverError: (ServerFailure failure) => LocaleKeys.serverErrorDesc.tr(),
         cacheError: (CacheFailure failure) => LocaleKeys.cacheErrorDesc.tr(),
         syncError: (SyncFailure failure) => LocaleKeys.syncErrorDesc.tr(),
-        duplicate: (DuplicateFailure failure) => failure.message,
+        duplicate: (DuplicateFailure failure) => failure.message, 
+        cancel: (CancelFailure value) => LocaleKeys.cancelled.tr(),
       );
 }

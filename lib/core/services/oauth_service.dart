@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 import 'package:trakli/core/utils/services/logger.dart' show logger;
 import 'package:trakli/core/error/repository_error_handler.dart';
 import 'package:trakli/core/error/exceptions.dart';
+import 'package:trakli/core/error/crash_reporting/crash_reporting_service.dart';
 import 'package:trakli/data/datasources/auth/auth_remote_data_source.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/domain/entities/user_entity.dart';
@@ -22,6 +23,7 @@ import 'package:trakli/domain/repositories/auth_repository.dart';
 class OAuthService {
   final GoogleSignIn _googleSignIn;
   final FirebaseAuth _firebaseAuth;
+  final CrashReportingService _crashReporting = getIt<CrashReportingService>();
 
   OAuthService()
       : _googleSignIn = GoogleSignIn.instance,
@@ -41,20 +43,38 @@ class OAuthService {
 
   /// Sign in with Google using backend API.
   Future<Either<Failure, UserEntity>> signInWithGoogle() async {
+    late final GoogleSignInAccount googleUser;
+    late final GoogleSignInAuthentication googleAuth;
+
+    try {
+      if (Platform.isAndroid) {
+        await _googleSignIn.initialize(
+          clientId:
+              "741084555946-fl3pj0gor0eqgat9pe5lkucr3a7jk5ud.apps.googleusercontent.com",
+        );
+      }
+
+      googleUser = await _googleSignIn.authenticate();
+      googleAuth = googleUser.authentication;
+    } on GoogleSignInException catch (e, stackTrace) {
+      logger.e('Google Sign-In exception: ${e.code}', error: e);
+
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        return const Left(Failure.cancel());
+      }
+      await _crashReporting.recordError(
+        e,
+        stackTrace: stackTrace,
+        reason: 'Google Sign-In canceled or failed',
+        information: {
+          'code': e.code.name,
+        },
+      );
+      return const Left(Failure.unauthorizedError());
+    }
+
     return RepositoryErrorHandler.handleApiCall<UserEntity>(() async {
       try {
-        if (Platform.isAndroid) {
-          await _googleSignIn.initialize(
-            clientId:
-                "741084555946-fl3pj0gor0eqgat9pe5lkucr3a7jk5ud.apps.googleusercontent.com",
-          );
-        }
-
-        final GoogleSignInAccount googleUser =
-            await _googleSignIn.authenticate();
-
-        final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-
         if (googleAuth.idToken == null) {
           throw ServerException('Failed to get Google ID token');
         }
@@ -88,13 +108,19 @@ class OAuthService {
               throw RepositoryErrorHandler.mapFailureToException(failure),
           (user) => user,
         );
-      } on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException catch (e, stackTrace) {
         logger.e('Google Sign-In Firebase error: ${e.code} - ${e.message}',
             error: e);
+        await _crashReporting.recordError(
+          e,
+          stackTrace: stackTrace,
+          reason: 'Google Sign-In FirebaseAuthException',
+          information: {
+            'code': e.code,
+            'message': e.message ?? '',
+          }
+        );
         throw _mapFirebaseException(e);
-      } on Exception catch (e) {
-        logger.e('Google Sign-In error: ${e.toString()}', error: e);
-        throw ServerException('Google sign-in failed: ${e.toString()}');
       }
     });
   }
@@ -105,24 +131,44 @@ class OAuthService {
       return await _signInWithAppleAndroid();
     }
 
+    late final String rawNonce;
+    late final AuthorizationCredentialAppleID appleCredential;
+
+    try {
+      if (!await SignInWithApple.isAvailable()) {
+        return const Left(Failure.serverError(
+            'Apple Sign-In is not available on this device'));
+      }
+
+      rawNonce = _generateNonce();
+      final nonce = _sha256ofString(rawNonce);
+
+      appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonce,
+      );
+    } on SignInWithAppleAuthorizationException catch (e, stackTrace) {
+      logger.e('Apple Sign-In authorization error: ${e.code}', error: e);
+
+      if (e.code == AuthorizationErrorCode.canceled) {
+        return const Left(Failure.cancel());
+      }
+      await _crashReporting.recordError(
+        e,
+        stackTrace: stackTrace,
+        reason: 'Apple Sign-In authorization failed',
+        information: {
+          'code': e.code.name,
+        },
+      );
+      return const Left(Failure.unauthorizedError());
+    }
+
     return RepositoryErrorHandler.handleApiCall<UserEntity>(() async {
       try {
-        if (!await SignInWithApple.isAvailable()) {
-          throw ServerException(
-              'Apple Sign-In is not available on this device');
-        }
-
-        final rawNonce = _generateNonce();
-        final nonce = _sha256ofString(rawNonce);
-
-        final appleCredential = await SignInWithApple.getAppleIDCredential(
-          scopes: [
-            AppleIDAuthorizationScopes.email,
-            AppleIDAuthorizationScopes.fullName,
-          ],
-          nonce: nonce,
-        );
-
         if (appleCredential.identityToken == null) {
           throw ServerException('Failed to get Apple identity token');
         }
@@ -162,14 +208,19 @@ class OAuthService {
           (failure) => throw ServerException(failure.customMessage),
           (user) => user,
         );
-      } on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException catch (e, stackTrace) {
         logger.e('Apple Sign-In Firebase error: ${e.code} - ${e.message}',
             error: e);
+        await _crashReporting.recordError(
+          e,
+          stackTrace: stackTrace,
+          reason: 'Apple Sign-In FirebaseAuthException',
+          information: {
+            'code': e.code,
+            'message': e.message ?? '',
+          },
+        );
         throw _mapFirebaseException(e);
-      } on SignInWithAppleAuthorizationException catch (e) {
-        logger.e('Apple Sign-In authorization error: ${e.code}', error: e);
-        throw UnauthorizedException(
-            'Apple Sign-In authorization failed: ${e.code.name}');
       }
     });
   }
@@ -206,10 +257,19 @@ class OAuthService {
           (failure) => throw ServerException(failure.customMessage),
           (user) => user,
         );
-      } on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException catch (e, stackTrace) {
         logger.e(
             'Apple Sign-In (Android) Firebase error: ${e.code} - ${e.message}',
             error: e);
+        await _crashReporting.recordError(
+          e,
+          stackTrace: stackTrace,
+          reason: 'Apple Sign-In (Android) FirebaseAuthException',
+          information: {
+            'code': e.code,
+            'message': e.message ?? '',
+          },
+        );
         throw _mapFirebaseException(e);
       }
     });
