@@ -568,5 +568,6 @@
   "categoryDesc": "Organiza las transacciones por tipo",
   "groupsDesc": "Agrupa transacciones relacionadas",
   "partiesDesc": "Personas y organizaciones con las que realizas transacciones",
-  "walletsDesc": "Cuentas por las que se mueve el dinero"
+  "walletsDesc": "Cuentas por las que se mueve el dinero",
+  "cancelled": "Cancelado"
 }

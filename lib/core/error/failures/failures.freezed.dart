@@ -31,6 +31,7 @@ mixin _$Failure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -46,6 +47,7 @@ mixin _$Failure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -61,6 +63,7 @@ mixin _$Failure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -77,6 +80,7 @@ mixin _$Failure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -92,6 +96,7 @@ mixin _$Failure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -107,6 +112,7 @@ mixin _$Failure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -213,6 +219,7 @@ class _$ServerFailureImpl extends ServerFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return serverError(message);
   }
@@ -231,6 +238,7 @@ class _$ServerFailureImpl extends ServerFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return serverError?.call(message);
   }
@@ -249,6 +257,7 @@ class _$ServerFailureImpl extends ServerFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (serverError != null) {
@@ -271,6 +280,7 @@ class _$ServerFailureImpl extends ServerFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return serverError(this);
   }
@@ -289,6 +299,7 @@ class _$ServerFailureImpl extends ServerFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return serverError?.call(this);
   }
@@ -307,6 +318,7 @@ class _$ServerFailureImpl extends ServerFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (serverError != null) {
@@ -383,6 +395,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return networkError();
   }
@@ -401,6 +414,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return networkError?.call();
   }
@@ -419,6 +433,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (networkError != null) {
@@ -441,6 +456,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return networkError(this);
   }
@@ -459,6 +475,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return networkError?.call(this);
   }
@@ -477,6 +494,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (networkError != null) {
@@ -572,6 +590,7 @@ class _$CacheFailureImpl extends CacheFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return cacheError(message);
   }
@@ -590,6 +609,7 @@ class _$CacheFailureImpl extends CacheFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return cacheError?.call(message);
   }
@@ -608,6 +628,7 @@ class _$CacheFailureImpl extends CacheFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (cacheError != null) {
@@ -630,6 +651,7 @@ class _$CacheFailureImpl extends CacheFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return cacheError(this);
   }
@@ -648,6 +670,7 @@ class _$CacheFailureImpl extends CacheFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return cacheError?.call(this);
   }
@@ -666,6 +689,7 @@ class _$CacheFailureImpl extends CacheFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (cacheError != null) {
@@ -769,6 +793,7 @@ class _$SyncFailureImpl extends SyncFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return syncError(message);
   }
@@ -787,6 +812,7 @@ class _$SyncFailureImpl extends SyncFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return syncError?.call(message);
   }
@@ -805,6 +831,7 @@ class _$SyncFailureImpl extends SyncFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (syncError != null) {
@@ -827,6 +854,7 @@ class _$SyncFailureImpl extends SyncFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return syncError(this);
   }
@@ -845,6 +873,7 @@ class _$SyncFailureImpl extends SyncFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return syncError?.call(this);
   }
@@ -863,6 +892,7 @@ class _$SyncFailureImpl extends SyncFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (syncError != null) {
@@ -984,6 +1014,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return validationError(message, errors);
   }
@@ -1002,6 +1033,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return validationError?.call(message, errors);
   }
@@ -1020,6 +1052,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (validationError != null) {
@@ -1042,6 +1075,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return validationError(this);
   }
@@ -1060,6 +1094,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return validationError?.call(this);
   }
@@ -1078,6 +1113,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (validationError != null) {
@@ -1157,6 +1193,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return unauthorizedError();
   }
@@ -1175,6 +1212,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return unauthorizedError?.call();
   }
@@ -1193,6 +1231,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (unauthorizedError != null) {
@@ -1215,6 +1254,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return unauthorizedError(this);
   }
@@ -1233,6 +1273,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return unauthorizedError?.call(this);
   }
@@ -1251,6 +1292,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (unauthorizedError != null) {
@@ -1319,6 +1361,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return unknownError();
   }
@@ -1337,6 +1380,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return unknownError?.call();
   }
@@ -1355,6 +1399,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (unknownError != null) {
@@ -1377,6 +1422,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return unknownError(this);
   }
@@ -1395,6 +1441,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return unknownError?.call(this);
   }
@@ -1413,6 +1460,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (unknownError != null) {
@@ -1527,6 +1575,7 @@ class _$BadRequestImpl extends _BadRequest {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return badRequest(errors, error);
   }
@@ -1545,6 +1594,7 @@ class _$BadRequestImpl extends _BadRequest {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return badRequest?.call(errors, error);
   }
@@ -1563,6 +1613,7 @@ class _$BadRequestImpl extends _BadRequest {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (badRequest != null) {
@@ -1585,6 +1636,7 @@ class _$BadRequestImpl extends _BadRequest {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return badRequest(this);
   }
@@ -1603,6 +1655,7 @@ class _$BadRequestImpl extends _BadRequest {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return badRequest?.call(this);
   }
@@ -1621,6 +1674,7 @@ class _$BadRequestImpl extends _BadRequest {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (badRequest != null) {
@@ -1699,6 +1753,7 @@ class _$NoneFailureImpl extends NoneFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return none();
   }
@@ -1717,6 +1772,7 @@ class _$NoneFailureImpl extends NoneFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return none?.call();
   }
@@ -1735,6 +1791,7 @@ class _$NoneFailureImpl extends NoneFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (none != null) {
@@ -1757,6 +1814,7 @@ class _$NoneFailureImpl extends NoneFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return none(this);
   }
@@ -1775,6 +1833,7 @@ class _$NoneFailureImpl extends NoneFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return none?.call(this);
   }
@@ -1793,6 +1852,7 @@ class _$NoneFailureImpl extends NoneFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (none != null) {
@@ -1861,6 +1921,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return notFound();
   }
@@ -1879,6 +1940,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return notFound?.call();
   }
@@ -1897,6 +1959,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (notFound != null) {
@@ -1919,6 +1982,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return notFound(this);
   }
@@ -1937,6 +2001,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return notFound?.call(this);
   }
@@ -1955,6 +2020,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (notFound != null) {
@@ -2051,6 +2117,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     required TResult Function() none,
     required TResult Function() notFound,
     required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
   }) {
     return duplicate(message);
   }
@@ -2069,6 +2136,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     TResult? Function()? none,
     TResult? Function()? notFound,
     TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
   }) {
     return duplicate?.call(message);
   }
@@ -2087,6 +2155,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     TResult Function()? none,
     TResult Function()? notFound,
     TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
     required TResult orElse(),
   }) {
     if (duplicate != null) {
@@ -2109,6 +2178,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     required TResult Function(NoneFailure value) none,
     required TResult Function(NotFoundFailure value) notFound,
     required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
   }) {
     return duplicate(this);
   }
@@ -2127,6 +2197,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     TResult? Function(NoneFailure value)? none,
     TResult? Function(NotFoundFailure value)? notFound,
     TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
   }) {
     return duplicate?.call(this);
   }
@@ -2145,6 +2216,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     TResult Function(NoneFailure value)? none,
     TResult Function(NotFoundFailure value)? notFound,
     TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
     required TResult orElse(),
   }) {
     if (duplicate != null) {
@@ -2165,4 +2237,172 @@ abstract class DuplicateFailure extends Failure {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DuplicateFailureImplCopyWith<_$DuplicateFailureImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$CancelFailureImplCopyWith<$Res> {
+  factory _$$CancelFailureImplCopyWith(
+          _$CancelFailureImpl value, $Res Function(_$CancelFailureImpl) then) =
+      __$$CancelFailureImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$CancelFailureImplCopyWithImpl<$Res>
+    extends _$FailureCopyWithImpl<$Res, _$CancelFailureImpl>
+    implements _$$CancelFailureImplCopyWith<$Res> {
+  __$$CancelFailureImplCopyWithImpl(
+      _$CancelFailureImpl _value, $Res Function(_$CancelFailureImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of Failure
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$CancelFailureImpl extends CancelFailure {
+  const _$CancelFailureImpl() : super._();
+
+  @override
+  String toString() {
+    return 'Failure.cancel()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$CancelFailureImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) serverError,
+    required TResult Function() networkError,
+    required TResult Function(String message) cacheError,
+    required TResult Function(String message) syncError,
+    required TResult Function(String message, List<FieldError> errors)
+        validationError,
+    required TResult Function() unauthorizedError,
+    required TResult Function() unknownError,
+    required TResult Function(List<FieldError>? errors, String? error)
+        badRequest,
+    required TResult Function() none,
+    required TResult Function() notFound,
+    required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
+  }) {
+    return cancel();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? serverError,
+    TResult? Function()? networkError,
+    TResult? Function(String message)? cacheError,
+    TResult? Function(String message)? syncError,
+    TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? unauthorizedError,
+    TResult? Function()? unknownError,
+    TResult? Function(List<FieldError>? errors, String? error)? badRequest,
+    TResult? Function()? none,
+    TResult? Function()? notFound,
+    TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
+  }) {
+    return cancel?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? serverError,
+    TResult Function()? networkError,
+    TResult Function(String message)? cacheError,
+    TResult Function(String message)? syncError,
+    TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? unauthorizedError,
+    TResult Function()? unknownError,
+    TResult Function(List<FieldError>? errors, String? error)? badRequest,
+    TResult Function()? none,
+    TResult Function()? notFound,
+    TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
+    required TResult orElse(),
+  }) {
+    if (cancel != null) {
+      return cancel();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ServerFailure value) serverError,
+    required TResult Function(NetworkFailure value) networkError,
+    required TResult Function(CacheFailure value) cacheError,
+    required TResult Function(SyncFailure value) syncError,
+    required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(UnauthorizedFailure value) unauthorizedError,
+    required TResult Function(UnknownFailure value) unknownError,
+    required TResult Function(_BadRequest value) badRequest,
+    required TResult Function(NoneFailure value) none,
+    required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
+  }) {
+    return cancel(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ServerFailure value)? serverError,
+    TResult? Function(NetworkFailure value)? networkError,
+    TResult? Function(CacheFailure value)? cacheError,
+    TResult? Function(SyncFailure value)? syncError,
+    TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(UnauthorizedFailure value)? unauthorizedError,
+    TResult? Function(UnknownFailure value)? unknownError,
+    TResult? Function(_BadRequest value)? badRequest,
+    TResult? Function(NoneFailure value)? none,
+    TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
+  }) {
+    return cancel?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ServerFailure value)? serverError,
+    TResult Function(NetworkFailure value)? networkError,
+    TResult Function(CacheFailure value)? cacheError,
+    TResult Function(SyncFailure value)? syncError,
+    TResult Function(ValidationFailure value)? validationError,
+    TResult Function(UnauthorizedFailure value)? unauthorizedError,
+    TResult Function(UnknownFailure value)? unknownError,
+    TResult Function(_BadRequest value)? badRequest,
+    TResult Function(NoneFailure value)? none,
+    TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
+    required TResult orElse(),
+  }) {
+    if (cancel != null) {
+      return cancel(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class CancelFailure extends Failure {
+  const factory CancelFailure() = _$CancelFailureImpl;
+  const CancelFailure._() : super._();
 }

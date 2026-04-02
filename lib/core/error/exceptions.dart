@@ -21,6 +21,10 @@ class UnauthorizedException extends ApiException {
       : super(statusCode: statusCode ?? 401);
 }
 
+class CancelException extends ApiException {
+  CancelException(super.message);
+}
+
 class ForbiddenException extends ApiException {
   ForbiddenException(super.message, {int? statusCode, super.data})
       : super(statusCode: statusCode ?? 403);
