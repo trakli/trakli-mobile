@@ -53,7 +53,6 @@ class _PickGroupBottomSheetState extends State<PickGroupBottomSheet> {
       selectedGroup = sortedGroups.first;
     }
     return SingleChildScrollView(
-      // physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.only(
         left: 16.w,
         right: 16.w,
@@ -125,6 +124,12 @@ class _PickGroupBottomSheetState extends State<PickGroupBottomSheet> {
                   final group = sortedGroups[index];
                   return PickGroupTile<GroupEntity?>(
                     value: group,
+                    groupValue: selectedGroup,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGroup = value;
+                      });
+                    },
                   );
                 },
                 separatorBuilder: (context, index) {
