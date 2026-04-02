@@ -39,56 +39,60 @@ class PickGroupTile<T> extends StatelessWidget {
       groupDescription = groupEntity.description;
       isDefaultGroup = groupEntity.clientId == defaultGroup;
     }
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-      ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Row(
-        children: [
-          ImageWidget(
-            mediaEntity: groupEntity?.icon,
-            accentColor: appOrange,
-            iconSize: 16.sp,
-            emojiSize: 16.sp,
-            placeholderIcon: Icons.folder_outlined,
-          ),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  ('${(groupName ?? LocaleKeys.general.tr()).extractWords(maxSize: 15)} ${isDefaultGroup ? '(${LocaleKeys.defaultName.tr()})' : ''}')
-                      .trim(),
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (groupDescription != null && groupDescription.isNotEmpty)
+    return InkWell(
+      onTap: () => onChanged?.call(value),
+      borderRadius: BorderRadius.circular(8.r),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        child: Row(
+          children: [
+            ImageWidget(
+              mediaEntity: groupEntity?.icon,
+              accentColor: appOrange,
+              iconSize: 16.sp,
+              emojiSize: 16.sp,
+              placeholderIcon: Icons.folder_outlined,
+            ),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    groupDescription,
+                    ('${(groupName ?? LocaleKeys.general.tr()).extractWords(maxSize: 15)} ${isDefaultGroup ? '(${LocaleKeys.defaultName.tr()})' : ''}')
+                        .trim(),
                     style: TextStyle(
-                      fontSize: 14.sp,
-                      color: Colors.grey[600],
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-              ],
+                  if (groupDescription != null && groupDescription.isNotEmpty)
+                    Text(
+                      groupDescription,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-          RadioGroup<T>(
-            groupValue: groupValue,
-            onChanged: (T? selectedValue) => onChanged?.call(selectedValue),
-            child: Radio<T>(
-              activeColor: appPrimaryColor,
-              value: value,
+            RadioGroup<T>(
+              groupValue: groupValue,
+              onChanged: (T? selectedValue) => onChanged?.call(selectedValue),
+              child: Radio<T>(
+                activeColor: appPrimaryColor,
+                value: value,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
