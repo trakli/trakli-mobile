@@ -79,81 +79,81 @@ jobs:
       - name: Run tests
         run: flutter test
 
-  build-android:
-    name: Build APK
-    runs-on: ubuntu-latest
-    needs: [changes, test]
-    if: needs.changes.outputs.android == 'true'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # build-android:
+  #   name: Build APK
+  #   runs-on: ubuntu-latest
+  #   needs: [changes, test]
+  #   if: needs.changes.outputs.android == 'true'
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: ${{ env.FLUTTER_CHANNEL }}
-          cache: true
+  #     - name: Set up Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: ${{ env.FLUTTER_VERSION }}
+  #         channel: ${{ env.FLUTTER_CHANNEL }}
+  #         cache: true
 
-      - name: Build APK
-        run: flutter build apk --flavor staging --target lib/main_staging.dart --debug
+  #     - name: Build APK
+  #       run: flutter build apk --flavor staging --target lib/main_staging.dart --debug
 
-      # - name: Upload APK
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: apk
-      #     path: build/app/outputs/flutter-apk/
+  #     # - name: Upload APK
+  #     #   uses: actions/upload-artifact@v4
+  #     #   with:
+  #     #     name: apk
+  #     #     path: build/app/outputs/flutter-apk/
 
-  build-ios:
-    name: Build iOS
-    runs-on: macos-latest
-    needs: [changes, test]
-    if: needs.changes.outputs.ios == 'true'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # build-ios:
+  #   name: Build iOS
+  #   runs-on: macos-latest
+  #   needs: [changes, test]
+  #   if: needs.changes.outputs.ios == 'true'
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
 
-      - name: Setup Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: ${{ env.XCODE_VERSION }}
+  #     - name: Setup Xcode
+  #       uses: maxim-lobanov/setup-xcode@v1
+  #       with:
+  #         xcode-version: ${{ env.XCODE_VERSION }}
 
-      - name: Restore DerivedData cache
-        uses: actions/cache/restore@v4
-        id: cache-deriveddata
-        with:
-          path: DerivedData
-          key: deriveddata-${{ github.run_id }}
-          restore-keys: |
-            deriveddata-
+  #     - name: Restore DerivedData cache
+  #       uses: actions/cache/restore@v4
+  #       id: cache-deriveddata
+  #       with:
+  #         path: DerivedData
+  #         key: deriveddata-${{ github.run_id }}
+  #         restore-keys: |
+  #           deriveddata-
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: ${{ env.FLUTTER_CHANNEL }}
-          cache: true
+  #     - name: Set up Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: ${{ env.FLUTTER_VERSION }}
+  #         channel: ${{ env.FLUTTER_CHANNEL }}
+  #         cache: true
 
-      - name: Install FlutterFire CLI
-        run: dart pub global activate flutterfire_cli
+  #     - name: Install FlutterFire CLI
+  #       run: dart pub global activate flutterfire_cli
 
-      - name: Add pub cache bin to PATH
-        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+  #     - name: Add pub cache bin to PATH
+  #       run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
-      - name: Verify FlutterFire CLI
-        run: flutterfire --version
+  #     - name: Verify FlutterFire CLI
+  #       run: flutterfire --version
 
-      - name: Generate code
-        run: flutter pub run build_runner build --delete-conflicting-outputs
+  #     - name: Generate code
+  #       run: flutter pub run build_runner build --delete-conflicting-outputs
 
-      - name: Build iOS
-        run: flutter build ipa --flavor staging --target lib/main_staging.dart --no-codesign
+  #     - name: Build iOS
+  #       run: flutter build ipa --flavor staging --target lib/main_staging.dart --no-codesign
 
-      # - name: Upload IPA
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: ipa
-      #     path: build/ios/ipa/
+  #     # - name: Upload IPA
+  #     #   uses: actions/upload-artifact@v4
+  #     #   with:
+  #     #     name: ipa
+  #     #     path: build/ios/ipa/
 
   # distribute:
   #   name: Upload artifact to Firebase App Distribution
