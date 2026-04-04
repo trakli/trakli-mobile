@@ -180,12 +180,6 @@ class ProfileScreen extends StatelessWidget {
                       AppNavigator.push(context, const AccountInfoScreen());
                     },
                   ),
-                  // ActionTile(
-                  //   title: LocaleKeys.phoneNumber.tr(),
-                  //   subTitle: user.phone ?? LocaleKeys.notSet.tr(),
-                  //   iconPath: Assets.images.call,
-                  //   actionColor: appPrimaryColor,
-                  // ),
                   ActionTile(
                     title: LocaleKeys.logOut.tr(),
                     iconPath: Assets.images.logout,
