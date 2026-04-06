@@ -1,7 +1,7 @@
 # 📊 Test Plan for Trakli (Offline-First Finance App)
 
 ## 🧩 Overview
-This PR introduces a **structured and comprehensive test plan** for the Trakli application, an offline-first personal finance tracker built with Flutter and Drift.
+This document introduces a **structured and comprehensive test plan** for the Trakli application, an offline-first personal finance tracker built with Flutter and Drift.
 
 The objective is to ensure:
 - Accurate financial computations
