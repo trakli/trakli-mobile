@@ -1,4 +1,4 @@
-# 📊 Add Comprehensive Test Plan for Trakli (Offline-First Finance App)
+# 📊 Test Plan for Trakli (Offline-First Finance App)
 
 ## 🧩 Overview
 This PR introduces a **structured and comprehensive test plan** for the Trakli application, an offline-first personal finance tracker built with Flutter and Drift.
@@ -8,6 +8,7 @@ The objective is to ensure:
 - Reliable offline data persistence
 - Robust CRUD operations
 - Stable and predictable user experience
+- Reliable data synchronization with backend services
 
 ---
 
@@ -18,6 +19,7 @@ The objective is to ensure:
 | Data Integrity | Ensure all data is stored and retrieved correctly using Drift |
 | Financial Accuracy | Validate wallet balance calculations for all transactions |
 | Offline Reliability | Guarantee persistence across app restarts and crashes |
+| Sync Consistency | Ensure local and remote data remain consistent |
 | UX Quality | Ensure proper validation and responsive UI behavior |
 
 ---
@@ -35,12 +37,12 @@ The objective is to ensure:
 | Wallets | Cash, bank accounts, balances |
 | Transactions | Income & Expense entries |
 | Persistence | Drift DB reliability |
+| Sync Engine | Local ↔ Server synchronization |
 
 ### ❌ Out of Scope
 
 | Area | Reason |
 |-----|-------|
-| Cloud Sync | Not implemented yet |
 | Payment Gateways | Not part of current scope |
 | Bank APIs | No external integrations |
 
@@ -67,6 +69,23 @@ The objective is to ensure:
 | FLOW-02 | Add Expense → Restart App | Data persists after restart |
 | FLOW-03 | Delete Category | Transactions handled correctly |
 | FLOW-04 | Add Attachment | File path saved & retrievable |
+| FLOW-05 | Offline Transaction → Sync | Data pushed to server when online |
+| FLOW-06 | Server Update → Sync | Local DB updates with remote changes |
+| FLOW-07 | Conflict Resolution | Latest or correct version retained |
+
+---
+
+## 🔄 Synchronization Test Scenarios
+
+| ID | Scenario | Expected Result |
+|----|--------|----------------|
+| SYNC-01 | Create data offline → go online | Data syncs to server automatically |
+| SYNC-02 | Update record locally | Server reflects updated values |
+| SYNC-03 | Delete record locally | Server record removed or flagged |
+| SYNC-04 | Remote changes | Local DB updates after sync |
+| SYNC-05 | Conflict (same record edited locally & remotely) | Conflict resolved based on defined strategy |
+| SYNC-06 | Network failure during sync | Retry mechanism triggers |
+| SYNC-07 | Partial sync failure | Successful items persist, failed items retried |
 
 ---
 
@@ -111,6 +130,8 @@ The objective is to ensure:
 | DB corruption | Data loss | Use Drift transactions |
 | Large data | UI lag | Pagination / lazy loading |
 | File path loss | Broken attachments | Dynamic path resolution |
+| Sync conflicts | Data inconsistency | Implement conflict resolution strategy |
+| Network failure | Sync interruption | Retry & queue mechanism |
 
 ---
 
@@ -122,9 +143,9 @@ The objective is to ensure:
 | Database Test | Insert & fetch wallet (Drift in-memory) |
 | Widget Test | Form validation |
 | Integration Test | Add expense updates wallet balance |
+| Sync Test | Offline → Online data synchronization |
 
 ---
-
 
 ## 🧪 Sample Test Implementations
 
@@ -154,6 +175,7 @@ void main() {
 |-----|--------|
 | Test plan added | ✅ |
 | Covers offline-first scenarios | ✅ |
+| Sync scenarios included | ✅ |
 | Financial accuracy validated | ✅ |
 | Edge cases included | ✅ |
 | Unit tests added | ⏳ |
@@ -163,7 +185,7 @@ void main() {
 
 ## 📌 Why This Matters
 Trakli is a **financial system**, not just a CRUD app.  
-This test plan ensures correctness, reliability, and trust in all financial operations.
+This test plan ensures correctness, reliability, synchronization, and trust in all financial operations.
 
 ---
 
@@ -174,6 +196,7 @@ This test plan ensures correctness, reliability, and trust in all financial oper
 | Expand automated test coverage | High |
 | Add CI pipeline (GitHub Actions) | Medium |
 | Increase test coverage % | High |
+| Implement robust sync retry logic | High |
 
 ---
 
