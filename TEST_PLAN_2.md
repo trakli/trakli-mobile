@@ -1,29 +1,49 @@
-# 📊 Trakli App – Manual Testing Guide (Extended)
+# 📊 Trakli App – Complete Manual Testing Guide
 
 ## 🧩 Overview
 
-This guide helps testers verify the full user journey in Trakli, including **authentication and onboarding setup**.
+This guide helps testers verify the full functionality of the Trakli app by following real user actions.
+
+No technical knowledge is required.
 
 ---
 
-# 🔐 0. Authentication (Login & Registration)
+## 🎯 Goal
+
+Ensure that:
+
+* Users can register and log in
+* Onboarding works correctly
+* Financial data is accurate
+* Data persists offline
+* Sync works correctly
+* App is stable and user-friendly
+
+---
+
+## 🚀 How to Use This Guide
+
+* Follow each step carefully
+* Compare results with expected outcomes
+* Report anything that does not match
+
+---
+
+# 🔐 1. Authentication
 
 ## 🆕 Register New User
 
 ### Steps:
 
 1. Open the app
-2. Tap **Sign Up / Register**
-3. Enter:
-
-    * Email
-    * Password
+2. Tap **Create an account or Social(Google/Apple)**
+3. If you select **create an account**, follow email verification and provide email and password
 4. Submit
 
 ### ✅ Expected Result:
 
-* User account is created
-* User is redirected to onboarding
+* Account is created
+* Onboarding starts immediately
 
 ---
 
@@ -32,18 +52,18 @@ This guide helps testers verify the full user journey in Trakli, including **aut
 ### Steps:
 
 1. Open the app
-2. Enter valid credentials
-3. Tap **Login**
+2. Tap **Login or Social(Google/Apple)**
+3. If you select **Login**, Enter valid credentials and tap **Login**
+4. Tap **Login**
 
 ### ✅ Expected Result:
 
-* User is logged in successfully
-* If first time → onboarding starts
-* If returning user → goes to dashboard
+* User logs in successfully
+* Goes to onboarding (if first time) or dashboard
 
 ---
 
-# 🚀 1. Onboarding Flow (5 Steps)
+# 🚀 2. Onboarding Flow
 
 ---
 
@@ -51,101 +71,52 @@ This guide helps testers verify the full user journey in Trakli, including **aut
 
 ### Steps:
 
-1. On first launch, observe language screen
-2. Select a language (e.g., English)
-3. Continue
+1. Select a language
+2. Continue
 
 ### ✅ Expected Result:
 
 * Language is applied across the app
-* User proceeds to next step
 
 ---
 
 ## 👥 Step 2: Group Setup
 
-(Defines user's main financial group)
-
-### Steps:
-
-Test ALL options:
+Test all options:
 
 ### Option A: Create Automatically
 
-1. Select **Create Automatically**
-2. Continue
-
-### ✅ Expected Result:
-
-* Default group is created (e.g., “Personal”)
-
----
+* Select option → Continue
+  ✅ Default group is created
 
 ### Option B: Create Manually
 
-1. Select **Create Manually**
-2. Enter group name
-3. Save
+* Enter group name → Save
+  ✅ Group is created with entered name
 
-### ✅ Expected Result:
+### Option C: Select from List
 
-* New group is created with provided name
-
----
-
-### Option C: Select from Existing Groups
-
-1. Select **Select from Group List**
-2. Choose a group
-
-### ✅ Expected Result:
-
-* Selected group is assigned to user
+* Choose existing group
+  ✅ Selected group is assigned
 
 ---
 
 ## 💼 Step 3: Wallet Setup
 
-(Defines where money is stored)
-
-### Steps:
-
-Test ALL options:
+Test all options:
 
 ### Option A: Create Automatically
 
-1. Select **Create Automatically**
-2. Continue
-
-### ✅ Expected Result:
-
-* Default wallet (e.g., “Cash”) is created
-
----
+✅ Default wallet created
 
 ### Option B: Create Manually
 
-1. Select **Create Manually**
-2. Enter:
+* Enter name + balance
+  ✅ Wallet created with correct balance
 
-    * Wallet name
-    * Initial balance
-3. Save
+### Option C: Select from List
 
-### ✅ Expected Result:
-
-* Wallet is created with correct balance
-
----
-
-### Option C: Select from Wallet List
-
-1. Select **Select from Wallet List**
-2. Choose a wallet
-
-### ✅ Expected Result:
-
-* Selected wallet is assigned
+✅ Selected wallet assigned
 
 ---
 
@@ -153,103 +124,199 @@ Test ALL options:
 
 ### Steps:
 
-1. Review list of categories shown
-2. Ensure both:
-
-    * Income categories
-    * Expense categories
-3. Continue
+1. Either select "create default categories" or "skip for now"
+2. Continue
 
 ### ✅ Expected Result:
 
-* Default categories are created
-* Categories are available in transactions
+* Income and expense categories exist if user chooses option 1.
+* No categories exist for option 2.
 
 ---
 
-## ✅ Step 5: All Set
+## ✅ Step 5: Completion
 
 ### Steps:
 
-1. Review completion screen
-2. Tap **Continue / Finish**
+1. Tap **Got to dashboard**
 
 ### ✅ Expected Result:
 
-* User is redirected to main dashboard
-* No onboarding screens appear again
+* User enters main dashboard
+* Onboarding does not repeat
 
 ---
 
-# 🔄 Onboarding Edge Cases
+## 🔄 Onboarding Edge Cases
 
-Test the following:
+* Close app midway → reopen
+  ✅ Resume or restart correctly
 
-### 🔁 Restart During Onboarding
+* Skip required input
+  ✅ Validation prevents progress
 
-* Close app mid-onboarding
-* Reopen app
-
-### ✅ Expected:
-
-* User resumes from last step OR restarts correctly
+* Navigate back
+  ✅ Data is preserved
 
 ---
 
-### ⏭️ Skip Actions
-
-* Try continuing without selecting options
-
-### ✅ Expected:
-
-* Validation prevents skipping required steps
+# 💰 3. Wallet & Transactions
 
 ---
 
-### 🔙 Navigate Back
+## 🧾 Create Wallet + Add Income
 
-* Go back to previous step
+### Steps:
 
-### ✅ Expected:
+1. Go to Wallets → Add Wallet (“Cash”, 0)
+2. Add Income = 100
 
-* Previously entered data is preserved
+### ✅ Expected Result:
+
+* Balance = 100
+
+---
+
+## 💸 Add Expense
+
+### Steps:
+
+1. Add Expense = 40
+
+### ✅ Expected Result:
+
+* Balance = 60
+
+---
+
+## 🔁 Multiple Transactions
+
+### Steps:
+
+1. Add multiple incomes & expenses
+
+### ✅ Expected Result:
+
+* Balance remains correct
+
+---
+
+# 📂 4. Categories
+
+### Steps:
+
+1. Add category “Food”
+2. Delete category
+
+### ✅ Expected Result:
+
+* Category removed without errors
+
+---
+
+# 👥 5. Parties
+
+### Steps:
+
+1. Add new party “John”
+
+### ✅ Expected Result:
+
+* Party appears in list
+
+---
+
+# 📎 6. Attachments
+
+### Steps:
+
+1. Add transaction
+2. Attach file
+
+### ✅ Expected Result:
+
+* File saved and accessible
+
+---
+
+# 🔁 7. Data Persistence
+
+### Steps:
+
+1. Close app
+2. Reopen app
+
+### ✅ Expected Result:
+
+* All data remains unchanged
+
+---
+
+# 🌐 8. Offline Mode
+
+### Steps:
+
+1. Turn OFF internet
+2. Add transaction
+3. Turn ON internet
+
+### ✅ Expected Result:
+
+* Data is saved offline
+* Sync happens when online
+
+---
+
+# 🔄 9. Sync Testing
+
+### Steps:
+
+1. Add data on one device
+2. Open app on another device
+
+### ✅ Expected Result:
+
+* Data syncs correctly
 
 ---
 
 # ⚠️ What to Watch For
 
-Report if:
+Report if you see:
 
-* Onboarding skips steps unexpectedly
-* Data is not saved after onboarding
-* Duplicate wallets/groups are created
-* App crashes between steps
-* Wrong default values appear
-
----
-
-# ✅ Onboarding Completion Checklist
-
-* [ ] Language selection works
-* [ ] Group setup works (all 3 options)
-* [ ] Wallet setup works (all 3 options)
-* [ ] Categories are created correctly
-* [ ] User reaches dashboard successfully
-* [ ] Onboarding does not repeat unnecessarily
+* Incorrect balances
+* Missing data
+* Duplicate entries
+* Crashes
+* Sync failures
+* Onboarding repeating
 
 ---
 
-# 📌 Final Result
+# ✅ Final Checklist
 
-After onboarding:
+* [ ] Authentication works
+* [ ] Onboarding completes correctly
+* [ ] Wallet calculations are correct
+* [ ] Data persists after restart
+* [ ] Offline mode works
+* [ ] Sync works
+* [ ] No crashes observed
 
-* User should have:
+---
+
+# 📌 Expected Final State
+
+After full setup:
+
+* User has at least:
 
     * 1 Group
     * 1 Wallet
-    * Default Categories
-* App should be ready for normal usage
+    * Categories
+* App is ready for daily use
 
 ---
 
-**Status:** Ready for Full User Journey Testing
+**Status:** Ready for Testing
+**Type:** Manual / User Acceptance Testing (UAT)
