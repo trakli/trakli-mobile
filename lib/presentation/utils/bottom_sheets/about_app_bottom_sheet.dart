@@ -1,10 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
-import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/config/cubit/config_cubit.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 
 class AboutAppBottomSheet extends StatelessWidget {
   const AboutAppBottomSheet({super.key});
@@ -22,6 +24,29 @@ class AboutAppBottomSheet extends StatelessWidget {
           SvgPicture.asset(
             Assets.images.logoGreen,
             height: 60.h,
+          ),
+          SizedBox(height: 4.h),
+          BlocConsumer<ConfigCubit, ConfigState>(
+            listener: (context, state) {
+              if (state.showDebug == true) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Activated")),
+                );
+              }
+            },
+            builder: (context, state) {
+              final cubit = context.read<ConfigCubit>();
+              return GestureDetector(
+                onTap: cubit.handleDebugTap,
+                child: Text(
+                  "Version ${state.appVersion ?? ""}",
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 12.sp,
+                  ),
+                ),
+              );
+            },
           ),
           SizedBox(height: 16.h),
           Text(

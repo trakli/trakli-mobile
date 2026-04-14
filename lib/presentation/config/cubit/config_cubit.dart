@@ -1,17 +1,19 @@
 import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/core/usecases/usecase.dart';
 import 'package:trakli/domain/entities/config_entity.dart';
-import 'package:trakli/domain/usecases/configs/get_configs_usecase.dart';
+import 'package:trakli/domain/usecases/configs/delete_config_usecase.dart';
 import 'package:trakli/domain/usecases/configs/get_config_usecase.dart';
+import 'package:trakli/domain/usecases/configs/get_configs_usecase.dart';
+import 'package:trakli/domain/usecases/configs/listen_to_configs_usecase.dart';
 import 'package:trakli/domain/usecases/configs/save_config_usecase.dart';
 import 'package:trakli/domain/usecases/configs/update_config_usecase.dart';
-import 'package:trakli/domain/usecases/configs/delete_config_usecase.dart';
-import 'package:trakli/domain/usecases/configs/listen_to_configs_usecase.dart';
 
 part 'config_cubit.freezed.dart';
 part 'config_state.dart';
@@ -37,6 +39,31 @@ class ConfigCubit extends Cubit<ConfigState> {
     _listenToConfigs();
   }
 
+  Future<void> _loadAppInfo() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    emit(state.copyWith(
+      appVersion: "${packageInfo.version}+${packageInfo.buildNumber}",
+    ));
+  }
+
+  void handleDebugTap() {
+    if (state.debugTapCount != null) {
+      final newTapCount = state.debugTapCount! + 1;
+      if (newTapCount >= 7) {
+        emit(state.copyWith(
+          showDebug: true,
+          debugTapCount: 0,
+        ));
+      } else {
+        emit(state.copyWith(debugTapCount: newTapCount));
+      }
+    }
+  }
+
+  void resetDebugMode() {
+    emit(state.copyWith(showDebug: false, debugTapCount: 0));
+  }
+
   void _listenToConfigs() {
     emit(state.copyWith(isLoading: true));
 
@@ -51,6 +78,7 @@ class ConfigCubit extends Cubit<ConfigState> {
         )),
       ),
     );
+    _loadAppInfo();
   }
 
   Future<void> getConfigs() async {
