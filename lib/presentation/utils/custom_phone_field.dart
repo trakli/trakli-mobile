@@ -58,13 +58,10 @@ class CustomPhoneField extends StatelessWidget {
             width: 2,
           ),
         ),
-        fillColor: const Color(0xFFF5F6F7),
-        filled: true,
-        // filled: true,
       ),
       languageCode: context.locale.languageCode,
       pickerDialogStyle: PickerDialogStyle(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
         countryNameStyle: TextStyle(
           fontSize: 16.sp,
