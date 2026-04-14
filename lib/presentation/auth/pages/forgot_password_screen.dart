@@ -42,6 +42,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     newPassController.dispose();
     newPassConfirmController.dispose();
     pageController.dispose();
+    hideKeyBoard();
     super.dispose();
   }
 

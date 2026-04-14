@@ -25,6 +25,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
+  void dispose() {
+    hideKeyBoard();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<OAuthCubit, OAuthState>(
       listener: (context, state) {
