@@ -21,6 +21,9 @@ mixin _$ConfigState {
   bool get isSaving => throw _privateConstructorUsedError;
   bool get isDeleting => throw _privateConstructorUsedError;
   Failure get failure => throw _privateConstructorUsedError;
+  String? get appVersion => throw _privateConstructorUsedError;
+  int? get debugTapCount => throw _privateConstructorUsedError;
+  bool? get showDebug => throw _privateConstructorUsedError;
 
   /// Create a copy of ConfigState
   /// with the given fields replaced by the non-null parameter values.
@@ -40,7 +43,10 @@ abstract class $ConfigStateCopyWith<$Res> {
       bool isLoading,
       bool isSaving,
       bool isDeleting,
-      Failure failure});
+      Failure failure,
+      String? appVersion,
+      int? debugTapCount,
+      bool? showDebug});
 
   $FailureCopyWith<$Res> get failure;
 }
@@ -65,6 +71,9 @@ class _$ConfigStateCopyWithImpl<$Res, $Val extends ConfigState>
     Object? isSaving = null,
     Object? isDeleting = null,
     Object? failure = null,
+    Object? appVersion = freezed,
+    Object? debugTapCount = freezed,
+    Object? showDebug = freezed,
   }) {
     return _then(_value.copyWith(
       configs: null == configs
@@ -87,6 +96,18 @@ class _$ConfigStateCopyWithImpl<$Res, $Val extends ConfigState>
           ? _value.failure
           : failure // ignore: cast_nullable_to_non_nullable
               as Failure,
+      appVersion: freezed == appVersion
+          ? _value.appVersion
+          : appVersion // ignore: cast_nullable_to_non_nullable
+              as String?,
+      debugTapCount: freezed == debugTapCount
+          ? _value.debugTapCount
+          : debugTapCount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      showDebug: freezed == showDebug
+          ? _value.showDebug
+          : showDebug // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ) as $Val);
   }
 
@@ -114,7 +135,10 @@ abstract class _$$ConfigStateImplCopyWith<$Res>
       bool isLoading,
       bool isSaving,
       bool isDeleting,
-      Failure failure});
+      Failure failure,
+      String? appVersion,
+      int? debugTapCount,
+      bool? showDebug});
 
   @override
   $FailureCopyWith<$Res> get failure;
@@ -138,6 +162,9 @@ class __$$ConfigStateImplCopyWithImpl<$Res>
     Object? isSaving = null,
     Object? isDeleting = null,
     Object? failure = null,
+    Object? appVersion = freezed,
+    Object? debugTapCount = freezed,
+    Object? showDebug = freezed,
   }) {
     return _then(_$ConfigStateImpl(
       configs: null == configs
@@ -160,6 +187,18 @@ class __$$ConfigStateImplCopyWithImpl<$Res>
           ? _value.failure
           : failure // ignore: cast_nullable_to_non_nullable
               as Failure,
+      appVersion: freezed == appVersion
+          ? _value.appVersion
+          : appVersion // ignore: cast_nullable_to_non_nullable
+              as String?,
+      debugTapCount: freezed == debugTapCount
+          ? _value.debugTapCount
+          : debugTapCount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      showDebug: freezed == showDebug
+          ? _value.showDebug
+          : showDebug // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
@@ -172,7 +211,10 @@ class _$ConfigStateImpl extends _ConfigState {
       required this.isLoading,
       required this.isSaving,
       required this.isDeleting,
-      required this.failure})
+      required this.failure,
+      this.appVersion,
+      this.debugTapCount,
+      this.showDebug})
       : _configs = configs,
         super._();
 
@@ -192,10 +234,16 @@ class _$ConfigStateImpl extends _ConfigState {
   final bool isDeleting;
   @override
   final Failure failure;
+  @override
+  final String? appVersion;
+  @override
+  final int? debugTapCount;
+  @override
+  final bool? showDebug;
 
   @override
   String toString() {
-    return 'ConfigState(configs: $configs, isLoading: $isLoading, isSaving: $isSaving, isDeleting: $isDeleting, failure: $failure)';
+    return 'ConfigState(configs: $configs, isLoading: $isLoading, isSaving: $isSaving, isDeleting: $isDeleting, failure: $failure, appVersion: $appVersion, debugTapCount: $debugTapCount, showDebug: $showDebug)';
   }
 
   @override
@@ -210,7 +258,13 @@ class _$ConfigStateImpl extends _ConfigState {
                 other.isSaving == isSaving) &&
             (identical(other.isDeleting, isDeleting) ||
                 other.isDeleting == isDeleting) &&
-            (identical(other.failure, failure) || other.failure == failure));
+            (identical(other.failure, failure) || other.failure == failure) &&
+            (identical(other.appVersion, appVersion) ||
+                other.appVersion == appVersion) &&
+            (identical(other.debugTapCount, debugTapCount) ||
+                other.debugTapCount == debugTapCount) &&
+            (identical(other.showDebug, showDebug) ||
+                other.showDebug == showDebug));
   }
 
   @override
@@ -220,7 +274,10 @@ class _$ConfigStateImpl extends _ConfigState {
       isLoading,
       isSaving,
       isDeleting,
-      failure);
+      failure,
+      appVersion,
+      debugTapCount,
+      showDebug);
 
   /// Create a copy of ConfigState
   /// with the given fields replaced by the non-null parameter values.
@@ -237,7 +294,10 @@ abstract class _ConfigState extends ConfigState {
       required final bool isLoading,
       required final bool isSaving,
       required final bool isDeleting,
-      required final Failure failure}) = _$ConfigStateImpl;
+      required final Failure failure,
+      final String? appVersion,
+      final int? debugTapCount,
+      final bool? showDebug}) = _$ConfigStateImpl;
   const _ConfigState._() : super._();
 
   @override
@@ -250,6 +310,12 @@ abstract class _ConfigState extends ConfigState {
   bool get isDeleting;
   @override
   Failure get failure;
+  @override
+  String? get appVersion;
+  @override
+  int? get debugTapCount;
+  @override
+  bool? get showDebug;
 
   /// Create a copy of ConfigState
   /// with the given fields replaced by the non-null parameter values.

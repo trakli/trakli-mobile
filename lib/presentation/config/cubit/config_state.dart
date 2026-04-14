@@ -8,6 +8,9 @@ class ConfigState with _$ConfigState {
     required bool isSaving,
     required bool isDeleting,
     required Failure failure,
+    String? appVersion,
+    int? debugTapCount,
+    bool? showDebug,
   }) = _ConfigState;
 
   factory ConfigState.initial() => const ConfigState(
@@ -15,6 +18,7 @@ class ConfigState with _$ConfigState {
         isLoading: false,
         isSaving: false,
         isDeleting: false,
+        debugTapCount: 0,
         failure: Failure.none(),
       );
 

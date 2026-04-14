@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,15 +8,16 @@ import 'package:trakli/di/injection.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/category/category_screen.dart';
+import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/presentation/groups/my_groups_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
 import 'package:trakli/presentation/parties/party_screen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
 import 'package:trakli/presentation/settings_screen.dart';
+import 'package:trakli/presentation/transfers/transfers_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/premium_tile.dart';
 import 'package:trakli/presentation/widgets/database_viewer.dart';
-import 'package:trakli/presentation/transfers/transfers_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const String _supportEmail = 'support@trakli.app';
@@ -150,20 +150,29 @@ class CustomDrawer extends StatelessWidget {
               title: LocaleKeys.settings.tr(),
               iconPath: Assets.images.setting,
             ),
-            
-            if (kDebugMode) ...[
-              const Divider(),
-              ListTile(
-                onTap: () {
-                  AppNavigator.push(
-                    context,
-                    DatabaseViewer(database: getIt()),
+            BlocBuilder<ConfigCubit, ConfigState>(
+              builder: (context, state) {
+                if (state.showDebug == true) {
+                  return Column(
+                    children: [
+                      const Divider(),
+                      ListTile(
+                        onTap: () {
+                          AppNavigator.push(
+                            context,
+                            DatabaseViewer(database: getIt()),
+                          );
+                        },
+                        leading: const Icon(Icons.storage),
+                        title: Text(LocaleKeys.databaseViewer.tr()),
+                      ),
+                    ],
                   );
-                },
-                leading: const Icon(Icons.storage),
-                title: Text(LocaleKeys.databaseViewer.tr()),
-              ),
-            ],
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: const PremiumTile(),

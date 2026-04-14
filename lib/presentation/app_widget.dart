@@ -37,17 +37,17 @@ import 'package:trakli/presentation/onboarding/onboard_settings_screen.dart';
 import 'package:trakli/presentation/onboarding/onboarding_screen.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
 import 'package:trakli/presentation/plans/cubit/plans_cubit.dart';
+import 'package:trakli/presentation/remote_config/cubit/remote_config_cubit.dart';
 import 'package:trakli/presentation/root/main_navigation_screen.dart';
 import 'package:trakli/presentation/statistics/cubit/statistics_filter_cubit.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
+import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/utils/sync_cubit.dart';
 import 'package:trakli/presentation/utils/theme.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
-import 'package:trakli/presentation/remote_config/cubit/remote_config_cubit.dart';
-import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
 
 // Global flag to track if we're in onboarding mode
 bool _isInOnboardingMode = false;
@@ -219,6 +219,7 @@ class _AppViewState extends State<AppView> {
       unauthenticated: () async {
         getIt<SynchAppDatabase>().stopAllSync();
         context.read<TransactionCubit>().setCurrentGroup(null);
+        context.read<ConfigCubit>().resetDebugMode();
 
         final isOnboardingComplete = await _isOnboardingCompleteWithDefaults();
 
@@ -330,7 +331,8 @@ class _AppViewState extends State<AppView> {
     return GlobalLoaderOverlay(
       duration: const Duration(seconds: 1),
       reverseDuration: const Duration(seconds: 1),
-      // overlayColor: Colors.grey(0.8),
+      overlayColor:
+          Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45),
       overlayWidgetBuilder: (_) {
         //ignored progress for the moment
         return Center(
