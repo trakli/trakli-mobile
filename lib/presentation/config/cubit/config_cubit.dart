@@ -47,16 +47,15 @@ class ConfigCubit extends Cubit<ConfigState> {
   }
 
   void handleDebugTap() {
-    if (state.debugTapCount != null) {
-      final newTapCount = state.debugTapCount! + 1;
-      if (newTapCount >= 7) {
-        emit(state.copyWith(
-          showDebug: true,
-          debugTapCount: 0,
-        ));
-      } else {
-        emit(state.copyWith(debugTapCount: newTapCount));
-      }
+    final currentCount = state.debugTapCount ?? 0;
+    final newTapCount = currentCount + 1;
+    if (newTapCount >= 7) {
+      emit(state.copyWith(
+        showDebug: true,
+        debugTapCount: 0,
+      ));
+    } else {
+      emit(state.copyWith(debugTapCount: newTapCount));
     }
   }
 
