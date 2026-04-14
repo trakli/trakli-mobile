@@ -34,6 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   int currentStep = 0;
   static const _registerType = RegisterType.email;
   bool canMove = true;
+
   @override
   void initState() {
     _recognizerTap = TapGestureRecognizer()
@@ -52,6 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     lastNameController.dispose();
     usernameController.dispose();
     passwordController.dispose();
+    hideKeyBoard();
     super.dispose();
   }
 

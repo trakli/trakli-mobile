@@ -23,8 +23,10 @@ class LanguageSettingWidget extends StatelessWidget {
         horizontal: 16.w,
         vertical: 16.h,
       ),
-      margin: EdgeInsets.symmetric(
-        horizontal: 16.w,
+      margin: EdgeInsets.only(
+        left: 16.w,
+        right: 16.w,
+        bottom: 16.h,
       ),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,

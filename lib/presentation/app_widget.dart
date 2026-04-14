@@ -178,7 +178,7 @@ class _AppViewState extends State<AppView> {
           setOnboardingMode(false);
           navigatorKey.currentState?.pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => const MainNavigationScreen(),
+              builder: (context) => const OnboardSettingsScreen(),
             ),
             (route) => false,
           );

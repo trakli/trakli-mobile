@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/core/constants/config_constants.dart';
+import 'package:trakli/core/sync/sync_database.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/domain/entities/config_entity.dart';
 import 'package:trakli/domain/repositories/config_repository.dart';
@@ -14,6 +15,7 @@ import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/app_widget.dart' show setOnboardingMode;
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
+import 'package:trakli/presentation/groups/cubit/group_cubit.dart';
 import 'package:trakli/presentation/onboarding/widgets/all_set_widget.dart';
 import 'package:trakli/presentation/onboarding/widgets/category_setup_widget.dart';
 import 'package:trakli/presentation/onboarding/widgets/group_setup_widget.dart';
@@ -22,11 +24,9 @@ import 'package:trakli/presentation/onboarding/widgets/wallet_setup_widget.dart'
 import 'package:trakli/presentation/root/main_navigation_screen.dart';
 import 'package:trakli/presentation/splash/splash_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/groups/cubit/group_cubit.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
-import 'package:trakli/core/sync/sync_database.dart';
 
 // Reusable helper to resolve the default currency from configs
 Currency? getDefaultCurrencyFromConfig(BuildContext context) {
@@ -104,6 +104,7 @@ class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
           value: true,
         );
   }
+
   int _getInitialStep({
     required bool hasDefaultLang,
     required bool hasDefaultGroup,
@@ -121,21 +122,21 @@ class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
   Future<void> _determineSteps() async {
     final entityResult = await getIt<ConfigRepository>().getAllConfigs();
     final entityConfigs = entityResult.fold(
-          (failure) => [],
-          (entity) => entity,
+      (failure) => [],
+      (entity) => entity,
     );
 
-    final hasDefaultLang = entityConfigs
-        .any((c) => c.key == ConfigConstants.defaultLang);
+    final hasDefaultLang =
+        entityConfigs.any((c) => c.key == ConfigConstants.defaultLang);
 
-    final hasDefaultWallet = entityConfigs
-        .any((c) => c.key == ConfigConstants.defaultWallet);
+    final hasDefaultWallet =
+        entityConfigs.any((c) => c.key == ConfigConstants.defaultWallet);
 
-    final hasDefaultCurrency = entityConfigs
-        .any((c) => c.key == ConfigConstants.defaultCurrency);
+    final hasDefaultCurrency =
+        entityConfigs.any((c) => c.key == ConfigConstants.defaultCurrency);
 
-    final hasDefaultGroup = entityConfigs
-        .any((c) => c.key == ConfigConstants.defaultGroup);
+    final hasDefaultGroup =
+        entityConfigs.any((c) => c.key == ConfigConstants.defaultGroup);
 
     final pages = [
       pageOne,
@@ -355,6 +356,7 @@ class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
                             setState(() {
                               _currentPage = index;
                             });
+                            hideKeyBoard();
                           },
                           children: pendingPages,
                         ),
