@@ -714,9 +714,12 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                                       .transaction.clientId,
                                   amount: amount,
                                   description: description,
+                                  datetime: date,
                                   categoryIds: selectedCategory != null
                                       ? [selectedCategory!.clientId]
                                       : null,
+                                  walletClientId: selectedWallet?.clientId,
+                                  partyClientId: selectedParty?.clientId,
                                   attachedFilePaths: attachedFilePaths,
                                 );
                             // Navigation handled by BlocListener

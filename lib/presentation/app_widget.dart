@@ -353,54 +353,58 @@ class _AppViewState extends State<AppView> {
             darkTheme: darkTheme,
             themeMode: themeMode,
             builder: (context, child) {
-              return MultiBlocListener(
-                listeners: [
-                  BlocListener<InAppUpdateCubit, InAppUpdateState>(
-                    listener: (context, state) {
-                      if (state == InAppUpdateState.shouldExitApp) {
-                        SystemNavigator.pop();
-                      }
-                      if (state == InAppUpdateState.continueToApp) {
-                        _onUpdateGateComplete(context);
-                      }
-                    },
-                  ),
-                  BlocListener<AuthCubit, AuthState>(
-                    listener: (context, state) {
-                      _performAuthNavigation(context);
-                    },
-                  ),
-                ],
-                child: Stack(
-                  children: [
-                    child ?? const SizedBox.shrink(),
-                    // Sync indicator at bottom
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: BlocBuilder<SyncCubit, bool>(
-                        builder: (context, isSyncing) {
-                          if (!isSyncing) return const SizedBox.shrink();
-
-                          // Don't show sync indicator on onboarding screens
-                          if (isInOnboardingMode) {
-                            return const SizedBox.shrink();
-                          }
-
-                          return const SyncIndicatorOverlay();
-                        },
-                      ),
+              return GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                child: MultiBlocListener(
+                  listeners: [
+                    BlocListener<InAppUpdateCubit, InAppUpdateState>(
+                      listener: (context, state) {
+                        if (state == InAppUpdateState.shouldExitApp) {
+                          SystemNavigator.pop();
+                        }
+                        if (state == InAppUpdateState.continueToApp) {
+                          _onUpdateGateComplete(context);
+                        }
+                      },
                     ),
-                    // Update ready banner at bottom (shows when flexible update downloaded)
-                    if (!isInOnboardingMode)
-                      const Positioned(
+                    BlocListener<AuthCubit, AuthState>(
+                      listener: (context, state) {
+                        _performAuthNavigation(context);
+                      },
+                    ),
+                  ],
+                  child: Stack(
+                    children: [
+                      child ?? const SizedBox.shrink(),
+                      // Sync indicator at bottom
+                      Positioned(
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        child: UpdateReadyBanner(),
+                        child: BlocBuilder<SyncCubit, bool>(
+                          builder: (context, isSyncing) {
+                            if (!isSyncing) return const SizedBox.shrink();
+
+                            // Don't show sync indicator on onboarding screens
+                            if (isInOnboardingMode) {
+                              return const SizedBox.shrink();
+                            }
+
+                            return const SyncIndicatorOverlay();
+                          },
+                        ),
                       ),
-                  ],
+                      // Update ready banner at bottom (shows when flexible update downloaded)
+                      if (!isInOnboardingMode)
+                        const Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: UpdateReadyBanner(),
+                        ),
+                    ],
+                  ),
                 ),
               );
             },
