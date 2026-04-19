@@ -24,8 +24,7 @@ abstract class TransactionLocalDataSource {
     List<String> attachedFilePaths = const [],
   });
   Future<TransactionCompleteDto> updateTransaction(
-    String id,
-    {
+    String id, {
     double? amount,
     String? description,
     List<String>? categoryIds,
@@ -389,8 +388,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
 
   @override
   Future<TransactionCompleteDto> updateTransaction(
-    String id,
-    {
+    String id, {
     double? amount,
     String? description,
     List<String>? categoryIds,
@@ -439,24 +437,22 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
         }
       }
 
-      Party? party;
       if (partyClientId != null) {
-        party = await (database.select(database.parties)
+        final newParty = await (database.select(database.parties)
               ..where((p) => p.clientId.equals(partyClientId)))
             .getSingleOrNull();
 
-        if (party == null) {
+        if (newParty == null) {
           throw Exception('Party $partyClientId not found');
         }
       }
 
-      Group? group;
       if (groupClientId != null) {
-        group = await (database.select(database.groups)
+        final newGroup = await (database.select(database.groups)
               ..where((g) => g.clientId.equals(groupClientId)))
             .getSingleOrNull();
 
-        if (group == null) {
+        if (newGroup == null) {
           throw Exception('Group $groupClientId not found');
         }
       }
@@ -485,6 +481,20 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
               : const Value.absent(),
         ),
       );
+
+      final currentPartyClientId = model.first.partyClientId;
+      final party = currentPartyClientId != null
+          ? await (database.select(database.parties)
+                ..where((p) => p.clientId.equals(currentPartyClientId)))
+              .getSingleOrNull()
+          : null;
+
+      final currentGroupClientId = model.first.groupClientId;
+      final group = currentGroupClientId != null
+          ? await (database.select(database.groups)
+                ..where((g) => g.clientId.equals(currentGroupClientId)))
+              .getSingleOrNull()
+          : null;
 
       final categories = await database.getCategoriesForTransaction(
         model.first.clientId,

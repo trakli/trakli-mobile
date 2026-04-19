@@ -640,6 +640,7 @@ class _AddTransactionFormCompactLayoutState
                                   categoryIds: _selectedCategory != null
                                       ? [_selectedCategory!.clientId]
                                       : [],
+                                  walletClientId: _selectedWallet?.clientId,
                                   partyClientId: _selectedParty?.clientId,
                                   attachedFilePaths: attachedFilePaths,
                                 );
