@@ -67,7 +67,7 @@ jobs:
 
       - name: Restore DerivedData cache
         if: matrix.os == 'ios'
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: cache-deriveddata
         with:
           path: DerivedData

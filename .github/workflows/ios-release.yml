@@ -35,7 +35,7 @@ jobs:
           xcode-version: ${{ env.XCODE_VERSION }}
 
       - name: Restore DerivedData cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: cache-deriveddata
         with:
           path: DerivedData
