@@ -27,6 +27,9 @@ class AboutAppBottomSheet extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           BlocConsumer<ConfigCubit, ConfigState>(
+            listenWhen: (previous, current) {
+              return previous.showDebug != current.showDebug;
+            },
             listener: (context, state) {
               if (state.showDebug == true) {
                 ScaffoldMessenger.of(context).showSnackBar(
