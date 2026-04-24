@@ -40,10 +40,14 @@ class ConfigCubit extends Cubit<ConfigState> {
   }
 
   Future<void> _loadAppInfo() async {
-    final packageInfo = await PackageInfo.fromPlatform();
-    emit(state.copyWith(
-      appVersion: "${packageInfo.version}+${packageInfo.buildNumber}",
-    ));
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      emit(state.copyWith(
+        appVersion: "${packageInfo.version}+${packageInfo.buildNumber}",
+      ));
+    } catch (e) {
+      emit(state.copyWith(appVersion: 'Unknown'));
+    }
   }
 
   void handleDebugTap() {
