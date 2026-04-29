@@ -66,6 +66,17 @@ enum TransactionType {
       TransactionType.expense => 'expense',
     };
   }
+
+  /// Lenient parse — case-insensitive, trims, returns null on anything else.
+  /// Useful for upstream sources (e.g. AI extractions) that may not be
+  /// normalised.
+  static TransactionType? tryParse(String? value) {
+    return switch (value?.trim().toLowerCase()) {
+      'income' => TransactionType.income,
+      'expense' => TransactionType.expense,
+      _ => null,
+    };
+  }
 }
 
 enum NavigationScreen {
