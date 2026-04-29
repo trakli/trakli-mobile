@@ -11,6 +11,7 @@ import 'package:trakli/presentation/category/category_screen.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/presentation/groups/my_groups_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
+import 'package:trakli/presentation/imports/import_hub_screen.dart';
 import 'package:trakli/presentation/parties/party_screen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
 import 'package:trakli/presentation/settings_screen.dart';
@@ -77,105 +78,133 @@ class CustomDrawer extends StatelessWidget {
                 height: 44.sp,
               ),
             ),
-            _listItem(
-              context,
-              onTap: () {
-                AppNavigator.push(context, const CategoryScreen());
-              },
-              title: LocaleKeys.categories.tr(),
-              iconPath: Assets.images.category,
-              subtitle: LocaleKeys.categoryDesc.tr(),
-            ),
-            _listItem(
-              context,
-              onTap: () {
-                AppNavigator.push(context, const MyGroupsScreen());
-              },
-              title: LocaleKeys.groups.tr(),
-              iconPath: Assets.images.people,
-              subtitle: LocaleKeys.groupsDesc.tr(),
-            ),
-            _listItem(
-              context,
-              onTap: () {
-                AppNavigator.push(context, const PartyScreen());
-              },
-              title: LocaleKeys.parties.tr(),
-              iconPath: Assets.images.people,
-              subtitle: LocaleKeys.partiesDesc.tr(),
-            ),
-            _listItem(
-              context,
-              onTap: () {
-                final cubit = context.read<MainNavigationCubit>();
-                cubit.updateIndex(MainNavigationPageState.wallet);
-                AppNavigator.pop(context);
-              },
-              title: LocaleKeys.wallets.tr(),
-              iconPath: Assets.images.wallet,
-              subtitle: LocaleKeys.walletsDesc.tr(),
-            ),
-            _listItem(
-              context,
-              onTap: () {
-                AppNavigator.push(context, const HistoryScreen());
-              },
-              title: LocaleKeys.transactions.tr(),
-              iconPath: Assets.images.refresh,
-              subtitle: LocaleKeys.transactionsDesc.tr(),
-            ),
-            _listItem(
-              context,
-              onTap: () {
-                AppNavigator.push(context, const TransfersScreen());
-              },
-              title: LocaleKeys.transfers.tr(),
-              iconPath: Assets.images.arrowUpDown,
-              subtitle: LocaleKeys.transfersDesc.tr(),
-            ),
-            Divider(
-              color: Colors.grey.shade500,
-            ),
-            _listItem(
-              context,
-              onTap: () => _launchSupportEmail(context),
-              title: LocaleKeys.support.tr(),
-              iconPath: Assets.images.support,
-            ),
-            _listItem(
-              context,
-              onTap: () {
-                AppNavigator.push(context, const SettingsScreen());
-              },
-              title: LocaleKeys.settings.tr(),
-              iconPath: Assets.images.setting,
-            ),
-            BlocBuilder<ConfigCubit, ConfigState>(
-              builder: (context, state) {
-                if (state.showDebug == true) {
-                  return Column(
+            Expanded(
+              child: SingleChildScrollView(
+                child: SafeArea(
+                  top: false,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Divider(),
+                      _listItem(
+                        context,
+                        onTap: () {
+                          AppNavigator.push(context, const CategoryScreen());
+                        },
+                        title: LocaleKeys.categories.tr(),
+                        iconPath: Assets.images.category,
+                        subtitle: LocaleKeys.categoryDesc.tr(),
+                      ),
+                      _listItem(
+                        context,
+                        onTap: () {
+                          AppNavigator.push(context, const MyGroupsScreen());
+                        },
+                        title: LocaleKeys.groups.tr(),
+                        iconPath: Assets.images.people,
+                        subtitle: LocaleKeys.groupsDesc.tr(),
+                      ),
+                      _listItem(
+                        context,
+                        onTap: () {
+                          AppNavigator.push(context, const PartyScreen());
+                        },
+                        title: LocaleKeys.parties.tr(),
+                        iconPath: Assets.images.people,
+                        subtitle: LocaleKeys.partiesDesc.tr(),
+                      ),
+                      _listItem(
+                        context,
+                        onTap: () {
+                          final cubit = context.read<MainNavigationCubit>();
+                          cubit.updateIndex(MainNavigationPageState.wallet);
+                          AppNavigator.pop(context);
+                        },
+                        title: LocaleKeys.wallets.tr(),
+                        iconPath: Assets.images.wallet,
+                        subtitle: LocaleKeys.walletsDesc.tr(),
+                      ),
+                      _listItem(
+                        context,
+                        onTap: () {
+                          AppNavigator.push(context, const HistoryScreen());
+                        },
+                        title: LocaleKeys.transactions.tr(),
+                        iconPath: Assets.images.refresh,
+                        subtitle: LocaleKeys.transactionsDesc.tr(),
+                      ),
+                      _listItem(
+                        context,
+                        onTap: () {
+                          AppNavigator.push(context, const TransfersScreen());
+                        },
+                        title: LocaleKeys.transfers.tr(),
+                        iconPath: Assets.images.arrowUpDown,
+                        subtitle: LocaleKeys.transfersDesc.tr(),
+                      ),
                       ListTile(
                         onTap: () {
-                          AppNavigator.push(
-                            context,
-                            DatabaseViewer(database: getIt()),
-                          );
+                          AppNavigator.push(context, const ImportHubScreen());
                         },
-                        leading: const Icon(Icons.storage),
-                        title: Text(LocaleKeys.databaseViewer.tr()),
+                        leading: Icon(
+                          Icons.file_upload_outlined,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        title: Text(LocaleKeys.imports.tr()),
+                        subtitle: Text(LocaleKeys.importsDesc.tr()),
+                        subtitleTextStyle:
+                            Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  color: Colors.grey.shade500,
+                                ),
                       ),
+                      Divider(
+                        color: Colors.grey.shade500,
+                      ),
+                      _listItem(
+                        context,
+                        onTap: () => _launchSupportEmail(context),
+                        title: LocaleKeys.support.tr(),
+                        iconPath: Assets.images.support,
+                      ),
+                      _listItem(
+                        context,
+                        onTap: () {
+                          AppNavigator.push(context, const SettingsScreen());
+                        },
+                        title: LocaleKeys.settings.tr(),
+                        iconPath: Assets.images.setting,
+                      ),
+                      BlocBuilder<ConfigCubit, ConfigState>(
+                        builder: (context, state) {
+                          if (state.showDebug == true) {
+                            return Column(
+                              children: [
+                                const Divider(),
+                                ListTile(
+                                  onTap: () {
+                                    AppNavigator.push(
+                                      context,
+                                      DatabaseViewer(database: getIt()),
+                                    );
+                                  },
+                                  leading: const Icon(Icons.storage),
+                                  title: Text(LocaleKeys.databaseViewer.tr()),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w),
+                        child: const PremiumTile(),
+                      ),
+                      SizedBox(height: 16.h),
                     ],
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
-              },
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w),
-              child: const PremiumTile(),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
