@@ -32,6 +32,7 @@ import 'package:trakli/presentation/config/theme_cubit/theme_cubit.dart';
 import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
 import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
 import 'package:trakli/presentation/groups/cubit/group_cubit.dart';
+import 'package:trakli/presentation/imports/cubit/import_cubit.dart';
 import 'package:trakli/presentation/linear_indicator.dart';
 import 'package:trakli/presentation/onboarding/onboard_settings_screen.dart';
 import 'package:trakli/presentation/onboarding/onboarding_screen.dart';
@@ -123,6 +124,9 @@ class AppWidget extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => getIt<RemoteConfigCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<ImportCubit>(),
         ),
       ],
       child: const AppView(),
