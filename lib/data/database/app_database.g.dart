@@ -6488,6 +6488,1471 @@ class TransfersCompanion extends UpdateCompanion<Transfer> {
   }
 }
 
+class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BudgetsTable(this.attachedDatabase, [this._alias]);
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  @override
+  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
+      'user_id', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<String> clientId = GeneratedColumn<String>(
+      'client_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(defaultClientId));
+  @override
+  late final GeneratedColumn<String> rev = GeneratedColumn<String>(
+      'rev', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('1'));
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<DateTime> lastSyncedAt = GeneratedColumn<DateTime>(
+      'last_synced_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<String> slug = GeneratedColumn<String>(
+      'slug', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
+      'amount', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+      'currency', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumnWithTypeConverter<BudgetPeriodType, String>
+      periodType = GeneratedColumn<String>('period_type', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<BudgetPeriodType>($BudgetsTable.$converterperiodType);
+  @override
+  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
+      'start_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
+      'end_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<bool> rolloverEnabled = GeneratedColumn<bool>(
+      'rollover_enabled', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("rollover_enabled" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  late final GeneratedColumn<int> thresholdPercent = GeneratedColumn<int>(
+      'threshold_percent', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(80));
+  @override
+  late final GeneratedColumn<bool> forecastAlertsEnabled =
+      GeneratedColumn<bool>('forecast_alerts_enabled', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("forecast_alerts_enabled" IN (0, 1))'),
+          defaultValue: const Constant(false));
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+      'is_active', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  @override
+  late final GeneratedColumn<String> ownerType = GeneratedColumn<String>(
+      'owner_type', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('user'));
+  @override
+  late final GeneratedColumn<String> ownerClientId = GeneratedColumn<String>(
+      'owner_client_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        userId,
+        clientId,
+        rev,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        lastSyncedAt,
+        name,
+        slug,
+        description,
+        amount,
+        currency,
+        periodType,
+        startDate,
+        endDate,
+        rolloverEnabled,
+        thresholdPercent,
+        forecastAlertsEnabled,
+        isActive,
+        ownerType,
+        ownerClientId
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'budgets';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {clientId};
+  @override
+  Budget map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Budget(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id']),
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}user_id']),
+      clientId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}client_id'])!,
+      rev: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}rev']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      lastSyncedAt: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}last_synced_at']),
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      slug: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}slug']),
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
+      currency: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}currency'])!,
+      periodType: $BudgetsTable.$converterperiodType.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}period_type'])!),
+      startDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}start_date'])!,
+      endDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}end_date']),
+      rolloverEnabled: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}rollover_enabled'])!,
+      thresholdPercent: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}threshold_percent'])!,
+      forecastAlertsEnabled: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}forecast_alerts_enabled'])!,
+      isActive: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      ownerType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}owner_type'])!,
+      ownerClientId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}owner_client_id'])!,
+    );
+  }
+
+  @override
+  $BudgetsTable createAlias(String alias) {
+    return $BudgetsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<BudgetPeriodType, String, String>
+      $converterperiodType =
+      const EnumNameConverter<BudgetPeriodType>(BudgetPeriodType.values);
+}
+
+class Budget extends DataClass implements Insertable<Budget> {
+  final int? id;
+  final int? userId;
+  final String clientId;
+  final String? rev;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final DateTime? lastSyncedAt;
+  final String name;
+  final String? slug;
+  final String? description;
+  final double amount;
+  final String currency;
+  final BudgetPeriodType periodType;
+  final DateTime startDate;
+  final DateTime? endDate;
+  final bool rolloverEnabled;
+  final int thresholdPercent;
+  final bool forecastAlertsEnabled;
+  final bool isActive;
+  final String ownerType;
+  final String ownerClientId;
+  const Budget(
+      {this.id,
+      this.userId,
+      required this.clientId,
+      this.rev,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      this.lastSyncedAt,
+      required this.name,
+      this.slug,
+      this.description,
+      required this.amount,
+      required this.currency,
+      required this.periodType,
+      required this.startDate,
+      this.endDate,
+      required this.rolloverEnabled,
+      required this.thresholdPercent,
+      required this.forecastAlertsEnabled,
+      required this.isActive,
+      required this.ownerType,
+      required this.ownerClientId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<int>(userId);
+    }
+    map['client_id'] = Variable<String>(clientId);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<String>(rev);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || lastSyncedAt != null) {
+      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt);
+    }
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || slug != null) {
+      map['slug'] = Variable<String>(slug);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['amount'] = Variable<double>(amount);
+    map['currency'] = Variable<String>(currency);
+    {
+      map['period_type'] = Variable<String>(
+          $BudgetsTable.$converterperiodType.toSql(periodType));
+    }
+    map['start_date'] = Variable<DateTime>(startDate);
+    if (!nullToAbsent || endDate != null) {
+      map['end_date'] = Variable<DateTime>(endDate);
+    }
+    map['rollover_enabled'] = Variable<bool>(rolloverEnabled);
+    map['threshold_percent'] = Variable<int>(thresholdPercent);
+    map['forecast_alerts_enabled'] = Variable<bool>(forecastAlertsEnabled);
+    map['is_active'] = Variable<bool>(isActive);
+    map['owner_type'] = Variable<String>(ownerType);
+    map['owner_client_id'] = Variable<String>(ownerClientId);
+    return map;
+  }
+
+  BudgetsCompanion toCompanion(bool nullToAbsent) {
+    return BudgetsCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      userId:
+          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      clientId: Value(clientId),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      lastSyncedAt: lastSyncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncedAt),
+      name: Value(name),
+      slug: slug == null && nullToAbsent ? const Value.absent() : Value(slug),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      amount: Value(amount),
+      currency: Value(currency),
+      periodType: Value(periodType),
+      startDate: Value(startDate),
+      endDate: endDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endDate),
+      rolloverEnabled: Value(rolloverEnabled),
+      thresholdPercent: Value(thresholdPercent),
+      forecastAlertsEnabled: Value(forecastAlertsEnabled),
+      isActive: Value(isActive),
+      ownerType: Value(ownerType),
+      ownerClientId: Value(ownerClientId),
+    );
+  }
+
+  factory Budget.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Budget(
+      id: serializer.fromJson<int?>(json['id']),
+      userId: serializer.fromJson<int?>(json['user_id']),
+      clientId: serializer.fromJson<String>(json['client_generated_id']),
+      rev: serializer.fromJson<String?>(json['rev']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
+      lastSyncedAt: serializer.fromJson<DateTime?>(json['last_synced_at']),
+      name: serializer.fromJson<String>(json['name']),
+      slug: serializer.fromJson<String?>(json['slug']),
+      description: serializer.fromJson<String?>(json['description']),
+      amount: serializer.fromJson<double>(json['amount']),
+      currency: serializer.fromJson<String>(json['currency']),
+      periodType: $BudgetsTable.$converterperiodType
+          .fromJson(serializer.fromJson<String>(json['periodType'])),
+      startDate: serializer.fromJson<DateTime>(json['startDate']),
+      endDate: serializer.fromJson<DateTime?>(json['endDate']),
+      rolloverEnabled: serializer.fromJson<bool>(json['rolloverEnabled']),
+      thresholdPercent: serializer.fromJson<int>(json['thresholdPercent']),
+      forecastAlertsEnabled:
+          serializer.fromJson<bool>(json['forecastAlertsEnabled']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      ownerType: serializer.fromJson<String>(json['ownerType']),
+      ownerClientId: serializer.fromJson<String>(json['ownerClientId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int?>(id),
+      'user_id': serializer.toJson<int?>(userId),
+      'client_generated_id': serializer.toJson<String>(clientId),
+      'rev': serializer.toJson<String?>(rev),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
+      'last_synced_at': serializer.toJson<DateTime?>(lastSyncedAt),
+      'name': serializer.toJson<String>(name),
+      'slug': serializer.toJson<String?>(slug),
+      'description': serializer.toJson<String?>(description),
+      'amount': serializer.toJson<double>(amount),
+      'currency': serializer.toJson<String>(currency),
+      'periodType': serializer.toJson<String>(
+          $BudgetsTable.$converterperiodType.toJson(periodType)),
+      'startDate': serializer.toJson<DateTime>(startDate),
+      'endDate': serializer.toJson<DateTime?>(endDate),
+      'rolloverEnabled': serializer.toJson<bool>(rolloverEnabled),
+      'thresholdPercent': serializer.toJson<int>(thresholdPercent),
+      'forecastAlertsEnabled': serializer.toJson<bool>(forecastAlertsEnabled),
+      'isActive': serializer.toJson<bool>(isActive),
+      'ownerType': serializer.toJson<String>(ownerType),
+      'ownerClientId': serializer.toJson<String>(ownerClientId),
+    };
+  }
+
+  Budget copyWith(
+          {Value<int?> id = const Value.absent(),
+          Value<int?> userId = const Value.absent(),
+          String? clientId,
+          Value<String?> rev = const Value.absent(),
+          DateTime? createdAt,
+          DateTime? updatedAt,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          Value<DateTime?> lastSyncedAt = const Value.absent(),
+          String? name,
+          Value<String?> slug = const Value.absent(),
+          Value<String?> description = const Value.absent(),
+          double? amount,
+          String? currency,
+          BudgetPeriodType? periodType,
+          DateTime? startDate,
+          Value<DateTime?> endDate = const Value.absent(),
+          bool? rolloverEnabled,
+          int? thresholdPercent,
+          bool? forecastAlertsEnabled,
+          bool? isActive,
+          String? ownerType,
+          String? ownerClientId}) =>
+      Budget(
+        id: id.present ? id.value : this.id,
+        userId: userId.present ? userId.value : this.userId,
+        clientId: clientId ?? this.clientId,
+        rev: rev.present ? rev.value : this.rev,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        lastSyncedAt:
+            lastSyncedAt.present ? lastSyncedAt.value : this.lastSyncedAt,
+        name: name ?? this.name,
+        slug: slug.present ? slug.value : this.slug,
+        description: description.present ? description.value : this.description,
+        amount: amount ?? this.amount,
+        currency: currency ?? this.currency,
+        periodType: periodType ?? this.periodType,
+        startDate: startDate ?? this.startDate,
+        endDate: endDate.present ? endDate.value : this.endDate,
+        rolloverEnabled: rolloverEnabled ?? this.rolloverEnabled,
+        thresholdPercent: thresholdPercent ?? this.thresholdPercent,
+        forecastAlertsEnabled:
+            forecastAlertsEnabled ?? this.forecastAlertsEnabled,
+        isActive: isActive ?? this.isActive,
+        ownerType: ownerType ?? this.ownerType,
+        ownerClientId: ownerClientId ?? this.ownerClientId,
+      );
+  Budget copyWithCompanion(BudgetsCompanion data) {
+    return Budget(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      clientId: data.clientId.present ? data.clientId.value : this.clientId,
+      rev: data.rev.present ? data.rev.value : this.rev,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      lastSyncedAt: data.lastSyncedAt.present
+          ? data.lastSyncedAt.value
+          : this.lastSyncedAt,
+      name: data.name.present ? data.name.value : this.name,
+      slug: data.slug.present ? data.slug.value : this.slug,
+      description:
+          data.description.present ? data.description.value : this.description,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      currency: data.currency.present ? data.currency.value : this.currency,
+      periodType:
+          data.periodType.present ? data.periodType.value : this.periodType,
+      startDate: data.startDate.present ? data.startDate.value : this.startDate,
+      endDate: data.endDate.present ? data.endDate.value : this.endDate,
+      rolloverEnabled: data.rolloverEnabled.present
+          ? data.rolloverEnabled.value
+          : this.rolloverEnabled,
+      thresholdPercent: data.thresholdPercent.present
+          ? data.thresholdPercent.value
+          : this.thresholdPercent,
+      forecastAlertsEnabled: data.forecastAlertsEnabled.present
+          ? data.forecastAlertsEnabled.value
+          : this.forecastAlertsEnabled,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      ownerType: data.ownerType.present ? data.ownerType.value : this.ownerType,
+      ownerClientId: data.ownerClientId.present
+          ? data.ownerClientId.value
+          : this.ownerClientId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Budget(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('clientId: $clientId, ')
+          ..write('rev: $rev, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('lastSyncedAt: $lastSyncedAt, ')
+          ..write('name: $name, ')
+          ..write('slug: $slug, ')
+          ..write('description: $description, ')
+          ..write('amount: $amount, ')
+          ..write('currency: $currency, ')
+          ..write('periodType: $periodType, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate, ')
+          ..write('rolloverEnabled: $rolloverEnabled, ')
+          ..write('thresholdPercent: $thresholdPercent, ')
+          ..write('forecastAlertsEnabled: $forecastAlertsEnabled, ')
+          ..write('isActive: $isActive, ')
+          ..write('ownerType: $ownerType, ')
+          ..write('ownerClientId: $ownerClientId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+        id,
+        userId,
+        clientId,
+        rev,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        lastSyncedAt,
+        name,
+        slug,
+        description,
+        amount,
+        currency,
+        periodType,
+        startDate,
+        endDate,
+        rolloverEnabled,
+        thresholdPercent,
+        forecastAlertsEnabled,
+        isActive,
+        ownerType,
+        ownerClientId
+      ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Budget &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.clientId == this.clientId &&
+          other.rev == this.rev &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.lastSyncedAt == this.lastSyncedAt &&
+          other.name == this.name &&
+          other.slug == this.slug &&
+          other.description == this.description &&
+          other.amount == this.amount &&
+          other.currency == this.currency &&
+          other.periodType == this.periodType &&
+          other.startDate == this.startDate &&
+          other.endDate == this.endDate &&
+          other.rolloverEnabled == this.rolloverEnabled &&
+          other.thresholdPercent == this.thresholdPercent &&
+          other.forecastAlertsEnabled == this.forecastAlertsEnabled &&
+          other.isActive == this.isActive &&
+          other.ownerType == this.ownerType &&
+          other.ownerClientId == this.ownerClientId);
+}
+
+class BudgetsCompanion extends UpdateCompanion<Budget> {
+  final Value<int?> id;
+  final Value<int?> userId;
+  final Value<String> clientId;
+  final Value<String?> rev;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<DateTime?> lastSyncedAt;
+  final Value<String> name;
+  final Value<String?> slug;
+  final Value<String?> description;
+  final Value<double> amount;
+  final Value<String> currency;
+  final Value<BudgetPeriodType> periodType;
+  final Value<DateTime> startDate;
+  final Value<DateTime?> endDate;
+  final Value<bool> rolloverEnabled;
+  final Value<int> thresholdPercent;
+  final Value<bool> forecastAlertsEnabled;
+  final Value<bool> isActive;
+  final Value<String> ownerType;
+  final Value<String> ownerClientId;
+  final Value<int> rowid;
+  const BudgetsCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.clientId = const Value.absent(),
+    this.rev = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.lastSyncedAt = const Value.absent(),
+    this.name = const Value.absent(),
+    this.slug = const Value.absent(),
+    this.description = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.currency = const Value.absent(),
+    this.periodType = const Value.absent(),
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
+    this.rolloverEnabled = const Value.absent(),
+    this.thresholdPercent = const Value.absent(),
+    this.forecastAlertsEnabled = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.ownerType = const Value.absent(),
+    this.ownerClientId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BudgetsCompanion.insert({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.clientId = const Value.absent(),
+    this.rev = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.lastSyncedAt = const Value.absent(),
+    required String name,
+    this.slug = const Value.absent(),
+    this.description = const Value.absent(),
+    required double amount,
+    required String currency,
+    required BudgetPeriodType periodType,
+    required DateTime startDate,
+    this.endDate = const Value.absent(),
+    this.rolloverEnabled = const Value.absent(),
+    this.thresholdPercent = const Value.absent(),
+    this.forecastAlertsEnabled = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.ownerType = const Value.absent(),
+    this.ownerClientId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : name = Value(name),
+        amount = Value(amount),
+        currency = Value(currency),
+        periodType = Value(periodType),
+        startDate = Value(startDate);
+  static Insertable<Budget> custom({
+    Expression<int>? id,
+    Expression<int>? userId,
+    Expression<String>? clientId,
+    Expression<String>? rev,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<DateTime>? lastSyncedAt,
+    Expression<String>? name,
+    Expression<String>? slug,
+    Expression<String>? description,
+    Expression<double>? amount,
+    Expression<String>? currency,
+    Expression<String>? periodType,
+    Expression<DateTime>? startDate,
+    Expression<DateTime>? endDate,
+    Expression<bool>? rolloverEnabled,
+    Expression<int>? thresholdPercent,
+    Expression<bool>? forecastAlertsEnabled,
+    Expression<bool>? isActive,
+    Expression<String>? ownerType,
+    Expression<String>? ownerClientId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (clientId != null) 'client_id': clientId,
+      if (rev != null) 'rev': rev,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (lastSyncedAt != null) 'last_synced_at': lastSyncedAt,
+      if (name != null) 'name': name,
+      if (slug != null) 'slug': slug,
+      if (description != null) 'description': description,
+      if (amount != null) 'amount': amount,
+      if (currency != null) 'currency': currency,
+      if (periodType != null) 'period_type': periodType,
+      if (startDate != null) 'start_date': startDate,
+      if (endDate != null) 'end_date': endDate,
+      if (rolloverEnabled != null) 'rollover_enabled': rolloverEnabled,
+      if (thresholdPercent != null) 'threshold_percent': thresholdPercent,
+      if (forecastAlertsEnabled != null)
+        'forecast_alerts_enabled': forecastAlertsEnabled,
+      if (isActive != null) 'is_active': isActive,
+      if (ownerType != null) 'owner_type': ownerType,
+      if (ownerClientId != null) 'owner_client_id': ownerClientId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BudgetsCompanion copyWith(
+      {Value<int?>? id,
+      Value<int?>? userId,
+      Value<String>? clientId,
+      Value<String?>? rev,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<DateTime?>? deletedAt,
+      Value<DateTime?>? lastSyncedAt,
+      Value<String>? name,
+      Value<String?>? slug,
+      Value<String?>? description,
+      Value<double>? amount,
+      Value<String>? currency,
+      Value<BudgetPeriodType>? periodType,
+      Value<DateTime>? startDate,
+      Value<DateTime?>? endDate,
+      Value<bool>? rolloverEnabled,
+      Value<int>? thresholdPercent,
+      Value<bool>? forecastAlertsEnabled,
+      Value<bool>? isActive,
+      Value<String>? ownerType,
+      Value<String>? ownerClientId,
+      Value<int>? rowid}) {
+    return BudgetsCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      clientId: clientId ?? this.clientId,
+      rev: rev ?? this.rev,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
+      name: name ?? this.name,
+      slug: slug ?? this.slug,
+      description: description ?? this.description,
+      amount: amount ?? this.amount,
+      currency: currency ?? this.currency,
+      periodType: periodType ?? this.periodType,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      rolloverEnabled: rolloverEnabled ?? this.rolloverEnabled,
+      thresholdPercent: thresholdPercent ?? this.thresholdPercent,
+      forecastAlertsEnabled:
+          forecastAlertsEnabled ?? this.forecastAlertsEnabled,
+      isActive: isActive ?? this.isActive,
+      ownerType: ownerType ?? this.ownerType,
+      ownerClientId: ownerClientId ?? this.ownerClientId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<int>(userId.value);
+    }
+    if (clientId.present) {
+      map['client_id'] = Variable<String>(clientId.value);
+    }
+    if (rev.present) {
+      map['rev'] = Variable<String>(rev.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (lastSyncedAt.present) {
+      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (slug.present) {
+      map['slug'] = Variable<String>(slug.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<double>(amount.value);
+    }
+    if (currency.present) {
+      map['currency'] = Variable<String>(currency.value);
+    }
+    if (periodType.present) {
+      map['period_type'] = Variable<String>(
+          $BudgetsTable.$converterperiodType.toSql(periodType.value));
+    }
+    if (startDate.present) {
+      map['start_date'] = Variable<DateTime>(startDate.value);
+    }
+    if (endDate.present) {
+      map['end_date'] = Variable<DateTime>(endDate.value);
+    }
+    if (rolloverEnabled.present) {
+      map['rollover_enabled'] = Variable<bool>(rolloverEnabled.value);
+    }
+    if (thresholdPercent.present) {
+      map['threshold_percent'] = Variable<int>(thresholdPercent.value);
+    }
+    if (forecastAlertsEnabled.present) {
+      map['forecast_alerts_enabled'] =
+          Variable<bool>(forecastAlertsEnabled.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (ownerType.present) {
+      map['owner_type'] = Variable<String>(ownerType.value);
+    }
+    if (ownerClientId.present) {
+      map['owner_client_id'] = Variable<String>(ownerClientId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BudgetsCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('clientId: $clientId, ')
+          ..write('rev: $rev, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('lastSyncedAt: $lastSyncedAt, ')
+          ..write('name: $name, ')
+          ..write('slug: $slug, ')
+          ..write('description: $description, ')
+          ..write('amount: $amount, ')
+          ..write('currency: $currency, ')
+          ..write('periodType: $periodType, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate, ')
+          ..write('rolloverEnabled: $rolloverEnabled, ')
+          ..write('thresholdPercent: $thresholdPercent, ')
+          ..write('forecastAlertsEnabled: $forecastAlertsEnabled, ')
+          ..write('isActive: $isActive, ')
+          ..write('ownerType: $ownerType, ')
+          ..write('ownerClientId: $ownerClientId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BudgetTargetsTable extends BudgetTargets
+    with TableInfo<$BudgetTargetsTable, BudgetTarget> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BudgetTargetsTable(this.attachedDatabase, [this._alias]);
+  @override
+  late final GeneratedColumn<String> budgetClientId = GeneratedColumn<String>(
+      'budget_client_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumnWithTypeConverter<BudgetTargetType, String>
+      targetType = GeneratedColumn<String>('target_type', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<BudgetTargetType>(
+              $BudgetTargetsTable.$convertertargetType);
+  @override
+  late final GeneratedColumn<String> targetClientId = GeneratedColumn<String>(
+      'target_client_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<int> targetId = GeneratedColumn<int>(
+      'target_id', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [budgetClientId, targetType, targetClientId, targetId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'budget_targets';
+  @override
+  Set<GeneratedColumn> get $primaryKey =>
+      {budgetClientId, targetType, targetClientId};
+  @override
+  BudgetTarget map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BudgetTarget(
+      budgetClientId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}budget_client_id'])!,
+      targetType: $BudgetTargetsTable.$convertertargetType.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}target_type'])!),
+      targetClientId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}target_client_id'])!,
+      targetId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}target_id']),
+    );
+  }
+
+  @override
+  $BudgetTargetsTable createAlias(String alias) {
+    return $BudgetTargetsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<BudgetTargetType, String, String>
+      $convertertargetType =
+      const EnumNameConverter<BudgetTargetType>(BudgetTargetType.values);
+}
+
+class BudgetTarget extends DataClass implements Insertable<BudgetTarget> {
+  final String budgetClientId;
+  final BudgetTargetType targetType;
+  final String targetClientId;
+  final int? targetId;
+  const BudgetTarget(
+      {required this.budgetClientId,
+      required this.targetType,
+      required this.targetClientId,
+      this.targetId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['budget_client_id'] = Variable<String>(budgetClientId);
+    {
+      map['target_type'] = Variable<String>(
+          $BudgetTargetsTable.$convertertargetType.toSql(targetType));
+    }
+    map['target_client_id'] = Variable<String>(targetClientId);
+    if (!nullToAbsent || targetId != null) {
+      map['target_id'] = Variable<int>(targetId);
+    }
+    return map;
+  }
+
+  BudgetTargetsCompanion toCompanion(bool nullToAbsent) {
+    return BudgetTargetsCompanion(
+      budgetClientId: Value(budgetClientId),
+      targetType: Value(targetType),
+      targetClientId: Value(targetClientId),
+      targetId: targetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetId),
+    );
+  }
+
+  factory BudgetTarget.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BudgetTarget(
+      budgetClientId: serializer.fromJson<String>(json['budgetClientId']),
+      targetType: $BudgetTargetsTable.$convertertargetType
+          .fromJson(serializer.fromJson<String>(json['targetType'])),
+      targetClientId: serializer.fromJson<String>(json['targetClientId']),
+      targetId: serializer.fromJson<int?>(json['targetId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'budgetClientId': serializer.toJson<String>(budgetClientId),
+      'targetType': serializer.toJson<String>(
+          $BudgetTargetsTable.$convertertargetType.toJson(targetType)),
+      'targetClientId': serializer.toJson<String>(targetClientId),
+      'targetId': serializer.toJson<int?>(targetId),
+    };
+  }
+
+  BudgetTarget copyWith(
+          {String? budgetClientId,
+          BudgetTargetType? targetType,
+          String? targetClientId,
+          Value<int?> targetId = const Value.absent()}) =>
+      BudgetTarget(
+        budgetClientId: budgetClientId ?? this.budgetClientId,
+        targetType: targetType ?? this.targetType,
+        targetClientId: targetClientId ?? this.targetClientId,
+        targetId: targetId.present ? targetId.value : this.targetId,
+      );
+  BudgetTarget copyWithCompanion(BudgetTargetsCompanion data) {
+    return BudgetTarget(
+      budgetClientId: data.budgetClientId.present
+          ? data.budgetClientId.value
+          : this.budgetClientId,
+      targetType:
+          data.targetType.present ? data.targetType.value : this.targetType,
+      targetClientId: data.targetClientId.present
+          ? data.targetClientId.value
+          : this.targetClientId,
+      targetId: data.targetId.present ? data.targetId.value : this.targetId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BudgetTarget(')
+          ..write('budgetClientId: $budgetClientId, ')
+          ..write('targetType: $targetType, ')
+          ..write('targetClientId: $targetClientId, ')
+          ..write('targetId: $targetId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(budgetClientId, targetType, targetClientId, targetId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BudgetTarget &&
+          other.budgetClientId == this.budgetClientId &&
+          other.targetType == this.targetType &&
+          other.targetClientId == this.targetClientId &&
+          other.targetId == this.targetId);
+}
+
+class BudgetTargetsCompanion extends UpdateCompanion<BudgetTarget> {
+  final Value<String> budgetClientId;
+  final Value<BudgetTargetType> targetType;
+  final Value<String> targetClientId;
+  final Value<int?> targetId;
+  final Value<int> rowid;
+  const BudgetTargetsCompanion({
+    this.budgetClientId = const Value.absent(),
+    this.targetType = const Value.absent(),
+    this.targetClientId = const Value.absent(),
+    this.targetId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BudgetTargetsCompanion.insert({
+    required String budgetClientId,
+    required BudgetTargetType targetType,
+    required String targetClientId,
+    this.targetId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : budgetClientId = Value(budgetClientId),
+        targetType = Value(targetType),
+        targetClientId = Value(targetClientId);
+  static Insertable<BudgetTarget> custom({
+    Expression<String>? budgetClientId,
+    Expression<String>? targetType,
+    Expression<String>? targetClientId,
+    Expression<int>? targetId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (budgetClientId != null) 'budget_client_id': budgetClientId,
+      if (targetType != null) 'target_type': targetType,
+      if (targetClientId != null) 'target_client_id': targetClientId,
+      if (targetId != null) 'target_id': targetId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BudgetTargetsCompanion copyWith(
+      {Value<String>? budgetClientId,
+      Value<BudgetTargetType>? targetType,
+      Value<String>? targetClientId,
+      Value<int?>? targetId,
+      Value<int>? rowid}) {
+    return BudgetTargetsCompanion(
+      budgetClientId: budgetClientId ?? this.budgetClientId,
+      targetType: targetType ?? this.targetType,
+      targetClientId: targetClientId ?? this.targetClientId,
+      targetId: targetId ?? this.targetId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (budgetClientId.present) {
+      map['budget_client_id'] = Variable<String>(budgetClientId.value);
+    }
+    if (targetType.present) {
+      map['target_type'] = Variable<String>(
+          $BudgetTargetsTable.$convertertargetType.toSql(targetType.value));
+    }
+    if (targetClientId.present) {
+      map['target_client_id'] = Variable<String>(targetClientId.value);
+    }
+    if (targetId.present) {
+      map['target_id'] = Variable<int>(targetId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BudgetTargetsCompanion(')
+          ..write('budgetClientId: $budgetClientId, ')
+          ..write('targetType: $targetType, ')
+          ..write('targetClientId: $targetClientId, ')
+          ..write('targetId: $targetId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BudgetPeriodStatesTable extends BudgetPeriodStates
+    with TableInfo<$BudgetPeriodStatesTable, BudgetPeriodState> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BudgetPeriodStatesTable(this.attachedDatabase, [this._alias]);
+  @override
+  late final GeneratedColumn<String> budgetClientId = GeneratedColumn<String>(
+      'budget_client_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<DateTime> periodStart = GeneratedColumn<DateTime>(
+      'period_start', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<DateTime> periodEnd = GeneratedColumn<DateTime>(
+      'period_end', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<double> netSpent = GeneratedColumn<double>(
+      'net_spent', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  late final GeneratedColumn<double> rolloverIn = GeneratedColumn<double>(
+      'rollover_in', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  late final GeneratedColumn<double> rolloverOut = GeneratedColumn<double>(
+      'rollover_out', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  late final GeneratedColumn<DateTime> closedAt = GeneratedColumn<DateTime>(
+      'closed_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        budgetClientId,
+        periodStart,
+        periodEnd,
+        netSpent,
+        rolloverIn,
+        rolloverOut,
+        closedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'budget_period_states';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {budgetClientId, periodStart};
+  @override
+  BudgetPeriodState map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BudgetPeriodState(
+      budgetClientId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}budget_client_id'])!,
+      periodStart: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}period_start'])!,
+      periodEnd: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}period_end'])!,
+      netSpent: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}net_spent'])!,
+      rolloverIn: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}rollover_in'])!,
+      rolloverOut: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}rollover_out'])!,
+      closedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}closed_at']),
+    );
+  }
+
+  @override
+  $BudgetPeriodStatesTable createAlias(String alias) {
+    return $BudgetPeriodStatesTable(attachedDatabase, alias);
+  }
+}
+
+class BudgetPeriodState extends DataClass
+    implements Insertable<BudgetPeriodState> {
+  final String budgetClientId;
+  final DateTime periodStart;
+  final DateTime periodEnd;
+  final double netSpent;
+  final double rolloverIn;
+  final double rolloverOut;
+  final DateTime? closedAt;
+  const BudgetPeriodState(
+      {required this.budgetClientId,
+      required this.periodStart,
+      required this.periodEnd,
+      required this.netSpent,
+      required this.rolloverIn,
+      required this.rolloverOut,
+      this.closedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['budget_client_id'] = Variable<String>(budgetClientId);
+    map['period_start'] = Variable<DateTime>(periodStart);
+    map['period_end'] = Variable<DateTime>(periodEnd);
+    map['net_spent'] = Variable<double>(netSpent);
+    map['rollover_in'] = Variable<double>(rolloverIn);
+    map['rollover_out'] = Variable<double>(rolloverOut);
+    if (!nullToAbsent || closedAt != null) {
+      map['closed_at'] = Variable<DateTime>(closedAt);
+    }
+    return map;
+  }
+
+  BudgetPeriodStatesCompanion toCompanion(bool nullToAbsent) {
+    return BudgetPeriodStatesCompanion(
+      budgetClientId: Value(budgetClientId),
+      periodStart: Value(periodStart),
+      periodEnd: Value(periodEnd),
+      netSpent: Value(netSpent),
+      rolloverIn: Value(rolloverIn),
+      rolloverOut: Value(rolloverOut),
+      closedAt: closedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(closedAt),
+    );
+  }
+
+  factory BudgetPeriodState.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BudgetPeriodState(
+      budgetClientId: serializer.fromJson<String>(json['budgetClientId']),
+      periodStart: serializer.fromJson<DateTime>(json['periodStart']),
+      periodEnd: serializer.fromJson<DateTime>(json['periodEnd']),
+      netSpent: serializer.fromJson<double>(json['netSpent']),
+      rolloverIn: serializer.fromJson<double>(json['rolloverIn']),
+      rolloverOut: serializer.fromJson<double>(json['rolloverOut']),
+      closedAt: serializer.fromJson<DateTime?>(json['closedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'budgetClientId': serializer.toJson<String>(budgetClientId),
+      'periodStart': serializer.toJson<DateTime>(periodStart),
+      'periodEnd': serializer.toJson<DateTime>(periodEnd),
+      'netSpent': serializer.toJson<double>(netSpent),
+      'rolloverIn': serializer.toJson<double>(rolloverIn),
+      'rolloverOut': serializer.toJson<double>(rolloverOut),
+      'closedAt': serializer.toJson<DateTime?>(closedAt),
+    };
+  }
+
+  BudgetPeriodState copyWith(
+          {String? budgetClientId,
+          DateTime? periodStart,
+          DateTime? periodEnd,
+          double? netSpent,
+          double? rolloverIn,
+          double? rolloverOut,
+          Value<DateTime?> closedAt = const Value.absent()}) =>
+      BudgetPeriodState(
+        budgetClientId: budgetClientId ?? this.budgetClientId,
+        periodStart: periodStart ?? this.periodStart,
+        periodEnd: periodEnd ?? this.periodEnd,
+        netSpent: netSpent ?? this.netSpent,
+        rolloverIn: rolloverIn ?? this.rolloverIn,
+        rolloverOut: rolloverOut ?? this.rolloverOut,
+        closedAt: closedAt.present ? closedAt.value : this.closedAt,
+      );
+  BudgetPeriodState copyWithCompanion(BudgetPeriodStatesCompanion data) {
+    return BudgetPeriodState(
+      budgetClientId: data.budgetClientId.present
+          ? data.budgetClientId.value
+          : this.budgetClientId,
+      periodStart:
+          data.periodStart.present ? data.periodStart.value : this.periodStart,
+      periodEnd: data.periodEnd.present ? data.periodEnd.value : this.periodEnd,
+      netSpent: data.netSpent.present ? data.netSpent.value : this.netSpent,
+      rolloverIn:
+          data.rolloverIn.present ? data.rolloverIn.value : this.rolloverIn,
+      rolloverOut:
+          data.rolloverOut.present ? data.rolloverOut.value : this.rolloverOut,
+      closedAt: data.closedAt.present ? data.closedAt.value : this.closedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BudgetPeriodState(')
+          ..write('budgetClientId: $budgetClientId, ')
+          ..write('periodStart: $periodStart, ')
+          ..write('periodEnd: $periodEnd, ')
+          ..write('netSpent: $netSpent, ')
+          ..write('rolloverIn: $rolloverIn, ')
+          ..write('rolloverOut: $rolloverOut, ')
+          ..write('closedAt: $closedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(budgetClientId, periodStart, periodEnd,
+      netSpent, rolloverIn, rolloverOut, closedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BudgetPeriodState &&
+          other.budgetClientId == this.budgetClientId &&
+          other.periodStart == this.periodStart &&
+          other.periodEnd == this.periodEnd &&
+          other.netSpent == this.netSpent &&
+          other.rolloverIn == this.rolloverIn &&
+          other.rolloverOut == this.rolloverOut &&
+          other.closedAt == this.closedAt);
+}
+
+class BudgetPeriodStatesCompanion extends UpdateCompanion<BudgetPeriodState> {
+  final Value<String> budgetClientId;
+  final Value<DateTime> periodStart;
+  final Value<DateTime> periodEnd;
+  final Value<double> netSpent;
+  final Value<double> rolloverIn;
+  final Value<double> rolloverOut;
+  final Value<DateTime?> closedAt;
+  final Value<int> rowid;
+  const BudgetPeriodStatesCompanion({
+    this.budgetClientId = const Value.absent(),
+    this.periodStart = const Value.absent(),
+    this.periodEnd = const Value.absent(),
+    this.netSpent = const Value.absent(),
+    this.rolloverIn = const Value.absent(),
+    this.rolloverOut = const Value.absent(),
+    this.closedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BudgetPeriodStatesCompanion.insert({
+    required String budgetClientId,
+    required DateTime periodStart,
+    required DateTime periodEnd,
+    this.netSpent = const Value.absent(),
+    this.rolloverIn = const Value.absent(),
+    this.rolloverOut = const Value.absent(),
+    this.closedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : budgetClientId = Value(budgetClientId),
+        periodStart = Value(periodStart),
+        periodEnd = Value(periodEnd);
+  static Insertable<BudgetPeriodState> custom({
+    Expression<String>? budgetClientId,
+    Expression<DateTime>? periodStart,
+    Expression<DateTime>? periodEnd,
+    Expression<double>? netSpent,
+    Expression<double>? rolloverIn,
+    Expression<double>? rolloverOut,
+    Expression<DateTime>? closedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (budgetClientId != null) 'budget_client_id': budgetClientId,
+      if (periodStart != null) 'period_start': periodStart,
+      if (periodEnd != null) 'period_end': periodEnd,
+      if (netSpent != null) 'net_spent': netSpent,
+      if (rolloverIn != null) 'rollover_in': rolloverIn,
+      if (rolloverOut != null) 'rollover_out': rolloverOut,
+      if (closedAt != null) 'closed_at': closedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BudgetPeriodStatesCompanion copyWith(
+      {Value<String>? budgetClientId,
+      Value<DateTime>? periodStart,
+      Value<DateTime>? periodEnd,
+      Value<double>? netSpent,
+      Value<double>? rolloverIn,
+      Value<double>? rolloverOut,
+      Value<DateTime?>? closedAt,
+      Value<int>? rowid}) {
+    return BudgetPeriodStatesCompanion(
+      budgetClientId: budgetClientId ?? this.budgetClientId,
+      periodStart: periodStart ?? this.periodStart,
+      periodEnd: periodEnd ?? this.periodEnd,
+      netSpent: netSpent ?? this.netSpent,
+      rolloverIn: rolloverIn ?? this.rolloverIn,
+      rolloverOut: rolloverOut ?? this.rolloverOut,
+      closedAt: closedAt ?? this.closedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (budgetClientId.present) {
+      map['budget_client_id'] = Variable<String>(budgetClientId.value);
+    }
+    if (periodStart.present) {
+      map['period_start'] = Variable<DateTime>(periodStart.value);
+    }
+    if (periodEnd.present) {
+      map['period_end'] = Variable<DateTime>(periodEnd.value);
+    }
+    if (netSpent.present) {
+      map['net_spent'] = Variable<double>(netSpent.value);
+    }
+    if (rolloverIn.present) {
+      map['rollover_in'] = Variable<double>(rolloverIn.value);
+    }
+    if (rolloverOut.present) {
+      map['rollover_out'] = Variable<double>(rolloverOut.value);
+    }
+    if (closedAt.present) {
+      map['closed_at'] = Variable<DateTime>(closedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BudgetPeriodStatesCompanion(')
+          ..write('budgetClientId: $budgetClientId, ')
+          ..write('periodStart: $periodStart, ')
+          ..write('periodEnd: $periodEnd, ')
+          ..write('netSpent: $netSpent, ')
+          ..write('rolloverIn: $rolloverIn, ')
+          ..write('rolloverOut: $rolloverOut, ')
+          ..write('closedAt: $closedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6504,6 +7969,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $NotificationsTable notifications = $NotificationsTable(this);
   late final $MediaFilesTable mediaFiles = $MediaFilesTable(this);
   late final $TransfersTable transfers = $TransfersTable(this);
+  late final $BudgetsTable budgets = $BudgetsTable(this);
+  late final $BudgetTargetsTable budgetTargets = $BudgetTargetsTable(this);
+  late final $BudgetPeriodStatesTable budgetPeriodStates =
+      $BudgetPeriodStatesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6521,7 +7990,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         categorizables,
         notifications,
         mediaFiles,
-        transfers
+        transfers,
+        budgets,
+        budgetTargets,
+        budgetPeriodStates
       ];
   @override
   DriftDatabaseOptions get options =>
@@ -11035,6 +12507,809 @@ typedef $$TransfersTableProcessedTableManager = ProcessedTableManager<
         bool toWalletClientId,
         bool expenseTransactionClientId,
         bool incomeTransactionClientId})>;
+typedef $$BudgetsTableCreateCompanionBuilder = BudgetsCompanion Function({
+  Value<int?> id,
+  Value<int?> userId,
+  Value<String> clientId,
+  Value<String?> rev,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<DateTime?> lastSyncedAt,
+  required String name,
+  Value<String?> slug,
+  Value<String?> description,
+  required double amount,
+  required String currency,
+  required BudgetPeriodType periodType,
+  required DateTime startDate,
+  Value<DateTime?> endDate,
+  Value<bool> rolloverEnabled,
+  Value<int> thresholdPercent,
+  Value<bool> forecastAlertsEnabled,
+  Value<bool> isActive,
+  Value<String> ownerType,
+  Value<String> ownerClientId,
+  Value<int> rowid,
+});
+typedef $$BudgetsTableUpdateCompanionBuilder = BudgetsCompanion Function({
+  Value<int?> id,
+  Value<int?> userId,
+  Value<String> clientId,
+  Value<String?> rev,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<DateTime?> lastSyncedAt,
+  Value<String> name,
+  Value<String?> slug,
+  Value<String?> description,
+  Value<double> amount,
+  Value<String> currency,
+  Value<BudgetPeriodType> periodType,
+  Value<DateTime> startDate,
+  Value<DateTime?> endDate,
+  Value<bool> rolloverEnabled,
+  Value<int> thresholdPercent,
+  Value<bool> forecastAlertsEnabled,
+  Value<bool> isActive,
+  Value<String> ownerType,
+  Value<String> ownerClientId,
+  Value<int> rowid,
+});
+
+class $$BudgetsTableFilterComposer
+    extends Composer<_$AppDatabase, $BudgetsTable> {
+  $$BudgetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get clientId => $composableBuilder(
+      column: $table.clientId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get rev => $composableBuilder(
+      column: $table.rev, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get lastSyncedAt => $composableBuilder(
+      column: $table.lastSyncedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get slug => $composableBuilder(
+      column: $table.slug, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get currency => $composableBuilder(
+      column: $table.currency, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<BudgetPeriodType, BudgetPeriodType, String>
+      get periodType => $composableBuilder(
+          column: $table.periodType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<DateTime> get startDate => $composableBuilder(
+      column: $table.startDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get endDate => $composableBuilder(
+      column: $table.endDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get rolloverEnabled => $composableBuilder(
+      column: $table.rolloverEnabled,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get thresholdPercent => $composableBuilder(
+      column: $table.thresholdPercent,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get forecastAlertsEnabled => $composableBuilder(
+      column: $table.forecastAlertsEnabled,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+      column: $table.isActive, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get ownerType => $composableBuilder(
+      column: $table.ownerType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get ownerClientId => $composableBuilder(
+      column: $table.ownerClientId, builder: (column) => ColumnFilters(column));
+}
+
+class $$BudgetsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BudgetsTable> {
+  $$BudgetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get clientId => $composableBuilder(
+      column: $table.clientId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get rev => $composableBuilder(
+      column: $table.rev, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get lastSyncedAt => $composableBuilder(
+      column: $table.lastSyncedAt,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get slug => $composableBuilder(
+      column: $table.slug, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get currency => $composableBuilder(
+      column: $table.currency, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get periodType => $composableBuilder(
+      column: $table.periodType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get startDate => $composableBuilder(
+      column: $table.startDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get endDate => $composableBuilder(
+      column: $table.endDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get rolloverEnabled => $composableBuilder(
+      column: $table.rolloverEnabled,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get thresholdPercent => $composableBuilder(
+      column: $table.thresholdPercent,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get forecastAlertsEnabled => $composableBuilder(
+      column: $table.forecastAlertsEnabled,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+      column: $table.isActive, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get ownerType => $composableBuilder(
+      column: $table.ownerType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get ownerClientId => $composableBuilder(
+      column: $table.ownerClientId,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$BudgetsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BudgetsTable> {
+  $$BudgetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get clientId =>
+      $composableBuilder(column: $table.clientId, builder: (column) => column);
+
+  GeneratedColumn<String> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncedAt => $composableBuilder(
+      column: $table.lastSyncedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get slug =>
+      $composableBuilder(column: $table.slug, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<double> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<String> get currency =>
+      $composableBuilder(column: $table.currency, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<BudgetPeriodType, String> get periodType =>
+      $composableBuilder(
+          column: $table.periodType, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endDate =>
+      $composableBuilder(column: $table.endDate, builder: (column) => column);
+
+  GeneratedColumn<bool> get rolloverEnabled => $composableBuilder(
+      column: $table.rolloverEnabled, builder: (column) => column);
+
+  GeneratedColumn<int> get thresholdPercent => $composableBuilder(
+      column: $table.thresholdPercent, builder: (column) => column);
+
+  GeneratedColumn<bool> get forecastAlertsEnabled => $composableBuilder(
+      column: $table.forecastAlertsEnabled, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get ownerType =>
+      $composableBuilder(column: $table.ownerType, builder: (column) => column);
+
+  GeneratedColumn<String> get ownerClientId => $composableBuilder(
+      column: $table.ownerClientId, builder: (column) => column);
+}
+
+class $$BudgetsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $BudgetsTable,
+    Budget,
+    $$BudgetsTableFilterComposer,
+    $$BudgetsTableOrderingComposer,
+    $$BudgetsTableAnnotationComposer,
+    $$BudgetsTableCreateCompanionBuilder,
+    $$BudgetsTableUpdateCompanionBuilder,
+    (Budget, BaseReferences<_$AppDatabase, $BudgetsTable, Budget>),
+    Budget,
+    PrefetchHooks Function()> {
+  $$BudgetsTableTableManager(_$AppDatabase db, $BudgetsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BudgetsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BudgetsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BudgetsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int?> id = const Value.absent(),
+            Value<int?> userId = const Value.absent(),
+            Value<String> clientId = const Value.absent(),
+            Value<String?> rev = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<DateTime?> lastSyncedAt = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> slug = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<double> amount = const Value.absent(),
+            Value<String> currency = const Value.absent(),
+            Value<BudgetPeriodType> periodType = const Value.absent(),
+            Value<DateTime> startDate = const Value.absent(),
+            Value<DateTime?> endDate = const Value.absent(),
+            Value<bool> rolloverEnabled = const Value.absent(),
+            Value<int> thresholdPercent = const Value.absent(),
+            Value<bool> forecastAlertsEnabled = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<String> ownerType = const Value.absent(),
+            Value<String> ownerClientId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BudgetsCompanion(
+            id: id,
+            userId: userId,
+            clientId: clientId,
+            rev: rev,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            lastSyncedAt: lastSyncedAt,
+            name: name,
+            slug: slug,
+            description: description,
+            amount: amount,
+            currency: currency,
+            periodType: periodType,
+            startDate: startDate,
+            endDate: endDate,
+            rolloverEnabled: rolloverEnabled,
+            thresholdPercent: thresholdPercent,
+            forecastAlertsEnabled: forecastAlertsEnabled,
+            isActive: isActive,
+            ownerType: ownerType,
+            ownerClientId: ownerClientId,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            Value<int?> id = const Value.absent(),
+            Value<int?> userId = const Value.absent(),
+            Value<String> clientId = const Value.absent(),
+            Value<String?> rev = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<DateTime?> lastSyncedAt = const Value.absent(),
+            required String name,
+            Value<String?> slug = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            required double amount,
+            required String currency,
+            required BudgetPeriodType periodType,
+            required DateTime startDate,
+            Value<DateTime?> endDate = const Value.absent(),
+            Value<bool> rolloverEnabled = const Value.absent(),
+            Value<int> thresholdPercent = const Value.absent(),
+            Value<bool> forecastAlertsEnabled = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<String> ownerType = const Value.absent(),
+            Value<String> ownerClientId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BudgetsCompanion.insert(
+            id: id,
+            userId: userId,
+            clientId: clientId,
+            rev: rev,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            lastSyncedAt: lastSyncedAt,
+            name: name,
+            slug: slug,
+            description: description,
+            amount: amount,
+            currency: currency,
+            periodType: periodType,
+            startDate: startDate,
+            endDate: endDate,
+            rolloverEnabled: rolloverEnabled,
+            thresholdPercent: thresholdPercent,
+            forecastAlertsEnabled: forecastAlertsEnabled,
+            isActive: isActive,
+            ownerType: ownerType,
+            ownerClientId: ownerClientId,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$BudgetsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $BudgetsTable,
+    Budget,
+    $$BudgetsTableFilterComposer,
+    $$BudgetsTableOrderingComposer,
+    $$BudgetsTableAnnotationComposer,
+    $$BudgetsTableCreateCompanionBuilder,
+    $$BudgetsTableUpdateCompanionBuilder,
+    (Budget, BaseReferences<_$AppDatabase, $BudgetsTable, Budget>),
+    Budget,
+    PrefetchHooks Function()>;
+typedef $$BudgetTargetsTableCreateCompanionBuilder = BudgetTargetsCompanion
+    Function({
+  required String budgetClientId,
+  required BudgetTargetType targetType,
+  required String targetClientId,
+  Value<int?> targetId,
+  Value<int> rowid,
+});
+typedef $$BudgetTargetsTableUpdateCompanionBuilder = BudgetTargetsCompanion
+    Function({
+  Value<String> budgetClientId,
+  Value<BudgetTargetType> targetType,
+  Value<String> targetClientId,
+  Value<int?> targetId,
+  Value<int> rowid,
+});
+
+class $$BudgetTargetsTableFilterComposer
+    extends Composer<_$AppDatabase, $BudgetTargetsTable> {
+  $$BudgetTargetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get budgetClientId => $composableBuilder(
+      column: $table.budgetClientId,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<BudgetTargetType, BudgetTargetType, String>
+      get targetType => $composableBuilder(
+          column: $table.targetType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<String> get targetClientId => $composableBuilder(
+      column: $table.targetClientId,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get targetId => $composableBuilder(
+      column: $table.targetId, builder: (column) => ColumnFilters(column));
+}
+
+class $$BudgetTargetsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BudgetTargetsTable> {
+  $$BudgetTargetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get budgetClientId => $composableBuilder(
+      column: $table.budgetClientId,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get targetType => $composableBuilder(
+      column: $table.targetType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get targetClientId => $composableBuilder(
+      column: $table.targetClientId,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get targetId => $composableBuilder(
+      column: $table.targetId, builder: (column) => ColumnOrderings(column));
+}
+
+class $$BudgetTargetsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BudgetTargetsTable> {
+  $$BudgetTargetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get budgetClientId => $composableBuilder(
+      column: $table.budgetClientId, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<BudgetTargetType, String> get targetType =>
+      $composableBuilder(
+          column: $table.targetType, builder: (column) => column);
+
+  GeneratedColumn<String> get targetClientId => $composableBuilder(
+      column: $table.targetClientId, builder: (column) => column);
+
+  GeneratedColumn<int> get targetId =>
+      $composableBuilder(column: $table.targetId, builder: (column) => column);
+}
+
+class $$BudgetTargetsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $BudgetTargetsTable,
+    BudgetTarget,
+    $$BudgetTargetsTableFilterComposer,
+    $$BudgetTargetsTableOrderingComposer,
+    $$BudgetTargetsTableAnnotationComposer,
+    $$BudgetTargetsTableCreateCompanionBuilder,
+    $$BudgetTargetsTableUpdateCompanionBuilder,
+    (
+      BudgetTarget,
+      BaseReferences<_$AppDatabase, $BudgetTargetsTable, BudgetTarget>
+    ),
+    BudgetTarget,
+    PrefetchHooks Function()> {
+  $$BudgetTargetsTableTableManager(_$AppDatabase db, $BudgetTargetsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BudgetTargetsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BudgetTargetsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BudgetTargetsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> budgetClientId = const Value.absent(),
+            Value<BudgetTargetType> targetType = const Value.absent(),
+            Value<String> targetClientId = const Value.absent(),
+            Value<int?> targetId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BudgetTargetsCompanion(
+            budgetClientId: budgetClientId,
+            targetType: targetType,
+            targetClientId: targetClientId,
+            targetId: targetId,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String budgetClientId,
+            required BudgetTargetType targetType,
+            required String targetClientId,
+            Value<int?> targetId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BudgetTargetsCompanion.insert(
+            budgetClientId: budgetClientId,
+            targetType: targetType,
+            targetClientId: targetClientId,
+            targetId: targetId,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$BudgetTargetsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $BudgetTargetsTable,
+    BudgetTarget,
+    $$BudgetTargetsTableFilterComposer,
+    $$BudgetTargetsTableOrderingComposer,
+    $$BudgetTargetsTableAnnotationComposer,
+    $$BudgetTargetsTableCreateCompanionBuilder,
+    $$BudgetTargetsTableUpdateCompanionBuilder,
+    (
+      BudgetTarget,
+      BaseReferences<_$AppDatabase, $BudgetTargetsTable, BudgetTarget>
+    ),
+    BudgetTarget,
+    PrefetchHooks Function()>;
+typedef $$BudgetPeriodStatesTableCreateCompanionBuilder
+    = BudgetPeriodStatesCompanion Function({
+  required String budgetClientId,
+  required DateTime periodStart,
+  required DateTime periodEnd,
+  Value<double> netSpent,
+  Value<double> rolloverIn,
+  Value<double> rolloverOut,
+  Value<DateTime?> closedAt,
+  Value<int> rowid,
+});
+typedef $$BudgetPeriodStatesTableUpdateCompanionBuilder
+    = BudgetPeriodStatesCompanion Function({
+  Value<String> budgetClientId,
+  Value<DateTime> periodStart,
+  Value<DateTime> periodEnd,
+  Value<double> netSpent,
+  Value<double> rolloverIn,
+  Value<double> rolloverOut,
+  Value<DateTime?> closedAt,
+  Value<int> rowid,
+});
+
+class $$BudgetPeriodStatesTableFilterComposer
+    extends Composer<_$AppDatabase, $BudgetPeriodStatesTable> {
+  $$BudgetPeriodStatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get budgetClientId => $composableBuilder(
+      column: $table.budgetClientId,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get periodStart => $composableBuilder(
+      column: $table.periodStart, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get periodEnd => $composableBuilder(
+      column: $table.periodEnd, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get netSpent => $composableBuilder(
+      column: $table.netSpent, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get rolloverIn => $composableBuilder(
+      column: $table.rolloverIn, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get rolloverOut => $composableBuilder(
+      column: $table.rolloverOut, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get closedAt => $composableBuilder(
+      column: $table.closedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$BudgetPeriodStatesTableOrderingComposer
+    extends Composer<_$AppDatabase, $BudgetPeriodStatesTable> {
+  $$BudgetPeriodStatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get budgetClientId => $composableBuilder(
+      column: $table.budgetClientId,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get periodStart => $composableBuilder(
+      column: $table.periodStart, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get periodEnd => $composableBuilder(
+      column: $table.periodEnd, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get netSpent => $composableBuilder(
+      column: $table.netSpent, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get rolloverIn => $composableBuilder(
+      column: $table.rolloverIn, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get rolloverOut => $composableBuilder(
+      column: $table.rolloverOut, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get closedAt => $composableBuilder(
+      column: $table.closedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$BudgetPeriodStatesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BudgetPeriodStatesTable> {
+  $$BudgetPeriodStatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get budgetClientId => $composableBuilder(
+      column: $table.budgetClientId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get periodStart => $composableBuilder(
+      column: $table.periodStart, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get periodEnd =>
+      $composableBuilder(column: $table.periodEnd, builder: (column) => column);
+
+  GeneratedColumn<double> get netSpent =>
+      $composableBuilder(column: $table.netSpent, builder: (column) => column);
+
+  GeneratedColumn<double> get rolloverIn => $composableBuilder(
+      column: $table.rolloverIn, builder: (column) => column);
+
+  GeneratedColumn<double> get rolloverOut => $composableBuilder(
+      column: $table.rolloverOut, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get closedAt =>
+      $composableBuilder(column: $table.closedAt, builder: (column) => column);
+}
+
+class $$BudgetPeriodStatesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $BudgetPeriodStatesTable,
+    BudgetPeriodState,
+    $$BudgetPeriodStatesTableFilterComposer,
+    $$BudgetPeriodStatesTableOrderingComposer,
+    $$BudgetPeriodStatesTableAnnotationComposer,
+    $$BudgetPeriodStatesTableCreateCompanionBuilder,
+    $$BudgetPeriodStatesTableUpdateCompanionBuilder,
+    (
+      BudgetPeriodState,
+      BaseReferences<_$AppDatabase, $BudgetPeriodStatesTable, BudgetPeriodState>
+    ),
+    BudgetPeriodState,
+    PrefetchHooks Function()> {
+  $$BudgetPeriodStatesTableTableManager(
+      _$AppDatabase db, $BudgetPeriodStatesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BudgetPeriodStatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BudgetPeriodStatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BudgetPeriodStatesTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> budgetClientId = const Value.absent(),
+            Value<DateTime> periodStart = const Value.absent(),
+            Value<DateTime> periodEnd = const Value.absent(),
+            Value<double> netSpent = const Value.absent(),
+            Value<double> rolloverIn = const Value.absent(),
+            Value<double> rolloverOut = const Value.absent(),
+            Value<DateTime?> closedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BudgetPeriodStatesCompanion(
+            budgetClientId: budgetClientId,
+            periodStart: periodStart,
+            periodEnd: periodEnd,
+            netSpent: netSpent,
+            rolloverIn: rolloverIn,
+            rolloverOut: rolloverOut,
+            closedAt: closedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String budgetClientId,
+            required DateTime periodStart,
+            required DateTime periodEnd,
+            Value<double> netSpent = const Value.absent(),
+            Value<double> rolloverIn = const Value.absent(),
+            Value<double> rolloverOut = const Value.absent(),
+            Value<DateTime?> closedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BudgetPeriodStatesCompanion.insert(
+            budgetClientId: budgetClientId,
+            periodStart: periodStart,
+            periodEnd: periodEnd,
+            netSpent: netSpent,
+            rolloverIn: rolloverIn,
+            rolloverOut: rolloverOut,
+            closedAt: closedAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$BudgetPeriodStatesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $BudgetPeriodStatesTable,
+    BudgetPeriodState,
+    $$BudgetPeriodStatesTableFilterComposer,
+    $$BudgetPeriodStatesTableOrderingComposer,
+    $$BudgetPeriodStatesTableAnnotationComposer,
+    $$BudgetPeriodStatesTableCreateCompanionBuilder,
+    $$BudgetPeriodStatesTableUpdateCompanionBuilder,
+    (
+      BudgetPeriodState,
+      BaseReferences<_$AppDatabase, $BudgetPeriodStatesTable, BudgetPeriodState>
+    ),
+    BudgetPeriodState,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -11065,4 +13340,10 @@ class $AppDatabaseManager {
       $$MediaFilesTableTableManager(_db, _db.mediaFiles);
   $$TransfersTableTableManager get transfers =>
       $$TransfersTableTableManager(_db, _db.transfers);
+  $$BudgetsTableTableManager get budgets =>
+      $$BudgetsTableTableManager(_db, _db.budgets);
+  $$BudgetTargetsTableTableManager get budgetTargets =>
+      $$BudgetTargetsTableTableManager(_db, _db.budgetTargets);
+  $$BudgetPeriodStatesTableTableManager get budgetPeriodStates =>
+      $$BudgetPeriodStatesTableTableManager(_db, _db.budgetPeriodStates);
 }

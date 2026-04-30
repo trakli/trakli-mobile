@@ -9,6 +9,9 @@ import 'package:trakli/data/database/converters/wallet_stats_converter.dart';
 import 'package:trakli/data/database/converters/wallet_type_converter.dart';
 import 'package:trakli/data/database/tables/categories.dart';
 import 'package:trakli/data/database/tables/configs.dart';
+import 'package:trakli/data/database/tables/budget_period_states.dart';
+import 'package:trakli/data/database/tables/budget_targets.dart';
+import 'package:trakli/data/database/tables/budgets.dart';
 import 'package:trakli/data/database/tables/groups.dart';
 import 'package:trakli/data/database/tables/local_changes.dart';
 import 'package:trakli/core/utils/services/logger.dart';
@@ -18,6 +21,8 @@ import 'package:trakli/data/database/tables/transactions.dart';
 import 'package:trakli/data/database/tables/users.dart';
 import 'package:trakli/data/database/tables/wallets.dart';
 import 'package:trakli/data/models/media.dart';
+import 'package:trakli/domain/entities/budget_entity.dart';
+import 'package:trakli/domain/entities/budget_target_entity.dart';
 import 'package:trakli/domain/entities/config_entity.dart';
 import 'package:trakli/domain/entities/party_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -28,10 +33,8 @@ import 'package:trakli/data/database/tables/categorizables.dart';
 import 'package:trakli/data/database/tables/notifications.dart';
 import 'package:trakli/data/database/tables/media_files.dart';
 import 'package:trakli/data/database/tables/transfers.dart';
-import 'app_database.steps.dart';
 
 part 'app_database.g.dart';
-
 
 @DriftDatabase(tables: [
   Transactions,
@@ -47,6 +50,9 @@ part 'app_database.g.dart';
   Notifications,
   MediaFiles,
   Transfers,
+  Budgets,
+  BudgetTargets,
+  BudgetPeriodStates,
 ])
 class AppDatabase extends _$AppDatabase with SynchronizerDb {
   final Set<SyncTypeHandler> typeHandlers;
@@ -58,7 +64,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
         super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -270,27 +276,29 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     await notifications.deleteAll();
     await mediaFiles.deleteAll();
     await transfers.deleteAll();
+    await budgetPeriodStates.deleteAll();
+    await budgetTargets.deleteAll();
+    await budgets.deleteAll();
   }
 }
 
-extension Migrations on GeneratedDatabase {
-  // Extracting the `stepByStep` call into a getter ensures that you're not
-  // accidentally referring to the current database schema (via a getter on the database class).
-  // This ensures that each step brings the database into the correct snapshot.
-  OnUpgrade get _schemaUpgrade => stepByStep(
-        from1To2: (m, schema) async {
-          await m.createTable(schema.notifications);
-        },
-        from2To3: (m, schema) async {
-          await m.createTable(schema.mediaFiles);
-        },
-        from3To4: (m, schema) async {
-          await m.createTable(schema.transfers);
-          await m.addColumn(schema.transactions, schema.transactions.transferId);
-          await m.addColumn(
-            schema.transactions,
-            schema.transactions.transferClientId,
-          );
-        },
-      );
+extension Migrations on AppDatabase {
+  OnUpgrade get _schemaUpgrade => (m, from, to) async {
+        if (from < 2) {
+          await m.createTable(notifications);
+        }
+        if (from < 3) {
+          await m.createTable(mediaFiles);
+        }
+        if (from < 4) {
+          await m.createTable(transfers);
+          await m.addColumn(transactions, transactions.transferId);
+          await m.addColumn(transactions, transactions.transferClientId);
+        }
+        if (from < 5) {
+          await m.createTable(budgets);
+          await m.createTable(budgetTargets);
+          await m.createTable(budgetPeriodStates);
+        }
+      };
 }

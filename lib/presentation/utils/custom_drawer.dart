@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/budget/budget_screen.dart';
 import 'package:trakli/presentation/category/category_screen.dart';
 import 'package:trakli/presentation/groups/my_groups_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
@@ -133,6 +134,15 @@ class CustomDrawer extends StatelessWidget {
               iconPath: Assets.images.arrowUpDown,
               subtitle: LocaleKeys.transfersDesc.tr(),
             ),
+            _listItem(
+              context,
+              onTap: () {
+                AppNavigator.push(context, const BudgetScreen());
+              },
+              title: 'Budgets',
+              iconPath: Assets.images.chart,
+              subtitle: 'Track spending limits',
+            ),
             Divider(
               color: Colors.grey.shade500,
             ),
@@ -150,7 +160,6 @@ class CustomDrawer extends StatelessWidget {
               title: LocaleKeys.settings.tr(),
               iconPath: Assets.images.setting,
             ),
-            
             if (kDebugMode) ...[
               const Divider(),
               ListTile(
