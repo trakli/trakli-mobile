@@ -10,6 +10,7 @@ abstract class NotificationRemoteDataSource {
   Future<List<Notification>> getAllNotifications(
       {DateTime? syncedSince, bool? noClientId});
   Future<Notification?> getNotification(int id);
+  Future<Notification> updateNotification(Notification notification);
   Future<Notification> markAsRead(int id, DateTime readAt);
 }
 
@@ -64,6 +65,22 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   Future<Notification?> getNotification(int id) async {
     final response = await dio.get('notifications/$id');
     if (response.data == null) return null;
+
+    final apiResponse = ApiResponse.fromJson(response.data);
+    return Notification.fromJson(JsonDefaultsHelper.addDefaults(
+        apiResponse.data as Map<String, dynamic>));
+  }
+
+  @override
+  Future<Notification> updateNotification(Notification notification) async {
+    final response = await dio.put(
+      'notifications/${notification.id}',
+      data: {
+        'client_id': notification.clientId,
+        if (notification.readAt != null)
+          'read_at': formatServerIsoDateTimeString(notification.readAt!),
+      },
+    );
 
     final apiResponse = ApiResponse.fromJson(response.data);
     return Notification.fromJson(JsonDefaultsHelper.addDefaults(

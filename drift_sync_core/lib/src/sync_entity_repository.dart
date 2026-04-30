@@ -49,7 +49,7 @@ abstract class SyncEntityRepository<TAppDatabase extends SynchronizerDb,
     final ds =
         remoteCreated == null ? DataDestination.local : DataDestination.both;
 
-    await _handleLocalStorage(entity, remoteCreated);
+    await _handleLocalStorage(created, remoteCreated);
     return (created, ds);
   }
 
