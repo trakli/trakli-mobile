@@ -10,11 +10,29 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
     required this.typeHandlers,
     required SyncDependencyManagerBase dependencyManager,
     required RequestAuthorizationService requestAuthorizationService,
-  })  : _typeHandlers = <String, SyncTypeHandler>{
-          for (final th in typeHandlers) th.entityType: th,
-        },
+  })  : _typeHandlers = _indexHandlersByEntityType(typeHandlers),
         _dependencyManager = dependencyManager,
         _requestAuthorizationService = requestAuthorizationService;
+
+  static Map<String, SyncTypeHandler> _indexHandlersByEntityType(
+    Set<SyncTypeHandler> handlers,
+  ) {
+    final handlerByType = <String, SyncTypeHandler>{};
+    for (final handler in handlers) {
+      final existing = handlerByType[handler.entityType];
+      if (existing != null) {
+        throw ArgumentError.value(
+          handlers,
+          'typeHandlers',
+          'Two handlers registered for entityType "${handler.entityType}": '
+              '${existing.runtimeType} and ${handler.runtimeType}. '
+              'Each entityType must be handled by exactly one SyncTypeHandler.',
+        );
+      }
+      handlerByType[handler.entityType] = handler;
+    }
+    return handlerByType;
+  }
 
   SyncState _state = const SyncState.initial();
   SyncState get state => _state;
@@ -192,20 +210,27 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
       if (serverId != null) {
         await handler.deleteRemote(entity);
       }
-    } else {
-      // For put operations
-      if (!await handler.shouldPersistRemote(entity)) {
-        DriftSyncLogger.logger.info(
-          'Skipping sync for ${handler.entityType}:${handler.getClientId(entity)} - dependencies not ready',
-        );
-        return;
-      }
-
-      final updated = await handler.putRemote(entity);
-      await handler.upsertLocal(updated);
+      await appDatabase.concludeLocalChange(localChange,
+          persistedToRemote: true);
+      return;
     }
 
-    await appDatabase.concludeLocalChange(localChange, persistedToRemote: true);
+    // For put operations
+    if (!await handler.shouldPersistRemote(entity)) {
+      DriftSyncLogger.logger.info(
+        'Skipping sync for ${handler.entityType}:${handler.getClientId(entity)} - dependencies not ready',
+      );
+      return;
+    }
+
+    final updated = await handler.putRemote(entity);
+
+    // cannot leave the entity upserted with the pending change still queued.
+    await appDatabase.transaction(() async {
+      await handler.upsertLocal(updated);
+      await appDatabase.concludeLocalChange(localChange,
+          persistedToRemote: true);
+    });
   }
 
   SyncTypeHandler _getTypeHandlerByTypeName(String typeName) {
@@ -293,18 +318,34 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   Future<void> downloadModelsWithNoClientIds() async {
     DriftSyncLogger.logger.finest('Entered _partialSyncServerChanges');
     try {
+      _dependencyManager.resetSyncState();
       for (final handler in typeHandlers) {
         if (_state.cancelRequested) {
           DriftSyncLogger.logger.finest('... cancel requested. Will leave.');
           throw const CancelException();
         }
 
+        if (!_dependencyManager.canSync(handler)) {
+          DriftSyncLogger.logger.info(
+            'Skipping ${handler.entityType} client-id assignment - dependencies not synced',
+          );
+          continue;
+        }
+
         try {
-          await assignClientIdsToRemoteItemsWithoutClientId(
+          final allSucceeded =
+              await assignClientIdsToRemoteItemsWithoutClientId(
             handler,
           );
 
-          DriftSyncLogger.logger.info('Updated the client without id');
+          if (allSucceeded) {
+            _dependencyManager.markSuccessfullySynced(handler);
+            DriftSyncLogger.logger.info('Updated the client without id');
+          } else {
+            DriftSyncLogger.logger.warning(
+              '${handler.entityType} client-id assignment had item failures - dependents will be skipped',
+            );
+          }
         } on UnavailableException {
           rethrow;
         } catch (e, stack) {
@@ -321,8 +362,8 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
               },
             );
           }
-          rethrow;
           // Do not mark as successfully synced, and continue to next handler
+          continue;
         }
       }
     } on CancelException catch (_) {
@@ -339,15 +380,17 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         .finest('finished _partialSyncServerChanges with no incident');
   }
 
-  /// PARTIAL SYNC: Assign client IDs to remote items without client ID (generic for any handler)
-  Future<void> assignClientIdsToRemoteItemsWithoutClientId(
+  /// PARTIAL SYNC: Assign client IDs to remote items without client ID (generic for any handler).
+  /// Returns true if every eligible item succeeded; false if any item failed.
+  Future<bool> assignClientIdsToRemoteItemsWithoutClientId(
     SyncTypeHandler<dynamic, dynamic, dynamic> handler,
   ) async {
     final itemsWithoutClientId = await handler.getAllRemote(noClientId: true);
 
-    if (itemsWithoutClientId.isEmpty) return;
+    if (itemsWithoutClientId.isEmpty) return true;
 
     var updatedItems = handler.getEmptyList();
+    var hadFailure = false;
 
     for (final item in itemsWithoutClientId) {
       try {
@@ -370,6 +413,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
           DriftSyncLogger.logger
               .warning('Failed to assign client ID for item: $e\n$stack');
         }
+        hadFailure = true;
         continue;
       }
     }
@@ -383,18 +427,36 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
           : updatedItems.length;
       final batch = updatedItems.sublist(i, end);
 
-      final futureAwait = batch.map((entity) => handler.putRemote(entity));
+      final futureAwait = batch.map((entity) async {
+        try {
+          return await handler.putRemote(entity);
+        } on UnavailableException {
+          rethrow;
+        } catch (e, stack) {
+          if (e is! DioException) {
+            DriftSyncLogger.logger.warning(
+              'Failed to assign client ID for ${handler.entityType} item: $e\n$stack',
+            );
+          }
+          return null;
+        }
+      });
 
       final responses = await Future.wait(futureAwait);
 
       for (final response in responses) {
-        allResponses.add(response);
+        if (response == null) {
+          hadFailure = true;
+        } else {
+          allResponses.add(response);
+        }
       }
 
       DriftSyncLogger.logger.finest('responses', responses);
     }
 
     await handler.upsertAllLocal(allResponses);
+    return !hadFailure;
   }
 
   /// For each handler/model, checks if lastSyncedAt is null (never synced) and does a full fetch for that model only.
@@ -446,15 +508,15 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
 
               await appDatabase.transaction(() async {
                 for (final item in page) {
-      
+                  final clientId = handler.getClientId(item);
+
+                  // Skip items the handler can't anchor locally (empty
+                  // clientId means Phase 2 hasn't claimed them yet)
                   await handler.upsertLocal(item as dynamic);
 
                   // Collect client IDs for full-sync deletion.
                   if (isFull == true) {
-                    final clientId = handler.getClientId(item);
-                    if (clientId.isNotEmpty) {
-                      remoteClientIds.add(clientId);
-                    }
+                    remoteClientIds.add(clientId);
                   }
 
                   // Track max lastSyncedAt for metadata update.
@@ -480,10 +542,13 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
                 await handler.deleteLocalNotIn(remoteClientIds);
               }
 
-              await appDatabase.updateEnityLocalSyncMetadata(
-                entityType: handler.entityType,
-                lastSyncedAt: maxLastSyncedAt,
-              );
+              // the next sync into a full re-fetch.
+              if (maxLastSyncedAt != null) {
+                await appDatabase.updateEnityLocalSyncMetadata(
+                  entityType: handler.entityType,
+                  lastSyncedAt: maxLastSyncedAt,
+                );
+              }
             });
           } else {
             final changedItems = await handler.getAllRemote(
@@ -513,23 +578,26 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
                 await handler.deleteLocalNotIn(remoteClientIds);
               }
 
-              // Find the maximum lastSyncedAt timestamp from all changed items
+              // Find the maximum lastSyncedAt only from items that were actually
               DateTime? maxLastSyncedAt;
               for (final item in changedItems) {
+                if (handler.getClientId(item).isEmpty) continue;
                 final itemLastSyncedAt = handler.getlastSyncedAt(item);
                 if (itemLastSyncedAt != null) {
                   if (maxLastSyncedAt == null ||
-                      itemLastSyncedAt
-                          .isAfter(maxLastSyncedAt)) {
+                      itemLastSyncedAt.isAfter(maxLastSyncedAt)) {
                     maxLastSyncedAt = itemLastSyncedAt;
                   }
                 }
               }
 
-              await appDatabase.updateEnityLocalSyncMetadata(
-                entityType: handler.entityType,
-                lastSyncedAt: maxLastSyncedAt,
-              );
+              // the next sync into a full re-fetch.
+              if (maxLastSyncedAt != null) {
+                await appDatabase.updateEnityLocalSyncMetadata(
+                  entityType: handler.entityType,
+                  lastSyncedAt: maxLastSyncedAt,
+                );
+              }
             });
           }
 
