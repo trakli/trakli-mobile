@@ -293,18 +293,33 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   Future<void> downloadModelsWithNoClientIds() async {
     DriftSyncLogger.logger.finest('Entered _partialSyncServerChanges');
     try {
+      _dependencyManager.resetSyncState();
       for (final handler in typeHandlers) {
         if (_state.cancelRequested) {
           DriftSyncLogger.logger.finest('... cancel requested. Will leave.');
           throw const CancelException();
         }
 
+        if (!_dependencyManager.canSync(handler)) {
+          DriftSyncLogger.logger.info(
+            'Skipping ${handler.entityType} client-id assignment - dependencies not synced',
+          );
+          continue;
+        }
+
         try {
-          await assignClientIdsToRemoteItemsWithoutClientId(
+          final allSucceeded = await assignClientIdsToRemoteItemsWithoutClientId(
             handler,
           );
 
-          DriftSyncLogger.logger.info('Updated the client without id');
+          if (allSucceeded) {
+            _dependencyManager.markSuccessfullySynced(handler);
+            DriftSyncLogger.logger.info('Updated the client without id');
+          } else {
+            DriftSyncLogger.logger.warning(
+              '${handler.entityType} client-id assignment had item failures - dependents will be skipped',
+            );
+          }
         } on UnavailableException {
           rethrow;
         } catch (e, stack) {
@@ -321,8 +336,8 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
               },
             );
           }
-          rethrow;
           // Do not mark as successfully synced, and continue to next handler
+          continue;
         }
       }
     } on CancelException catch (_) {
@@ -339,15 +354,17 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         .finest('finished _partialSyncServerChanges with no incident');
   }
 
-  /// PARTIAL SYNC: Assign client IDs to remote items without client ID (generic for any handler)
-  Future<void> assignClientIdsToRemoteItemsWithoutClientId(
+  /// PARTIAL SYNC: Assign client IDs to remote items without client ID (generic for any handler).
+  /// Returns true if every eligible item succeeded; false if any item failed.
+  Future<bool> assignClientIdsToRemoteItemsWithoutClientId(
     SyncTypeHandler<dynamic, dynamic, dynamic> handler,
   ) async {
     final itemsWithoutClientId = await handler.getAllRemote(noClientId: true);
 
-    if (itemsWithoutClientId.isEmpty) return;
+    if (itemsWithoutClientId.isEmpty) return true;
 
     var updatedItems = handler.getEmptyList();
+    var hadFailure = false;
 
     for (final item in itemsWithoutClientId) {
       try {
@@ -370,6 +387,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
           DriftSyncLogger.logger
               .warning('Failed to assign client ID for item: $e\n$stack');
         }
+        hadFailure = true;
         continue;
       }
     }
@@ -383,18 +401,36 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
           : updatedItems.length;
       final batch = updatedItems.sublist(i, end);
 
-      final futureAwait = batch.map((entity) => handler.putRemote(entity));
+      final futureAwait = batch.map((entity) async {
+        try {
+          return await handler.putRemote(entity);
+        } on UnavailableException {
+          rethrow;
+        } catch (e, stack) {
+          if (e is! DioException) {
+            DriftSyncLogger.logger.warning(
+              'Failed to assign client ID for ${handler.entityType} item: $e\n$stack',
+            );
+          }
+          return null;
+        }
+      });
 
       final responses = await Future.wait(futureAwait);
 
       for (final response in responses) {
-        allResponses.add(response);
+        if (response == null) {
+          hadFailure = true;
+        } else {
+          allResponses.add(response);
+        }
       }
 
       DriftSyncLogger.logger.finest('responses', responses);
     }
 
     await handler.upsertAllLocal(allResponses);
+    return !hadFailure;
   }
 
   /// For each handler/model, checks if lastSyncedAt is null (never synced) and does a full fetch for that model only.
