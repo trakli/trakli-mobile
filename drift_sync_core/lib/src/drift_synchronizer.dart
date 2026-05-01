@@ -508,14 +508,15 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
 
               await appDatabase.transaction(() async {
                 for (final item in page) {
+                  final clientId = handler.getClientId(item);
+
+                  // Skip items the handler can't anchor locally (empty
+                  // clientId means Phase 2 hasn't claimed them yet)
                   await handler.upsertLocal(item as dynamic);
 
                   // Collect client IDs for full-sync deletion.
                   if (isFull == true) {
-                    final clientId = handler.getClientId(item);
-                    if (clientId.isNotEmpty) {
-                      remoteClientIds.add(clientId);
-                    }
+                    remoteClientIds.add(clientId);
                   }
 
                   // Track max lastSyncedAt for metadata update.
@@ -541,10 +542,13 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
                 await handler.deleteLocalNotIn(remoteClientIds);
               }
 
-              await appDatabase.updateEnityLocalSyncMetadata(
-                entityType: handler.entityType,
-                lastSyncedAt: maxLastSyncedAt,
-              );
+              // the next sync into a full re-fetch.
+              if (maxLastSyncedAt != null) {
+                await appDatabase.updateEnityLocalSyncMetadata(
+                  entityType: handler.entityType,
+                  lastSyncedAt: maxLastSyncedAt,
+                );
+              }
             });
           } else {
             final changedItems = await handler.getAllRemote(
@@ -574,9 +578,10 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
                 await handler.deleteLocalNotIn(remoteClientIds);
               }
 
-              // Find the maximum lastSyncedAt timestamp from all changed items
+              // Find the maximum lastSyncedAt only from items that were actually
               DateTime? maxLastSyncedAt;
               for (final item in changedItems) {
+                if (handler.getClientId(item).isEmpty) continue;
                 final itemLastSyncedAt = handler.getlastSyncedAt(item);
                 if (itemLastSyncedAt != null) {
                   if (maxLastSyncedAt == null ||
@@ -586,10 +591,13 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
                 }
               }
 
-              await appDatabase.updateEnityLocalSyncMetadata(
-                entityType: handler.entityType,
-                lastSyncedAt: maxLastSyncedAt,
-              );
+              // the next sync into a full re-fetch.
+              if (maxLastSyncedAt != null) {
+                await appDatabase.updateEnityLocalSyncMetadata(
+                  entityType: handler.entityType,
+                  lastSyncedAt: maxLastSyncedAt,
+                );
+              }
             });
           }
 

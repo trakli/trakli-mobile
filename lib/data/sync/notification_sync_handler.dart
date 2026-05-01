@@ -59,12 +59,7 @@ class NotificationSyncHandler extends SyncTypeHandler<Notification, String, int>
 
   @override
   Future<Notification> restPutRemote(Notification entity) async {
-    // For notifications, we typically don't create/update from client
-    // But if read_at is updated, we need to sync it
-    if (entity.readAt != null && entity.id != null) {
-      return await remoteDataSource.markAsRead(entity.id!, entity.readAt!);
-    }
-    return entity;
+    return await remoteDataSource.updateNotification(entity);
   }
 
   @override
