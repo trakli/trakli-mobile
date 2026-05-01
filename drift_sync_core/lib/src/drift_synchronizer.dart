@@ -10,11 +10,29 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
     required this.typeHandlers,
     required SyncDependencyManagerBase dependencyManager,
     required RequestAuthorizationService requestAuthorizationService,
-  })  : _typeHandlers = <String, SyncTypeHandler>{
-          for (final th in typeHandlers) th.entityType: th,
-        },
+  })  : _typeHandlers = _indexHandlersByEntityType(typeHandlers),
         _dependencyManager = dependencyManager,
         _requestAuthorizationService = requestAuthorizationService;
+
+  static Map<String, SyncTypeHandler> _indexHandlersByEntityType(
+    Set<SyncTypeHandler> handlers,
+  ) {
+    final handlerByType = <String, SyncTypeHandler>{};
+    for (final handler in handlers) {
+      final existing = handlerByType[handler.entityType];
+      if (existing != null) {
+        throw ArgumentError.value(
+          handlers,
+          'typeHandlers',
+          'Two handlers registered for entityType "${handler.entityType}": '
+              '${existing.runtimeType} and ${handler.runtimeType}. '
+              'Each entityType must be handled by exactly one SyncTypeHandler.',
+        );
+      }
+      handlerByType[handler.entityType] = handler;
+    }
+    return handlerByType;
+  }
 
   SyncState _state = const SyncState.initial();
   SyncState get state => _state;
@@ -192,20 +210,27 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
       if (serverId != null) {
         await handler.deleteRemote(entity);
       }
-    } else {
-      // For put operations
-      if (!await handler.shouldPersistRemote(entity)) {
-        DriftSyncLogger.logger.info(
-          'Skipping sync for ${handler.entityType}:${handler.getClientId(entity)} - dependencies not ready',
-        );
-        return;
-      }
-
-      final updated = await handler.putRemote(entity);
-      await handler.upsertLocal(updated);
+      await appDatabase.concludeLocalChange(localChange,
+          persistedToRemote: true);
+      return;
     }
 
-    await appDatabase.concludeLocalChange(localChange, persistedToRemote: true);
+    // For put operations
+    if (!await handler.shouldPersistRemote(entity)) {
+      DriftSyncLogger.logger.info(
+        'Skipping sync for ${handler.entityType}:${handler.getClientId(entity)} - dependencies not ready',
+      );
+      return;
+    }
+
+    final updated = await handler.putRemote(entity);
+
+    // cannot leave the entity upserted with the pending change still queued.
+    await appDatabase.transaction(() async {
+      await handler.upsertLocal(updated);
+      await appDatabase.concludeLocalChange(localChange,
+          persistedToRemote: true);
+    });
   }
 
   SyncTypeHandler _getTypeHandlerByTypeName(String typeName) {
@@ -308,7 +333,8 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         }
 
         try {
-          final allSucceeded = await assignClientIdsToRemoteItemsWithoutClientId(
+          final allSucceeded =
+              await assignClientIdsToRemoteItemsWithoutClientId(
             handler,
           );
 
@@ -482,7 +508,6 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
 
               await appDatabase.transaction(() async {
                 for (final item in page) {
-      
                   await handler.upsertLocal(item as dynamic);
 
                   // Collect client IDs for full-sync deletion.
@@ -555,8 +580,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
                 final itemLastSyncedAt = handler.getlastSyncedAt(item);
                 if (itemLastSyncedAt != null) {
                   if (maxLastSyncedAt == null ||
-                      itemLastSyncedAt
-                          .isAfter(maxLastSyncedAt)) {
+                      itemLastSyncedAt.isAfter(maxLastSyncedAt)) {
                     maxLastSyncedAt = itemLastSyncedAt;
                   }
                 }
