@@ -62,7 +62,11 @@ class NotificationSyncHandler extends SyncTypeHandler<Notification, String, int>
     // For notifications, we typically don't create/update from client
     // But if read_at is updated, we need to sync it
     if (entity.readAt != null && entity.id != null) {
-      return await remoteDataSource.markAsRead(entity.id!, entity.readAt!);
+      return await remoteDataSource.markAsRead(
+        entity.id!,
+        entity.readAt!,
+        clientId: entity.clientId,
+      );
     }
     return entity;
   }

@@ -10,7 +10,7 @@ abstract class NotificationRemoteDataSource {
   Future<List<Notification>> getAllNotifications(
       {DateTime? syncedSince, bool? noClientId});
   Future<Notification?> getNotification(int id);
-  Future<Notification> markAsRead(int id, DateTime readAt);
+  Future<Notification> markAsRead(int id, DateTime readAt, {String? clientId});
 }
 
 @Injectable(as: NotificationRemoteDataSource)
@@ -71,11 +71,13 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   }
 
   @override
-  Future<Notification> markAsRead(int id, DateTime readAt) async {
-    final response = await dio.put(
+  Future<Notification> markAsRead(int id, DateTime readAt,
+      {String? clientId}) async {
+    final response = await dio.post(
       'notifications/$id/read',
       data: {
         'read_at': formatServerIsoDateTimeString(readAt),
+        if (clientId != null && clientId.isNotEmpty) 'client_id': clientId,
       },
     );
 
