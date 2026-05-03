@@ -168,5 +168,5 @@ class MediaSyncHandler extends SyncTypeHandler<MediaFile, String, int>
   }
 
   @override
-  DateTime? getlastSyncedAt(MediaFile entity) => null;
+  DateTime? getLastSyncedAt(MediaFile entity) => null;
 }

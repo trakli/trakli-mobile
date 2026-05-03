@@ -10,9 +10,11 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
     required this.typeHandlers,
     required SyncDependencyManagerBase dependencyManager,
     required RequestAuthorizationService requestAuthorizationService,
+    SyncLogger logger = const DefaultSyncLogger(),
   })  : _typeHandlers = _indexHandlersByEntityType(typeHandlers),
         _dependencyManager = dependencyManager,
-        _requestAuthorizationService = requestAuthorizationService;
+        _requestAuthorizationService = requestAuthorizationService,
+        _logger = logger;
 
   static Map<String, SyncTypeHandler> _indexHandlersByEntityType(
     Set<SyncTypeHandler> handlers,
@@ -47,18 +49,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   @protected
   final RequestAuthorizationService _requestAuthorizationService;
 
-  /// Gets the Id of the latest available change from the server.
-  @protected
-  Future<String?> getLatestServerChangeId();
-
-  /// Gets the pending changes from the server, starting
-  /// with lastChangeId.
-  /// Will return an empty stream if no changes are available,
-  /// but lastChangeId still exists in the change log.
-  /// Will return null if lastChangeId has expired and removed from the
-  /// change log.
-  @protected
-  Future<List<ServerChange>> getServerPendingChanges(String? lastChangeId);
+  final SyncLogger _logger;
 
   @protected
   Future<void> Function()? get onStarted => null;
@@ -144,7 +135,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   Future<bool> uploadLocalChanges() async {
     // Check authorization before attempting to upload
     if (!await _requestAuthorizationService.canSync()) {
-      DriftSyncLogger.logger.info('Skipping upload - user not authenticated');
+      _logger.info('Skipping upload - user not authenticated');
       return false; // Don't upload if not authenticated
     }
 
@@ -168,7 +159,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
       } on UnavailableException catch (_) {
         // in case we couldn't reach the server, let's just quit here and
         // report we aren't able to continue
-        DriftSyncLogger.warning(
+        _logger.warning(
           'Server unavailable during upload',
           null,
           null,
@@ -179,7 +170,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         // that and continue with the other local changes.
         // Only log if the exception is NOT a DioException
         if (ex is! DioException) {
-          DriftSyncLogger.error(
+          _logger.error(
             'Error uploading local change',
             ex,
             stackTrace,
@@ -217,7 +208,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
 
     // For put operations
     if (!await handler.shouldPersistRemote(entity)) {
-      DriftSyncLogger.logger.info(
+      _logger.info(
         'Skipping sync for ${handler.entityType}:${handler.getClientId(entity)} - dependencies not ready',
       );
       return;
@@ -225,9 +216,11 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
 
     final updated = await handler.putRemote(entity);
 
-    // cannot leave the entity upserted with the pending change still queued.
+    // Local write + conclude must commit together; otherwise a process
+    // kill leaves the row upserted with the pending change still queued.
     await appDatabase.transaction(() async {
-      await handler.upsertLocal(updated);
+      const commitTx = _DirectCommitTx();
+      await handler.persistLocal([updated], commitTx);
       await appDatabase.concludeLocalChange(localChange,
           persistedToRemote: true);
     });
@@ -275,7 +268,8 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
     sorted.sort((a, b) {
       final depthA = getDependencyDepth(a.entityType);
       final depthB = getDependencyDepth(b.entityType);
-      return depthA.compareTo(depthB);
+      if (depthA != depthB) return depthA.compareTo(depthB);
+      return a.createMoment.compareTo(b.createMoment);
     });
     return sorted;
   }
@@ -292,18 +286,18 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   /// fetch for that model only. This is more robust and allows incremental adoption
   /// of new models without requiring a full resync for all models.
   Future<void> downloadServerChanges() async {
-    DriftSyncLogger.logger.finest('Entered DownloadSynchronizer.sync method');
+    _logger.finest('Entered DownloadSynchronizer.sync method');
 
-    DriftSyncLogger.logger.finest('... will sync from');
+    _logger.finest('... will sync from');
     try {
       await _timeBasedPartialResync();
     } on CancelException catch (_) {
-      DriftSyncLogger.logger.finest('user cancelled sync');
+      _logger.finest('user cancelled sync');
       rethrow;
     } catch (e, stackTrace) {
       // Only log if the exception is NOT a DioException
       if (e is! DioException) {
-        DriftSyncLogger.error(
+        _logger.error(
           'exception on downloadServerChanges',
           e,
           stackTrace,
@@ -316,17 +310,17 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   }
 
   Future<void> downloadModelsWithNoClientIds() async {
-    DriftSyncLogger.logger.finest('Entered _partialSyncServerChanges');
+    _logger.finest('Entered _partialSyncServerChanges');
     try {
       _dependencyManager.resetSyncState();
       for (final handler in typeHandlers) {
         if (_state.cancelRequested) {
-          DriftSyncLogger.logger.finest('... cancel requested. Will leave.');
+          _logger.finest('... cancel requested. Will leave.');
           throw const CancelException();
         }
 
         if (!_dependencyManager.canSync(handler)) {
-          DriftSyncLogger.logger.info(
+          _logger.info(
             'Skipping ${handler.entityType} client-id assignment - dependencies not synced',
           );
           continue;
@@ -340,9 +334,9 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
 
           if (allSucceeded) {
             _dependencyManager.markSuccessfullySynced(handler);
-            DriftSyncLogger.logger.info('Updated the client without id');
+            _logger.info('Updated the client without id');
           } else {
-            DriftSyncLogger.logger.warning(
+            _logger.warning(
               '${handler.entityType} client-id assignment had item failures - dependents will be skipped',
             );
           }
@@ -351,7 +345,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         } catch (e, stack) {
           // Only log if the exception is NOT a DioException
           if (e is! DioException) {
-            DriftSyncLogger.error(
+            _logger.error(
               'Error syncing model without client id',
               e,
               stack,
@@ -367,17 +361,15 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         }
       }
     } on CancelException catch (_) {
-      DriftSyncLogger.logger.finest('user cancelled sync');
+      _logger.finest('user cancelled sync');
       rethrow;
     } catch (ex) {
       if (ex is! DioException) {
-        DriftSyncLogger.logger
-            .finest('exception on _partialSyncServerChanges: $ex');
+        _logger.finest('exception on _partialSyncServerChanges: $ex');
       }
       rethrow;
     }
-    DriftSyncLogger.logger
-        .finest('finished _partialSyncServerChanges with no incident');
+    _logger.finest('finished _partialSyncServerChanges with no incident');
   }
 
   /// PARTIAL SYNC: Assign client IDs to remote items without client ID (generic for any handler).
@@ -410,8 +402,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         updatedItems.add(current);
       } catch (e, stack) {
         if (e is! DioException) {
-          DriftSyncLogger.logger
-              .warning('Failed to assign client ID for item: $e\n$stack');
+          _logger.warning('Failed to assign client ID for item: $e\n$stack');
         }
         hadFailure = true;
         continue;
@@ -434,7 +425,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
           rethrow;
         } catch (e, stack) {
           if (e is! DioException) {
-            DriftSyncLogger.logger.warning(
+            _logger.warning(
               'Failed to assign client ID for ${handler.entityType} item: $e\n$stack',
             );
           }
@@ -452,7 +443,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         }
       }
 
-      DriftSyncLogger.logger.finest('responses', responses);
+      _logger.finest('responses: $responses');
     }
 
     await handler.upsertAllLocal(allResponses);
@@ -464,16 +455,16 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   Future<void> _timeBasedPartialResync() async {
     final sw = Stopwatch();
     sw.start();
-    DriftSyncLogger.logger.finest('Entered _timeBasedPartialResync');
+    _logger.finest('Entered _timeBasedPartialResync');
     try {
       _dependencyManager.resetSyncState();
       for (final handler in typeHandlers) {
         if (_state.cancelRequested) {
-          DriftSyncLogger.logger.finest('... cancel requested. Will leave.');
+          _logger.finest('... cancel requested. Will leave.');
           throw const CancelException();
         }
         if (!_dependencyManager.canSync(handler)) continue;
-        DriftSyncLogger.logger.info(
+        _logger.info(
             'started handler for \u001b[1m${handler.entityType}\u001b[0m');
 
         if (handler.skipDownSync) {
@@ -507,26 +498,21 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
               sawAny = true;
 
               await appDatabase.transaction(() async {
-                for (final item in page) {
-                  final clientId = handler.getClientId(item);
+                const commitTx = _DirectCommitTx();
+                final outcome =
+                    await handler.persistLocal(page, commitTx);
 
-                  // Skip items the handler can't anchor locally (empty
-                  // clientId means Phase 2 hasn't claimed them yet)
-                  await handler.upsertLocal(item as dynamic);
-
-                  // Collect client IDs for full-sync deletion.
-                  if (isFull == true) {
-                    remoteClientIds.add(clientId);
+                if (isFull == true) {
+                  for (final item in outcome.persisted) {
+                    remoteClientIds.add(handler.getClientId(item));
                   }
+                }
 
-                  // Track max lastSyncedAt for metadata update.
-                  final itemLastSyncedAt = handler.getlastSyncedAt(item);
-                  if (itemLastSyncedAt != null) {
-                    final currentMax = maxLastSyncedAt;
-                    if (currentMax == null ||
-                        itemLastSyncedAt.isAfter(currentMax)) {
-                      maxLastSyncedAt = itemLastSyncedAt;
-                    }
+                final pageCursor = outcome.cursorAdvanceTo;
+                if (pageCursor != null) {
+                  final currentMax = maxLastSyncedAt;
+                  if (currentMax == null || pageCursor.isAfter(currentMax)) {
+                    maxLastSyncedAt = pageCursor;
                   }
                 }
               });
@@ -541,12 +527,13 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
               if (isFull == true) {
                 await handler.deleteLocalNotIn(remoteClientIds);
               }
-
-              // the next sync into a full re-fetch.
               if (maxLastSyncedAt != null) {
-                await appDatabase.updateEnityLocalSyncMetadata(
-                  entityType: handler.entityType,
-                  lastSyncedAt: maxLastSyncedAt,
+                await appDatabase.updateEntitySyncState(
+                  handler.entityType,
+                  Healthy(
+                    lastSync: DateTime.now(),
+                    cursor: maxLastSyncedAt,
+                  ),
                 );
               }
             });
@@ -559,57 +546,38 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
               continue;
             }
 
-            // 3. Upsert items first, then delete stale items (safer order)
-            // This ensures we don't lose data if upsert fails
             await appDatabase.transaction(() async {
-              // First upsert all changed items
-              await handler.upsertAllLocal(changedItems);
+              const commitTx = _DirectCommitTx();
+              final outcome =
+                  await handler.persistLocal(changedItems, commitTx);
 
-              // For full sync, delete items not in the response
-              // This is safer than deleting first because we preserve data on failure
               if (isFull == true) {
-                final remoteClientIds = <String>{};
-                for (final item in changedItems) {
-                  final clientId = handler.getClientId(item);
-                  if (clientId.isNotEmpty) {
-                    remoteClientIds.add(clientId);
-                  }
-                }
+                final remoteClientIds =
+                    outcome.persisted.map(handler.getClientId).toSet();
                 await handler.deleteLocalNotIn(remoteClientIds);
               }
 
-              // Find the maximum lastSyncedAt only from items that were actually
-              DateTime? maxLastSyncedAt;
-              for (final item in changedItems) {
-                if (handler.getClientId(item).isEmpty) continue;
-                final itemLastSyncedAt = handler.getlastSyncedAt(item);
-                if (itemLastSyncedAt != null) {
-                  if (maxLastSyncedAt == null ||
-                      itemLastSyncedAt.isAfter(maxLastSyncedAt)) {
-                    maxLastSyncedAt = itemLastSyncedAt;
-                  }
-                }
-              }
-
-              // the next sync into a full re-fetch.
-              if (maxLastSyncedAt != null) {
-                await appDatabase.updateEnityLocalSyncMetadata(
-                  entityType: handler.entityType,
-                  lastSyncedAt: maxLastSyncedAt,
+              if (outcome.cursorAdvanceTo != null) {
+                await appDatabase.updateEntitySyncState(
+                  handler.entityType,
+                  Healthy(
+                    lastSync: DateTime.now(),
+                    cursor: outcome.cursorAdvanceTo,
+                  ),
                 );
               }
             });
           }
 
           _dependencyManager.markSuccessfullySynced(handler);
-          DriftSyncLogger.logger.info(
+          _logger.info(
               'synced \u001b[1m${handler.entityType}\u001b[0m in ${sw.elapsedMilliseconds}ms');
         } on UnavailableException {
           rethrow;
         } catch (e, stack) {
           // Only log if the exception is NOT a DioException
           if (e is! DioException) {
-            DriftSyncLogger.error(
+            _logger.error(
               'Error syncing handler',
               e,
               stack,
@@ -626,16 +594,16 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         }
       }
       sw.stop();
-      DriftSyncLogger.logger.info(
+      _logger.info(
         'synchronization terminated after taking ${sw.elapsedMilliseconds} milliseconds',
       );
     } on CancelException catch (_) {
-      DriftSyncLogger.logger.finest('user cancelled sync');
+      _logger.finest('user cancelled sync');
       rethrow;
     } catch (e, stackTrace) {
       // Only log if the exception is NOT a DioException
       if (e is! DioException) {
-        DriftSyncLogger.fatal(
+        _logger.fatal(
           'exception on _timeBasedPartialResync',
           e,
           stackTrace,
@@ -646,4 +614,13 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
       rethrow;
     }
   }
+}
+
+/// Pass-through [SyncCommitTx]. The orchestrator already wraps callers
+/// in `appDatabase.transaction(...)`.
+final class _DirectCommitTx implements SyncCommitTx {
+  const _DirectCommitTx();
+
+  @override
+  Future<void> runWrite(Future<void> Function() write) => write();
 }

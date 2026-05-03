@@ -382,6 +382,6 @@ class TransactionSyncHandler
   }
 
   @override
-  DateTime? getlastSyncedAt(TransactionCompleteDto entity) =>
+  DateTime? getLastSyncedAt(TransactionCompleteDto entity) =>
       entity.transaction.lastSyncedAt;
 }
