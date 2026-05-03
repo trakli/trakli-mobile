@@ -222,7 +222,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
     // kill leaves the row upserted with the pending change still queued.
     await appDatabase.transaction(() async {
       const commitTx = _DirectCommitTx();
-      await handler.persistLocal([updated], commitTx);
+      await handler.persistOne(updated, commitTx);
       await appDatabase.concludeLocalChange(localChange,
           persistedToRemote: true);
     });

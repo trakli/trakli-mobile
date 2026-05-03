@@ -1,7 +1,12 @@
 import 'package:drift_sync_core/drift_sync_core.dart';
-import 'package:drift/drift.dart';
 
-mixin SynchronizerDb on GeneratedDatabase {
+/// Contract a consumer database implements so the orchestrator can persist
+/// pending changes, sync metadata, and run transactional commits.
+///
+/// Drift consumers typically apply this as a mixin on their `_$AppDatabase`
+/// class — Drift's `GeneratedDatabase.transaction` already satisfies the
+/// transaction method.
+mixin SynchronizerDb {
   Future<List<PendingLocalChange>> getPendingLocalChanges();
   Future<void> cancelAllLocalChanges();
   Future<void> clearDatabase();
@@ -24,6 +29,8 @@ mixin SynchronizerDb on GeneratedDatabase {
     required String entityType,
     DateTime? lastSyncedAt,
   });
+
+  Future<R> transaction<R>(Future<R> Function() body, {bool requireNew = false});
 
   /// Default impl bridges to [getLocalSyncMetadata]. Override to surface
   /// richer state once you add columns for it.

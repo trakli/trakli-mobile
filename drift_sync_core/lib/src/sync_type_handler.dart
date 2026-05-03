@@ -33,6 +33,17 @@ abstract class SyncTypeHandler<TEntity, TKey, TServerKey> {
   Future<void> upsertAllLocal(List<TEntity> list);
   // Future<void> updateLocalSyncMetadata(TEntity entity);
 
+  /// Persist a single entity. Equivalent to [persistLocal] with a one-item
+  /// list, but constructs the list inside the type-parameterized scope so
+  /// orchestrator callers (which see the handler dynamic-erased) don't
+  /// hit `List<dynamic>` vs `List<TEntity>` runtime checks.
+  Future<PersistOutcome<TEntity>> persistOne(
+    TEntity entity,
+    SyncCommitTx tx,
+  ) {
+    return persistLocal(<TEntity>[entity], tx);
+  }
+
   /// Persist a batch to local storage and return a typed outcome the
   /// orchestrator uses to advance its cursor.
   ///
