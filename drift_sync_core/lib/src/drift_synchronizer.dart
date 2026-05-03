@@ -11,10 +11,14 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
     required SyncDependencyManagerBase dependencyManager,
     required RequestAuthorizationService requestAuthorizationService,
     SyncLogger logger = const DefaultSyncLogger(),
+    this.skipClientIdReconciliation = false,
   })  : _typeHandlers = _indexHandlersByEntityType(typeHandlers),
         _dependencyManager = dependencyManager,
         _requestAuthorizationService = requestAuthorizationService,
         _logger = logger;
+
+  /// Skips client-id reconciliation. Set true for UUID-only schemas.
+  final bool skipClientIdReconciliation;
 
   static Map<String, SyncTypeHandler> _indexHandlersByEntityType(
     Set<SyncTypeHandler> handlers,
@@ -105,7 +109,9 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         return;
       }
 
-      await downloadModelsWithNoClientIds();
+      if (!skipClientIdReconciliation) {
+        await downloadModelsWithNoClientIds();
+      }
 
       await downloadServerChanges();
     } finally {
