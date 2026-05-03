@@ -17,7 +17,7 @@ mixin RestSyncTypeHandler<TEntity, TKey, TServerKey>
     } on DioException catch (ex) {
       if (isUnavailable(ex)) throw UnavailableException(innerException: ex);
       if (isNotFound(ex)) throw NotFoundException(innerException: ex);
-      rethrow;
+      throw TransientRemoteException(innerException: ex);
     }
   }
 
@@ -32,7 +32,7 @@ mixin RestSyncTypeHandler<TEntity, TKey, TServerKey>
     } on DioException catch (ex) {
       if (isUnavailable(ex)) throw UnavailableException(innerException: ex);
       if (isNotFound(ex)) throw NotFoundException(innerException: ex);
-      rethrow;
+      throw TransientRemoteException(innerException: ex);
     }
   }
 
@@ -46,7 +46,7 @@ mixin RestSyncTypeHandler<TEntity, TKey, TServerKey>
       if (ex.response?.statusCode == 409) {
         throw ConflictException(innerException: ex);
       }
-      rethrow;
+      throw TransientRemoteException(innerException: ex);
     }
   }
 
@@ -60,7 +60,7 @@ mixin RestSyncTypeHandler<TEntity, TKey, TServerKey>
       if (ex.response?.statusCode == 409) {
         throw ConflictException(innerException: ex);
       }
-      rethrow;
+      throw TransientRemoteException(innerException: ex);
     }
   }
 

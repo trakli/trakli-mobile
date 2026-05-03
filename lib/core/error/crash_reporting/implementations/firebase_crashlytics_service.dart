@@ -32,37 +32,14 @@ class FirebaseCrashlyticsService implements CrashReportingInterface {
     StackTrace? stackTrace,
     String? reason,
     Map<String, dynamic>? information,
-  }) async {
-    try {
-      if (information != null) {
-        for (final entry in information.entries) {
-          await _crashlyticsInstance.setCustomKey(
-            entry.key,
-            entry.value.toString(),
-          );
-        }
-      }
-
-      if (reason != null) {
-        await _crashlyticsInstance.setCustomKey('reason', reason);
-      }
-
-      await _crashlyticsInstance.recordError(
+  }) =>
+      _record(
         error,
-        stackTrace,
-        reason: reason,
-        information: information?.entries
-                .map((e) => '{ ${e.key}: ${e.value} }')
-                .toList() ??
-            [],
-      );
-    } catch (e, stackTrace) {
-      logger.e(
-        'Failed to record error in Crashlytics: $e',
         stackTrace: stackTrace,
+        reason: reason,
+        information: information,
+        fatal: false,
       );
-    }
-  }
 
   @override
   Future<void> recordFatalError(
@@ -70,21 +47,23 @@ class FirebaseCrashlyticsService implements CrashReportingInterface {
     StackTrace? stackTrace,
     String? reason,
     Map<String, dynamic>? information,
+  }) =>
+      _record(
+        error,
+        stackTrace: stackTrace,
+        reason: reason,
+        information: information,
+        fatal: true,
+      );
+
+  Future<void> _record(
+    Object error, {
+    required bool fatal,
+    StackTrace? stackTrace,
+    String? reason,
+    Map<String, dynamic>? information,
   }) async {
     try {
-      if (information != null) {
-        for (final entry in information.entries) {
-          await _crashlyticsInstance.setCustomKey(
-            entry.key,
-            entry.value.toString(),
-          );
-        }
-      }
-
-      if (reason != null) {
-        await _crashlyticsInstance.setCustomKey('reason', reason);
-      }
-
       await _crashlyticsInstance.recordError(
         error,
         stackTrace,
@@ -92,13 +71,13 @@ class FirebaseCrashlyticsService implements CrashReportingInterface {
         information: information?.entries
                 .map((e) => '{ ${e.key}: ${e.value} }')
                 .toList() ??
-            [],
-        fatal: true,
+            const [],
+        fatal: fatal,
       );
-    } catch (e, stackTrace) {
+    } catch (e, st) {
       logger.e(
-        'Failed to record fatal error in Crashlytics: $e',
-        stackTrace: stackTrace,
+        'Failed to record ${fatal ? 'fatal ' : ''}error in Crashlytics: $e',
+        stackTrace: st,
       );
     }
   }
