@@ -108,7 +108,6 @@ void main() {
 
       expect(outcome.persisted, items);
       expect(outcome.skipped, isEmpty);
-      expect(outcome.failed, isEmpty);
     });
 
     test('reports items with empty clientId as Skipped(MissingClientId)',
@@ -173,7 +172,6 @@ void main() {
       final outcome = await handler.persistLocal([], tx);
       expect(outcome.persisted, isEmpty);
       expect(outcome.skipped, isEmpty);
-      expect(outcome.failed, isEmpty);
       expect(outcome.cursorAdvanceTo, isNull);
     });
   });

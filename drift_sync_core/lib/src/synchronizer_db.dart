@@ -25,8 +25,8 @@ mixin SynchronizerDb on GeneratedDatabase {
     DateTime? lastSyncedAt,
   });
 
-  /// Default impl bridges to [getLocalSyncMetadata]. Override to return
-  /// [Degraded] or [FailedSyncState] once you persist richer state.
+  /// Default impl bridges to [getLocalSyncMetadata]. Override to surface
+  /// richer state once you add columns for it.
   Future<EntitySyncState> getEntitySyncState(String entityType) async {
     final meta = await getLocalSyncMetadata(entityType);
     if (meta == null || meta.lastSyncedAt == null) {
@@ -36,7 +36,7 @@ mixin SynchronizerDb on GeneratedDatabase {
   }
 
   /// Default impl bridges the cursor to [updateEntityLocalSyncMetadata].
-  /// Override to persist the richer fields when your schema supports it.
+  /// Override to persist a wall-clock `lastSync` or any richer state.
   Future<void> updateEntitySyncState(
     String entityType,
     EntitySyncState state,
@@ -49,15 +49,7 @@ mixin SynchronizerDb on GeneratedDatabase {
             lastSyncedAt: cursor,
           );
         }
-      case Degraded(:final cursor):
-        if (cursor != null) {
-          await updateEntityLocalSyncMetadata(
-            entityType: entityType,
-            lastSyncedAt: cursor,
-          );
-        }
       case NeverSynced():
-      case FailedSyncState():
         break;
     }
   }

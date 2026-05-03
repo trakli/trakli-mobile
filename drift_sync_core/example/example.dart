@@ -77,7 +77,6 @@ void main() {
   final outcome = PersistOutcome<Todo>(
     persisted: [Todo(clientId: 'a', lastSyncedAt: DateTime.utc(2026, 5, 1))],
     skipped: const [],
-    failed: const [],
     cursorAdvanceTo: DateTime.utc(2026, 5, 1),
   );
   print('persisted ${outcome.persisted.length}, '
@@ -91,8 +90,6 @@ void main() {
   final label = switch (state) {
     NeverSynced() => 'never',
     Healthy() => 'healthy',
-    Degraded() => 'degraded',
-    FailedSyncState() => 'failed',
   };
   print('state: $label');
 }

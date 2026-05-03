@@ -67,7 +67,6 @@ abstract class SyncTypeHandler<TEntity, TKey, TServerKey> {
     return PersistOutcome<TEntity>(
       persisted: persisted,
       skipped: skipped,
-      failed: const [],
       cursorAdvanceTo: cursor,
     );
   }
@@ -103,7 +102,3 @@ abstract class SyncTypeHandler<TEntity, TKey, TServerKey> {
 abstract class PagedSyncTypeHandler<TEntity> {
   Stream<List<TEntity>> getAllRemoteStream({DateTime? syncedSince, bool? noClientId});
 }
-
-// Helper typedefs for clarity
-typedef StringSyncTypeHandler<TEntity> = SyncTypeHandler<TEntity, String, int>;
-typedef IntSyncTypeHandler<TEntity> = SyncTypeHandler<TEntity, int, int>;

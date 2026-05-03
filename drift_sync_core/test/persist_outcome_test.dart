@@ -7,92 +7,32 @@ void main() {
       final outcome = PersistOutcome.empty<String>();
       expect(outcome.persisted, isEmpty);
       expect(outcome.skipped, isEmpty);
-      expect(outcome.failed, isEmpty);
       expect(outcome.cursorAdvanceTo, isNull);
-      expect(outcome.isClean, isTrue);
-    });
-
-    test('isClean is true when no failures', () {
-      const outcome = PersistOutcome<int>(
-        persisted: [1, 2],
-        skipped: [],
-        failed: [],
-        cursorAdvanceTo: null,
-      );
-      expect(outcome.isClean, isTrue);
-    });
-
-    test('isClean is true when all failures are non-permanent', () {
-      final outcome = PersistOutcome<int>(
-        persisted: const [],
-        skipped: const [],
-        failed: [
-          Failed<int>(
-            item: 1,
-            error: Exception('transient'),
-            stackTrace: StackTrace.current,
-            permanent: false,
-          ),
-        ],
-        cursorAdvanceTo: null,
-      );
-      expect(outcome.isClean, isTrue);
-    });
-
-    test('isClean is false when any failure is permanent', () {
-      final outcome = PersistOutcome<int>(
-        persisted: const [],
-        skipped: const [],
-        failed: [
-          Failed<int>(
-            item: 1,
-            error: Exception('permanent'),
-            stackTrace: StackTrace.current,
-            permanent: true,
-          ),
-        ],
-        cursorAdvanceTo: null,
-      );
-      expect(outcome.isClean, isFalse);
     });
 
     test('cursorAdvanceTo can be null without throwing', () {
       const outcome = PersistOutcome<int>(
         persisted: [],
         skipped: [],
-        failed: [],
         cursorAdvanceTo: null,
       );
       expect(outcome.cursorAdvanceTo, isNull);
     });
 
+    test('Skipped carries the item and reason', () {
+      const skipped = Skipped<int>(item: 42, reason: MissingClientId());
+      expect(skipped.item, 42);
+      expect(skipped.reason, isA<MissingClientId>());
+    });
+
     test('SkipReason variants are distinguishable via pattern match', () {
-      const reasons = <SkipReason>[
-        MissingClientId(),
-        StaleRevision(local: '1', remote: '2'),
-        DependencyNotMet('wallet'),
-        HandlerSpecific('domain reason'),
-      ];
+      const SkipReason reason = MissingClientId();
 
-      final names = reasons.map((r) => switch (r) {
-            MissingClientId() => 'missing',
-            StaleRevision() => 'stale',
-            DependencyNotMet() => 'dependency',
-            HandlerSpecific() => 'handler',
-          });
+      final label = switch (reason) {
+        MissingClientId() => 'missing',
+      };
 
-      expect(names, ['missing', 'stale', 'dependency', 'handler']);
-    });
-
-    test('DependencyNotMet carries the dependency entity type', () {
-      const reason = DependencyNotMet('category');
-      expect(reason.dependencyEntityType, 'category');
-    });
-
-    test('StaleRevision carries local and remote revisions', () {
-      const reason = StaleRevision(local: '4', remote: '5');
-      expect(reason.local, '4');
-      expect(reason.remote, '5');
+      expect(label, 'missing');
     });
   });
 }
