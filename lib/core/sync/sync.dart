@@ -1,2 +1,2 @@
-export 'drift_sync_crash_reporting_adapter.dart';
-export 'drift_sync_crash_reporting_service.dart';
+export 'sync_crash_reporter_impl.dart';
+export 'sync_logger_impl.dart';
