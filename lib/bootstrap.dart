@@ -14,7 +14,6 @@ import 'package:trakli/core/app_update/remote_update_check.dart';
 import 'package:trakli/core/error/crash_reporting.dart';
 import 'package:trakli/core/error/crash_reporting/user_context_service.dart';
 import 'package:trakli/core/error/error_handler.dart';
-import 'package:trakli/core/sync/drift_sync_crash_reporting_service.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 
@@ -64,7 +63,6 @@ Future<void> bootstrap(
         getIt<AppVersionInfo>().initialize(),
         getIt<RemoteUpdateCheck>().initialize(),
         FeatureRemoteConfig.initialize(),
-        getIt<DriftSyncCrashReportingService>().initialize(),
       ]);
 
       // Set up error handler with crash reporting

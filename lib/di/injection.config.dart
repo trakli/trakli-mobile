@@ -30,9 +30,9 @@ import '../core/network/network_info.dart' as _i6;
 import '../core/services/auth_service.dart' as _i377;
 import '../core/services/oauth_service.dart' as _i624;
 import '../core/services/request_authorization_service.dart' as _i1066;
-import '../core/sync/drift_sync_crash_reporting_adapter.dart' as _i705;
-import '../core/sync/drift_sync_crash_reporting_service.dart' as _i545;
+import '../core/sync/sync_crash_reporter_impl.dart' as _i947;
 import '../core/sync/sync_database.dart' as _i646;
+import '../core/sync/sync_logger_impl.dart' as _i422;
 import '../core/sync/sync_service.dart' as _i957;
 import '../core/utils/services/shared_prefs.dart' as _i789;
 import '../data/database/app_database.dart' as _i704;
@@ -252,6 +252,7 @@ _i174.GetIt $initGetIt(
       () => syncModule.provideSyncDependencyManager());
   gh.lazySingleton<_i627.ThemeCubit>(() => _i627.ThemeCubit());
   gh.factory<_i6.NetworkInfo>(() => _i6.NetworkInfoImpl()..init());
+  gh.lazySingleton<_i877.SyncLogger>(() => _i422.SyncLoggerImpl());
   gh.factory<_i91.OAuthCubit>(() => _i91.OAuthCubit(gh<_i624.OAuthService>()));
   gh.singleton<_i1063.AppVersionInfo>(() => _i1063.AppVersionInfoImpl());
   gh.factory<_i632.ExchangeRateRemoteDataSource>(
@@ -337,6 +338,8 @@ _i174.GetIt $initGetIt(
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
+  gh.lazySingleton<_i877.SyncCrashReporter>(
+      () => _i947.SyncCrashReporterImpl(gh<_i538.CrashReportingService>()));
   gh.lazySingleton<_i280.PartySyncHandler>(() => _i280.PartySyncHandler(
         gh<_i704.AppDatabase>(),
         gh<_i656.PartyRemoteDataSource>(),
@@ -345,13 +348,8 @@ _i174.GetIt $initGetIt(
       () => _i76.ImportRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.factory<_i624.WalletRemoteDataSource>(
       () => _i624.WalletRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
-  gh.factory<_i705.DriftSyncCrashReportingAdapter>(() =>
-      _i705.DriftSyncCrashReportingAdapter(gh<_i538.CrashReportingService>()));
   gh.factory<_i481.UserContextService>(
       () => _i481.UserContextService(gh<_i538.CrashReportingService>()));
-  gh.factory<_i545.DriftSyncCrashReportingService>(() =>
-      _i545.DriftSyncCrashReportingService(
-          gh<_i705.DriftSyncCrashReportingAdapter>()));
   gh.factory<_i662.TransactionLocalDataSource>(
       () => _i662.TransactionLocalDataSourceImpl(
             gh<_i704.AppDatabase>(),
@@ -724,14 +722,6 @@ _i174.GetIt $initGetIt(
             gh<_i118.TransactionRepository>(),
             gh<_i1057.ExchangeRateRepository>(),
           ));
-  gh.lazySingleton<_i646.SynchAppDatabase>(() => _i646.SynchAppDatabase(
-        appDatabase: gh<_i704.AppDatabase>(),
-        typeHandlers:
-            gh<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(),
-        dependencyManager: gh<_i877.SyncDependencyManagerBase>(),
-        networkInfo: gh<_i6.NetworkInfo>(),
-        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
-      ));
   gh.factory<_i150.GetFileContentUseCase>(
       () => _i150.GetFileContentUseCase(gh<_i442.MediaRepository>()));
   gh.factory<_i706.DeleteMediaUseCase>(
@@ -748,6 +738,16 @@ _i174.GetIt $initGetIt(
       ));
   gh.factory<_i311.ExchangeRateCubit>(
       () => _i311.ExchangeRateCubit(gh<_i397.ListenExchangeRate>()));
+  gh.lazySingleton<_i646.SynchAppDatabase>(() => _i646.SynchAppDatabase(
+        appDatabase: gh<_i704.AppDatabase>(),
+        typeHandlers:
+            gh<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(),
+        dependencyManager: gh<_i877.SyncDependencyManagerBase>(),
+        networkInfo: gh<_i6.NetworkInfo>(),
+        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
+        logger: gh<_i877.SyncLogger>(),
+        crashReporter: gh<_i877.SyncCrashReporter>(),
+      ));
   gh.factory<_i117.TransactionCubit>(() => _i117.TransactionCubit(
         getAllTransactionsUseCase: gh<_i1022.GetAllTransactionsUseCase>(),
         createTransactionUseCase: gh<_i1022.CreateTransactionUseCase>(),
