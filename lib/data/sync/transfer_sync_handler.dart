@@ -183,5 +183,5 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
   }
 
   @override
-  DateTime? getlastSyncedAt(Transfer entity) => entity.lastSyncedAt;
+  DateTime? getLastSyncedAt(Transfer entity) => entity.lastSyncedAt;
 }

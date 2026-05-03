@@ -179,6 +179,6 @@ class ConfigSyncHandler extends SyncTypeHandler<Config, String, int>
   }
 
   @override
-  DateTime? getlastSyncedAt(Config entity) => entity.lastSyncedAt;
+  DateTime? getLastSyncedAt(Config entity) => entity.lastSyncedAt;
 }
 

@@ -245,7 +245,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
   }
 
   @override
-  Future<void> updateEnityLocalSyncMetadata(
+  Future<void> updateEntityLocalSyncMetadata(
       {required String entityType, DateTime? lastSyncedAt}) async {
     await into(syncMetadata).insertOnConflictUpdate(
       SyncMetadataCompanion(
