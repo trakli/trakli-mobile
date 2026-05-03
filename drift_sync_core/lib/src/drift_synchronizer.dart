@@ -152,10 +152,6 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
 
       try {
         await _doOperation(localChange, handler);
-        // await this.appDatabase.transaction(() async {
-        //   // await appDatabase.concludeLocalChange(localChange);
-        //   await _doOperation(localChange, handler);
-        // });
       } on UnavailableException catch (_) {
         // in case we couldn't reach the server, let's just quit here and
         // report we aren't able to continue
@@ -286,9 +282,6 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   /// fetch for that model only. This is more robust and allows incremental adoption
   /// of new models without requiring a full resync for all models.
   Future<void> downloadServerChanges() async {
-    _logger.finest('Entered DownloadSynchronizer.sync method');
-
-    _logger.finest('... will sync from');
     try {
       await _timeBasedPartialResync();
     } on CancelException catch (_) {
@@ -310,7 +303,6 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   }
 
   Future<void> downloadModelsWithNoClientIds() async {
-    _logger.finest('Entered _partialSyncServerChanges');
     try {
       _dependencyManager.resetSyncState();
       for (final handler in typeHandlers) {
@@ -369,7 +361,6 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
       }
       rethrow;
     }
-    _logger.finest('finished _partialSyncServerChanges with no incident');
   }
 
   /// PARTIAL SYNC: Assign client IDs to remote items without client ID (generic for any handler).
@@ -453,9 +444,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   /// For each handler/model, checks if lastSyncedAt is null (never synced) and does a full fetch for that model only.
   /// Otherwise, fetches only changes since last sync. This is the most robust approach for incremental, model-aware sync.
   Future<void> _timeBasedPartialResync() async {
-    final sw = Stopwatch();
-    sw.start();
-    _logger.finest('Entered _timeBasedPartialResync');
+    final sw = Stopwatch()..start();
     try {
       _dependencyManager.resetSyncState();
       for (final handler in typeHandlers) {
@@ -465,7 +454,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         }
         if (!_dependencyManager.canSync(handler)) continue;
         _logger.info(
-            'started handler for \u001b[1m${handler.entityType}\u001b[0m');
+            'started handler for ${handler.entityType}');
 
         if (handler.skipDownSync) {
           _dependencyManager.markSuccessfullySynced(handler);
@@ -478,10 +467,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         final lastSyncedAt = localMeta?.lastSyncedAt;
 
         // If lastSyncedAt is null, do a full fetch for this model only
-        var isFull = false;
-        if (lastSyncedAt == null) {
-          isFull = true;
-        }
+        final isFull = lastSyncedAt == null;
 
         try {
           // Prefer streaming handlers to keep memory bounded.
@@ -492,7 +478,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
             var sawAny = false;
 
             await for (final page in pagedHandler.getAllRemoteStream(
-              syncedSince: isFull != true ? lastSyncedAt : null,
+              syncedSince: isFull ? null : lastSyncedAt,
             )) {
               if (page.isEmpty) continue;
               sawAny = true;
@@ -502,7 +488,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
                 final outcome =
                     await handler.persistLocal(page, commitTx);
 
-                if (isFull == true) {
+                if (isFull) {
                   for (final item in outcome.persisted) {
                     remoteClientIds.add(handler.getClientId(item));
                   }
@@ -524,7 +510,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
             }
 
             await appDatabase.transaction(() async {
-              if (isFull == true) {
+              if (isFull) {
                 await handler.deleteLocalNotIn(remoteClientIds);
               }
               if (maxLastSyncedAt != null) {
@@ -539,7 +525,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
             });
           } else {
             final changedItems = await handler.getAllRemote(
-                syncedSince: isFull != true ? lastSyncedAt : null);
+                syncedSince: isFull ? null : lastSyncedAt);
 
             if (changedItems.isEmpty) {
               _dependencyManager.markSuccessfullySynced(handler);
@@ -551,7 +537,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
               final outcome =
                   await handler.persistLocal(changedItems, commitTx);
 
-              if (isFull == true) {
+              if (isFull) {
                 final remoteClientIds =
                     outcome.persisted.map(handler.getClientId).toSet();
                 await handler.deleteLocalNotIn(remoteClientIds);
@@ -571,7 +557,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
 
           _dependencyManager.markSuccessfullySynced(handler);
           _logger.info(
-              'synced \u001b[1m${handler.entityType}\u001b[0m in ${sw.elapsedMilliseconds}ms');
+              'synced ${handler.entityType} in ${sw.elapsedMilliseconds}ms');
         } on UnavailableException {
           rethrow;
         } catch (e, stack) {
