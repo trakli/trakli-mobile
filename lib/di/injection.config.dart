@@ -30,10 +30,10 @@ import '../core/network/network_info.dart' as _i6;
 import '../core/services/auth_service.dart' as _i377;
 import '../core/services/oauth_service.dart' as _i624;
 import '../core/services/request_authorization_service.dart' as _i1066;
+import '../core/sync/sync_crash_reporter_impl.dart' as _i947;
 import '../core/sync/sync_database.dart' as _i646;
+import '../core/sync/sync_logger_impl.dart' as _i422;
 import '../core/sync/sync_service.dart' as _i957;
-import '../core/sync/trakli_sync_crash_reporter.dart' as _i885;
-import '../core/sync/trakli_sync_logger.dart' as _i456;
 import '../core/utils/services/shared_prefs.dart' as _i789;
 import '../data/database/app_database.dart' as _i704;
 import '../data/datasources/auth/auth_local_data_source.dart' as _i276;
@@ -252,12 +252,12 @@ _i174.GetIt $initGetIt(
       () => syncModule.provideSyncDependencyManager());
   gh.lazySingleton<_i627.ThemeCubit>(() => _i627.ThemeCubit());
   gh.factory<_i6.NetworkInfo>(() => _i6.NetworkInfoImpl()..init());
+  gh.lazySingleton<_i877.SyncLogger>(() => _i422.SyncLoggerImpl());
   gh.factory<_i91.OAuthCubit>(() => _i91.OAuthCubit(gh<_i624.OAuthService>()));
   gh.singleton<_i1063.AppVersionInfo>(() => _i1063.AppVersionInfoImpl());
   gh.factory<_i632.ExchangeRateRemoteDataSource>(
       () => _i632.ExchangeRateRemoteDataSourceImpl());
   gh.singleton<_i789.SharedPrefs>(() => _i789.SharedPrefsImpl());
-  gh.lazySingleton<_i877.SyncLogger>(() => _i456.TrakliSyncLogger());
   gh.factory<_i483.TokenManager>(() => _i483.TokenManagerImpl());
   gh.singleton<_i493.RemoteUpdateCheck>(() => _i493.RemoteUpdateCheckImpl());
   gh.factory<_i377.AuthService>(
@@ -338,6 +338,8 @@ _i174.GetIt $initGetIt(
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
+  gh.lazySingleton<_i877.SyncCrashReporter>(
+      () => _i947.SyncCrashReporterImpl(gh<_i538.CrashReportingService>()));
   gh.lazySingleton<_i280.PartySyncHandler>(() => _i280.PartySyncHandler(
         gh<_i704.AppDatabase>(),
         gh<_i656.PartyRemoteDataSource>(),
@@ -398,8 +400,6 @@ _i174.GetIt $initGetIt(
         remoteDataSource: gh<_i624.WalletRemoteDataSource>(),
         db: gh<_i704.AppDatabase>(),
       ));
-  gh.lazySingleton<_i877.SyncCrashReporter>(
-      () => _i885.TrakliSyncCrashReporter(gh<_i538.CrashReportingService>()));
   gh.factory<_i61.FetchBenefits>(
       () => _i61.FetchBenefits(gh<_i11.CloudBenefitRepository>()));
   gh.singleton<_i47.InAppUpdateService>(

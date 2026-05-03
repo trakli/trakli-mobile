@@ -6,8 +6,8 @@ import 'package:trakli/core/error/crash_reporting/crash_reporting_service.dart';
 /// Routes drift_sync_core's typed crash reports through the app's
 /// `CrashReportingService` (Firebase / Sentry / etc).
 @LazySingleton(as: SyncCrashReporter)
-class TrakliSyncCrashReporter implements SyncCrashReporter {
-  TrakliSyncCrashReporter(this._crashReporting);
+class SyncCrashReporterImpl implements SyncCrashReporter {
+  SyncCrashReporterImpl(this._crashReporting);
 
   final CrashReportingService _crashReporting;
 

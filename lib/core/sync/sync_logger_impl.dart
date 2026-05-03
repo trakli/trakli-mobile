@@ -7,8 +7,8 @@ import 'package:trakli/core/utils/services/logger.dart' as app_logger;
 /// Routes drift_sync_core's typed log calls to the app's existing
 /// `package:logger` instance.
 @LazySingleton(as: SyncLogger)
-class TrakliSyncLogger implements SyncLogger {
-  TrakliSyncLogger() : _logger = app_logger.logger;
+class SyncLoggerImpl implements SyncLogger {
+  SyncLoggerImpl() : _logger = app_logger.logger;
 
   final Logger _logger;
 
