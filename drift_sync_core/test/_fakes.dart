@@ -323,7 +323,7 @@ class TestSynchronizer extends DriftSynchronizer<FakeSynchronizerDb> {
     required super.dependencyManager,
     required super.requestAuthorizationService,
     super.skipClientIdReconciliation = false,
-    super.logger = const SilentSyncLogger(),
+    super.logger = const NoopSyncLogger(),
   });
 }
 

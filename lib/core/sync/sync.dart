@@ -1,2 +1,2 @@
-export 'drift_sync_crash_reporting_adapter.dart';
-export 'drift_sync_crash_reporting_service.dart';
+export 'trakli_sync_crash_reporter.dart';
+export 'trakli_sync_logger.dart';

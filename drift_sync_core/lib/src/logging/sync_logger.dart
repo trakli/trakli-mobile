@@ -1,106 +1,69 @@
-import 'package:drift_sync_core/src/logging/drift_sync_logger.dart';
+import 'package:drift_sync_core/src/logging/sync_log_level.dart';
 
-/// Pluggable logger for the orchestrator. Implement to route sync logs
-/// to your own logging stack.
-abstract class SyncLogger {
-  void info(String message);
-
-  void warning(
-    String message, [
+/// Pluggable logger for the orchestrator. Implementations route to
+/// `package:logging`, Sentry, custom file logs, or whatever the consumer
+/// uses. Single method — implementers decide how to render.
+abstract interface class SyncLogger {
+  void log(
+    SyncLogLevel level,
+    String message, {
     Object? error,
     StackTrace? stackTrace,
-  ]);
-
-  void error(
-    String message, [
-    Object? error,
-    StackTrace? stackTrace,
-    String? reason,
-    Map<String, dynamic>? information,
-  ]);
-
-  void debug(String message);
-
-  void fatal(
-    String message, [
-    Object? error,
-    StackTrace? stackTrace,
-    String? reason,
-    Map<String, dynamic>? information,
-  ]);
-
-  void finest(String message);
+    Map<String, Object?>? context,
+  });
 }
 
-/// Delegates to the static [DriftSyncLogger], preserving crash-reporting
-/// routing.
-final class DefaultSyncLogger implements SyncLogger {
-  const DefaultSyncLogger();
+/// Convenience methods for orchestrator call sites that want
+/// `logger.info('...')` instead of `logger.log(SyncLogLevel.info, '...')`.
+extension SyncLoggerExt on SyncLogger {
+  void finest(String message, {Map<String, Object?>? context}) =>
+      log(SyncLogLevel.finest, message, context: context);
 
-  @override
-  void info(String message) => DriftSyncLogger.info(message);
+  void debug(String message, {Map<String, Object?>? context}) =>
+      log(SyncLogLevel.debug, message, context: context);
 
-  @override
+  void info(String message, {Map<String, Object?>? context}) =>
+      log(SyncLogLevel.info, message, context: context);
+
   void warning(
-    String message, [
+    String message, {
     Object? error,
     StackTrace? stackTrace,
-  ]) =>
-      DriftSyncLogger.warning(message, error, stackTrace);
+    Map<String, Object?>? context,
+  }) =>
+      log(SyncLogLevel.warning, message,
+          error: error, stackTrace: stackTrace, context: context);
 
-  @override
-  void error(
-    String message, [
+  void severe(
+    String message, {
     Object? error,
     StackTrace? stackTrace,
-    String? reason,
-    Map<String, dynamic>? information,
-  ]) =>
-      DriftSyncLogger.error(message, error, stackTrace, reason, information);
+    Map<String, Object?>? context,
+  }) =>
+      log(SyncLogLevel.severe, message,
+          error: error, stackTrace: stackTrace, context: context);
 
-  @override
-  void debug(String message) => DriftSyncLogger.debug(message);
-
-  @override
   void fatal(
-    String message, [
+    String message, {
     Object? error,
     StackTrace? stackTrace,
-    String? reason,
-    Map<String, dynamic>? information,
-  ]) =>
-      DriftSyncLogger.fatal(message, error, stackTrace, reason, information);
-
-  @override
-  void finest(String message) => DriftSyncLogger.logger.finest(message);
+    Map<String, Object?>? context,
+  }) =>
+      log(SyncLogLevel.fatal, message,
+          error: error, stackTrace: stackTrace, context: context);
 }
 
-/// Discards all output. Useful for tests.
-final class SilentSyncLogger implements SyncLogger {
-  const SilentSyncLogger();
+/// Discards all output. Default for the orchestrator when no logger
+/// is supplied; useful for tests.
+class NoopSyncLogger implements SyncLogger {
+  const NoopSyncLogger();
 
   @override
-  void info(String _) {}
-  @override
-  void warning(String _, [Object? __, StackTrace? ___]) {}
-  @override
-  void error(
-    String _, [
-    Object? __,
-    StackTrace? ___,
-    String? ____,
-    Map<String, dynamic>? _____,
-  ]) {}
-  @override
-  void debug(String _) {}
-  @override
-  void fatal(
-    String _, [
-    Object? __,
-    StackTrace? ___,
-    String? ____,
-    Map<String, dynamic>? _____,
-  ]) {}
-  @override
-  void finest(String _) {}
+  void log(
+    SyncLogLevel level,
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?>? context,
+  }) {}
 }

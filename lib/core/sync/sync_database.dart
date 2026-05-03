@@ -16,6 +16,8 @@ class SynchAppDatabase extends DriftSynchronizer<AppDatabase>
     required super.dependencyManager,
     required NetworkInfo networkInfo,
     required super.requestAuthorizationService,
+    required super.logger,
+    super.crashReporter,
   });
 
   // Seconds

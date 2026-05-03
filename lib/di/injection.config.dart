@@ -30,10 +30,10 @@ import '../core/network/network_info.dart' as _i6;
 import '../core/services/auth_service.dart' as _i377;
 import '../core/services/oauth_service.dart' as _i624;
 import '../core/services/request_authorization_service.dart' as _i1066;
-import '../core/sync/drift_sync_crash_reporting_adapter.dart' as _i705;
-import '../core/sync/drift_sync_crash_reporting_service.dart' as _i545;
 import '../core/sync/sync_database.dart' as _i646;
 import '../core/sync/sync_service.dart' as _i957;
+import '../core/sync/trakli_sync_crash_reporter.dart' as _i885;
+import '../core/sync/trakli_sync_logger.dart' as _i456;
 import '../core/utils/services/shared_prefs.dart' as _i789;
 import '../data/database/app_database.dart' as _i704;
 import '../data/datasources/auth/auth_local_data_source.dart' as _i276;
@@ -257,6 +257,7 @@ _i174.GetIt $initGetIt(
   gh.factory<_i632.ExchangeRateRemoteDataSource>(
       () => _i632.ExchangeRateRemoteDataSourceImpl());
   gh.singleton<_i789.SharedPrefs>(() => _i789.SharedPrefsImpl());
+  gh.lazySingleton<_i877.SyncLogger>(() => _i456.TrakliSyncLogger());
   gh.factory<_i483.TokenManager>(() => _i483.TokenManagerImpl());
   gh.singleton<_i493.RemoteUpdateCheck>(() => _i493.RemoteUpdateCheckImpl());
   gh.factory<_i377.AuthService>(
@@ -345,13 +346,8 @@ _i174.GetIt $initGetIt(
       () => _i76.ImportRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.factory<_i624.WalletRemoteDataSource>(
       () => _i624.WalletRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
-  gh.factory<_i705.DriftSyncCrashReportingAdapter>(() =>
-      _i705.DriftSyncCrashReportingAdapter(gh<_i538.CrashReportingService>()));
   gh.factory<_i481.UserContextService>(
       () => _i481.UserContextService(gh<_i538.CrashReportingService>()));
-  gh.factory<_i545.DriftSyncCrashReportingService>(() =>
-      _i545.DriftSyncCrashReportingService(
-          gh<_i705.DriftSyncCrashReportingAdapter>()));
   gh.factory<_i662.TransactionLocalDataSource>(
       () => _i662.TransactionLocalDataSourceImpl(
             gh<_i704.AppDatabase>(),
@@ -402,6 +398,8 @@ _i174.GetIt $initGetIt(
         remoteDataSource: gh<_i624.WalletRemoteDataSource>(),
         db: gh<_i704.AppDatabase>(),
       ));
+  gh.lazySingleton<_i877.SyncCrashReporter>(
+      () => _i885.TrakliSyncCrashReporter(gh<_i538.CrashReportingService>()));
   gh.factory<_i61.FetchBenefits>(
       () => _i61.FetchBenefits(gh<_i11.CloudBenefitRepository>()));
   gh.singleton<_i47.InAppUpdateService>(
@@ -724,14 +722,6 @@ _i174.GetIt $initGetIt(
             gh<_i118.TransactionRepository>(),
             gh<_i1057.ExchangeRateRepository>(),
           ));
-  gh.lazySingleton<_i646.SynchAppDatabase>(() => _i646.SynchAppDatabase(
-        appDatabase: gh<_i704.AppDatabase>(),
-        typeHandlers:
-            gh<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(),
-        dependencyManager: gh<_i877.SyncDependencyManagerBase>(),
-        networkInfo: gh<_i6.NetworkInfo>(),
-        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
-      ));
   gh.factory<_i150.GetFileContentUseCase>(
       () => _i150.GetFileContentUseCase(gh<_i442.MediaRepository>()));
   gh.factory<_i706.DeleteMediaUseCase>(
@@ -748,6 +738,16 @@ _i174.GetIt $initGetIt(
       ));
   gh.factory<_i311.ExchangeRateCubit>(
       () => _i311.ExchangeRateCubit(gh<_i397.ListenExchangeRate>()));
+  gh.lazySingleton<_i646.SynchAppDatabase>(() => _i646.SynchAppDatabase(
+        appDatabase: gh<_i704.AppDatabase>(),
+        typeHandlers:
+            gh<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(),
+        dependencyManager: gh<_i877.SyncDependencyManagerBase>(),
+        networkInfo: gh<_i6.NetworkInfo>(),
+        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
+        logger: gh<_i877.SyncLogger>(),
+        crashReporter: gh<_i877.SyncCrashReporter>(),
+      ));
   gh.factory<_i117.TransactionCubit>(() => _i117.TransactionCubit(
         getAllTransactionsUseCase: gh<_i1022.GetAllTransactionsUseCase>(),
         createTransactionUseCase: gh<_i1022.CreateTransactionUseCase>(),
