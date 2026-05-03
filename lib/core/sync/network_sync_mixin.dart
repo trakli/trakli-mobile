@@ -25,10 +25,11 @@ mixin NetworkSyncMixin {
         logger.info('Internet connectivity restored');
         _syncTiming.resetTiming();
         await performSync(syncFunction);
-      } else if (!_isConnected) {
+      } else if (wasConnected && !_isConnected) {
+        // Cancel pending retries; the reconnect branch above will fire
+        // again and resume sync when the network returns.
         logger.info('Internet connectivity lost');
-        _syncTiming.increaseDelay();
-        _syncTiming.scheduleSync(syncFunction);
+        _syncTiming.cancelSync();
       }
     });
   }

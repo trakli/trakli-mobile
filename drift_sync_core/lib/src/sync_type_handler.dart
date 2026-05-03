@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:drift_sync_core/src/persist_outcome.dart';
+import 'package:drift_sync_core/src/sync_commit_tx.dart';
+
 abstract class SyncTypeHandler<TEntity, TKey, TServerKey> {
   String get entityType;
 
@@ -14,7 +17,7 @@ abstract class SyncTypeHandler<TEntity, TKey, TServerKey> {
   int? getServerId(TEntity entity);
 
   // Get the server ID (int) from an entity
-  DateTime? getlastSyncedAt(TEntity entity);
+  DateTime? getLastSyncedAt(TEntity entity);
 
   // Get the revision from an entity
   String getRev(TEntity entity);
@@ -29,6 +32,55 @@ abstract class SyncTypeHandler<TEntity, TKey, TServerKey> {
   Future<void> upsertLocal(TEntity entity);
   Future<void> upsertAllLocal(List<TEntity> list);
   // Future<void> updateLocalSyncMetadata(TEntity entity);
+
+  /// Persist a single entity. Equivalent to [persistLocal] with a one-item
+  /// list, but constructs the list inside the type-parameterized scope so
+  /// orchestrator callers (which see the handler dynamic-erased) don't
+  /// hit `List<dynamic>` vs `List<TEntity>` runtime checks.
+  Future<PersistOutcome<TEntity>> persistOne(
+    TEntity entity,
+    SyncCommitTx tx,
+  ) {
+    return persistLocal(<TEntity>[entity], tx);
+  }
+
+  /// Persist a batch to local storage and return a typed outcome the
+  /// orchestrator uses to advance its cursor.
+  ///
+  /// Default impl calls [upsertAllLocal] inside [tx] and reports any
+  /// entity with an empty `clientId` as [Skipped] ([MissingClientId]).
+  /// Override to track real per-item failures, dependency-not-met skips,
+  /// or stale-revision skips.
+  Future<PersistOutcome<TEntity>> persistLocal(
+    List<TEntity> entities,
+    SyncCommitTx tx,
+  ) async {
+    await tx.runWrite(() async {
+      await upsertAllLocal(entities);
+    });
+
+    final persisted = <TEntity>[];
+    final skipped = <Skipped<TEntity>>[];
+    DateTime? cursor;
+
+    for (final entity in entities) {
+      if (getClientId(entity).isEmpty) {
+        skipped.add(Skipped(item: entity, reason: const MissingClientId()));
+        continue;
+      }
+      persisted.add(entity);
+      final ts = getLastSyncedAt(entity);
+      if (ts != null && (cursor == null || ts.isAfter(cursor))) {
+        cursor = ts;
+      }
+    }
+
+    return PersistOutcome<TEntity>(
+      persisted: persisted,
+      skipped: skipped,
+      cursorAdvanceTo: cursor,
+    );
+  }
 
   Future<void> deleteLocal(TEntity entity);
   Future<void> deleteAllLocal();
@@ -61,7 +113,3 @@ abstract class SyncTypeHandler<TEntity, TKey, TServerKey> {
 abstract class PagedSyncTypeHandler<TEntity> {
   Stream<List<TEntity>> getAllRemoteStream({DateTime? syncedSince, bool? noClientId});
 }
-
-// Helper typedefs for clarity
-typedef StringSyncTypeHandler<TEntity> = SyncTypeHandler<TEntity, String, int>;
-typedef IntSyncTypeHandler<TEntity> = SyncTypeHandler<TEntity, int, int>;

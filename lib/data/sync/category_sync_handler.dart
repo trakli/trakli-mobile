@@ -185,5 +185,5 @@ class CategorySyncHandler extends SyncTypeHandler<Category, String, int>
   }
 
   @override
-  DateTime? getlastSyncedAt(Category entity) => entity.lastSyncedAt;
+  DateTime? getLastSyncedAt(Category entity) => entity.lastSyncedAt;
 }
