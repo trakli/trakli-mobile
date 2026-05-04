@@ -1,7 +1,14 @@
 name: drift_sync_core
 description: Offline-first synchronization engine for Drift databases. Three-phase reconciliation, typed outcomes, pluggable transport.
-version: 0.0.1
-homepage: "https://github.com/trakli/mobile"
+version: 0.1.0
+homepage: https://github.com/whilesmartflutter/drift_sync_core
+repository: https://github.com/whilesmartflutter/drift_sync_core
+issue_tracker: https://github.com/whilesmartflutter/drift_sync_core/issues
+topics:
+  - drift
+  - sync
+  - offline-first
+  - database
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -9,11 +16,12 @@ environment:
 dependencies:
   dio: ^5.8.0+1
   drift: ^2.26.0
-  logging: ^1.3.0
   meta: ^1.16.0
+  # `lib/testing.dart` (the contract-test entry point) imports
+  # `package:test`. pub.dev requires anything imported in lib/ to live
+  # in `dependencies`, so test is declared here even though it's only
+  # pulled in by consumers that opt into the testing entry point.
+  test: ^1.24.0
 
 dev_dependencies:
-  test: ^1.24.0
   lints: ^4.0.0
-  # `lib/testing.dart` imports `package:test`. Consumers using the
-  # contract test suite must add `test` to their own dev_dependencies.
