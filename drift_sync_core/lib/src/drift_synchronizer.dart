@@ -57,10 +57,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   final SyncLogger _logger;
   final SyncCrashReporter? _crashReporter;
 
-  /// Logs every failure for diagnosis. Routes to the crash reporter only when
-  /// the error is a real defect — `TransientRemoteException` (server 5xx,
-  /// timeout, connection drop, etc.) is suppressed since it's expected
-  /// operational noise, not a bug.
+  /// Logs and routes the error to the crash reporter unconditionally.
   void _reportError(
     Object error,
     StackTrace stack, {
@@ -68,7 +65,6 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
     required Map<String, Object?> context,
   }) {
     _logger.severe(reason, error: error, stackTrace: stack, context: context);
-    if (error is TransientRemoteException) return;
     _crashReporter?.recordError(error, stack, reason: reason, info: context);
   }
 
@@ -85,11 +81,8 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
   Future<void> Function(SyncState previous, SyncState current)?
       get onStateChanged => null;
 
-  /// Called when the synchronizer is being disposed.
-  /// Override this method to clean up any resources.
-  Future<void> dispose() async {
-    // Default implementation does nothing
-  }
+  /// Override to clean up any resources.
+  Future<void> dispose() async {}
 
   Future<void> _updateState(SyncState state) async {
     final previous = _state;
@@ -110,11 +103,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
     onStateChanged?.call(previous, state);
   }
 
-  /// Synchronizes pending local changes to the server and tries
-  /// to do sync the pending changes from the server to the app.
-  /// When it is not possible to do a consistent synchronization
-  /// of the pending  changes from the server, reverts to a
-  /// full synchronization from the server.
+  /// Uploads pending local changes, then downloads server changes.
   Future<void> sync() async {
     _preventConcurrentSync();
     _updateState(state.start());
@@ -152,9 +141,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
    *      Upload Synchronization    *
    **********************************/
 
-  /// synchronizes all local changes to the server
-  /// Returns a list of local changes that were discarded
-  /// because of optimistic conflict
+  /// Uploads all pending local changes to the server.
   Future<bool> uploadLocalChanges() async {
     // Check authorization before attempting to upload
     if (!await _requestAuthorizationService.canSync()) {
@@ -285,13 +272,8 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
    *      Download Synchronization    *
    **********************************/
 
-  /// Downloads server changes using time-based partial resync for each model.
-  ///
-  /// Note: We do NOT need a global check for missing sync metadata here, because
-  /// the per-model logic in _timeBasedPartialResync will handle the case where
-  /// a model has never been synced (lastSyncedAt == null) and will perform a full
-  /// fetch for that model only. This is more robust and allows incremental adoption
-  /// of new models without requiring a full resync for all models.
+  /// Downloads server changes per model. Per-model logic handles never-synced
+  /// models (lastSyncedAt == null) with a full fetch automatically.
   Future<void> downloadServerChanges() async {
     try {
       await _timeBasedPartialResync();
@@ -358,15 +340,12 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
       _logger.finest('user cancelled sync');
       rethrow;
     } catch (ex) {
-      if (ex is! TransientRemoteException) {
-        _logger.finest('exception on _partialSyncServerChanges: $ex');
-      }
+      _logger.finest('exception on _partialSyncServerChanges: $ex');
       rethrow;
     }
   }
 
-  /// PARTIAL SYNC: Assign client IDs to remote items without client ID (generic for any handler).
-  /// Returns true if every eligible item succeeded; false if any item failed.
+  /// Returns true if every eligible item succeeded; false if any failed.
   Future<bool> assignClientIdsToRemoteItemsWithoutClientId(
     SyncTypeHandler<dynamic, dynamic, dynamic> handler,
   ) async {
@@ -453,8 +432,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
     return !hadFailure;
   }
 
-  /// For each handler/model, checks if lastSyncedAt is null (never synced) and does a full fetch for that model only.
-  /// Otherwise, fetches only changes since last sync. This is the most robust approach for incremental, model-aware sync.
+  /// Full fetch for never-synced models, incremental fetch otherwise.
   Future<void> _timeBasedPartialResync() async {
     final sw = Stopwatch()..start();
     try {
@@ -465,8 +443,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
           throw const CancelException();
         }
         if (!_dependencyManager.canSync(handler)) continue;
-        _logger.info(
-            'started handler for ${handler.entityType}');
+        _logger.info('started handler for ${handler.entityType}');
 
         if (handler.skipDownSync) {
           _dependencyManager.markSuccessfullySynced(handler);
@@ -497,8 +474,7 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
 
               await appDatabase.transaction(() async {
                 const commitTx = _DirectCommitTx();
-                final outcome =
-                    await handler.persistLocal(page, commitTx);
+                final outcome = await handler.persistLocal(page, commitTx);
 
                 if (isFull) {
                   for (final item in outcome.persisted) {
@@ -573,16 +549,16 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
         } on UnavailableException {
           rethrow;
         } catch (e, stack) {
-            final context = <String, Object?>{
-              'handler_type': handler.entityType,
-              'operation': 'time_based_partial_resync',
-              'last_synced_at': lastSyncedAt?.toIso8601String(),
-              'is_full_sync': isFull.toString(),
-            };
-            _logger.severe('Error syncing handler',
-                error: e, stackTrace: stack, context: context);
-            _crashReporter?.recordError(e, stack,
-                reason: 'sync_handler', info: context);
+          final context = <String, Object?>{
+            'handler_type': handler.entityType,
+            'operation': 'time_based_partial_resync',
+            'last_synced_at': lastSyncedAt?.toIso8601String(),
+            'is_full_sync': isFull.toString(),
+          };
+          _logger.severe('Error syncing handler',
+              error: e, stackTrace: stack, context: context);
+          _crashReporter?.recordError(e, stack,
+              reason: 'sync_handler', info: context);
         }
       }
       sw.stop();
@@ -593,22 +569,21 @@ abstract class DriftSynchronizer<TAppDatabase extends SynchronizerDb> {
       _logger.finest('user cancelled sync');
       rethrow;
     } catch (e, stackTrace) {
-        final context = <String, Object?>{
-          'total_handlers': typeHandlers.length.toString(),
-        };
-        _logger.fatal('exception on _timeBasedPartialResync',
-            error: e, stackTrace: stackTrace, context: context);
-        _crashReporter?.recordError(e, stackTrace,
-            reason: 'time_based_partial_resync_failure',
-            info: context,
-            fatal: true);
+      final context = <String, Object?>{
+        'total_handlers': typeHandlers.length.toString(),
+      };
+      _logger.fatal('exception on _timeBasedPartialResync',
+          error: e, stackTrace: stackTrace, context: context);
+      _crashReporter?.recordError(e, stackTrace,
+          reason: 'time_based_partial_resync_failure',
+          info: context,
+          fatal: true);
       rethrow;
     }
   }
 }
 
-/// Pass-through [SyncCommitTx]. The orchestrator already wraps callers
-/// in `appDatabase.transaction(...)`.
+/// Pass-through [SyncCommitTx]; the orchestrator wraps callers in `transaction`.
 final class _DirectCommitTx implements SyncCommitTx {
   const _DirectCommitTx();
 

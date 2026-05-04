@@ -17,7 +17,7 @@ mixin RestSyncTypeHandler<TEntity, TKey, TServerKey>
     } on DioException catch (ex) {
       if (isUnavailable(ex)) throw UnavailableException(innerException: ex);
       if (isNotFound(ex)) throw NotFoundException(innerException: ex);
-      throw TransientRemoteException(innerException: ex);
+      rethrow;
     }
   }
 
@@ -32,7 +32,7 @@ mixin RestSyncTypeHandler<TEntity, TKey, TServerKey>
     } on DioException catch (ex) {
       if (isUnavailable(ex)) throw UnavailableException(innerException: ex);
       if (isNotFound(ex)) throw NotFoundException(innerException: ex);
-      throw TransientRemoteException(innerException: ex);
+      rethrow;
     }
   }
 
@@ -46,7 +46,7 @@ mixin RestSyncTypeHandler<TEntity, TKey, TServerKey>
       if (ex.response?.statusCode == 409) {
         throw ConflictException(innerException: ex);
       }
-      throw TransientRemoteException(innerException: ex);
+      rethrow;
     }
   }
 
@@ -60,7 +60,7 @@ mixin RestSyncTypeHandler<TEntity, TKey, TServerKey>
       if (ex.response?.statusCode == 409) {
         throw ConflictException(innerException: ex);
       }
-      throw TransientRemoteException(innerException: ex);
+      rethrow;
     }
   }
 
@@ -72,8 +72,7 @@ mixin RestSyncTypeHandler<TEntity, TKey, TServerKey>
       ex.type == DioExceptionType.sendTimeout;
 
   @protected
-  bool isServerError(DioException ex) =>
-      (ex.response?.statusCode ?? 0) >= 500;
+  bool isServerError(DioException ex) => (ex.response?.statusCode ?? 0) >= 500;
 
   @protected
   bool isNotFound(DioException ex) => ex.response?.statusCode == 404;
