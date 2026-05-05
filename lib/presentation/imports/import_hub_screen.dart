@@ -51,9 +51,10 @@ class _ImportHubScreenState extends State<ImportHubScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(LocaleKeys.imports.tr())),
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: BlocBuilder<ImportCubit, ImportState>(
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          child: BlocBuilder<ImportCubit, ImportState>(
           builder: (context, state) {
             final allActivity = mergeActivity(state.imports, state.sessions);
             final filtered = _applyFilter(allActivity);
@@ -140,6 +141,7 @@ class _ImportHubScreenState extends State<ImportHubScreen> {
               ],
             );
           },
+        ),
         ),
       ),
     );

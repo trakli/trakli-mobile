@@ -185,11 +185,20 @@ class ImportCubit extends Cubit<ImportState> {
 
   Future<FixFailedImportsResult?> fixFailedImports(
     int importId,
-    List<FailedImportEntity> rows,
-  ) async {
+    List<FailedImportEntity> rows, {
+    bool autoCreateWallets = false,
+    bool autoCreateParties = false,
+    bool autoCreateCategories = false,
+  }) async {
     emit(state.copyWith(isConfirming: true, failure: const Failure.none()));
     final result = await fixFailedImportsUseCase(
-      FixFailedImportsParams(importId: importId, rows: rows),
+      FixFailedImportsParams(
+        importId: importId,
+        rows: rows,
+        autoCreateWallets: autoCreateWallets,
+        autoCreateParties: autoCreateParties,
+        autoCreateCategories: autoCreateCategories,
+      ),
     );
     return result.fold(
       (f) {

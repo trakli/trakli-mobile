@@ -45,8 +45,11 @@ abstract class ImportRepository {
 
   Future<Either<Failure, FixFailedImportsResult>> fixFailedImports(
     int importId,
-    List<FailedImportEntity> rows,
-  );
+    List<FailedImportEntity> rows, {
+    bool autoCreateWallets = false,
+    bool autoCreateParties = false,
+    bool autoCreateCategories = false,
+  });
 
   Future<Either<Failure, ImportSessionEntity>> analyzeDocument(
     File file,

@@ -627,7 +627,7 @@
   "importSourceGallery": "Gallery",
   "importSourceGalleryDesc": "Photo library",
   "importSourceFile": "File",
-  "importSourceFileDesc": "PDF, JPG, or PNG",
+  "importSourceFileDesc": "PDF, image, or spreadsheet",
   "importSpreadsheetFileTypes": "CSV, XLSX, or XLS",
   "importAiSuggested": "AI suggested: {}",
   "importConfirmSheetTitle": "Confirm {} of {} suggestions?",

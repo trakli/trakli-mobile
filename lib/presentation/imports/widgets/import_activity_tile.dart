@@ -1,11 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/domain/entities/import/file_import_entity.dart';
 import 'package:trakli/domain/entities/import/import_session_entity.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/imports/failed_imports_screen.dart';
 import 'package:trakli/presentation/imports/import_detail_screen.dart';
 import 'package:trakli/presentation/imports/suggestion_review_screen.dart';
+import 'package:trakli/presentation/imports/widgets/import_file_picker.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 
 /// Sealed type so hub variants can build a unified, sortable list of
@@ -77,10 +79,10 @@ class _SpreadsheetTile extends StatelessWidget {
         title: Text(imp.name, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Text(subtitle),
         trailing: !imp.isTerminal
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+            ? SizedBox(
+                width: 20.w,
+                height: 20.h,
+                child: const CircularProgressIndicator(strokeWidth: 2),
               )
             : failedCount > 0
                 ? TextButton(
@@ -112,17 +114,16 @@ class _ScanTile extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.auto_awesome_outlined),
-        title: Text(session.fileName,
+        title: Text(ImportFilePicker.displayName(session.fileName),
             maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Text(subtitle),
         trailing: !session.isTerminal
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+            ? SizedBox(
+                width: 20.w,
+                height: 20.h,
+                child: const CircularProgressIndicator(strokeWidth: 2),
               )
-            : _relativeTime(
-                context, session.updatedAt ?? session.createdAt),
+            : _relativeTime(context, session.updatedAt ?? session.createdAt),
         onTap: () => AppNavigator.push(
           context,
           SuggestionReviewScreen(sessionId: session.id),
