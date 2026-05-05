@@ -11,6 +11,8 @@ import 'package:trakli/presentation/imports/suggestion_review_screen.dart';
 import 'package:trakli/presentation/imports/widgets/import_file_picker.dart';
 import 'package:trakli/presentation/imports/widgets/import_source_button.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 
 class DocumentScanScreen extends StatefulWidget {
   const DocumentScanScreen({super.key});
@@ -44,16 +46,22 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
     final session = await cubit.analyzeDocument(_picked!, _type);
     if (!mounted) return;
     if (session != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocaleKeys.importAnalysisQueued.tr())),
+      showSnackBar(
+        message: LocaleKeys.importAnalysisQueued.tr(),
+        borderRadius: 8.r,
+        backgroundColor: Colors.green,
+        isFloating: false,
       );
       AppNavigator.pushReplacement(
         context,
         SuggestionReviewScreen(sessionId: session.id),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(cubit.state.failure.customMessage)),
+      showSnackBar(
+        message: cubit.state.failure,
+        borderRadius: 8.r,
+        backgroundColor: appDangerColor,
+        isFloating: false,
       );
     }
   }
@@ -62,8 +70,9 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(LocaleKeys.importScanDocument.tr())),
-      body: BlocBuilder<ImportCubit, ImportState>(
-        builder: (context, state) {
+      body: SafeArea(
+        child: BlocBuilder<ImportCubit, ImportState>(
+          builder: (context, state) {
           return SingleChildScrollView(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -72,8 +81,7 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
                 Text(
                   LocaleKeys.importScanDocumentDesc.tr(),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                 ),
                 SizedBox(height: 20.h),
@@ -112,8 +120,8 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
                   isPrimary: true,
                   onTap: state.isUploading
                       ? null
-                      : () async => _setFile(
-                          await ImportFilePicker.captureFromCamera()),
+                      : () async =>
+                          _setFile(await ImportFilePicker.captureFromCamera()),
                 ),
                 SizedBox(height: 8.h),
                 ImportSourceButton(
@@ -122,8 +130,8 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
                   subtitle: LocaleKeys.importSourceGalleryDesc.tr(),
                   onTap: state.isUploading
                       ? null
-                      : () async => _setFile(
-                          await ImportFilePicker.pickFromGallery()),
+                      : () async =>
+                          _setFile(await ImportFilePicker.pickFromGallery()),
                 ),
                 SizedBox(height: 8.h),
                 ImportSourceButton(
@@ -132,14 +140,13 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
                   subtitle: LocaleKeys.importSourceFileDesc.tr(),
                   onTap: state.isUploading
                       ? null
-                      : () async => _setFile(
-                          await ImportFilePicker.pickDocument()),
+                      : () async =>
+                          _setFile(await ImportFilePicker.pickDocument()),
                 ),
                 if (_picked != null) ...[
                   SizedBox(height: 12.h),
                   ImportFilePreview(
-                    fileName:
-                        _picked!.path.split(Platform.pathSeparator).last,
+                    fileName: ImportFilePicker.displayName(_picked!.path),
                     onClear: state.isUploading
                         ? null
                         : () => setState(() => _picked = null),
@@ -154,10 +161,11 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
                         ? null
                         : _analyze,
                     child: state.isUploading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                        ? SizedBox(
+                            width: 20.w,
+                            height: 20.h,
+                            child:
+                                const CircularProgressIndicator(strokeWidth: 2),
                           )
                         : Text(LocaleKeys.importAnalyze.tr()),
                   ),
@@ -166,8 +174,8 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
             ),
           );
         },
+        ),
       ),
     );
   }
 }
-

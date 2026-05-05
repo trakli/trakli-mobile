@@ -10,6 +10,8 @@ import 'package:trakli/presentation/imports/import_detail_screen.dart';
 import 'package:trakli/presentation/imports/widgets/import_file_picker.dart';
 import 'package:trakli/presentation/imports/widgets/import_source_button.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 
 class SpreadsheetImportScreen extends StatefulWidget {
   const SpreadsheetImportScreen({super.key});
@@ -33,17 +35,22 @@ class _SpreadsheetImportScreenState extends State<SpreadsheetImportScreen> {
     final imp = await cubit.uploadImport(_picked!);
     if (!mounted) return;
     if (imp != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocaleKeys.importUploadQueued.tr())),
+      showSnackBar(
+        message: LocaleKeys.importUploadQueued.tr(),
+        borderRadius: 8.r,
+        backgroundColor: Colors.green,
+        isFloating: false,
       );
       AppNavigator.pushReplacement(
         context,
         ImportDetailScreen(importId: imp.id),
       );
     } else {
-      final failure = cubit.state.failure;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(failure.customMessage)),
+      showSnackBar(
+        message: cubit.state.failure,
+        borderRadius: 8.r,
+        backgroundColor: appDangerColor,
+        isFloating: false,
       );
     }
   }
@@ -52,8 +59,9 @@ class _SpreadsheetImportScreenState extends State<SpreadsheetImportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(LocaleKeys.importSpreadsheet.tr())),
-      body: BlocBuilder<ImportCubit, ImportState>(
-        builder: (context, state) {
+      body: SafeArea(
+        child: BlocBuilder<ImportCubit, ImportState>(
+          builder: (context, state) {
           return SingleChildScrollView(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -85,8 +93,7 @@ class _SpreadsheetImportScreenState extends State<SpreadsheetImportScreen> {
                 if (_picked != null) ...[
                   SizedBox(height: 12.h),
                   ImportFilePreview(
-                    fileName:
-                        _picked!.path.split(Platform.pathSeparator).last,
+                    fileName: ImportFilePicker.displayName(_picked!.path),
                     onClear: state.isUploading
                         ? null
                         : () => setState(() => _picked = null),
@@ -113,6 +120,7 @@ class _SpreadsheetImportScreenState extends State<SpreadsheetImportScreen> {
             ),
           );
         },
+        ),
       ),
     );
   }
