@@ -19,7 +19,10 @@ TransactionSuggestionDto _$TransactionSuggestionDtoFromJson(
       description: json['description'] as String?,
       date: json['date'] as String?,
       confidence: (json['confidence'] as num?)?.toDouble(),
-      duplicate: json['duplicate'] as bool?,
+      duplicate: json['duplicate'] == null
+          ? null
+          : DuplicateMatchDto.fromJson(
+              json['duplicate'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$TransactionSuggestionDtoToJson(
@@ -35,5 +38,5 @@ Map<String, dynamic> _$TransactionSuggestionDtoToJson(
       'date': instance.date,
       'confidence': instance.confidence,
       'document_type': instance.documentType,
-      'duplicate': instance.duplicate,
+      'duplicate': instance.duplicate?.toJson(),
     };

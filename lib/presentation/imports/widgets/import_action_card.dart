@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Reusable action card used by every hub variant. Supports a compact,
-/// icon-above-label layout (for side-by-side pairs) and a full-width
-/// detail layout (for stacked hubs / launcher).
 class ImportActionCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -61,14 +59,13 @@ class ImportActionCard extends StatelessWidget {
           padding: EdgeInsets.all(16.w),
           child: Row(
             children: [
-              Icon(icon, size: 40.sp),
+              Icon(icon, size: 40.r),
               SizedBox(width: 16.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title,
-                        style: Theme.of(context).textTheme.titleMedium),
+                    Text(title, style: Theme.of(context).textTheme.titleMedium),
                     if (subtitle != null) ...[
                       SizedBox(height: 4.h),
                       Text(subtitle!,
@@ -77,7 +74,7 @@ class ImportActionCard extends StatelessWidget {
                   ],
                 ),
               ),
-              trailing ?? const Icon(Icons.arrow_forward_ios, size: 16),
+              trailing ?? Icon(Icons.arrow_forward_ios, size: 16.r),
             ],
           ),
         ),

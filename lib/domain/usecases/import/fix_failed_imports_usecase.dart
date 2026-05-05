@@ -16,19 +16,37 @@ class FixFailedImportsUseCase
   @override
   Future<Either<Failure, FixFailedImportsResult>> call(
       FixFailedImportsParams params) {
-    return repository.fixFailedImports(params.importId, params.rows);
+    return repository.fixFailedImports(
+      params.importId,
+      params.rows,
+      autoCreateWallets: params.autoCreateWallets,
+      autoCreateParties: params.autoCreateParties,
+      autoCreateCategories: params.autoCreateCategories,
+    );
   }
 }
 
 class FixFailedImportsParams extends Equatable {
   final int importId;
   final List<FailedImportEntity> rows;
+  final bool autoCreateWallets;
+  final bool autoCreateParties;
+  final bool autoCreateCategories;
 
   const FixFailedImportsParams({
     required this.importId,
     required this.rows,
+    this.autoCreateWallets = false,
+    this.autoCreateParties = false,
+    this.autoCreateCategories = false,
   });
 
   @override
-  List<Object?> get props => [importId, rows];
+  List<Object?> get props => [
+        importId,
+        rows,
+        autoCreateWallets,
+        autoCreateParties,
+        autoCreateCategories,
+      ];
 }

@@ -48,6 +48,13 @@ class UnknownException extends ApiException {
   UnknownException(super.message);
 }
 
+/// Local file-system problem (e.g. file picker cache was evicted between
+/// pick and upload, or the path no longer exists). Distinct from a server
+/// or network failure — the caller's own machine is the source of the error.
+class LocalFileException extends ApiException {
+  LocalFileException(super.message);
+}
+
 class ValidationException extends ApiException {
   final List<FieldError> errors;
 

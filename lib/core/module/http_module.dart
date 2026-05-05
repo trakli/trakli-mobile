@@ -20,7 +20,10 @@ abstract class InjectHttpClientModule {
   @lazySingleton
   Dio dio(@Named('HttpUrl') String url) {
     final dio = Dio(
-      BaseOptions(baseUrl: url),
+      BaseOptions(
+        baseUrl: url,
+        headers: {'Accept': 'application/json'},
+      ),
     );
 
     dio.interceptors.addAll([

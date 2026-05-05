@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:trakli/domain/entities/import/duplicate_match_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
 class TransactionSuggestionEntity extends Equatable {
@@ -12,7 +13,7 @@ class TransactionSuggestionEntity extends Equatable {
   final String? description;
   final String? date;
   final double? confidence;
-  final bool? duplicate;
+  final DuplicateMatchEntity? duplicate;
 
   /// User-picked existing-record IDs. Always null when materialized from the
   /// server — populated by the suggestion-review UI when the user picks an
@@ -109,7 +110,7 @@ class TransactionSuggestionEntity extends Equatable {
     String? description,
     String? date,
     double? confidence,
-    bool? duplicate,
+    DuplicateMatchEntity? duplicate,
     int? walletId,
     int? partyId,
     int? categoryId,

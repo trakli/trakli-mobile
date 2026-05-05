@@ -3,9 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Full-width source button with an icon bubble + title + subtitle.
 /// Used on the spreadsheet upload and document scan screens to pick a file.
-/// [isPrimary] gives it a filled primary background (used for the
-/// recommended action — e.g. Camera on scan, the only action on
-/// spreadsheet); secondary buttons get an outlined card style.
 class ImportSourceButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -34,8 +31,7 @@ class ImportSourceButton extends StatelessWidget {
     final bubbleBg = isPrimary
         ? Colors.white.withValues(alpha: 0.2)
         : colors.secondaryContainer;
-    final bubbleFg =
-        isPrimary ? colors.onPrimary : colors.onSecondaryContainer;
+    final bubbleFg = isPrimary ? colors.onPrimary : colors.onSecondaryContainer;
 
     return Opacity(
       opacity: disabled ? 0.5 : 1,
@@ -48,9 +44,8 @@ class ImportSourceButton extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: isPrimary
-                  ? null
-                  : Border.all(color: colors.outlineVariant),
+              border:
+                  isPrimary ? null : Border.all(color: colors.outlineVariant),
             ),
             padding: EdgeInsets.all(12.w),
             child: Row(
@@ -72,21 +67,19 @@ class ImportSourceButton extends StatelessWidget {
                     children: [
                       Text(
                         label,
-                        style:
-                            Theme.of(context).textTheme.titleSmall?.copyWith(
-                                  color: fg,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              color: fg,
+                              fontWeight: FontWeight.w600,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 2.h),
                       Text(
                         subtitle,
-                        style:
-                            Theme.of(context).textTheme.labelSmall?.copyWith(
-                                  color: subFg,
-                                ),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: subFg,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

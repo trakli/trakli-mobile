@@ -20,11 +20,14 @@ class ImportFilePicker {
     return _stableCopy(File(path));
   }
 
-  /// Picks a document file from the filesystem (PDF / image).
+  /// Picks a document file from the filesystem (PDF / image / spreadsheet).
   static Future<File?> pickDocument() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
+      allowedExtensions: [
+        'pdf', 'jpg', 'jpeg', 'png',
+        'csv', 'xlsx', 'xls',
+      ],
       allowMultiple: false,
     );
     final path = result?.files.single.path;
@@ -62,5 +65,12 @@ class ImportFilePicker {
       '${DateTime.now().millisecondsSinceEpoch}_${p.basename(source.path)}',
     );
     return source.copy(dest);
+  }
+
+  /// Strips the `<millis>_` prefix added by [_stableCopy] so the original
+  /// filename can be shown in the UI.
+  static String displayName(String fileName) {
+    final base = p.basename(fileName);
+    return base.replaceFirst(RegExp(r'^\d+_'), '');
   }
 }

@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:trakli/core/error/crash_reporting/crash_reporting_service.dart';
 import 'package:trakli/core/error/exceptions.dart';
 import 'package:trakli/core/error/utils/field_error.dart';
 import 'package:trakli/core/utils/services/logger.dart';
-import 'package:trakli/core/error/crash_reporting/crash_reporting_service.dart';
 
 class ErrorHandler {
   static CrashReportingService? _crashReportingService;
@@ -25,33 +27,6 @@ class ErrorHandler {
   }
 
   static ApiException handleDioException(DioException err) {
-    // Record the error in crash reporting
-    final requestData = err.requestOptions.data;
-    final requestDataMap = requestData is Map<String, dynamic>
-        ? requestData
-        : requestData is Map
-            ? Map<String, dynamic>.from(requestData)
-            : requestData != null
-                ? {'data': requestData}
-                : null;
-
-    final responseData = err.response?.data;
-    final responseDataMap = responseData is Map<String, dynamic>
-        ? responseData
-        : responseData is Map
-            ? Map<String, dynamic>.from(responseData)
-            : responseData != null
-                ? {'data': responseData}
-                : null;
-
-    _crashReportingService?.recordApiError(
-      err.requestOptions.path,
-      err.response?.statusCode,
-      err.message ?? 'Unknown error',
-      requestData: requestDataMap,
-      responseData: responseDataMap,
-    );
-
     if (err.type == DioExceptionType.connectionError) {
       return NetworkException('No internet connection');
     }
@@ -80,17 +55,49 @@ class ErrorHandler {
         final errors = _extractValidationErrors(data);
         return ValidationException(message, errors: errors);
       case 500:
+        _recordApiError(err);
         logger.e('Server error: ${err.response}');
         logger.e('Stack trace: ${err.stackTrace}');
         return ServerException('Internal server error',
             statusCode: statusCode, data: data);
       default:
+        _recordApiError(err);
         if (err.type == DioExceptionType.badResponse) {
           return BadRequestException(message,
               statusCode: statusCode, data: data);
         }
         return ServerException(message, statusCode: statusCode, data: data);
     }
+  }
+
+  static void _recordApiError(DioException err) {
+    if (_crashReportingService == null) return;
+
+    final requestData = err.requestOptions.data;
+    final requestDataMap = requestData is Map<String, dynamic>
+        ? requestData
+        : requestData is Map
+            ? Map<String, dynamic>.from(requestData)
+            : requestData != null
+                ? {'data': requestData}
+                : null;
+
+    final responseData = err.response?.data;
+    final responseDataMap = responseData is Map<String, dynamic>
+        ? responseData
+        : responseData is Map
+            ? Map<String, dynamic>.from(responseData)
+            : responseData != null
+                ? {'data': responseData}
+                : null;
+
+    _crashReportingService!.recordApiError(
+      err.requestOptions.path,
+      err.response?.statusCode,
+      err.message ?? 'Unknown error',
+      requestData: requestDataMap,
+      responseData: responseDataMap,
+    );
   }
 
   static List<FieldError> _extractValidationErrors(dynamic data) {
@@ -107,15 +114,18 @@ class ErrorHandler {
     Object error,
     StackTrace stacktrace,
   ) {
-    // Record the error in crash reporting
+    if (error is PathNotFoundException || error is FileSystemException) {
+      logger.w('Local file error: $error');
+      return LocalFileException(error.toString());
+    }
+
+    logger.e('Unknown error: $error');
+    logger.e('Stack trace: $stacktrace');
     _crashReportingService?.recordError(
       error,
       stackTrace: stacktrace,
       reason: 'Unknown Error',
     );
-
-    logger.e('Unknown error: $error');
-    logger.e('Stack trace: $stacktrace');
-    return ServerException(error.toString());
+    return UnknownException(error.toString());
   }
 }
