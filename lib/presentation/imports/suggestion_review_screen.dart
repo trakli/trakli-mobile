@@ -34,12 +34,14 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
   bool _autoCreateParties = false;
   bool _autoCreateCategories = false;
 
+  late final ImportCubit _importCubit;
+
   @override
   void initState() {
     super.initState();
-    final cubit = context.read<ImportCubit>();
-    cubit.loadSession(widget.sessionId);
-    cubit.startPollingSession(widget.sessionId);
+    _importCubit = context.read<ImportCubit>();
+    _importCubit.loadSession(widget.sessionId);
+    _importCubit.startPollingSession(widget.sessionId);
     // Pre-load options the suggestion-card pickers need.
     context.read<WalletCubit>().loadWallets();
     context.read<PartyCubit>().getParties();
@@ -48,7 +50,7 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
 
   @override
   void dispose() {
-    context.read<ImportCubit>().stopPolling();
+    _importCubit.stopPolling();
     super.dispose();
   }
 
@@ -214,11 +216,14 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(LocaleKeys.importReviewSuggestions.tr())),
-      body: BlocBuilder<ImportCubit, ImportState>(
-        builder: (context, state) {
-          final session = state.currentSession;
-          return _buildBody(session);
-        },
+      body: SafeArea(
+        bottom: false,
+        child: BlocBuilder<ImportCubit, ImportState>(
+          builder: (context, state) {
+            final session = state.currentSession;
+            return _buildBody(session);
+          },
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(

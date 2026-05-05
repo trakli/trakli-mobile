@@ -2,13 +2,24 @@ import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 
-import 'package:trakli/core/utils/services/logger.dart' as app_logger;
-
-/// Routes drift_sync_core's typed log calls to the app's existing
-/// `package:logger` instance.
+/// Routes drift_sync_core's typed log calls to a `package:logger` instance.
+/// Uses its own [Logger] with `stackTraceBeginIndex: 2` so PrettyPrinter
+/// skips this wrapper plus the `SyncLoggerExt` extension and reports the
+/// real call site inside `drift_sync_core` (e.g. `DriftSynchronizer`).
 @LazySingleton(as: SyncLogger)
 class SyncLoggerImpl implements SyncLogger {
-  SyncLoggerImpl() : _logger = app_logger.logger;
+  SyncLoggerImpl()
+      : _logger = Logger(
+          printer: PrettyPrinter(
+            methodCount: 1,
+            errorMethodCount: 8,
+            lineLength: 120,
+            colors: true,
+            printEmojis: true,
+            dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
+            stackTraceBeginIndex: 2,
+          ),
+        );
 
   final Logger _logger;
 

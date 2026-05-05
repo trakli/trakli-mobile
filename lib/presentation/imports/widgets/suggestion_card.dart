@@ -4,13 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/data/datasources/core/amount_parser.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
+import 'package:trakli/domain/entities/import/duplicate_match_entity.dart';
 import 'package:trakli/domain/entities/import/transaction_suggestion_entity.dart';
 import 'package:trakli/domain/entities/party_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/category/cubit/category_cubit.dart';
+import 'package:trakli/presentation/imports/widgets/picker_with_hint.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
-import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
+import 'package:trakli/presentation/utils/custom_auto_complete_search.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 
@@ -147,31 +149,28 @@ class _SuggestionCardState extends State<SuggestionCard> {
             ),
             SizedBox(width: 8.w),
             Expanded(
-              child: _PickerWithHint(
-                label: LocaleKeys.importType.tr(),
-                suggestionText: null,
-                picker: CustomDropdownSearch<TransactionType>(
-                  label: '',
-                  accentColor: accent,
-                  selectedItem: _type,
-                  showSearchBox: false,
-                  items: (filter, _) => const [
-                    TransactionType.expense,
-                    TransactionType.income,
-                  ],
-                  itemAsString: (t) => switch (t) {
-                    TransactionType.expense =>
-                      LocaleKeys.transactionExpense.tr(),
-                    TransactionType.income =>
-                      LocaleKeys.transactionIncome.tr(),
-                  },
-                  compareFn: (a, b) => a == b,
-                  onChanged: (v) {
-                    if (v == null) return;
-                    setState(() => _type = v);
-                    _emitTextUpdate();
-                  },
+              child: DropdownButtonFormField<TransactionType>(
+                initialValue: _type,
+                isDense: true,
+                decoration: InputDecoration(
+                  labelText: LocaleKeys.importType.tr(),
+                  isDense: true,
                 ),
+                items: [
+                  DropdownMenuItem(
+                    value: TransactionType.expense,
+                    child: Text(LocaleKeys.transactionExpense.tr()),
+                  ),
+                  DropdownMenuItem(
+                    value: TransactionType.income,
+                    child: Text(LocaleKeys.transactionIncome.tr()),
+                  ),
+                ],
+                onChanged: (v) {
+                  if (v == null) return;
+                  setState(() => _type = v);
+                  _emitTextUpdate();
+                },
               ),
             ),
           ],
@@ -194,21 +193,23 @@ class _SuggestionCardState extends State<SuggestionCard> {
               widget.suggestion.walletId,
               (w) => w.id,
             );
-            return _PickerWithHint(
+            return PickerWithHint(
               label: LocaleKeys.importWallet.tr(),
               suggestionText: widget.suggestion.wallet,
-              picker: CustomDropdownSearch<WalletEntity>(
+              picker: CustomAutoCompleteSearch<WalletEntity>(
+                key: ValueKey('wallet_${widget.suggestion.walletId ?? 'none'}'),
                 label: '',
                 accentColor: accent,
-                selectedItem: selected,
-                items: (filter, _) => wallets
-                    .where((w) =>
-                        w.name.toLowerCase().contains(filter.toLowerCase()))
-                    .toList(),
-                itemAsString: (w) => w.name,
-                compareFn: (a, b) => a.id == b.id,
-                onChanged: (w) =>
-                    widget.onChanged(widget.suggestion.withWalletId(w?.id)),
+                initialValue: selected,
+                optionsBuilder: (textEditingValue) {
+                  final query = textEditingValue.text.toLowerCase();
+                  if (query.isEmpty) return wallets;
+                  return wallets
+                      .where((w) => w.name.toLowerCase().contains(query));
+                },
+                displayStringForOption: (w) => w.name,
+                onSelected: (w) =>
+                    widget.onChanged(widget.suggestion.withWalletId(w.id)),
               ),
             );
           },
@@ -222,21 +223,23 @@ class _SuggestionCardState extends State<SuggestionCard> {
               widget.suggestion.partyId,
               (p) => p.id,
             );
-            return _PickerWithHint(
+            return PickerWithHint(
               label: LocaleKeys.importParty.tr(),
               suggestionText: widget.suggestion.party,
-              picker: CustomDropdownSearch<PartyEntity>(
+              picker: CustomAutoCompleteSearch<PartyEntity>(
+                key: ValueKey('party_${widget.suggestion.partyId ?? 'none'}'),
                 label: '',
                 accentColor: accent,
-                selectedItem: selected,
-                items: (filter, _) => parties
-                    .where((p) =>
-                        p.name.toLowerCase().contains(filter.toLowerCase()))
-                    .toList(),
-                itemAsString: (p) => p.name,
-                compareFn: (a, b) => a.id == b.id,
-                onChanged: (p) =>
-                    widget.onChanged(widget.suggestion.withPartyId(p?.id)),
+                initialValue: selected,
+                optionsBuilder: (textEditingValue) {
+                  final query = textEditingValue.text.toLowerCase();
+                  if (query.isEmpty) return parties;
+                  return parties
+                      .where((p) => p.name.toLowerCase().contains(query));
+                },
+                displayStringForOption: (p) => p.name,
+                onSelected: (p) =>
+                    widget.onChanged(widget.suggestion.withPartyId(p.id)),
               ),
             );
           },
@@ -252,21 +255,24 @@ class _SuggestionCardState extends State<SuggestionCard> {
               widget.suggestion.categoryId,
               (c) => c.id,
             );
-            return _PickerWithHint(
+            return PickerWithHint(
               label: LocaleKeys.importCategory.tr(),
               suggestionText: widget.suggestion.category,
-              picker: CustomDropdownSearch<CategoryEntity>(
+              picker: CustomAutoCompleteSearch<CategoryEntity>(
+                key: ValueKey(
+                    'category_${_type.name}_${widget.suggestion.categoryId ?? 'none'}'),
                 label: '',
                 accentColor: accent,
-                selectedItem: selected,
-                items: (filter, _) => categories
-                    .where((c) =>
-                        c.name.toLowerCase().contains(filter.toLowerCase()))
-                    .toList(),
-                itemAsString: (c) => c.name,
-                compareFn: (a, b) => a.id == b.id,
-                onChanged: (c) =>
-                    widget.onChanged(widget.suggestion.withCategoryId(c?.id)),
+                initialValue: selected,
+                optionsBuilder: (textEditingValue) {
+                  final query = textEditingValue.text.toLowerCase();
+                  if (query.isEmpty) return categories;
+                  return categories
+                      .where((c) => c.name.toLowerCase().contains(query));
+                },
+                displayStringForOption: (c) => c.name,
+                onSelected: (c) =>
+                    widget.onChanged(widget.suggestion.withCategoryId(c.id)),
               ),
             );
           },
@@ -292,7 +298,7 @@ class _Header extends StatelessWidget {
   final String meta;
   final bool accepted;
   final double? confidence;
-  final bool? duplicate;
+  final DuplicateMatchEntity? duplicate;
   final bool expanded;
   final ValueChanged<bool> onAcceptedChanged;
   final VoidCallback onTap;
@@ -360,7 +366,7 @@ class _Header extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (duplicate == true) ...[
+                      if (duplicate != null) ...[
                         Icon(Icons.warning_amber_rounded,
                             size: 14.sp, color: Colors.orange),
                         SizedBox(width: 4.w),
@@ -416,36 +422,3 @@ T? _findById<T>(List<T> items, int? id, int? Function(T) idOf) {
   return null;
 }
 
-class _PickerWithHint extends StatelessWidget {
-  final String label;
-  final String? suggestionText;
-  final Widget picker;
-
-  const _PickerWithHint({
-    required this.label,
-    required this.suggestionText,
-    required this.picker,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: Theme.of(context).textTheme.bodySmall),
-        SizedBox(height: 4.h),
-        picker,
-        if (suggestionText != null && suggestionText!.isNotEmpty)
-          Padding(
-            padding: EdgeInsets.only(top: 4.h, left: 4.w),
-            child: Text(
-              LocaleKeys.importAiSuggested.tr(args: [suggestionText!]),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-      ],
-    );
-  }
-}

@@ -94,8 +94,21 @@ class _CustomAutoCompleteSearchState<T extends Object>
   }
 
   OverlayEntry _createOverlayEntry() {
-    RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
+    final fieldGlobalY = renderBox.localToGlobal(Offset.zero).dy;
+    final mediaQuery = MediaQuery.of(context);
+    final spaceBelow = mediaQuery.size.height -
+        mediaQuery.viewInsets.bottom -
+        mediaQuery.padding.bottom -
+        (fieldGlobalY + size.height);
+    final spaceAbove = fieldGlobalY - mediaQuery.padding.top;
+    final desired = 250.h;
+    // Drop upward when there's not enough room below and more room above —
+    // It keeps the last items visible when the field is near the screen bottom.
+    final openUpward = spaceBelow < desired && spaceAbove > spaceBelow;
+    final maxHeight =
+        (openUpward ? spaceAbove : spaceBelow - 8.h).clamp(120.h, desired);
 
     return OverlayEntry(
       builder: (context) => Positioned(
@@ -103,16 +116,21 @@ class _CustomAutoCompleteSearchState<T extends Object>
         child: CompositedTransformFollower(
           link: _layerLink,
           showWhenUnlinked: false,
-          offset: Offset(0, size.height),
+          // Anchor the BOTTOM of the overlay to the TOP of the field when
+          // opening up
+          // Anchor and the TOP of the overlay to the BOTTOM of the field
+          // when opening down.
+          targetAnchor: openUpward ? Alignment.topLeft : Alignment.bottomLeft,
+          followerAnchor: openUpward ? Alignment.bottomLeft : Alignment.topLeft,
           child: Material(
             color: Theme.of(context).colorScheme.surface,
             elevation: 4,
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(8.r),
-            ),
+            borderRadius: openUpward
+                ? BorderRadius.vertical(top: Radius.circular(8.r))
+                : BorderRadius.vertical(bottom: Radius.circular(8.r)),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 250.h,
+                maxHeight: maxHeight,
               ),
               child: _options.isNotEmpty
                   ? Builder(builder: (context) {

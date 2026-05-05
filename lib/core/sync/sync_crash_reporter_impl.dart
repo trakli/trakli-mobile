@@ -1,6 +1,5 @@
 import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:injectable/injectable.dart';
-
 import 'package:trakli/core/error/crash_reporting/crash_reporting_service.dart';
 
 /// Routes drift_sync_core's typed crash reports through the app's

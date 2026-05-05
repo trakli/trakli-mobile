@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:trakli/data/datasources/core/amount_parser.dart';
+import 'package:trakli/data/datasources/import/dto/duplicate_match_dto.dart';
 import 'package:trakli/domain/entities/import/transaction_suggestion_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
@@ -19,7 +20,7 @@ class TransactionSuggestionDto {
   final double? confidence;
   @JsonKey(name: 'document_type')
   final String documentType;
-  final bool? duplicate;
+  final DuplicateMatchDto? duplicate;
 
   const TransactionSuggestionDto({
     required this.documentType,
@@ -53,7 +54,9 @@ class TransactionSuggestionDto {
         description: entity.description,
         date: entity.date,
         confidence: entity.confidence,
-        duplicate: entity.duplicate,
+        duplicate: entity.duplicate == null
+            ? null
+            : DuplicateMatchDto.fromEntity(entity.duplicate!),
       );
 
   TransactionSuggestionEntity toEntity() => TransactionSuggestionEntity(
@@ -67,7 +70,7 @@ class TransactionSuggestionDto {
         description: description,
         date: date,
         confidence: confidence,
-        duplicate: duplicate,
+        duplicate: duplicate?.toEntity(),
       );
 }
 

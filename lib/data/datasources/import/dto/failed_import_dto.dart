@@ -3,7 +3,7 @@ import 'package:trakli/domain/entities/import/failed_import_entity.dart';
 
 part 'failed_import_dto.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class FailedImportDto {
   final int id;
   @JsonKey(name: 'file_import_id')
@@ -18,6 +18,16 @@ class FailedImportDto {
   final String? date;
   final String? reason;
 
+  /// Optional existing-record IDs. The fix endpoint prefers these over the
+  /// name strings when present; auto-create flags only kick in when the ID
+  /// for the corresponding resource is omitted.
+  @JsonKey(name: 'wallet_id')
+  final int? walletId;
+  @JsonKey(name: 'party_id')
+  final int? partyId;
+  @JsonKey(name: 'category_id')
+  final int? categoryId;
+
   const FailedImportDto({
     required this.id,
     required this.fileImportId,
@@ -30,6 +40,9 @@ class FailedImportDto {
     this.description,
     this.date,
     this.reason,
+    this.walletId,
+    this.partyId,
+    this.categoryId,
   });
 
   factory FailedImportDto.fromJson(Map<String, dynamic> json) =>
@@ -50,6 +63,9 @@ class FailedImportDto {
         description: entity.description,
         date: entity.date,
         reason: entity.reason,
+        walletId: entity.walletId,
+        partyId: entity.partyId,
+        categoryId: entity.categoryId,
       );
 
   FailedImportEntity toEntity() => FailedImportEntity(
@@ -64,5 +80,8 @@ class FailedImportDto {
         description: description,
         date: date,
         reason: reason,
+        walletId: walletId,
+        partyId: partyId,
+        categoryId: categoryId,
       );
 }
