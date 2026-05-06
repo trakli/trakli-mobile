@@ -2,8 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
 import 'package:trakli/domain/entities/import/import_session_entity.dart';
+import 'package:trakli/domain/entities/import/import_session_status.dart';
 import 'package:trakli/domain/entities/import/transaction_suggestion_entity.dart';
 import 'package:trakli/domain/entities/party_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
@@ -11,6 +13,7 @@ import 'package:trakli/domain/repositories/import_repository.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/category/cubit/category_cubit.dart';
 import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/imports/cubit/import_cubit.dart';
 import 'package:trakli/presentation/imports/widgets/suggestion_card.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
@@ -139,8 +142,11 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
   Future<void> _onConfirmTap(ImportSessionEntity session) async {
     final accepted = _acceptedSuggestions(session);
     if (accepted.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocaleKeys.importNoAcceptedSuggestions.tr())),
+      showSnackBar(
+        message: LocaleKeys.importNoAcceptedSuggestions.tr(),
+        borderRadius: 8.r,
+        backgroundColor: Colors.orange,
+        isFloating: false,
       );
       return;
     }
@@ -196,18 +202,20 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
     );
     if (!mounted) return;
     if (result == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(cubit.state.failure.customMessage)),
+      showSnackBar(
+        message: cubit.state.failure,
+        borderRadius: 8.r,
+        backgroundColor: appDangerColor,
+        isFloating: false,
       );
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          LocaleKeys.importCreatedCount
-              .tr(args: [result.createdCount.toString()]),
-        ),
-      ),
+    showSnackBar(
+      message: LocaleKeys.importCreatedCount
+          .tr(args: [result.createdCount.toString()]),
+      borderRadius: 8.r,
+      backgroundColor: Colors.green,
+      isFloating: false,
     );
     Navigator.of(context).pop();
   }
@@ -232,7 +240,7 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
             builder: (context, state) {
               final session = state.currentSession;
               final canConfirm = session != null &&
-                  session.status == 'ready' &&
+                  session.status == ImportSessionStatus.ready &&
                   !state.isConfirming;
               return SizedBox(
                 height: 52.h,
@@ -262,19 +270,15 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (session.status == 'analyzing') {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CircularProgressIndicator(),
-            SizedBox(height: 16.h),
-            Text(LocaleKeys.importAnalyzing.tr()),
-          ],
-        ),
+    if (session.status.isInFlight) {
+      return _StageLoader(
+        step: session.status.stepNumber!,
+        totalSteps: ImportSessionStatus.totalSteps,
+        label: _labelForInFlightStatus(session.status),
       );
     }
 
+    // Empty suggestions take priority over the failed-status banner.
     if (session.suggestions.isEmpty) {
       return Center(
         child: Padding(
@@ -285,6 +289,10 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
           ),
         ),
       );
+    }
+
+    if (session.status == ImportSessionStatus.failed) {
+      return const _AnalysisFailed();
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -306,6 +314,110 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
           onChanged: (updated) => setState(() => _edits[i] = updated),
         );
       }).toList(),
+    );
+  }
+
+  /// Localized label for each in-flight stage. Caller guarantees [status]
+  /// is one of the four in-flight values via [ImportSessionStatus.isInFlight].
+  String _labelForInFlightStatus(ImportSessionStatus status) {
+    return switch (status) {
+      ImportSessionStatus.analyzing => LocaleKeys.importAnalyzing.tr(),
+      ImportSessionStatus.extracting => LocaleKeys.importExtracting.tr(),
+      ImportSessionStatus.enriching => LocaleKeys.importEnriching.tr(),
+      ImportSessionStatus.checking => LocaleKeys.importCheckingDuplicates.tr(),
+      _ => '',
+    };
+  }
+}
+
+class _StageLoader extends StatelessWidget {
+  final int step;
+  final int totalSteps;
+  final String label;
+
+  const _StageLoader({
+    required this.step,
+    required this.totalSteps,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SpinKitFadingCircle(color: theme.colorScheme.primary, size: 56.r),
+          SizedBox(height: 20.h),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(999.r),
+            ),
+            child: Text(
+              'Step $step of $totalSteps',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            label,
+            style: theme.textTheme.titleSmall,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AnalysisFailed extends StatelessWidget {
+  const _AnalysisFailed();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(32.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 56.r,
+              color: theme.colorScheme.error,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              LocaleKeys.importAnalysisFailed.tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              LocaleKeys.importAnalysisFailedHint.tr(),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 24.h),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+              label: Text(LocaleKeys.cancel.tr()),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

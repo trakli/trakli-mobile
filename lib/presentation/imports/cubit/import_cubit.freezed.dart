@@ -16,10 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$ImportState {
-  List<FileImportEntity> get imports => throw _privateConstructorUsedError;
   List<ImportSessionEntity> get sessions => throw _privateConstructorUsedError;
-  List<FailedImportEntity> get failedImports =>
-      throw _privateConstructorUsedError;
   ImportSessionEntity? get currentSession => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isUploading => throw _privateConstructorUsedError;
@@ -40,9 +37,7 @@ abstract class $ImportStateCopyWith<$Res> {
       _$ImportStateCopyWithImpl<$Res, ImportState>;
   @useResult
   $Res call(
-      {List<FileImportEntity> imports,
-      List<ImportSessionEntity> sessions,
-      List<FailedImportEntity> failedImports,
+      {List<ImportSessionEntity> sessions,
       ImportSessionEntity? currentSession,
       bool isLoading,
       bool isUploading,
@@ -67,9 +62,7 @@ class _$ImportStateCopyWithImpl<$Res, $Val extends ImportState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? imports = null,
     Object? sessions = null,
-    Object? failedImports = null,
     Object? currentSession = freezed,
     Object? isLoading = null,
     Object? isUploading = null,
@@ -77,18 +70,10 @@ class _$ImportStateCopyWithImpl<$Res, $Val extends ImportState>
     Object? failure = null,
   }) {
     return _then(_value.copyWith(
-      imports: null == imports
-          ? _value.imports
-          : imports // ignore: cast_nullable_to_non_nullable
-              as List<FileImportEntity>,
       sessions: null == sessions
           ? _value.sessions
           : sessions // ignore: cast_nullable_to_non_nullable
               as List<ImportSessionEntity>,
-      failedImports: null == failedImports
-          ? _value.failedImports
-          : failedImports // ignore: cast_nullable_to_non_nullable
-              as List<FailedImportEntity>,
       currentSession: freezed == currentSession
           ? _value.currentSession
           : currentSession // ignore: cast_nullable_to_non_nullable
@@ -132,9 +117,7 @@ abstract class _$$ImportStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<FileImportEntity> imports,
-      List<ImportSessionEntity> sessions,
-      List<FailedImportEntity> failedImports,
+      {List<ImportSessionEntity> sessions,
       ImportSessionEntity? currentSession,
       bool isLoading,
       bool isUploading,
@@ -158,9 +141,7 @@ class __$$ImportStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? imports = null,
     Object? sessions = null,
-    Object? failedImports = null,
     Object? currentSession = freezed,
     Object? isLoading = null,
     Object? isUploading = null,
@@ -168,18 +149,10 @@ class __$$ImportStateImplCopyWithImpl<$Res>
     Object? failure = null,
   }) {
     return _then(_$ImportStateImpl(
-      imports: null == imports
-          ? _value._imports
-          : imports // ignore: cast_nullable_to_non_nullable
-              as List<FileImportEntity>,
       sessions: null == sessions
           ? _value._sessions
           : sessions // ignore: cast_nullable_to_non_nullable
               as List<ImportSessionEntity>,
-      failedImports: null == failedImports
-          ? _value._failedImports
-          : failedImports // ignore: cast_nullable_to_non_nullable
-              as List<FailedImportEntity>,
       currentSession: freezed == currentSession
           ? _value.currentSession
           : currentSession // ignore: cast_nullable_to_non_nullable
@@ -208,25 +181,13 @@ class __$$ImportStateImplCopyWithImpl<$Res>
 
 class _$ImportStateImpl implements _ImportState {
   const _$ImportStateImpl(
-      {required final List<FileImportEntity> imports,
-      required final List<ImportSessionEntity> sessions,
-      required final List<FailedImportEntity> failedImports,
+      {required final List<ImportSessionEntity> sessions,
       this.currentSession,
       required this.isLoading,
       required this.isUploading,
       required this.isConfirming,
       required this.failure})
-      : _imports = imports,
-        _sessions = sessions,
-        _failedImports = failedImports;
-
-  final List<FileImportEntity> _imports;
-  @override
-  List<FileImportEntity> get imports {
-    if (_imports is EqualUnmodifiableListView) return _imports;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_imports);
-  }
+      : _sessions = sessions;
 
   final List<ImportSessionEntity> _sessions;
   @override
@@ -234,14 +195,6 @@ class _$ImportStateImpl implements _ImportState {
     if (_sessions is EqualUnmodifiableListView) return _sessions;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_sessions);
-  }
-
-  final List<FailedImportEntity> _failedImports;
-  @override
-  List<FailedImportEntity> get failedImports {
-    if (_failedImports is EqualUnmodifiableListView) return _failedImports;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_failedImports);
   }
 
   @override
@@ -257,7 +210,7 @@ class _$ImportStateImpl implements _ImportState {
 
   @override
   String toString() {
-    return 'ImportState(imports: $imports, sessions: $sessions, failedImports: $failedImports, currentSession: $currentSession, isLoading: $isLoading, isUploading: $isUploading, isConfirming: $isConfirming, failure: $failure)';
+    return 'ImportState(sessions: $sessions, currentSession: $currentSession, isLoading: $isLoading, isUploading: $isUploading, isConfirming: $isConfirming, failure: $failure)';
   }
 
   @override
@@ -265,10 +218,7 @@ class _$ImportStateImpl implements _ImportState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ImportStateImpl &&
-            const DeepCollectionEquality().equals(other._imports, _imports) &&
             const DeepCollectionEquality().equals(other._sessions, _sessions) &&
-            const DeepCollectionEquality()
-                .equals(other._failedImports, _failedImports) &&
             (identical(other.currentSession, currentSession) ||
                 other.currentSession == currentSession) &&
             (identical(other.isLoading, isLoading) ||
@@ -283,9 +233,7 @@ class _$ImportStateImpl implements _ImportState {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      const DeepCollectionEquality().hash(_imports),
       const DeepCollectionEquality().hash(_sessions),
-      const DeepCollectionEquality().hash(_failedImports),
       currentSession,
       isLoading,
       isUploading,
@@ -303,9 +251,7 @@ class _$ImportStateImpl implements _ImportState {
 
 abstract class _ImportState implements ImportState {
   const factory _ImportState(
-      {required final List<FileImportEntity> imports,
-      required final List<ImportSessionEntity> sessions,
-      required final List<FailedImportEntity> failedImports,
+      {required final List<ImportSessionEntity> sessions,
       final ImportSessionEntity? currentSession,
       required final bool isLoading,
       required final bool isUploading,
@@ -313,11 +259,7 @@ abstract class _ImportState implements ImportState {
       required final Failure failure}) = _$ImportStateImpl;
 
   @override
-  List<FileImportEntity> get imports;
-  @override
   List<ImportSessionEntity> get sessions;
-  @override
-  List<FailedImportEntity> get failedImports;
   @override
   ImportSessionEntity? get currentSession;
   @override

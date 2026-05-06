@@ -8,11 +8,12 @@ import 'package:path_provider/path_provider.dart';
 class ImportFilePicker {
   ImportFilePicker._();
 
-  /// Picks a spreadsheet file (CSV / XLSX / XLS).
+  /// Picks a CSV file. Excel formats (xlsx/xls) are intentionally rejected
+  /// — the backend analyzer can't process them today.
   static Future<File?> pickSpreadsheet() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['csv', 'xlsx', 'xls'],
+      allowedExtensions: ['csv'],
       allowMultiple: false,
     );
     final path = result?.files.single.path;
@@ -20,14 +21,12 @@ class ImportFilePicker {
     return _stableCopy(File(path));
   }
 
-  /// Picks a document file from the filesystem (PDF / image / spreadsheet).
+  /// Picks a document file from the filesystem (PDF / image / CSV). Excel
+  /// formats are excluded for the same reason as [pickSpreadsheet].
   static Future<File?> pickDocument() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: [
-        'pdf', 'jpg', 'jpeg', 'png',
-        'csv', 'xlsx', 'xls',
-      ],
+      allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png', 'csv'],
       allowMultiple: false,
     );
     final path = result?.files.single.path;

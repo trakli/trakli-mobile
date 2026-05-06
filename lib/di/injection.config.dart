@@ -152,12 +152,8 @@ import '../domain/usecases/group/listen_to_groups_usecase.dart' as _i146;
 import '../domain/usecases/group/update_group_usecase.dart' as _i820;
 import '../domain/usecases/import/analyze_document_usecase.dart' as _i60;
 import '../domain/usecases/import/confirm_session_usecase.dart' as _i36;
-import '../domain/usecases/import/fix_failed_imports_usecase.dart' as _i915;
-import '../domain/usecases/import/get_failed_imports_usecase.dart' as _i196;
 import '../domain/usecases/import/get_import_session_usecase.dart' as _i661;
 import '../domain/usecases/import/get_import_sessions_usecase.dart' as _i929;
-import '../domain/usecases/import/get_imports_usecase.dart' as _i132;
-import '../domain/usecases/import/upload_import_usecase.dart' as _i297;
 import '../domain/usecases/notification/get_notifications_usecase.dart'
     as _i422;
 import '../domain/usecases/notification/listen_to_notifications_usecase.dart'
@@ -477,20 +473,12 @@ _i174.GetIt $initGetIt(
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
-  gh.factory<_i297.UploadImportUseCase>(
-      () => _i297.UploadImportUseCase(gh<_i32.ImportRepository>()));
   gh.factory<_i929.GetImportSessionsUseCase>(
       () => _i929.GetImportSessionsUseCase(gh<_i32.ImportRepository>()));
   gh.factory<_i36.ConfirmSessionUseCase>(
       () => _i36.ConfirmSessionUseCase(gh<_i32.ImportRepository>()));
-  gh.factory<_i915.FixFailedImportsUseCase>(
-      () => _i915.FixFailedImportsUseCase(gh<_i32.ImportRepository>()));
   gh.factory<_i661.GetImportSessionUseCase>(
       () => _i661.GetImportSessionUseCase(gh<_i32.ImportRepository>()));
-  gh.factory<_i196.GetFailedImportsUseCase>(
-      () => _i196.GetFailedImportsUseCase(gh<_i32.ImportRepository>()));
-  gh.factory<_i132.GetImportsUseCase>(
-      () => _i132.GetImportsUseCase(gh<_i32.ImportRepository>()));
   gh.factory<_i60.AnalyzeDocumentUseCase>(
       () => _i60.AnalyzeDocumentUseCase(gh<_i32.ImportRepository>()));
   gh.factory<_i56.DeletePartyUseCase>(
@@ -505,6 +493,12 @@ _i174.GetIt $initGetIt(
       () => _i714.ListenToPartiesUseCase(gh<_i661.PartyRepository>()));
   gh.factory<_i559.AppUpdateCubit>(
       () => _i559.AppUpdateCubit(gh<_i150.CheckAppUpdateUseCase>()));
+  gh.factory<_i538.ImportCubit>(() => _i538.ImportCubit(
+        analyzeDocumentUseCase: gh<_i60.AnalyzeDocumentUseCase>(),
+        confirmSessionUseCase: gh<_i36.ConfirmSessionUseCase>(),
+        getImportSessionsUseCase: gh<_i929.GetImportSessionsUseCase>(),
+        getImportSessionUseCase: gh<_i661.GetImportSessionUseCase>(),
+      ));
   gh.lazySingleton<_i965.NotificationRepository>(() =>
       _i888.NotificationRepositoryImpl(
         syncHandler: gh<_i217.NotificationSyncHandler>(),
@@ -619,16 +613,6 @@ _i174.GetIt $initGetIt(
         gh<_i705.RegisterUseCase>(),
         gh<_i402.GetOtpCodeUseCase>(),
         gh<_i100.VerifyEmailUseCase>(),
-      ));
-  gh.factory<_i538.ImportCubit>(() => _i538.ImportCubit(
-        uploadImportUseCase: gh<_i297.UploadImportUseCase>(),
-        getImportsUseCase: gh<_i132.GetImportsUseCase>(),
-        getFailedImportsUseCase: gh<_i196.GetFailedImportsUseCase>(),
-        fixFailedImportsUseCase: gh<_i915.FixFailedImportsUseCase>(),
-        analyzeDocumentUseCase: gh<_i60.AnalyzeDocumentUseCase>(),
-        confirmSessionUseCase: gh<_i36.ConfirmSessionUseCase>(),
-        getImportSessionsUseCase: gh<_i929.GetImportSessionsUseCase>(),
-        getImportSessionUseCase: gh<_i661.GetImportSessionUseCase>(),
       ));
   gh.factory<_i872.AuthCubit>(() => _i872.AuthCubit(
         gh<_i444.StreamAuthStatus>(),

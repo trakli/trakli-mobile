@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Reusable action card used by every hub variant. Supports a compact,
 class ImportActionCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String? subtitle;
   final VoidCallback onTap;
-  final bool compact;
-  final Widget? trailing;
 
   const ImportActionCard({
     super.key,
@@ -16,65 +13,49 @@ class ImportActionCard extends StatelessWidget {
     required this.title,
     this.subtitle,
     required this.onTap,
-    this.compact = false,
-    this.trailing,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (compact) {
-      return Card(
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, size: 32.sp),
-                SizedBox(height: 12.h),
-                Text(title, style: Theme.of(context).textTheme.titleSmall),
-                if (subtitle != null) ...[
-                  SizedBox(height: 4.h),
-                  Text(
-                    subtitle!,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+    final theme = Theme.of(context);
+    final radius = BorderRadius.circular(16.r);
 
-    return Card(
+    return Material(
+      color: theme.colorScheme.surface,
+      elevation: 3,
+      shadowColor: Colors.black.withValues(alpha: 0.12),
+      borderRadius: radius,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: radius,
         child: Padding(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
           child: Row(
             children: [
-              Icon(icon, size: 40.r),
+              Icon(icon, size: 36.r, color: theme.colorScheme.primary),
               SizedBox(width: 16.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: Theme.of(context).textTheme.titleMedium),
+                    Text(
+                      title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     if (subtitle != null) ...[
                       SizedBox(height: 4.h),
-                      Text(subtitle!,
-                          style: Theme.of(context).textTheme.bodySmall),
+                      Text(
+                        subtitle!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
                     ],
                   ],
                 ),
               ),
-              trailing ?? Icon(Icons.arrow_forward_ios, size: 16.r),
             ],
           ),
         ),
