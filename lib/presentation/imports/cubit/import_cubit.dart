@@ -216,7 +216,6 @@ class ImportCubit extends Cubit<ImportState> {
     );
   }
 
-  /// Polls the imports list and stops once the matching import is terminal.
   void startPollingImport(int importId,
       {Duration interval = const Duration(seconds: 3)}) {
     _pollTimer?.cancel();
@@ -238,7 +237,6 @@ class ImportCubit extends Cubit<ImportState> {
     });
   }
 
-  /// Polls a single session until it reaches a terminal status.
   void startPollingSession(int sessionId,
       {Duration interval = const Duration(seconds: 3)}) {
     _pollTimer?.cancel();
@@ -247,7 +245,14 @@ class ImportCubit extends Cubit<ImportState> {
         GetImportSessionParams(sessionId: sessionId),
       );
       result.fold((_) {}, (session) {
-        emit(state.copyWith(currentSession: session));
+        final patchedSessions = [
+          for (final s in state.sessions)
+            if (s.id == session.id) session else s,
+        ];
+        emit(state.copyWith(
+          currentSession: session,
+          sessions: patchedSessions,
+        ));
         if (session.isTerminal) {
           stopPolling();
         }

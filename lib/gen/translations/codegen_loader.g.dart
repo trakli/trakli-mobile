@@ -613,6 +613,11 @@ abstract class  LocaleKeys {
   static const importDocUtilityBill = 'importDocUtilityBill';
   static const importReviewSuggestions = 'importReviewSuggestions';
   static const importAnalyzing = 'importAnalyzing';
+  static const importExtracting = 'importExtracting';
+  static const importEnriching = 'importEnriching';
+  static const importCheckingDuplicates = 'importCheckingDuplicates';
+  static const importAnalysisFailed = 'importAnalysisFailed';
+  static const importAnalysisFailedHint = 'importAnalysisFailedHint';
   static const importNoSuggestions = 'importNoSuggestions';
   static const importNoAcceptedSuggestions = 'importNoAcceptedSuggestions';
   static const importCreatedCount = 'importCreatedCount';

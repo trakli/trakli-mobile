@@ -14,6 +14,7 @@ import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/custom_auto_complete_search.dart';
 import 'package:trakli/presentation/utils/enums.dart';
+import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 
 class FailedImportsScreen extends StatefulWidget {
@@ -161,19 +162,28 @@ class _FailedImportsScreenState extends State<FailedImportsScreen> {
     );
     if (!mounted) return;
     if (result == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(cubit.state.failure.customMessage)),
+      showSnackBar(
+        message: cubit.state.failure,
+        borderRadius: 8.r,
+        backgroundColor: appDangerColor,
+        isFloating: false,
       );
       return;
     }
     if (result.allFixed) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocaleKeys.importAllRowsFixed.tr())),
+      showSnackBar(
+        message: LocaleKeys.importAllRowsFixed.tr(),
+        borderRadius: 8.r,
+        backgroundColor: Colors.green,
+        isFloating: false,
       );
       Navigator.of(context).pop();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocaleKeys.importSomeRowsStillFailed.tr())),
+      showSnackBar(
+        message: LocaleKeys.importSomeRowsStillFailed.tr(),
+        borderRadius: 8.r,
+        backgroundColor: Colors.orange,
+        isFloating: false,
       );
     }
   }

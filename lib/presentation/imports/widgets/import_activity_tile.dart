@@ -74,6 +74,7 @@ class _SpreadsheetTile extends StatelessWidget {
         : imp.status;
 
     return Card(
+      margin: EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w),
       child: ListTile(
         leading: const Icon(Icons.table_view),
         title: Text(imp.name, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -109,9 +110,11 @@ class _ScanTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final count = session.suggestions.length;
-    final subtitle = count > 0 ? '${session.status} • $count' : session.status;
+    final statusLabel = session.status.wire;
+    final subtitle = count > 0 ? '$statusLabel • $count' : statusLabel;
 
     return Card(
+      margin: EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w),
       child: ListTile(
         leading: const Icon(Icons.auto_awesome_outlined),
         title: Text(ImportFilePicker.displayName(session.fileName),

@@ -46,19 +46,13 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
     final session = await cubit.analyzeDocument(_picked!, _type);
     if (!mounted) return;
     if (session != null) {
-      showSnackBar(
-        message: LocaleKeys.importAnalysisQueued.tr(),
-        borderRadius: 8.r,
-        backgroundColor: Colors.green,
-        isFloating: false,
-      );
       AppNavigator.pushReplacement(
         context,
         SuggestionReviewScreen(sessionId: session.id),
       );
     } else {
       showSnackBar(
-        message: cubit.state.failure,
+        message: cubit.state.failure.customMessage,
         borderRadius: 8.r,
         backgroundColor: appDangerColor,
         isFloating: false,
@@ -117,7 +111,6 @@ class _DocumentScanScreenState extends State<DocumentScanScreen> {
                   icon: Icons.photo_camera_outlined,
                   label: LocaleKeys.importSourceCamera.tr(),
                   subtitle: LocaleKeys.importSourceCameraDesc.tr(),
-                  isPrimary: true,
                   onTap: state.isUploading
                       ? null
                       : () async =>
