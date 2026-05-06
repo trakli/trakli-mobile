@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:trakli/domain/entities/import/import_session_status.dart';
 import 'package:trakli/domain/entities/import/transaction_suggestion_entity.dart';
 
 class ImportSessionEntity extends Equatable {
@@ -7,7 +8,7 @@ class ImportSessionEntity extends Equatable {
   final String fileType;
   final String? documentType;
   final String? processor;
-  final String status;
+  final ImportSessionStatus status;
   final List<TransactionSuggestionEntity> suggestions;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -24,10 +25,9 @@ class ImportSessionEntity extends Equatable {
     this.updatedAt,
   });
 
-  bool get isTerminal =>
-      status == 'ready' ||
-      status == 'confirmed' ||
-      status == 'failed';
+  /// Convenience that mirrors [ImportSessionStatus.isTerminal] so existing
+  /// `session.isTerminal` call sites keep working.
+  bool get isTerminal => status.isTerminal;
 
   @override
   List<Object?> get props => [

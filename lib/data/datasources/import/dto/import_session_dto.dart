@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:trakli/data/datasources/import/dto/transaction_suggestion_dto.dart';
 import 'package:trakli/domain/entities/import/import_session_entity.dart';
+import 'package:trakli/domain/entities/import/import_session_status.dart';
 
 part 'import_session_dto.g.dart';
 
@@ -45,7 +46,7 @@ class ImportSessionDto {
         fileType: fileType ?? '',
         documentType: documentType,
         processor: processor,
-        status: status ?? 'pending',
+        status: ImportSessionStatus.parse(status),
         suggestions: suggestions.map((s) => s.toEntity()).toList(),
         createdAt: createdAt,
         updatedAt: updatedAt,

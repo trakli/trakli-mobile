@@ -23,15 +23,18 @@ class ImportSourceButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final disabled = onTap == null;
-    final fg = isPrimary ? colors.onPrimary : colors.onSurface;
+    // Force white on the primary tile in both light and dark modes — the
+    // theme's onPrimary swings dark in dark mode and disappears against the
+    // brand green background.
+    final fg = isPrimary ? Colors.white : colors.onSurface;
     final subFg = isPrimary
-        ? colors.onPrimary.withValues(alpha: 0.8)
+        ? Colors.white.withValues(alpha: 0.8)
         : colors.onSurfaceVariant;
     final bg = isPrimary ? colors.primary : Colors.transparent;
     final bubbleBg = isPrimary
         ? Colors.white.withValues(alpha: 0.2)
         : colors.secondaryContainer;
-    final bubbleFg = isPrimary ? colors.onPrimary : colors.onSecondaryContainer;
+    final bubbleFg = isPrimary ? Colors.white : colors.onSecondaryContainer;
 
     return Opacity(
       opacity: disabled ? 0.5 : 1,
