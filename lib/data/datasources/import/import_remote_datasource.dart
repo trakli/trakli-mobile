@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:path/path.dart' as p;
 import 'package:trakli/core/error/error_handler.dart';
 import 'package:trakli/data/datasources/core/api_response.dart';
 import 'package:trakli/data/datasources/import/dto/confirm_accepted_item_dto.dart';
@@ -59,7 +60,7 @@ class ImportRemoteDataSourceImpl implements ImportRemoteDataSource {
     DocumentType documentType,
   ) {
     return ErrorHandler.handleApiCall(() async {
-      final fileName = file.path.split(Platform.pathSeparator).last;
+      final fileName = p.basename(file.path);
       final formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(file.path, filename: fileName),
         'document_type': documentType.serverKey,
