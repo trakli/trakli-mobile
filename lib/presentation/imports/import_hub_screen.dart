@@ -9,8 +9,6 @@ import 'package:trakli/presentation/imports/widgets/import_action_card.dart';
 import 'package:trakli/presentation/imports/widgets/import_activity_tile.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 
-/// Hub for the import feature: a single import action card on top,
-/// followed by the chronological list of analyze sessions.
 class ImportHubScreen extends StatefulWidget {
   const ImportHubScreen({super.key});
 
