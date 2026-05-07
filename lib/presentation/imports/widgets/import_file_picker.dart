@@ -46,18 +46,26 @@ class ImportFilePicker {
   /// until upload even if the picker's cache gets evicted (Android file_picker
   /// caches under /data/.../cache/file_picker/ and can be cleared between the
   /// pick and the upload).
+  ///
+  /// On filesystem failure (out of disk, permission denied, etc.) falls back
+  /// to the source. The upload may then race the picker cache eviction this
+  /// method exists to dodge, but a graceful upload attempt beats a crash.
   static Future<File> _stableCopy(File source) async {
     if (!await source.exists()) return source;
-    final tempDir = await getTemporaryDirectory();
-    final dir = Directory(p.join(tempDir.path, 'trakli_imports'));
-    if (!await dir.exists()) {
-      await dir.create(recursive: true);
+    try {
+      final tempDir = await getTemporaryDirectory();
+      final dir = Directory(p.join(tempDir.path, 'trakli_imports'));
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+      final dest = p.join(
+        dir.path,
+        '${DateTime.now().millisecondsSinceEpoch}_${p.basename(source.path)}',
+      );
+      return await source.copy(dest);
+    } on FileSystemException {
+      return source;
     }
-    final dest = p.join(
-      dir.path,
-      '${DateTime.now().millisecondsSinceEpoch}_${p.basename(source.path)}',
-    );
-    return source.copy(dest);
   }
 
   static String displayName(String fileName) {
