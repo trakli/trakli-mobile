@@ -71,7 +71,7 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
   Future<void> _triggerSync() async {
     setState(() => _isSyncing = true);
     try {
-      await _syncDb.doSync();
+      await _syncDb.sync();
     } finally {
       if (mounted) {
         setState(() => _isSyncing = false);

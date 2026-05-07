@@ -174,7 +174,7 @@ class _AppViewState extends State<AppView> {
     final state = context.read<AuthCubit>().state;
     state.maybeWhen(
       authenticated: (user) async {
-        unawaited(getIt<SynchAppDatabase>().doSync());
+        unawaited(getIt<SynchAppDatabase>().sync());
 
         final isOnboardingComplete = await _isOnboardingCompleteWithDefaults();
 
@@ -221,7 +221,7 @@ class _AppViewState extends State<AppView> {
         });
       },
       unauthenticated: () async {
-        getIt<SynchAppDatabase>().stopAllSync();
+        getIt<SynchAppDatabase>().cancel();
         context.read<TransactionCubit>().setCurrentGroup(null);
         context.read<ConfigCubit>().resetDebugMode();
 

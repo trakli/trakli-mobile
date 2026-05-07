@@ -63,8 +63,14 @@ dependencies:
   share_plus: ^10.0.2
   drift_sync_core:
     git:
-      url: https://github.com/whilesmartflutter/drift_sync_core.git
-      ref: v0.1.0
+      url: https://github.com/whilesmartflutter/drift_sync.git
+      ref: drift_sync_core-v0.2.0
+      path: packages/drift_sync_core
+  drift_sync_flutter:
+    git:
+      url: https://github.com/whilesmartflutter/drift_sync.git
+      ref: drift_sync_flutter-v0.1.0
+      path: packages/drift_sync_flutter
   freezed_annotation: ^2.4.4
   uuid: ^4.5.1
   fpdart: ^1.1.1
@@ -100,6 +106,13 @@ dependencies:
   update_available: ^3.2.1
   in_app_update: ^4.2.5
   firebase_remote_config: ^5.5.0
+
+# Pinning these to the versions in pubspec.lock; the current Flutter SDK
+# pins newer matcher/test_api but other transitives (freezed, bloc_test)
+# don't accept those yet. Remove when the rest of the deps are upgraded.
+dependency_overrides:
+  matcher: 0.12.17
+  test_api: 0.7.7
 
 dev_dependencies:
   flutter_gen_runner: ^5.8.0

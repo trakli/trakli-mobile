@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:drift_sync_flutter/drift_sync_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart'
     show Firebase, FirebaseOptions;
@@ -14,6 +15,7 @@ import 'package:trakli/core/app_update/remote_update_check.dart';
 import 'package:trakli/core/error/crash_reporting.dart';
 import 'package:trakli/core/error/crash_reporting/user_context_service.dart';
 import 'package:trakli/core/error/error_handler.dart';
+import 'package:trakli/core/sync/sync_database.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 
@@ -64,6 +66,16 @@ Future<void> bootstrap(
         getIt<RemoteUpdateCheck>().initialize(),
         FeatureRemoteConfig.initialize(),
       ]);
+
+      // Wire sync triggers: lifecycle, connectivity, periodic timer.
+      final synchronizer = getIt<SynchAppDatabase>();
+      final triggers = SyncTriggers(
+        onTrigger: (_) => synchronizer.sync(),
+        onPause: (_) => synchronizer.cancel(),
+        interval: const Duration(minutes: 5),
+      );
+      await triggers.attach();
+      getIt.registerSingleton<SyncTriggers>(triggers);
 
       // Set up error handler with crash reporting
       ErrorHandler.setCrashReportingService(crashReportingService!);

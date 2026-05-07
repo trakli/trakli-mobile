@@ -428,7 +428,7 @@ class _OnboardSettingsScreenState extends State<OnboardSettingsScreen> {
         setOnboardingMode(false);
         await _saveOnboardingComplete();
 
-        getIt<SynchAppDatabase>().doSync();
+        getIt<SynchAppDatabase>().sync();
 
         if (mounted) {
           AppNavigator.removeAllPreviousAndPush(

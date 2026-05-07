@@ -74,6 +74,6 @@ class ImportRepositoryImpl implements ImportRepository {
   }
 
   void _triggerSync() {
-    unawaited(getIt<SynchAppDatabase>().doSync());
+    unawaited(getIt<SynchAppDatabase>().sync());
   }
 }

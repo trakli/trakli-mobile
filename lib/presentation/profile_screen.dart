@@ -75,7 +75,7 @@ class ProfileScreen extends StatelessWidget {
         },
         secondaryAction: () {
           // Sync now
-          getIt<SynchAppDatabase>().doSync();
+          getIt<SynchAppDatabase>().sync();
           AppNavigator.pop(context);
         },
       ),

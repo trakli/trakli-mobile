@@ -245,17 +245,23 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
               return SizedBox(
                 height: 52.h,
                 width: double.infinity,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.check_circle_outline),
+                child: ElevatedButton(
                   onPressed:
                       canConfirm ? () => _onConfirmTap(session) : null,
-                  label: state.isConfirming
+                  child: state.isConfirming
                       ? const SizedBox(
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Text(LocaleKeys.importConfirm.tr()),
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.check_circle_outline),
+                            SizedBox(width: 8.w),
+                            Text(LocaleKeys.importConfirm.tr()),
+                          ],
+                        ),
                 ),
               );
             },

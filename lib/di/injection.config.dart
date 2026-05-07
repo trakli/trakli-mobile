@@ -727,7 +727,6 @@ _i174.GetIt $initGetIt(
         typeHandlers:
             gh<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(),
         dependencyManager: gh<_i877.SyncDependencyManagerBase>(),
-        networkInfo: gh<_i6.NetworkInfo>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
         logger: gh<_i877.SyncLogger>(),
         crashReporter: gh<_i877.SyncCrashReporter>(),

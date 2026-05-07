@@ -57,7 +57,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                       context.read<AuthCubit>().state.isAuthenticated;
 
                   if (isAuthenticated) {
-                    getIt<SynchAppDatabase>().doSync();
+                    getIt<SynchAppDatabase>().sync();
                   }
                 },
                 child: screens.elementAt(
