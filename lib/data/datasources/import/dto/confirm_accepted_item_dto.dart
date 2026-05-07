@@ -5,7 +5,6 @@ import 'package:trakli/presentation/utils/enums.dart';
 part 'confirm_accepted_item_dto.g.dart';
 
 /// Outgoing shape for an item in `POST /import/confirm`'s `accepted` array.
-/// Matches exactly what the backend's `mergeUserEdits` reads — no extra fields.
 @JsonSerializable(includeIfNull: false, createFactory: false)
 class ConfirmAcceptedItemDto {
   final int index;

@@ -16,8 +16,6 @@ class ConfirmSessionResult {
   });
 }
 
-/// Pairs an accepted suggestion with its position in `session.suggestions`.
-/// The backend reads `index` to look up the original AI-extracted record.
 typedef AcceptedSuggestion = ({
   int index,
   TransactionSuggestionEntity suggestion,

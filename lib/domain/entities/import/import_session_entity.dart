@@ -25,8 +25,6 @@ class ImportSessionEntity extends Equatable {
     this.updatedAt,
   });
 
-  /// Convenience that mirrors [ImportSessionStatus.isTerminal] so existing
-  /// `session.isTerminal` call sites keep working.
   bool get isTerminal => status.isTerminal;
 
   @override

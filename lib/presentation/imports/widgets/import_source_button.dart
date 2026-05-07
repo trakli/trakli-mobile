@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Full-width source button with an icon bubble + title + subtitle.
-/// Used on the spreadsheet upload and document scan screens to pick a file.
 class ImportSourceButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -98,7 +96,6 @@ class ImportSourceButton extends StatelessWidget {
   }
 }
 
-/// Compact preview card shown after a file is picked. Tap the X to clear.
 class ImportFilePreview extends StatelessWidget {
   final String fileName;
   final VoidCallback? onClear;

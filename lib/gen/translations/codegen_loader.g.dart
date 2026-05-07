@@ -573,6 +573,7 @@ abstract class  LocaleKeys {
   static const groupsDesc = 'groupsDesc';
   static const partiesDesc = 'partiesDesc';
   static const walletsDesc = 'walletsDesc';
+  static const cancelled = 'cancelled';
   static const imports = 'imports';
   static const importsDesc = 'importsDesc';
   static const importScanDocument = 'importScanDocument';

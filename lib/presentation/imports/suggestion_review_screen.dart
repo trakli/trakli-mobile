@@ -45,7 +45,6 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
     _importCubit = context.read<ImportCubit>();
     _importCubit.loadSession(widget.sessionId);
     _importCubit.startPollingSession(widget.sessionId);
-    // Pre-load options the suggestion-card pickers need.
     context.read<WalletCubit>().loadWallets();
     context.read<PartyCubit>().getParties();
     context.read<CategoryCubit>().loadCategories();

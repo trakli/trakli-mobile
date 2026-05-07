@@ -8,8 +8,6 @@ import 'package:path_provider/path_provider.dart';
 class ImportFilePicker {
   ImportFilePicker._();
 
-  /// Picks a CSV file. Excel formats (xlsx/xls) are intentionally rejected
-  /// — the backend analyzer can't process them today.
   static Future<File?> pickSpreadsheet() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -21,8 +19,6 @@ class ImportFilePicker {
     return _stableCopy(File(path));
   }
 
-  /// Picks a document file from the filesystem (PDF / image / CSV). Excel
-  /// formats are excluded for the same reason as [pickSpreadsheet].
   static Future<File?> pickDocument() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -34,14 +30,12 @@ class ImportFilePicker {
     return _stableCopy(File(path));
   }
 
-  /// Captures a photo with the camera for AI document analysis (e.g. receipts).
   static Future<File?> captureFromCamera() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.camera);
     if (picked == null) return null;
     return _stableCopy(File(picked.path));
   }
 
-  /// Picks an image from the gallery.
   static Future<File?> pickFromGallery() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picked == null) return null;
@@ -66,8 +60,6 @@ class ImportFilePicker {
     return source.copy(dest);
   }
 
-  /// Strips the `<millis>_` prefix added by [_stableCopy] so the original
-  /// filename can be shown in the UI.
   static String displayName(String fileName) {
     final base = p.basename(fileName);
     return base.replaceFirst(RegExp(r'^\d+_'), '');
