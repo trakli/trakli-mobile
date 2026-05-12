@@ -484,7 +484,6 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                         startDate: filterState.startDate,
                         endDate: filterState.endDate,
                       ),
-                    SizedBox(height: 120.h),
                   ],
                 ),
               ),
@@ -675,7 +674,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         : allTransactions;
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 120.h),
       shrinkWrap: true,
       itemCount: incomeListData.length,
       itemBuilder: (context, index) {
@@ -727,7 +726,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         : allTransactions;
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 120.h),
       shrinkWrap: true,
       itemCount: expenseListData.length,
       itemBuilder: (context, index) {
