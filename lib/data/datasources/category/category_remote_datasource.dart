@@ -9,13 +9,9 @@ import 'package:trakli/data/datasources/core/pagination_response.dart';
 abstract class CategoryRemoteDataSource {
   Future<List<Category>> getAllCategories(
       {DateTime? syncedSince, bool? noClientId});
-
   Future<Category?> getCategory(int id);
-
   Future<Category> insertCategory(Category category);
-
   Future<Category> updateCategory(Category category);
-
   Future<void> deleteCategory(int id);
 }
 
