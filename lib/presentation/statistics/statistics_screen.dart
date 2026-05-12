@@ -484,7 +484,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                         startDate: filterState.startDate,
                         endDate: filterState.endDate,
                       ),
-                    SizedBox(height: 24.h),
+                    SizedBox(height: 120.h),
                   ],
                 ),
               ),
