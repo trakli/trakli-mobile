@@ -109,7 +109,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
         'client_id': category.clientId,
         'name': category.name,
         if (category.description != null &&
-            category.description!.isNotEmpty) ...{
+            category.description!.trim().isNotEmpty) ...{
           'description': category.description,
         },
         if (category.icon != null) ...{
