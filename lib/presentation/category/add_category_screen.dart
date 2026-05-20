@@ -5,9 +5,7 @@ import 'package:trakli/domain/entities/category_entity.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/category/cubit/category_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/colors.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/forms/add_category_form.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -36,13 +34,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        leading: const CustomBackButton(),
-        titleText: widget.category != null
+      appBar: PageAppBar(
+        title: widget.category != null
             ? LocaleKeys.editCategory.tr()
             : LocaleKeys.addCategory.tr(),
-        backgroundColor: appPrimaryColor,
-        headerTextColor: Colors.white,
       ),
       body: BlocListener<CategoryCubit, CategoryState>(
         listenWhen: (previous, current) =>
