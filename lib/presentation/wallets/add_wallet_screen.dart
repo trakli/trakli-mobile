@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/forms/add_wallet_form.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
@@ -31,13 +30,10 @@ class AddWalletScreen extends StatelessWidget {
         }
       },
       child: Scaffold(
-        appBar: CustomAppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          headerTextColor: Colors.white,
-          titleText: wallet != null
+        appBar: PageAppBar(
+          title: wallet != null
               ? LocaleKeys.editWallet.tr()
               : LocaleKeys.addWallet.tr(),
-          leading: const CustomBackButton(),
         ),
         body: AddWalletForm(wallet: wallet),
       ),
