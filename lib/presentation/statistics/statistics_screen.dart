@@ -17,10 +17,15 @@ import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
 import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
 import 'package:trakli/presentation/statistics/cubit/statistics_filter_cubit.dart';
+import 'package:trakli/presentation/statistics/month_in_review/month_in_review_data.dart';
+import 'package:trakli/presentation/statistics/month_in_review/month_in_review_screen.dart';
+import 'package:trakli/presentation/statistics/reports/reports_screen.dart';
+import 'package:trakli/presentation/statistics/widgets/month_in_review_card.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/category_tile.dart';
 import 'package:trakli/presentation/utils/colors.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/dashboard_expenses.dart';
 import 'package:trakli/presentation/utils/dashboard_pie_data.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -286,12 +291,41 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                 .map((e) => MapEntry(categoryMap[e.key]!, e.value))
                 .toList();
             return Scaffold(
-              appBar: CustomAppBar(
-                titleText: LocaleKeys.statistics.tr(),
+              appBar: PageAppBar(
+                title: LocaleKeys.statistics.tr(),
+                showBack: false,
+                actions: [
+                  PageAppBarAction(
+                    icon: Icons.bar_chart_rounded,
+                    label: 'Reports',
+                    onTap: () =>
+                        AppNavigator.push(context, const ReportsScreen()),
+                  ),
+                ],
               ),
               body: SingleChildScrollView(
                 child: Column(
                   children: [
+                    SizedBox(height: 16.h),
+                    Builder(builder: (cardContext) {
+                      final recap = buildMonthInReview(transactions);
+                      // Build a 30-day net-flow sparkline for the recap
+                      // card; tiny but it gives the card colour and life.
+                      final spark = _buildSparkline(transactions);
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: MonthInReviewCard(
+                          data: recap,
+                          sparkline: spark,
+                          onTap: recap == null
+                              ? null
+                              : () => MonthInReviewScreen.show(
+                                    cardContext,
+                                    recap,
+                                  ),
+                        ),
+                      );
+                    }),
                     SizedBox(height: 16.h),
                     Container(
                       margin: EdgeInsets.symmetric(
@@ -760,6 +794,31 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         return SizedBox(height: 8.h);
       },
     );
+  }
+
+  /// Build a 30-day net-flow sparkline for the recap teaser card. Returns
+  /// a list of daily net values (income − expense) so the card can render
+  /// a tiny line without owning chart logic.
+  List<double> _buildSparkline(
+    List<TransactionCompleteEntity> transactions,
+  ) {
+    final today = DateTime.now();
+    final start = DateTime(today.year, today.month, today.day)
+        .subtract(const Duration(days: 29));
+    final daily = List<double>.filled(30, 0);
+    for (final t in transactions) {
+      final d = t.transaction.datetime;
+      final key = DateTime(d.year, d.month, d.day);
+      final idx = key.difference(start).inDays;
+      if (idx < 0 || idx > 29) continue;
+      final amt = t.transaction.amount;
+      if (t.transaction.type == TransactionType.income) {
+        daily[idx] += amt;
+      } else {
+        daily[idx] -= amt;
+      }
+    }
+    return daily;
   }
 }
 
