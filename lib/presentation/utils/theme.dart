@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 
 final lightTheme = ThemeData(
   primaryColor: const Color(0xFF047844),
@@ -9,6 +10,7 @@ final lightTheme = ThemeData(
   hintColor: appYellow,
   scaffoldBackgroundColor: const Color(0xFFEBEDEC),
   useMaterial3: true,
+  extensions: const [AppTones.light, AppElevations.light],
   colorScheme: ColorScheme.light(
     surface: Colors.white,
     onSurface: neutralN900,
@@ -107,28 +109,31 @@ final lightTheme = ThemeData(
   ),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
-    fillColor: const Color(0xFFF5F6F7),
+    fillColor: Colors.white,
     contentPadding: EdgeInsets.symmetric(
-      horizontal: 16.w,
-      vertical: 12.h,
+      horizontal: 14.w,
+      vertical: 14.h,
+    ),
+    hintStyle: TextStyle(
+      color: const Color(0xFF6B7280),
+      fontSize: 14.sp,
+    ),
+    labelStyle: TextStyle(
+      color: const Color(0xFF374151),
+      fontSize: 14.sp,
+      fontWeight: FontWeight.w600,
     ),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8.r),
-      borderSide: const BorderSide(
-        color: Colors.transparent,
-      ),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8.r),
-      borderSide: const BorderSide(
-        color: Color(0xFF047844),
-      ),
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: const BorderSide(color: Color(0xFFE2E5E9), width: 1),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(
-        color: Colors.transparent,
-      ),
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: const BorderSide(color: Color(0xFFE2E5E9), width: 1),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: const BorderSide(color: Color(0xFF047844), width: 1.5),
     ),
     floatingLabelStyle: TextStyle(
       color: appPrimaryColor,
@@ -200,6 +205,7 @@ final darkTheme = ThemeData(
   hintColor: appYellow,
   scaffoldBackgroundColor: neutralN900,
   useMaterial3: true,
+  extensions: const [AppTones.dark, AppElevations.dark],
   colorScheme: ColorScheme.dark(
     surface: neutralN700,
     onSurface: Colors.white,

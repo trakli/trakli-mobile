@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 
 class EducationBanner extends StatelessWidget {
   final String message;
@@ -16,18 +16,15 @@ class EducationBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tones = context.tones;
+    final warm = tones.accentWarm;
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
       padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.light
-            ? appPrimaryColor.withValues(alpha: 0.08)
-            : neutralN700.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-          width: 1,
-        ),
+        color: tones.accentWarmSoft,
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        border: Border.all(color: warm.withValues(alpha: 0.45)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,23 +32,20 @@ class EducationBanner extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(8.r),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.15),
+              color: warm.withValues(alpha: 0.18),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              size: 20.sp,
-              color: Theme.of(context).primaryColor,
-            ),
+            child: Icon(icon, size: 20.sp, color: warm),
           ),
           SizedBox(width: 12.w),
           Expanded(
             child: Text(
               message,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontSize: 12.5.sp, height: 1.4),
+              style: TextStyle(
+                fontSize: 12.5.sp,
+                height: 1.4,
+                color: tones.textPrimary,
+              ),
             ),
           ),
           if (onDismiss != null) ...[
@@ -61,7 +55,7 @@ class EducationBanner extends StatelessWidget {
               child: Icon(
                 Icons.close,
                 size: 18.sp,
-                color: const Color(0xFF576760),
+                color: tones.textMuted,
               ),
             ),
           ],

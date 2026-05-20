@@ -13,6 +13,7 @@ import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/transfers/wallet_transfer_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/dialogs/pop_up_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -113,20 +114,28 @@ class WalletTile extends StatelessWidget {
                                 vertical: 2.h,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white.withAlpha(51),
+                                color: context.tones.accentWarm,
                                 borderRadius: BorderRadius.circular(6.r),
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 1,
-                                ),
                               ),
-                              child: Text(
-                                LocaleKeys.defaultWallet.tr(),
-                                style: TextStyle(
-                                  fontSize: 11.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.star_rounded,
+                                    size: 12.sp,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(width: 3.w),
+                                  Text(
+                                    LocaleKeys.defaultWallet.tr(),
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      letterSpacing: 0.2,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],

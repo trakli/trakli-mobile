@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/presentation/auth/cubits/auth/auth_cubit.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/category/category_screen.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
@@ -63,6 +64,9 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final authState = context.watch<AuthCubit>().state;
+    final user = authState.user;
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Container(
@@ -70,13 +74,57 @@ class CustomDrawer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16.sp),
+            SizedBox(height: 14.h),
             Padding(
-              padding: EdgeInsets.only(left: 12.w),
-              child: SvgPicture.asset(
-                Assets.images.logoGreen,
-                height: 44.sp,
+              padding: EdgeInsets.symmetric(horizontal: 14.w),
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    isDark
+                        ? Assets.images.appLogo
+                        : Assets.images.appLogoGreen,
+                    height: 28.h,
+                  ),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          user?.fullName ?? 'Trakli',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w800,
+                            color: Theme.of(context).colorScheme.onSurface,
+                            letterSpacing: -0.2,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (user?.email != null) ...[
+                          SizedBox(height: 2.h),
+                          Text(
+                            user!.email,
+                            style: TextStyle(
+                              fontSize: 11.sp,
+                              color: Colors.grey.shade500,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
               ),
+            ),
+            SizedBox(height: 4.h),
+            Divider(
+              height: 12,
+              thickness: 1,
+              color: Colors.grey.shade300,
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -85,32 +133,15 @@ class CustomDrawer extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      _sectionLabel(context, 'EVERYDAY'),
                       _listItem(
                         context,
                         onTap: () {
-                          AppNavigator.push(context, const CategoryScreen());
+                          AppNavigator.push(context, const HistoryScreen());
                         },
-                        title: LocaleKeys.categories.tr(),
-                        iconPath: Assets.images.category,
-                        subtitle: LocaleKeys.categoryDesc.tr(),
-                      ),
-                      _listItem(
-                        context,
-                        onTap: () {
-                          AppNavigator.push(context, const MyGroupsScreen());
-                        },
-                        title: LocaleKeys.groups.tr(),
-                        iconPath: Assets.images.people,
-                        subtitle: LocaleKeys.groupsDesc.tr(),
-                      ),
-                      _listItem(
-                        context,
-                        onTap: () {
-                          AppNavigator.push(context, const PartyScreen());
-                        },
-                        title: LocaleKeys.parties.tr(),
-                        iconPath: Assets.images.people,
-                        subtitle: LocaleKeys.partiesDesc.tr(),
+                        title: LocaleKeys.transactions.tr(),
+                        iconPath: Assets.images.refresh,
+                        subtitle: LocaleKeys.transactionsDesc.tr(),
                       ),
                       _listItem(
                         context,
@@ -126,12 +157,23 @@ class CustomDrawer extends StatelessWidget {
                       _listItem(
                         context,
                         onTap: () {
-                          AppNavigator.push(context, const HistoryScreen());
+                          AppNavigator.push(context, const PartyScreen());
                         },
-                        title: LocaleKeys.transactions.tr(),
-                        iconPath: Assets.images.refresh,
-                        subtitle: LocaleKeys.transactionsDesc.tr(),
+                        title: LocaleKeys.parties.tr(),
+                        iconPath: Assets.images.people,
+                        subtitle: LocaleKeys.partiesDesc.tr(),
                       ),
+                      _listItem(
+                        context,
+                        onTap: () {
+                          AppNavigator.push(context, const CategoryScreen());
+                        },
+                        title: LocaleKeys.categories.tr(),
+                        iconPath: Assets.images.tag2,
+                        subtitle: LocaleKeys.categoryDesc.tr(),
+                      ),
+                      SizedBox(height: 8.h),
+                      _sectionLabel(context, 'ORGANIZE'),
                       _listItem(
                         context,
                         onTap: () {
@@ -141,30 +183,52 @@ class CustomDrawer extends StatelessWidget {
                         iconPath: Assets.images.arrowUpDown,
                         subtitle: LocaleKeys.transfersDesc.tr(),
                       ),
-                      ListTile(
-                        onTap: () {
-                          AppNavigator.push(context, const ImportHubScreen());
-                        },
-                        leading: Icon(
-                          Icons.file_upload_outlined,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                        title: Text(LocaleKeys.imports.tr()),
-                        subtitle: Text(LocaleKeys.importsDesc.tr()),
-                        subtitleTextStyle:
-                            Theme.of(context).textTheme.labelSmall?.copyWith(
-                                  color: Colors.grey.shade500,
-                                ),
-                      ),
-                      Divider(
-                        color: Colors.grey.shade500,
-                      ),
                       _listItem(
                         context,
-                        onTap: () => _launchSupportEmail(context),
-                        title: LocaleKeys.support.tr(),
-                        iconPath: Assets.images.support,
+                        onTap: () {
+                          AppNavigator.push(context, const MyGroupsScreen());
+                        },
+                        title: LocaleKeys.groups.tr(),
+                        iconPath: Assets.images.people,
+                        subtitle: LocaleKeys.groupsDesc.tr(),
                       ),
+                      InkWell(
+                        onTap: () => AppNavigator.push(
+                          context,
+                          const ImportHubScreen(),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 8.h,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.file_upload_outlined,
+                                size: 20.sp,
+                                color:
+                                    Theme.of(context).colorScheme.onSurface,
+                              ),
+                              SizedBox(width: 14.w),
+                              Expanded(
+                                child: Text(
+                                  LocaleKeys.imports.tr(),
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      _sectionLabel(context, 'MORE'),
                       _listItem(
                         context,
                         onTap: () {
@@ -172,6 +236,12 @@ class CustomDrawer extends StatelessWidget {
                         },
                         title: LocaleKeys.settings.tr(),
                         iconPath: Assets.images.setting,
+                      ),
+                      _listItem(
+                        context,
+                        onTap: () => _launchSupportEmail(context),
+                        title: LocaleKeys.support.tr(),
+                        iconPath: Assets.images.support,
                       ),
                       BlocBuilder<ConfigCubit, ConfigState>(
                         builder: (context, state) {
@@ -212,6 +282,21 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
+  Widget _sectionLabel(BuildContext context, String text) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 4.h),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 10.sp,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.6,
+          color: Colors.grey.shade500,
+        ),
+      ),
+    );
+  }
+
   Widget _listItem(
     BuildContext context, {
     VoidCallback? onTap,
@@ -219,20 +304,39 @@ class CustomDrawer extends StatelessWidget {
     required String iconPath,
     String? subtitle,
   }) {
-    return ListTile(
+    return InkWell(
       onTap: onTap,
-      leading: SvgPicture.asset(
-        iconPath,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).colorScheme.onSurface,
-          BlendMode.srcIn,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 22.r,
+              height: 22.r,
+              child: SvgPicture.asset(
+                iconPath,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.onSurface,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       ),
-      title: Text(title),
-      subtitle: subtitle == null ? null : Text(subtitle),
-      subtitleTextStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: Colors.grey.shade500,
-          ),
     );
   }
 }
