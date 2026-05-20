@@ -239,17 +239,25 @@ class _CustomAutoCompleteSearchState<T extends Object>
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(8.r),
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(
+                color: widget.accentColor,
+                width: 1.5,
               ),
-              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: const BorderSide(
+                color: Color(0xFFE2E5E9),
+                width: 1,
+              ),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: const BorderSide(
+                color: Color(0xFFE2E5E9),
+                width: 1,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.r),

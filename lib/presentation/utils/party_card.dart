@@ -9,8 +9,10 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/parties/add_party_screen.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
+import 'package:trakli/presentation/parties/party_detail_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/dialogs/pop_up_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -30,13 +32,15 @@ class PartyCard extends StatelessWidget {
 
   double get _netBalance => receivedAmount - spentAmount;
 
+  AppTone _toneForBalance() {
+    if (_netBalance > 0) return AppTone.income;
+    if (_netBalance < 0) return AppTone.expense;
+    return AppTone.brand;
+  }
+
   Color _getAvatarColor(BuildContext context) {
-    if (_netBalance > 0) {
-      return const Color(0xFF22C55E);
-    } else if (_netBalance < 0) {
-      return const Color(0xFFEF4444);
-    }
-    return Theme.of(context).primaryColor;
+    final palette = context.tones.tone(_toneForBalance());
+    return palette.deep;
   }
 
   void _handleEdit(BuildContext context) {
@@ -121,8 +125,27 @@ class PartyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Stack(
+    final tones = context.tones;
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(
+          color: tones.bgSurface,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: tones.borderLight),
+          boxShadow: context.elevations.level1,
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16.r),
+          onTap: () => AppNavigator.push(
+            context,
+            PartyDetailScreen(party: party),
+          ),
+          splashColor: tones.pressOverlay,
+          highlightColor: tones.hoverOverlay,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16.r),
+            child: Stack(
         children: [
           SizedBox(
             width: double.infinity,
@@ -322,6 +345,9 @@ class PartyCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+          ),
+        ),
       ),
     );
   }
