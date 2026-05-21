@@ -5,13 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/auth/cubits/auth/auth_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/account_deletion_sheet.dart';
 import 'package:trakli/presentation/utils/buttons.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/dialogs/pop_up_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class DataDeletionScreen extends StatefulWidget {
   const DataDeletionScreen({super.key});
@@ -24,14 +23,8 @@ class _DataDeletionScreenState extends State<DataDeletionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.data.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
-        actions: [
-          SizedBox(width: 16.w),
-        ],
+      appBar: PageAppBar(
+        title: LocaleKeys.data.tr(),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(

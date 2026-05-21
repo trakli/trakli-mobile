@@ -11,12 +11,11 @@ import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
 import 'package:trakli/presentation/groups/cubit/group_cubit.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/pick_group_bottom_sheet.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/select_wallet_bottom_sheet.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class DefaultsSettingsScreen extends StatelessWidget {
   const DefaultsSettingsScreen({super.key});
@@ -40,14 +39,8 @@ class DefaultsSettingsScreen extends StatelessWidget {
         .firstWhereOrNull((entity) => entity.clientId == defaultWalletId);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.defaults.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
-        actions: [
-          SizedBox(width: 16.w),
-        ],
+      appBar: PageAppBar(
+        title: LocaleKeys.defaults.tr(),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(

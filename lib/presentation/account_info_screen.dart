@@ -4,11 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart' show Assets;
 import 'package:trakli/presentation/auth/cubits/auth/auth_cubit.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/colors.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/forms/profile_form.dart';
 import 'package:trakli/presentation/utils/info_tile.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -25,11 +24,8 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: appPrimaryColor,
-        titleText: LocaleKeys.accountInfo.tr(),
-        headerTextColor: Colors.white,
-        leading: const CustomBackButton(),
+      appBar: PageAppBar(
+        title: LocaleKeys.accountInfo.tr(),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(

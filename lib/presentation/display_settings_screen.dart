@@ -7,12 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/config/theme_cubit/theme_cubit.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/colors.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/providers/local_storage.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class DisplaySettingsScreen extends StatefulWidget {
   const DisplaySettingsScreen({super.key});
@@ -41,14 +40,8 @@ class _DisplaySettingsScreenState extends State<DisplaySettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.displaySettings.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
-        actions: [
-          SizedBox(width: 16.w),
-        ],
+      appBar: PageAppBar(
+        title: LocaleKeys.displaySettings.tr(),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(

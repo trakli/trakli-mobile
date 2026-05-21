@@ -4,8 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/data_deletion_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
   const AccountSettingsScreen({super.key});
@@ -13,14 +12,8 @@ class AccountSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.accountAndPrivacy.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
-        actions: [
-          SizedBox(width: 16.w),
-        ],
+      appBar: PageAppBar(
+        title: LocaleKeys.accountAndPrivacy.tr(),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(

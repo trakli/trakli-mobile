@@ -17,9 +17,9 @@ import 'package:trakli/presentation/defaults_settings_screen.dart';
 import 'package:trakli/presentation/display_settings_screen.dart';
 import 'package:trakli/presentation/notification_settings/notification_settings_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/about_app_bottom_sheet.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 
@@ -34,21 +34,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.settings.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
-        actions: [
-          SizedBox(width: 16.w),
-        ],
+      appBar: PageAppBar(
+        title: LocaleKeys.settings.tr(),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,
           vertical: 16.h,
         ),
-        child: Column(
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.tones.bgSurface,
+            borderRadius: BorderRadius.circular(AppRadii.lg),
+            border: Border.all(color: context.tones.borderLight),
+            boxShadow: context.elevations.level1,
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+          child: Column(
           children: [
             // Language
             ListTile(
@@ -252,8 +254,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 size: 16.sp,
               ),
             ),
-            SizedBox(height: 24.h),
           ],
+        ),
         ),
       ),
     );

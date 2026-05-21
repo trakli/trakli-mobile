@@ -7,8 +7,7 @@ import 'package:trakli/core/sync/sync_database.dart';
 import 'package:trakli/data/database/app_database.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class SyncHistoryScreen extends StatefulWidget {
   const SyncHistoryScreen({super.key});
@@ -126,14 +125,8 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.synchronization.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
-        actions: [
-          SizedBox(width: 16.w),
-        ],
+      appBar: PageAppBar(
+        title: LocaleKeys.synchronization.tr(),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
