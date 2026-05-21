@@ -12,6 +12,7 @@ import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
 import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/party_card.dart';
 
 class MockExchangeRateCubit extends Mock implements ExchangeRateCubit {}
@@ -215,16 +216,19 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
+      final incomeDeep = AppTones.light.income.deep;
       final containers = tester.widgetList<Container>(find.byType(Container));
       final avatarContainer = containers.firstWhere(
         (c) =>
             c.decoration is BoxDecoration &&
             (c.decoration as BoxDecoration).shape == BoxShape.circle &&
-            (c.decoration as BoxDecoration).color == const Color(0xFF22C55E),
+            (c.decoration as BoxDecoration).color == incomeDeep,
         orElse: () => Container(),
       );
 
-      expect(avatarContainer.decoration, isNotNull);
+      expect(avatarContainer.decoration, isNotNull,
+          reason:
+              'Avatar circle should use AppTones.light.income.deep when net is positive');
     });
 
     testWidgets('should show red avatar when spent > received', (tester) async {
@@ -247,16 +251,19 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
+      final expenseDeep = AppTones.light.expense.deep;
       final containers = tester.widgetList<Container>(find.byType(Container));
       final avatarContainer = containers.firstWhere(
         (c) =>
             c.decoration is BoxDecoration &&
             (c.decoration as BoxDecoration).shape == BoxShape.circle &&
-            (c.decoration as BoxDecoration).color == const Color(0xFFEF4444),
+            (c.decoration as BoxDecoration).color == expenseDeep,
         orElse: () => Container(),
       );
 
-      expect(avatarContainer.decoration, isNotNull);
+      expect(avatarContainer.decoration, isNotNull,
+          reason:
+              'Avatar circle should use AppTones.light.expense.deep when net is negative');
     });
 
     testWidgets('should display stats chips when amounts are present',
