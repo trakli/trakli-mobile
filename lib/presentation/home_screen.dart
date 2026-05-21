@@ -25,7 +25,9 @@ import 'package:trakli/presentation/utils/all_wallets_tile.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/pick_group_bottom_sheet.dart';
 import 'package:trakli/presentation/utils/colors.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
+import 'package:trakli/presentation/utils/globals.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/utils/transaction_expansion_tile.dart';
 import 'package:trakli/presentation/utils/wallet_tile.dart';
@@ -193,29 +195,33 @@ class _HomeScreenState extends State<HomeScreen> {
     selectedGroup = selectedGroup ?? groups.firstOrNull;
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: SvgPicture.asset(
-          Assets.images.logoGreen,
-          height: 38.h,
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              AppNavigator.push(
-                context,
-                const NotificationsScreen(),
-              );
-            },
-            child: Container(
-              width: 42.r,
-              height: 42.r,
-              padding: EdgeInsets.all(12.r),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+      appBar: PageAppBar(
+        title: '',
+        titleWidget: Theme.of(context).brightness == Brightness.dark
+            ? Image.asset(
+                'assets/images/trakli-logo-white.png',
+                height: 28.h,
+                fit: BoxFit.contain,
+              )
+            : SvgPicture.asset(
+                Assets.images.logoGreen,
+                height: 30.h,
               ),
+        leading: Padding(
+          padding: EdgeInsets.only(left: 12.w),
+          child: InkWell(
+            onTap: () => scaffoldKey.currentState?.openDrawer(),
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            child: Container(
+              width: 40.r,
+              height: 40.r,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                color: Theme.of(context).primaryColor.withAlpha(50),
+              ),
+              padding: EdgeInsets.all(9.r),
               child: SvgPicture.asset(
-                Assets.images.notificationBing,
+                Assets.images.category,
                 colorFilter: ColorFilter.mode(
                   Theme.of(context).primaryColor,
                   BlendMode.srcIn,
@@ -223,32 +229,25 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          SizedBox(width: 12.w),
-          GestureDetector(
+        ),
+        actions: [
+          PageAppBarAction(
+            icon: Icons.notifications_none_rounded,
+            onTap: () => AppNavigator.push(
+              context,
+              const NotificationsScreen(),
+            ),
+          ),
+          PageAppBarAction(
+            icon: Icons.refresh_rounded,
             onTap: () {
               final isAuthenticated =
                   context.read<AuthCubit>().state.isAuthenticated;
-
               if (isAuthenticated) {
                 getIt<SynchAppDatabase>().sync();
               }
             },
-            child: Container(
-              width: 42.r,
-              height: 42.r,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-              ),
-              // padding: EdgeInsets.all(14.r),
-              child: Icon(
-                Icons.refresh,
-                size: 20.sp,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
           ),
-          SizedBox(width: 16.w),
         ],
       ),
       body: BlocConsumer<TransactionCubit, TransactionState>(
