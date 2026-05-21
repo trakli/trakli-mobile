@@ -51,7 +51,11 @@ class AddTransactionFormCompactLayout extends StatefulWidget {
 }
 
 class _AddTransactionFormCompactLayoutState
-    extends State<AddTransactionFormCompactLayout> {
+    extends State<AddTransactionFormCompactLayout>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   int? selectedIndex;
   DateFormat dateFormat = DateFormat('dd-MM-yyy');
   DateFormat timeFormat = DateFormat('h:mm:a');
@@ -184,6 +188,7 @@ class _AddTransactionFormCompactLayoutState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocListener<TransactionCubit, TransactionState>(
       listenWhen: (previous, current) {
         // Listen when saving completes (isSaving goes from true to false)
@@ -264,11 +269,22 @@ class _AddTransactionFormCompactLayoutState
                           maxHeight: 50.h,
                         ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
+                          color: widget.accentColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(
+                            color: widget.accentColor.withValues(alpha: 0.35),
+                            width: 1,
+                          ),
                         ),
                         child: Center(
-                          child: Text(currentCurrency?.code ?? "XAF"),
+                          child: Text(
+                            currentCurrency?.code ?? "XAF",
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w700,
+                              color: widget.accentColor,
+                            ),
+                          ),
                         ),
                       ),
                     )
@@ -330,29 +346,11 @@ class _AddTransactionFormCompactLayoutState
                         },
                       ),
                     ),
-                    GestureDetector(
+                    _AddBesideField(
                       onTap: () async {
                         AppNavigator.push(context, const AddWalletScreen());
                       },
-                      child: Container(
-                        width: 60.w,
-                        constraints: BoxConstraints(
-                          maxHeight: 50.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            Assets.images.add,
-                            colorFilter: ColorFilter.mode(
-                              Theme.of(context).colorScheme.onSurface,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                      ),
+                      accent: widget.accentColor,
                     ),
                   ],
                 ),
@@ -451,10 +449,7 @@ class _AddTransactionFormCompactLayoutState
                       child: BlocBuilder<PartyCubit, PartyState>(
                         builder: (context, state) {
                           return CustomAutoCompleteSearch<PartyEntity>(
-                            label: widget.transactionType ==
-                                    TransactionType.expense
-                                ? '${LocaleKeys.transactionSentTo.tr()} (${LocaleKeys.party.tr()})'
-                                : '${LocaleKeys.transactionReceivedFrom.tr()} (${LocaleKeys.party.tr()})',
+                            label: LocaleKeys.party.tr(),
                             accentColor: widget.accentColor,
                             optionsBuilder:
                                 (TextEditingValue textEditingValue) {
@@ -480,29 +475,11 @@ class _AddTransactionFormCompactLayoutState
                         },
                       ),
                     ),
-                    GestureDetector(
+                    _AddBesideField(
                       onTap: () async {
                         AppNavigator.push(context, const AddPartyScreen());
                       },
-                      child: Container(
-                        width: 60.w,
-                        constraints: BoxConstraints(
-                          maxHeight: 50.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            Assets.images.add,
-                            colorFilter: ColorFilter.mode(
-                              Theme.of(context).colorScheme.onSurface,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                      ),
+                      accent: widget.accentColor,
                     ),
                   ],
                 ),
@@ -522,7 +499,7 @@ class _AddTransactionFormCompactLayoutState
                                   element.type == widget.transactionType);
 
                           return CustomAutoCompleteSearch<CategoryEntity>(
-                            label: LocaleKeys.transactionCategory.tr(),
+                            label: LocaleKeys.category.tr(),
                             accentColor: widget.accentColor,
                             optionsBuilder:
                                 (TextEditingValue textEditingValue) {
@@ -548,7 +525,7 @@ class _AddTransactionFormCompactLayoutState
                         },
                       ),
                     ),
-                    GestureDetector(
+                    _AddBesideField(
                       onTap: () async {
                         AppNavigator.push(
                           context,
@@ -558,25 +535,7 @@ class _AddTransactionFormCompactLayoutState
                           ),
                         );
                       },
-                      child: Container(
-                        width: 60.w,
-                        constraints: BoxConstraints(
-                          maxHeight: 50.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            Assets.images.add,
-                            colorFilter: ColorFilter.mode(
-                              Theme.of(context).colorScheme.onSurface,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                      ),
+                      accent: widget.accentColor,
                     ),
                   ],
                 ),
@@ -616,14 +575,61 @@ class _AddTransactionFormCompactLayoutState
               ],
               SizedBox(height: 20.h),
               SizedBox(
-                height: 54.h,
+                height: 56.h,
                 width: double.infinity,
                 child: Builder(
                   builder: (context) {
-                    return ElevatedButton(
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(11.r),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            widget.accentColor,
+                            Color.alphaBlend(
+                              Colors.black.withValues(alpha: 0.08),
+                              widget.accentColor,
+                            ),
+                          ],
+                        ),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.35),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.accentColor.withValues(alpha: 0.4),
+                            blurRadius: 18,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            WidgetStatePropertyAll(widget.accentColor),
+                            const WidgetStatePropertyAll(Colors.transparent),
+                        foregroundColor:
+                            const WidgetStatePropertyAll(Colors.white),
+                        elevation:
+                            const WidgetStatePropertyAll(0),
+                        shadowColor: const WidgetStatePropertyAll(
+                            Colors.transparent),
+                        overlayColor: WidgetStatePropertyAll(
+                            Colors.white.withValues(alpha: 0.16)),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(14.r),
+                          ),
+                        ),
+                        textStyle: WidgetStatePropertyAll(
+                          TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.1,
+                          ),
+                        ),
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -689,6 +695,7 @@ class _AddTransactionFormCompactLayoutState
                           )
                         ],
                       ),
+                    ),
                     );
                   },
                 ),
@@ -696,6 +703,37 @@ class _AddTransactionFormCompactLayoutState
               SizedBox(height: 20.h),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AddBesideField extends StatelessWidget {
+  final VoidCallback onTap;
+  final Color accent;
+
+  const _AddBesideField({required this.onTap, required this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 52.w,
+        height: 50.h,
+        decoration: BoxDecoration(
+          color: accent.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(
+            color: accent.withValues(alpha: 0.35),
+            width: 1,
+          ),
+        ),
+        child: Icon(
+          Icons.add,
+          color: accent,
+          size: 22.sp,
         ),
       ),
     );
