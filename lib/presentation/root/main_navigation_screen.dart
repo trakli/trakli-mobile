@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/core/sync/sync_database.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/gen/assets.gen.dart';
@@ -112,7 +113,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               ],
               backgroundColor: Theme.of(context).colorScheme.surface,
               color: Theme.of(context).colorScheme.onSurface,
-              selectedColor: Theme.of(context).primaryColor,
+              selectedColor: context.tones.accentWarm,
             ),
           );
         },
