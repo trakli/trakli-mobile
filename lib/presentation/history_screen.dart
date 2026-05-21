@@ -17,9 +17,9 @@ import 'package:trakli/presentation/info_interfaces/data.dart';
 import 'package:trakli/presentation/info_interfaces/info_interface.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/colors.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/utils/popovers/category_list_popover.dart';
@@ -107,37 +107,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
         final totalBalance = totalIncome - totalExpense;
 
         return Scaffold(
-          appBar: CustomAppBar(
-            backgroundColor: Theme.of(context).primaryColor,
-            leading: const CustomBackButton(),
-            titleText: LocaleKeys.transactionHistory.tr(),
-            headerTextColor: const Color(0xFFEBEDEC),
+          appBar: PageAppBar(
+            title: LocaleKeys.transactionHistory.tr(),
             actions: [
-              InkWell(
-                onTap: () {
-                  AppNavigator.push(
-                    context,
-                    const AddTransactionScreen(),
-                  );
-                },
-                child: Container(
-                  width: 42.r,
-                  height: 42.r,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.r),
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                  ),
-                  padding: EdgeInsets.all(8.r),
-                  child: Center(
-                    child: Icon(
-                      Icons.add,
-                      size: 24.r,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
+              PageAppBarAction(
+                icon: Icons.add,
+                onTap: () => AppNavigator.push(
+                  context,
+                  const AddTransactionScreen(),
                 ),
+                primary: true,
               ),
-              SizedBox(width: 16.w),
             ],
           ),
           body: (state.isLoading)
@@ -157,10 +137,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       data: emptyTransactionData,
                     )
                   : SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 16.h,
-                      ),
+                      padding: EdgeInsets.fromLTRB(12.w, 6.h, 12.w, 12.h),
                       child: Column(
                         children: [
                           Row(
@@ -207,14 +184,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                       _filterType(
                                         iconPath: Assets.images.calendar,
                                         filterType: FilterType.date,
+                                        tone: AppTone.brand,
                                       ),
                                       _filterType(
                                         iconPath: Assets.images.tag2,
                                         filterType: FilterType.category,
+                                        tone: AppTone.warm,
                                       ),
                                       _filterType(
                                         iconPath: Assets.images.wallet,
                                         filterType: FilterType.wallet,
+                                        tone: AppTone.income,
                                       ),
                                     ],
                                   ),
@@ -456,76 +436,109 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _filterType({
     required String iconPath,
     required FilterType filterType,
+    required AppTone tone,
   }) {
     final GlobalKey key = GlobalKey();
 
+    final tones = context.tones;
+    final palette = tones.tone(tone);
     return Expanded(
       child: Builder(
         builder: (context) {
-          return OutlinedButton.icon(
+          return Material(
             key: key,
-            onPressed: () {
-              showCustomPopOver(
-                context,
-                maxWidth: 0.45.sw,
-                widget: filterType == FilterType.wallet
-                    ? WalletListPopover(
-                        label: filterType.filterName.tr(),
-                        onSelect: (wallet) {
-                          setState(() {
-                            if (!selectedItems.any((item) =>
-                                (item is WalletEntity &&
-                                    item.clientId == wallet.clientId))) {
-                              selectedItems.add(wallet);
-                            }
-                          });
-                        },
-                      )
-                    : filterType == FilterType.category
-                        ? CategoryListPopover(
-                            label: filterType.filterName.tr(),
-                            onSelect: (category) {
-                              setState(() {
-                                if (!selectedItems.any((item) =>
-                                    (item is CategoryEntity &&
-                                        item.clientId == category.clientId))) {
-                                  selectedItems.add(category);
-                                }
-                              });
-                            },
-                          )
-                        : DateListPopover(
-                            label: filterType.filterName.tr(),
-                            onSelect: (range) {
-                              setState(() {
-                                dateRange = range;
-                              });
-                            },
-                            onSelectString: (dateFilterOption) {
-                              setState(() {
-                                selectedItems.removeWhere(
-                                    (item) => item is DateFilterOption);
-                                selectedItems.add(dateFilterOption);
-                              });
-                            },
-                          ),
-              );
-            },
-            icon: SvgPicture.asset(
-              iconPath,
-              width: 12.w,
-              height: 12.h,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.onSurface,
-                BlendMode.srcIn,
+            color: palette.background,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadii.lg),
+              side: BorderSide(
+                color: palette.accent.withValues(alpha: 0.45),
               ),
             ),
-            label: Text(
-              filterType.filterName.tr(),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    fontSize: 10.sp,
-                  ),
-              overflow: TextOverflow.ellipsis,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppRadii.lg),
+              onTap: () {
+                showCustomPopOver(
+                  context,
+                  maxWidth: 0.45.sw,
+                  widget: filterType == FilterType.wallet
+                      ? WalletListPopover(
+                          label: filterType.filterName.tr(),
+                          onSelect: (wallet) {
+                            setState(() {
+                              if (!selectedItems.any((item) =>
+                                  (item is WalletEntity &&
+                                      item.clientId == wallet.clientId))) {
+                                selectedItems.add(wallet);
+                              }
+                            });
+                          },
+                        )
+                      : filterType == FilterType.category
+                          ? CategoryListPopover(
+                              label: filterType.filterName.tr(),
+                              onSelect: (category) {
+                                setState(() {
+                                  if (!selectedItems.any((item) =>
+                                      (item is CategoryEntity &&
+                                          item.clientId == category.clientId))) {
+                                    selectedItems.add(category);
+                                  }
+                                });
+                              },
+                            )
+                          : DateListPopover(
+                              label: filterType.filterName.tr(),
+                              onSelect: (range) {
+                                setState(() {
+                                  dateRange = range;
+                                });
+                              },
+                              onSelectString: (dateFilterOption) {
+                                setState(() {
+                                  selectedItems.removeWhere(
+                                      (item) => item is DateFilterOption);
+                                  selectedItems.add(dateFilterOption);
+                                });
+                              },
+                            ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 7.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      iconPath,
+                      width: 14.w,
+                      height: 14.h,
+                      colorFilter: ColorFilter.mode(
+                        palette.deep,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    SizedBox(width: 6.w),
+                    Flexible(
+                      child: Text(
+                        filterType.filterName.tr(),
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w700,
+                          color: palette.deep,
+                          letterSpacing: -0.1,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(width: 2.w),
+                    Icon(
+                      Icons.expand_more,
+                      size: 14.sp,
+                      color: palette.deep,
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         },
