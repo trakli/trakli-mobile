@@ -7,8 +7,7 @@ import 'package:trakli/domain/entities/transfer_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/gen/translations/locale_keys.g.dart';
 import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/transfer_tile.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 
@@ -33,11 +32,8 @@ class TransfersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.transfers.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
+      appBar: PageAppBar(
+        title: LocaleKeys.transfers.tr(),
       ),
       body: SafeArea(
         child: BlocBuilder<TransferCubit, TransferState>(

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/core/services/orphaned_media_cleanup_service.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 /// Debug-only screen that shows the last orphaned media cleanup log content.
 class OrphanedMediaCleanupLogScreen extends StatelessWidget {
@@ -13,11 +12,8 @@ class OrphanedMediaCleanupLogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.orphanedMediaCleanupLog.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
+      appBar: PageAppBar(
+        title: LocaleKeys.orphanedMediaCleanupLog.tr(),
       ),
       body: FutureBuilder<String?>(
         future: getOrphanedMediaCleanupLogContent(),

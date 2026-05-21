@@ -6,8 +6,7 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/savings/add_savings_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/savings_tile.dart';
 
 class MySavingsScreen extends StatelessWidget {
@@ -16,34 +15,15 @@ class MySavingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.savings.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
+      appBar: PageAppBar(
+        title: LocaleKeys.savings.tr(),
         actions: [
-          InkWell(
-            onTap: () {
-              AppNavigator.push(context, const AddSavingsScreen());
-            },
-            child: Container(
-              width: 40.w,
-              height: 40.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: const Color(0xFFEBEDEC),
-              ),
-              padding: EdgeInsets.all(8.r),
-              child: Center(
-                child: Icon(
-                  Icons.add,
-                  size: 24.r,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-            ),
+          PageAppBarAction(
+            icon: Icons.add,
+            onTap: () =>
+                AppNavigator.push(context, const AddSavingsScreen()),
+            primary: true,
           ),
-          SizedBox(width: 16.w),
         ],
       ),
       body: SingleChildScrollView(

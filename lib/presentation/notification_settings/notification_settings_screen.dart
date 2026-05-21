@@ -12,10 +12,9 @@ import 'package:trakli/presentation/notification_settings/widgets/insights_frequ
 import 'package:trakli/presentation/notification_settings/widgets/notification_section_header.dart';
 import 'package:trakli/presentation/notification_settings/widgets/notification_selection_item.dart';
 import 'package:trakli/presentation/notification_settings/widgets/notification_toggle_item.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/helpers.dart'
     show showSnackBar, showLoader, hideLoader;
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class NotificationSettingsScreen extends StatelessWidget {
   const NotificationSettingsScreen({super.key});
@@ -23,11 +22,8 @@ class NotificationSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.notificationSettings.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
+      appBar: PageAppBar(
+        title: LocaleKeys.notificationSettings.tr(),
       ),
       body: const _NotificationSettingsBody(),
     );

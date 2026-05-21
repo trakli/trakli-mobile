@@ -6,8 +6,7 @@ import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/orphaned_media_cleanup_log_screen.dart';
 import 'package:trakli/presentation/sync_history_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class AdvancedSettingsScreen extends StatelessWidget {
   const AdvancedSettingsScreen({super.key});
@@ -15,14 +14,8 @@ class AdvancedSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: const CustomBackButton(),
-        titleText: LocaleKeys.advanced.tr(),
-        headerTextColor: const Color(0xFFEBEDEC),
-        actions: [
-          SizedBox(width: 16.w),
-        ],
+      appBar: PageAppBar(
+        title: LocaleKeys.advanced.tr(),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
