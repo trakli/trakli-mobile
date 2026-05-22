@@ -90,7 +90,6 @@ class ProfileScreen extends StatelessWidget {
       backgroundColor: tones.bgPage,
       appBar: PageAppBar(
         title: LocaleKeys.profile.tr(),
-        showBack: false,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
