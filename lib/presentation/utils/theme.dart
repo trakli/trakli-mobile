@@ -299,7 +299,7 @@ final darkTheme = ThemeData(
     labelStyle: const TextStyle(color: Colors.white70),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.r),
-      borderSide: const BorderSide(color: Colors.transparent),
+      borderSide: BorderSide(color: neutralN500),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.r),
@@ -307,7 +307,7 @@ final darkTheme = ThemeData(
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.r),
-      borderSide: const BorderSide(color: Colors.transparent),
+      borderSide: BorderSide(color: neutralN500),
     ),
     floatingLabelStyle: TextStyle(color: appPrimaryColor),
   ),
