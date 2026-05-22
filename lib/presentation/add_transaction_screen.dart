@@ -9,6 +9,7 @@ import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/forms/add_transaction_form.dart';
+import 'package:trakli/presentation/transfers/wallet_transfer_screen.dart';
 import 'package:trakli/providers/local_storage.dart';
 
 class AddTransactionScreen extends StatefulWidget {
@@ -41,7 +42,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
       });
     });
 
-    final controlLenght = widget.transaction != null ? 1 : 2;
+    final controlLenght = widget.transaction != null ? 1 : 3;
 
     tabController = TabController(length: controlLenght, vsync: this);
     if (widget.transaction != null) {
@@ -132,6 +133,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
                                       widget.transaction,
                                 ),
                         ),
+                      if (widget.transaction == null)
+                        const KeyedSubtree(
+                          key: ValueKey('tx-form-transfer'),
+                          child: WalletTransferScreen(embedded: true),
+                        ),
                     ];
                     return IndexedStack(
                       index: tabController.index.clamp(
@@ -191,6 +197,17 @@ class _TypeSegmented extends StatelessWidget {
                   onTap: () => controller.animateTo(1),
                 ),
               ),
+              if (controller.length > 2)
+                Expanded(
+                  child: _SegmentItem(
+                    label: LocaleKeys.transfer.tr(),
+                    icon: Icons.swap_horiz_rounded,
+                    active: controller.index == 2,
+                    activeBg: tones.brand.background,
+                    activeFg: tones.brand.deep,
+                    onTap: () => controller.animateTo(2),
+                  ),
+                ),
             ],
           ),
         );
@@ -232,6 +249,7 @@ class _SegmentItem extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
@@ -240,13 +258,17 @@ class _SegmentItem extends StatelessWidget {
               color: active ? activeFg : tones.textMuted,
             ),
             SizedBox(width: 6.w),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w700,
-                color: active ? activeFg : tones.textSecondary,
-                letterSpacing: -0.1,
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
+                  color: active ? activeFg : tones.textSecondary,
+                  letterSpacing: -0.1,
+                ),
               ),
             ),
           ],

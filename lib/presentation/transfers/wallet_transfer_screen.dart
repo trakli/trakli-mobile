@@ -27,9 +27,18 @@ class WalletTransferScreen extends StatefulWidget {
   const WalletTransferScreen({
     super.key,
     this.initialFromWalletClientId,
+    this.embedded = false,
+    this.onSavedSuccessfully,
   });
 
   final String? initialFromWalletClientId;
+
+  /// When true, omits the Scaffold + AppBar so this can be embedded inside
+  /// another screen (e.g. as a tab inside [AddTransactionScreen]).
+  final bool embedded;
+
+  /// Called after a successful save. Defaults to `Navigator.pop()` when null.
+  final VoidCallback? onSavedSuccessfully;
 
   @override
   State<WalletTransferScreen> createState() => _WalletTransferScreenState();
@@ -547,35 +556,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<TransferCubit, TransferState>(
-      listenWhen: (previous, current) =>
-          previous.isSaving != current.isSaving ||
-          previous.saveSuccess != current.saveSuccess ||
-          previous.failure != current.failure,
-      listener: (context, state) {
-        if (state.failure.hasError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(LocaleKeys.transferFailedWithMessage
-                  .tr(namedArgs: {'message': state.failure.customMessage})),
-              backgroundColor: Colors.red,
-            ),
-          );
-          context.read<TransferCubit>().resetSaveState();
-        } else if (state.saveSuccess) {
-          context.read<TransferCubit>().resetSaveState();
-          Navigator.of(context).pop();
-        }
-      },
-      child: Scaffold(
-        appBar: CustomAppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          leading: const CustomBackButton(),
-          titleText: LocaleKeys.walletTransfer.tr(),
-          headerTextColor: const Color(0xFFEBEDEC),
-          actions: [SizedBox(width: 16.w)],
-        ),
-        body: BlocBuilder<TransferCubit, TransferState>(
+    final body = BlocBuilder<TransferCubit, TransferState>(
           builder: (context, transferState) {
             final minTransferAmount = context
                 .read<RemoteConfigCubit>()
@@ -856,8 +837,48 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
               ),
             );
           },
-        ),
+        );
+
+    final listener = BlocListener<TransferCubit, TransferState>(
+      listenWhen: (previous, current) =>
+          previous.isSaving != current.isSaving ||
+          previous.saveSuccess != current.saveSuccess ||
+          previous.failure != current.failure,
+      listener: (context, state) {
+        if (state.failure.hasError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(LocaleKeys.transferFailedWithMessage
+                  .tr(namedArgs: {'message': state.failure.customMessage})),
+              backgroundColor: Colors.red,
+            ),
+          );
+          context.read<TransferCubit>().resetSaveState();
+        } else if (state.saveSuccess) {
+          context.read<TransferCubit>().resetSaveState();
+          if (widget.onSavedSuccessfully != null) {
+            widget.onSavedSuccessfully!();
+          } else {
+            Navigator.of(context).pop();
+          }
+        }
+      },
+      child: body,
+    );
+
+    if (widget.embedded) {
+      return listener;
+    }
+
+    return Scaffold(
+      appBar: CustomAppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        leading: const CustomBackButton(),
+        titleText: LocaleKeys.walletTransfer.tr(),
+        headerTextColor: const Color(0xFFEBEDEC),
+        actions: [SizedBox(width: 16.w)],
       ),
+      body: listener,
     );
   }
 }
