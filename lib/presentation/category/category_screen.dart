@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
+import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/category/add_category_screen.dart';
 import 'package:trakli/presentation/category/category_detail_screen.dart';
@@ -13,6 +14,7 @@ import 'package:trakli/presentation/info_interfaces/info_interface.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/enums.dart';
+import 'package:trakli/presentation/utils/icon_background_decor.dart';
 import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class CategoryScreen extends StatefulWidget {
@@ -56,7 +58,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         ],
       ),
-      body: BlocBuilder<CategoryCubit, CategoryState>(
+      body: Stack(
+        children: [
+          IconBackgroundDecor(iconPath: Assets.images.category),
+          BlocBuilder<CategoryCubit, CategoryState>(
         builder: (context, state) {
           if (state.isLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -100,6 +105,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ],
           );
         },
+      ),
+        ],
       ),
     );
   }

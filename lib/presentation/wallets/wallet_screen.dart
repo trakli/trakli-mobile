@@ -6,6 +6,7 @@ import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
+import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
 import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
@@ -15,6 +16,7 @@ import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/enums.dart';
+import 'package:trakli/presentation/utils/icon_background_decor.dart';
 import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/wallets/add_wallet_screen.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
@@ -125,7 +127,10 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             ],
           ),
-          body: state.isLoading
+          body: Stack(
+            children: [
+              IconBackgroundDecor(iconPath: Assets.images.wallet),
+              state.isLoading
               ? const Center(child: CircularProgressIndicator())
               : isEmpty
                   ? InfoInterface(
@@ -207,6 +212,8 @@ class _WalletScreenState extends State<WalletScreen> {
                         ),
                       ],
                     ),
+            ],
+          ),
         );
       },
     );
