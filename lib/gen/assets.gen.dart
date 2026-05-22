@@ -140,6 +140,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/notification-bing.svg
   String get notificationBing => 'assets/images/notification-bing.svg';
 
+  /// Directory path: assets/images/onboarding
+  $AssetsImagesOnboardingGen get onboarding =>
+      const $AssetsImagesOnboardingGen();
+
   /// File path: assets/images/pdf-type.svg
   String get pdfType => 'assets/images/pdf-type.svg';
 
@@ -168,6 +172,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/setting.svg
   String get setting => 'assets/images/setting.svg';
 
+  /// File path: assets/images/sparkles.svg
+  String get sparkles => 'assets/images/sparkles.svg';
+
   /// File path: assets/images/support.svg
   String get support => 'assets/images/support.svg';
 
@@ -176,6 +183,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/top_right_circle.svg
   String get topRightCircle => 'assets/images/top_right_circle.svg';
+
+  /// File path: assets/images/trakli-logo-white.png
+  AssetGenImage get trakliLogoWhite =>
+      const AssetGenImage('assets/images/trakli-logo-white.png');
 
   /// File path: assets/images/trash.svg
   String get trash => 'assets/images/trash.svg';
@@ -248,9 +259,11 @@ class $AssetsImagesGen {
         searchNormal,
         searchSpecial,
         setting,
+        sparkles,
         support,
         tag2,
         topRightCircle,
+        trakliLogoWhite,
         trash,
         user,
         walletAdd,
@@ -283,6 +296,25 @@ class $AssetsTranslationsGen {
 
   /// List of all assets
   List<String> get values => [de, en, es, fr, it, ru];
+}
+
+class $AssetsImagesOnboardingGen {
+  const $AssetsImagesOnboardingGen();
+
+  /// File path: assets/images/onboarding/importer.svg
+  String get importer => 'assets/images/onboarding/importer.svg';
+
+  /// File path: assets/images/onboarding/insights.svg
+  String get insights => 'assets/images/onboarding/insights.svg';
+
+  /// File path: assets/images/onboarding/ready.svg
+  String get ready => 'assets/images/onboarding/ready.svg';
+
+  /// File path: assets/images/onboarding/wallet.svg
+  String get wallet => 'assets/images/onboarding/wallet.svg';
+
+  /// List of all assets
+  List<String> get values => [importer, insights, ready, wallet];
 }
 
 class Assets {

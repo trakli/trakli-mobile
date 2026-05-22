@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/core/sync/sync_database.dart';
 import 'package:trakli/di/injection.dart';
@@ -42,10 +43,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       child: BlocBuilder<MainNavigationCubit, MainNavigationPageState>(
         builder: (context, state) {
           final cubit = context.read<MainNavigationCubit>();
+          final isAiTab = state == MainNavigationPageState.other;
           return Scaffold(
             key: scaffoldKey,
-            resizeToAvoidBottomInset: false,
-            extendBody: true,
+            resizeToAvoidBottomInset: isAiTab,
+            extendBody: !isAiTab,
             drawer: Drawer(
               shape: const RoundedRectangleBorder(),
               width: 0.8.sw,
@@ -67,8 +69,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: SizedBox(
-              height: 64.r,
-              width: 64.r,
+              height: isAiTab ? 44.r : 64.r,
+              width: isAiTab ? 44.r : 64.r,
               child: FloatingActionButton(
                 shape: const CircleBorder(),
                 backgroundColor: Theme.of(context).primaryColor,
@@ -107,8 +109,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   text: LocaleKeys.wallet.tr(),
                 ),
                 FABBottomAppBarItem(
-                  iconPath: Assets.images.user,
-                  text: LocaleKeys.profile.tr(),
+                  iconBuilder: (color) => HeroIcon(
+                    HeroIcons.sparkles,
+                    style: HeroIconStyle.outline,
+                    color: color,
+                    size: 24,
+                  ),
+                  text: LocaleKeys.ai.tr(),
+                  selectedIndicatorPath: Assets.images.sparkles,
                 ),
               ],
               backgroundColor: Theme.of(context).colorScheme.surface,
