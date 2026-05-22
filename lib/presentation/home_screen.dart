@@ -7,8 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:trakli/core/constants/config_constants.dart';
-import 'package:trakli/core/sync/sync_database.dart';
-import 'package:trakli/di/injection.dart';
 import 'package:trakli/domain/entities/group_entity.dart';
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
@@ -20,6 +18,7 @@ import 'package:trakli/presentation/groups/cubit/group_cubit.dart';
 import 'package:trakli/presentation/history_screen.dart';
 import 'package:trakli/presentation/info_interfaces/empty_home_widget.dart';
 import 'package:trakli/presentation/notifications/notifications_screen.dart';
+import 'package:trakli/presentation/profile_screen.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/all_wallets_tile.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
@@ -238,16 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const NotificationsScreen(),
             ),
           ),
-          PageAppBarAction(
-            icon: Icons.refresh_rounded,
-            onTap: () {
-              final isAuthenticated =
-                  context.read<AuthCubit>().state.isAuthenticated;
-              if (isAuthenticated) {
-                getIt<SynchAppDatabase>().sync();
-              }
-            },
-          ),
+          const _HomeProfileAvatar(),
         ],
       ),
       body: BlocConsumer<TransactionCubit, TransactionState>(
@@ -513,4 +503,63 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+class _HomeProfileAvatar extends StatelessWidget {
+  const _HomeProfileAvatar();
+
+  @override
+  Widget build(BuildContext context) {
+    final tones = context.tones;
+    final user = context.watch<AuthCubit>().state.user;
+    final initials = _profileInitials(
+      first: user?.firstName,
+      last: user?.lastName,
+      email: user?.email,
+    );
+
+    final gradient = LinearGradient(
+      colors: [tones.brand.accent, tones.brand.deep],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+
+    return Material(
+      color: Colors.transparent,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: () => AppNavigator.push(context, const ProfileScreen()),
+        child: Container(
+          width: 40.r,
+          height: 40.r,
+          decoration: BoxDecoration(
+            gradient: gradient,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white.withAlpha(60), width: 1.5),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            initials,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+String _profileInitials({String? first, String? last, String? email}) {
+  String pick(String? s) =>
+      (s != null && s.trim().isNotEmpty) ? s.trim()[0].toUpperCase() : '';
+  final a = pick(first);
+  final b = pick(last);
+  if (a.isNotEmpty || b.isNotEmpty) return '$a$b';
+  final e = pick(email);
+  return e.isNotEmpty ? e : '·';
 }
