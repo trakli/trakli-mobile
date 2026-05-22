@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:trakli/core/constants/ui_constants.dart';
+import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/groups/add_group_screen.dart';
 import 'package:trakli/presentation/groups/cubit/group_cubit.dart';
@@ -11,6 +12,7 @@ import 'package:trakli/presentation/groups/widgets/group_list_tile.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/education_banner.dart';
+import 'package:trakli/presentation/utils/icon_background_decor.dart';
 import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class MyGroupsScreen extends StatefulWidget {
@@ -42,7 +44,10 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
             ),
           ],
         ),
-        body: BlocBuilder<GroupCubit, GroupState>(
+        body: Stack(
+          children: [
+            IconBackgroundDecor(iconPath: Assets.images.people),
+            BlocBuilder<GroupCubit, GroupState>(
           builder: (context, state) {
             if (state.isLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -116,6 +121,8 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
               ],
             );
           },
+        ),
+          ],
         ),
       ),
     );

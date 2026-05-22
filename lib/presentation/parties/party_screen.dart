@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/domain/entities/party_entity.dart';
+import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/info_interfaces/data.dart';
 import 'package:trakli/presentation/info_interfaces/info_interface.dart';
@@ -14,6 +15,7 @@ import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/enums.dart';
+import 'package:trakli/presentation/utils/icon_background_decor.dart';
 import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class PartyScreen extends StatefulWidget {
@@ -84,7 +86,12 @@ class _PartyScreenState extends State<PartyScreen> {
                   ),
                 ],
               ),
-              body: partyState.isLoading
+              body: Stack(
+                children: [
+                  IconBackgroundDecor(
+                    iconPath: Assets.images.profile2user,
+                  ),
+                  partyState.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : isEmpty
                       ? InfoInterface(
@@ -166,6 +173,8 @@ class _PartyScreenState extends State<PartyScreen> {
                             ),
                           ],
                         ),
+                ],
+              ),
             );
           },
         );
