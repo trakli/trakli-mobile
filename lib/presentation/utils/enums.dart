@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/ai_chat/ai_chat_screen.dart';
 import 'package:trakli/presentation/home_screen.dart';
-import 'package:trakli/presentation/profile_screen.dart';
 import 'package:trakli/presentation/statistics/statistics_screen.dart';
 import 'package:trakli/presentation/wallets/wallet_screen.dart';
 
@@ -83,7 +83,7 @@ enum NavigationScreen {
   home,
   statistics,
   wallet,
-  profile;
+  aiChat;
 
   Widget get screen {
     switch (this) {
@@ -93,8 +93,8 @@ enum NavigationScreen {
         return const StatisticsScreen();
       case NavigationScreen.wallet:
         return const WalletScreen();
-      case NavigationScreen.profile:
-        return const ProfileScreen();
+      case NavigationScreen.aiChat:
+        return const AiChatScreen();
     }
   }
 }

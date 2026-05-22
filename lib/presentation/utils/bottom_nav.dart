@@ -5,10 +5,26 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
 
 class FABBottomAppBarItem {
-  FABBottomAppBarItem({required this.iconPath, required this.text});
+  FABBottomAppBarItem({
+    this.iconPath,
+    this.iconBuilder,
+    required this.text,
+    this.selectedIndicatorPath,
+  }) : assert(iconPath != null || iconBuilder != null,
+            'Provide either iconPath or iconBuilder');
 
-  final String iconPath;
+  /// SVG path for the tab icon. Ignored when [iconBuilder] is set.
+  final String? iconPath;
+
+  /// Builds the tab icon for the current tint colour. Use this when the icon
+  /// is not a single static SVG (e.g. HeroIcons, animated icons).
+  final Widget Function(Color color)? iconBuilder;
+
   final String text;
+
+  /// SVG asset shown below the icon when this tab is selected.
+  /// Defaults to [Assets.images.navEllipse] when null.
+  final String? selectedIndicatorPath;
 }
 
 class FABBottomAppBar extends StatefulWidget {
@@ -93,21 +109,30 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
         child: Stack(
           children: [
             Center(
-              child: SvgPicture.asset(
-                item.iconPath,
-                colorFilter: ColorFilter.mode(
-                  color,
-                  BlendMode.srcIn,
-                ),
+              child: SizedBox(
+                width: widget.iconSize,
+                height: widget.iconSize,
+                child: item.iconBuilder != null
+                    ? item.iconBuilder!(color)
+                    : SvgPicture.asset(
+                        item.iconPath!,
+                        colorFilter: ColorFilter.mode(
+                          color,
+                          BlendMode.srcIn,
+                        ),
+                      ),
               ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: widget.state == MainNavigationPageState.values[index]
                   ? SvgPicture.asset(
-                      Assets.images.navEllipse,
-                      fit: BoxFit.fill,
-                      height: 6.h,
+                      item.selectedIndicatorPath ?? Assets.images.navEllipse,
+                      fit: BoxFit.contain,
+                      height: item.selectedIndicatorPath != null ? 10.h : 6.h,
+                      colorFilter: item.selectedIndicatorPath != null
+                          ? ColorFilter.mode(color, BlendMode.srcIn)
+                          : null,
                     )
                   : SizedBox(height: 6.h),
             )
