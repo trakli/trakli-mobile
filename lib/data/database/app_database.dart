@@ -28,6 +28,9 @@ import 'package:trakli/data/database/tables/categorizables.dart';
 import 'package:trakli/data/database/tables/notifications.dart';
 import 'package:trakli/data/database/tables/media_files.dart';
 import 'package:trakli/data/database/tables/transfers.dart';
+import 'package:trakli/data/database/tables/budgets.dart';
+import 'package:trakli/data/database/tables/budgetables.dart';
+import 'package:trakli/data/database/tables/budget_period_states.dart';
 import 'app_database.steps.dart';
 
 part 'app_database.g.dart';
@@ -47,6 +50,9 @@ part 'app_database.g.dart';
   Notifications,
   MediaFiles,
   Transfers,
+  Budgets,
+  Budgetables,
+  BudgetPeriodStates,
 ])
 class AppDatabase extends _$AppDatabase with SynchronizerDb {
   final Set<SyncTypeHandler> typeHandlers;
@@ -58,7 +64,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
         super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -66,7 +72,16 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
       onCreate: (Migrator m) async {
         await m.createAll();
       },
-      onUpgrade: _schemaUpgrade,
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 4) {
+          await _schemaUpgrade(m, from, 4);
+        }
+        if (from < 5 && to >= 5) {
+          await m.createTable(budgets);
+          await m.createTable(budgetables);
+          await m.createTable(budgetPeriodStates);
+        }
+      },
     );
   }
 
@@ -270,6 +285,9 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     await notifications.deleteAll();
     await mediaFiles.deleteAll();
     await transfers.deleteAll();
+    await budgetables.deleteAll();
+    await budgetPeriodStates.deleteAll();
+    await budgets.deleteAll();
   }
 }
 

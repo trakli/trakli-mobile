@@ -212,3 +212,89 @@ enum NotificationType {
     };
   }
 }
+
+enum BudgetPeriodType {
+  @JsonValue('weekly')
+  weekly,
+  @JsonValue('monthly')
+  monthly,
+  @JsonValue('yearly')
+  yearly,
+  @JsonValue('custom')
+  custom;
+
+  String get serverKey {
+    return switch (this) {
+      BudgetPeriodType.weekly => 'weekly',
+      BudgetPeriodType.monthly => 'monthly',
+      BudgetPeriodType.yearly => 'yearly',
+      BudgetPeriodType.custom => 'custom',
+    };
+  }
+
+  static BudgetPeriodType? tryParse(String? value) {
+    return switch (value?.trim().toLowerCase()) {
+      'weekly' => BudgetPeriodType.weekly,
+      'monthly' => BudgetPeriodType.monthly,
+      'yearly' => BudgetPeriodType.yearly,
+      'custom' => BudgetPeriodType.custom,
+      _ => null,
+    };
+  }
+}
+
+enum BudgetTargetType {
+  @JsonValue('category')
+  category,
+  @JsonValue('group')
+  group,
+  @JsonValue('wallet')
+  wallet;
+
+  String get serverKey {
+    return switch (this) {
+      BudgetTargetType.category => 'category',
+      BudgetTargetType.group => 'group',
+      BudgetTargetType.wallet => 'wallet',
+    };
+  }
+
+  static BudgetTargetType? tryParse(String? value) {
+    return switch (value?.trim().toLowerCase()) {
+      'category' => BudgetTargetType.category,
+      'group' => BudgetTargetType.group,
+      'wallet' => BudgetTargetType.wallet,
+      _ => null,
+    };
+  }
+}
+
+enum BudgetStatus {
+  @JsonValue('on_track')
+  onTrack,
+  @JsonValue('near_limit')
+  nearLimit,
+  @JsonValue('over_budget')
+  overBudget,
+  @JsonValue('forecast_breach')
+  forecastBreach;
+
+  String get serverKey {
+    return switch (this) {
+      BudgetStatus.onTrack => 'on_track',
+      BudgetStatus.nearLimit => 'near_limit',
+      BudgetStatus.overBudget => 'over_budget',
+      BudgetStatus.forecastBreach => 'forecast_breach',
+    };
+  }
+
+  static BudgetStatus? tryParse(String? value) {
+    return switch (value?.trim().toLowerCase()) {
+      'on_track' => BudgetStatus.onTrack,
+      'near_limit' => BudgetStatus.nearLimit,
+      'over_budget' => BudgetStatus.overBudget,
+      'forecast_breach' => BudgetStatus.forecastBreach,
+      _ => null,
+    };
+  }
+}
