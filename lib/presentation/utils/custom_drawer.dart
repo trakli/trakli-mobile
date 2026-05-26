@@ -23,17 +23,18 @@ import 'package:trakli/presentation/utils/premium_tile.dart';
 import 'package:trakli/presentation/widgets/database_viewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const String _supportEmail = 'support@trakli.app';
+// Note: supportEmail is localized, see _launchSupportEmail method
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
 
   Future<void> _launchSupportEmail(BuildContext context) async {
+    final supportEmail = LocaleKeys.supportEmail.tr();
     final Uri emailUri = Uri(
       scheme: 'mailto',
-      path: _supportEmail,
+      path: supportEmail,
       queryParameters: {
-        'subject': 'Trakli Support Request',
+        'subject': LocaleKeys.supportEmailSubject.tr(),
       },
     );
 
@@ -43,21 +44,21 @@ class CustomDrawer extends StatelessWidget {
         mode: LaunchMode.externalApplication,
       );
       if (!launched && context.mounted) {
-        await _copyEmailAndShowSnackbar(context);
+        await _copyEmailAndShowSnackbar(context, supportEmail);
       }
     } catch (e) {
       if (context.mounted) {
-        await _copyEmailAndShowSnackbar(context);
+        await _copyEmailAndShowSnackbar(context, supportEmail);
       }
     }
   }
 
-  Future<void> _copyEmailAndShowSnackbar(BuildContext context) async {
-    await Clipboard.setData(const ClipboardData(text: _supportEmail));
+  Future<void> _copyEmailAndShowSnackbar(BuildContext context, String email) async {
+    await Clipboard.setData(ClipboardData(text: email));
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('$_supportEmail (copied to clipboard)'),
+        SnackBar(
+          content: Text(LocaleKeys.supportEmailCopied.tr().replaceFirst('{0}', email)),
         ),
       );
     }
@@ -93,7 +94,7 @@ class CustomDrawer extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          user?.fullName ?? 'Trakli',
+                          user?.fullName ?? LocaleKeys.defaultUserName.tr(),
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w800,
@@ -134,7 +135,7 @@ class CustomDrawer extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _sectionLabel(context, 'EVERYDAY'),
+                      _sectionLabel(context, LocaleKeys.drawerEveryday.tr()),
                       _listItem(
                         context,
                         onTap: () {
@@ -174,7 +175,7 @@ class CustomDrawer extends StatelessWidget {
                         subtitle: LocaleKeys.categoryDesc.tr(),
                       ),
                       SizedBox(height: 8.h),
-                      _sectionLabel(context, 'ORGANIZE'),
+                      _sectionLabel(context, LocaleKeys.drawerOrganize.tr()),
                       _listItem(
                         context,
                         onTap: () {
@@ -214,7 +215,7 @@ class CustomDrawer extends StatelessWidget {
                               SizedBox(width: 14.w),
                               Expanded(
                                 child: Text(
-                                  'Budgets',
+                                  LocaleKeys.drawerBudgets.tr(),
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w600,
@@ -264,7 +265,7 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 8.h),
-                      _sectionLabel(context, 'MORE'),
+                      _sectionLabel(context, LocaleKeys.drawerMore.tr()),
                       _listItem(
                         context,
                         onTap: () {

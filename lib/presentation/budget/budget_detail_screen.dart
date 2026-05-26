@@ -1,14 +1,21 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
 import 'package:trakli/domain/entities/budget_period_state_entity.dart';
 import 'package:trakli/domain/entities/budget_progress_entity.dart';
+import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/budget/add_budget_screen.dart';
 import 'package:trakli/presentation/budget/cubit/budget_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/enums.dart';
+import 'package:trakli/presentation/utils/dialogs.dart'
+    show showDeleteConfirmationDialog, showConfirmationDialog;
+import 'package:trakli/presentation/utils/helpers.dart'
+    show showSnackBar, formatDateYmd;
 
 class BudgetDetailScreen extends StatefulWidget {
   final BudgetEntity budget;
@@ -38,57 +45,37 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
     );
   }
 
+  bool _budgetWasDeleted(BudgetState state) {
+    return state.budgets.length < (_currentBudget(state).id != null ? 1 : 0);
+  }
+
   Future<void> _confirmDelete(BudgetEntity budget) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Delete budget?'),
-        content: Text(
-          'This will remove "${budget.name}" from your budgets. This cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+    final confirm = await showDeleteConfirmationDialog(
+      context,
+      title: LocaleKeys.deleteBudget.tr(),
+      message: LocaleKeys.deleteBudgetConfirm.tr(namedArgs: {'name': budget.name}),
     );
-    if (confirm != true || !mounted) return;
-    await context.read<BudgetCubit>().deleteBudget(budget.clientId);
-    if (mounted) AppNavigator.pop(context);
+    if (!confirm || !mounted) return;
+
+    if (mounted) {
+      context.read<BudgetCubit>().deleteBudget(budget.clientId);
+    }
   }
 
   Future<void> _confirmClosePeriod(BudgetEntity budget) async {
     final id = budget.id;
     if (id == null) return;
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Close this period?'),
-        content: const Text(
-          'This will lock the current period\'s spending and start a new one. '
-          'Unused amount will roll into the next period.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Close period'),
-          ),
-        ],
-      ),
+    final confirm = await showConfirmationDialog(
+      context,
+      title: LocaleKeys.closePeriodTitle.tr(),
+      message: LocaleKeys.closePeriodMessage.tr(),
+      confirmText: LocaleKeys.closePeriodConfirm.tr(),
     );
-    if (confirm != true || !mounted) return;
-    await context.read<BudgetCubit>().closeBudgetPeriod(id);
+    if (!confirm || !mounted) return;
+
+    if (mounted) {
+      context.read<BudgetCubit>().closeBudgetPeriod(id);
+    }
   }
 
   @override
@@ -97,7 +84,7 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
     return Scaffold(
       backgroundColor: tones.bgPage,
       appBar: AppBar(
-        title: const Text('Budget'),
+        title: Text(LocaleKeys.budget.tr()),
         actions: [
           BlocBuilder<BudgetCubit, BudgetState>(
             builder: (context, state) {
@@ -121,60 +108,96 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
           ),
         ],
       ),
-      body: BlocBuilder<BudgetCubit, BudgetState>(
-        builder: (context, state) {
-          final budget = _currentBudget(state);
-          final progress = state.selectedBudgetProgress;
-          final targets = state.selectedBudgetTargets;
-          final periods = state.selectedBudgetPeriodStates;
-          return RefreshIndicator(
-            onRefresh: () async {
-              final id = budget.id;
-              if (id != null) {
-                await context.read<BudgetCubit>().fetchProgress(id);
-                await context.read<BudgetCubit>().refreshPeriodStates();
-              }
-            },
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
-              children: [
-                _HeaderCard(budget: budget, progress: progress),
-                SizedBox(height: 14.h),
-                if (state.isProgressLoading && progress == null)
-                  const Center(child: CircularProgressIndicator())
-                else if (progress != null)
-                  _KpiGrid(budget: budget, progress: progress)
-                else if (budget.id == null)
-                  _InfoBanner(
-                    text:
-                        'Progress will be available once this budget syncs with the server.',
-                  ),
-                SizedBox(height: 20.h),
-                _SectionHeader(text: 'Targets'),
-                _TargetsBlock(budget: budget, targets: targets),
-                SizedBox(height: 20.h),
-                _SectionHeader(text: 'Period history'),
-                _PeriodHistoryBlock(periods: periods),
-                if (budget.rolloverEnabled && budget.id != null) ...[
-                  SizedBox(height: 24.h),
-                  FilledButton.icon(
-                    onPressed: state.isClosingPeriod
-                        ? null
-                        : () => _confirmClosePeriod(budget),
-                    icon: state.isClosingPeriod
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.lock_outline),
-                    label: const Text('Close current period'),
-                  ),
-                ],
-              ],
-            ),
-          );
+      body: BlocListener<BudgetCubit, BudgetState>(
+        listenWhen: (prev, curr) {
+          final deletionCompleted = prev.isDeleting && !curr.isDeleting;
+          final closingCompleted =
+              prev.isClosingPeriod && !curr.isClosingPeriod;
+          return deletionCompleted || closingCompleted;
         },
+        listener: (context, state) {
+          if (state.isDeleting || state.isClosingPeriod) return;
+
+          if (state.failure != const Failure.none()) {
+            showSnackBar(
+              message: state.isDeleting
+                  ? LocaleKeys.deleteBudgetError.tr()
+                  : LocaleKeys.closePeriodError.tr(),
+            );
+            return;
+          }
+
+          if (_budgetWasDeleted(state)) {
+            showSnackBar(
+              message: LocaleKeys.deleteBudgetSuccess.tr(),
+              isSuccess: true,
+            );
+            AppNavigator.pop(context);
+          } else {
+            showSnackBar(
+              message: LocaleKeys.closePeriodSuccess.tr(),
+              isSuccess: true,
+            );
+          }
+        },
+        child: BlocBuilder<BudgetCubit, BudgetState>(
+          builder: (context, state) {
+            final budget = _currentBudget(state);
+            final progress = state.selectedBudgetProgress;
+            final targets = state.selectedBudgetTargets;
+            final periods = state.selectedBudgetPeriodStates;
+            return RefreshIndicator(
+              onRefresh: () {
+                final id = budget.id;
+                if (id != null) {
+                  return Future.wait([
+                    context.read<BudgetCubit>().fetchProgress(id),
+                    context.read<BudgetCubit>().refreshPeriodStates(),
+                  ]);
+                }
+                return Future.value();
+              },
+              child: ListView(
+                padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
+                children: [
+                  _HeaderCard(budget: budget, progress: progress),
+                  SizedBox(height: 14.h),
+                  if (state.isProgressLoading && progress == null)
+                    const Center(child: CircularProgressIndicator())
+                  else if (progress != null)
+                    _KpiGrid(budget: budget, progress: progress)
+                  else if (budget.id == null)
+                    _InfoBanner(
+                      text: LocaleKeys.budgetNoProgress.tr(),
+                    ),
+                  SizedBox(height: 20.h),
+                  _SectionHeader(text: LocaleKeys.budgetTargetsLabel.tr()),
+                  _TargetsBlock(budget: budget, targets: targets),
+                  SizedBox(height: 20.h),
+                  _SectionHeader(
+                      text: LocaleKeys.budgetPeriodHistoryLabel.tr()),
+                  _PeriodHistoryBlock(periods: periods),
+                  if (budget.rolloverEnabled && budget.id != null) ...[
+                    SizedBox(height: 24.h),
+                    FilledButton.icon(
+                      onPressed: state.isClosingPeriod
+                          ? null
+                          : () => _confirmClosePeriod(budget),
+                      icon: state.isClosingPeriod
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.lock_outline),
+                      label: Text(LocaleKeys.closePeriod.tr()),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -197,27 +220,28 @@ class _HeaderCard extends StatelessWidget {
 
   String _statusLabel(BudgetStatus? status) {
     return switch (status) {
-      BudgetStatus.overBudget => 'OVER BUDGET',
-      BudgetStatus.forecastBreach => 'FORECAST BREACH',
-      BudgetStatus.nearLimit => 'NEAR LIMIT',
-      BudgetStatus.onTrack => 'ON TRACK',
-      null => 'AWAITING SYNC',
+      BudgetStatus.overBudget => LocaleKeys.budgetStatusOverBudget.tr(),
+      BudgetStatus.forecastBreach => LocaleKeys.budgetStatusForecastBreach.tr(),
+      BudgetStatus.nearLimit => LocaleKeys.budgetStatusNearLimit.tr(),
+      BudgetStatus.onTrack => LocaleKeys.budgetStatusOnTrack.tr(),
+      null => LocaleKeys.budgetStatusAwaitingSync.tr(),
     };
   }
 
   String _periodLabel() {
     final start = budget.startDate;
-    final fmt = (DateTime d) =>
-        '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     if (budget.periodType == BudgetPeriodType.custom &&
         budget.endDate != null) {
-      return '${fmt(start)} → ${fmt(budget.endDate!)}';
+      return '${formatDateYmd(start)} → ${formatDateYmd(budget.endDate!)}';
     }
     return switch (budget.periodType) {
-      BudgetPeriodType.weekly => 'Weekly · starting ${fmt(start)}',
-      BudgetPeriodType.monthly => 'Monthly · starting ${fmt(start)}',
-      BudgetPeriodType.yearly => 'Yearly · starting ${fmt(start)}',
-      BudgetPeriodType.custom => fmt(start),
+      BudgetPeriodType.weekly =>
+        '${LocaleKeys.budgetPeriodWeekly.tr()} ${formatDateYmd(start)}',
+      BudgetPeriodType.monthly =>
+        '${LocaleKeys.budgetPeriodMonthly.tr()} ${formatDateYmd(start)}',
+      BudgetPeriodType.yearly =>
+        '${LocaleKeys.budgetPeriodYearly.tr()} ${formatDateYmd(start)}',
+      BudgetPeriodType.custom => formatDateYmd(start),
     };
   }
 
@@ -278,8 +302,7 @@ class _HeaderCard extends StatelessWidget {
               color: tones.textSecondary,
             ),
           ),
-          if (budget.description != null &&
-              budget.description!.isNotEmpty) ...[
+          if (budget.description != null && budget.description!.isNotEmpty) ...[
             SizedBox(height: 8.h),
             Text(
               budget.description!,
@@ -335,13 +358,13 @@ class _KpiGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cells = <_Kpi>[
-      _Kpi('Remaining',
+      _Kpi(LocaleKeys.budgetKpiRemaining.tr(),
           '${budget.currency} ${progress.remaining.toStringAsFixed(2)}'),
-      _Kpi('Projected',
+      _Kpi(LocaleKeys.budgetKpiProjected.tr(),
           '${budget.currency} ${progress.projectedSpend.toStringAsFixed(2)}'),
-      _Kpi('Refunds',
+      _Kpi(LocaleKeys.budgetKpiRefunds.tr(),
           '${budget.currency} ${progress.refunds.toStringAsFixed(2)}'),
-      _Kpi('Rollover in',
+      _Kpi(LocaleKeys.budgetKpiRolloverIn.tr(),
           '${budget.currency} ${progress.rolloverIn.toStringAsFixed(2)}'),
     ];
 
@@ -435,9 +458,9 @@ class _TargetsBlock extends StatelessWidget {
 
   String _typeLabel(BudgetTargetType type) {
     return switch (type) {
-      BudgetTargetType.category => 'Category',
-      BudgetTargetType.wallet => 'Wallet',
-      BudgetTargetType.group => 'Group',
+      BudgetTargetType.category => LocaleKeys.budgetTargetCategory.tr(),
+      BudgetTargetType.wallet => LocaleKeys.budgetTargetWallet.tr(),
+      BudgetTargetType.group => LocaleKeys.budgetTargetGroup.tr(),
     };
   }
 
@@ -461,7 +484,7 @@ class _TargetsBlock extends StatelessWidget {
           border: Border.all(color: tones.borderLight),
         ),
         child: Text(
-          'Applies to all transactions in this period.',
+          LocaleKeys.budgetTargetsApplyAll.tr(),
           style: TextStyle(fontSize: 13.sp, color: tones.textSecondary),
         ),
       );
@@ -480,7 +503,8 @@ class _TargetsBlock extends StatelessWidget {
                 _iconFor(budget.targets[i].type),
                 color: tones.textMuted,
               ),
-              title: Text(budget.targets[i].name ?? '(unnamed)'),
+              title: Text(budget.targets[i].name ??
+                  LocaleKeys.budgetTargetUnnamed.tr()),
               subtitle: Text(_typeLabel(budget.targets[i].type)),
               dense: true,
             ),
@@ -497,9 +521,6 @@ class _PeriodHistoryBlock extends StatelessWidget {
   final List<BudgetPeriodStateEntity> periods;
   const _PeriodHistoryBlock({required this.periods});
 
-  String _fmtDate(DateTime d) =>
-      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
-
   @override
   Widget build(BuildContext context) {
     final tones = context.tones;
@@ -512,7 +533,7 @@ class _PeriodHistoryBlock extends StatelessWidget {
           border: Border.all(color: tones.borderLight),
         ),
         child: Text(
-          'No closed periods yet.',
+          LocaleKeys.budgetNoPeriods.tr(),
           style: TextStyle(fontSize: 13.sp, color: tones.textSecondary),
         ),
       );
@@ -529,7 +550,7 @@ class _PeriodHistoryBlock extends StatelessWidget {
             ListTile(
               dense: true,
               title: Text(
-                '${_fmtDate(periods[i].periodStart)} → ${_fmtDate(periods[i].periodEnd)}',
+                '${formatDateYmd(periods[i].periodStart)} → ${formatDateYmd(periods[i].periodEnd)}',
               ),
               subtitle: Text(
                 'Spent ${periods[i].netSpent.toStringAsFixed(2)}'
@@ -537,8 +558,8 @@ class _PeriodHistoryBlock extends StatelessWidget {
                 ' · rollover out ${periods[i].rolloverOut.toStringAsFixed(2)}',
               ),
               trailing: periods[i].closedAt == null
-                  ? const Text('Open',
-                      style: TextStyle(fontWeight: FontWeight.w600))
+                  ? Text(LocaleKeys.budgetPeriodOpen.tr(),
+                      style: const TextStyle(fontWeight: FontWeight.w600))
                   : null,
             ),
             if (i != periods.length - 1)
@@ -565,8 +586,7 @@ class _InfoBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline,
-              color: tones.brand.accent, size: 18.sp),
+          Icon(Icons.info_outline, color: tones.brand.accent, size: 18.sp),
           SizedBox(width: 8.w),
           Expanded(
             child: Text(

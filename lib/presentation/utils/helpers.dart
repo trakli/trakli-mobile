@@ -338,7 +338,8 @@ class CropAspectRatioPresetCustom implements CropAspectRatioPresetData {
 
 void showSnackBar({
   required dynamic message,
-  Color backgroundColor = const Color(0xFFEB5757),
+  bool isSuccess = false,
+  Color? backgroundColor,
   Color textColor = Colors.white,
   double fontSize = 16,
   bool isFloating = true,
@@ -346,10 +347,11 @@ void showSnackBar({
 }) {
   final String messageText =
       message is Failure ? message.customMessage : message.toString();
+  final bgColor = backgroundColor ?? (isSuccess ? appPrimaryColor : appDangerColor);
 
   scaffoldMessengerKey.currentState?.showSnackBar(
     SnackBar(
-      backgroundColor: backgroundColor,
+      backgroundColor: bgColor,
       behavior: isFloating ? SnackBarBehavior.floating : SnackBarBehavior.fixed,
       shape: borderRadius != null
           ? RoundedRectangleBorder(
@@ -385,6 +387,9 @@ void showSnackBar({
     ),
   );
 }
+
+String formatDateYmd(DateTime date) =>
+    '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
 Widget bulletPoint(BuildContext context, String text) {
   return Row(
