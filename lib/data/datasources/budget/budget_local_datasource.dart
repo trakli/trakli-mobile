@@ -28,12 +28,12 @@ class ResolvedBudgetTarget {
 abstract class BudgetLocalDataSource {
   Future<List<Budget>> getAllBudgets({bool? active});
   Future<Budget?> getBudgetByClientId(String clientId);
-  Future<List<Budgetable>> getTargetsForBudget(String budgetClientId);
+  Future<List<BudgetTarget>> getTargetsForBudget(String budgetClientId);
   Future<List<BudgetPeriodState>> getPeriodStatesForBudget(
       String budgetClientId);
 
   Stream<List<Budget>> watchAllBudgets({bool? active});
-  Stream<List<Budgetable>> watchTargetsForBudget(String budgetClientId);
+  Stream<List<BudgetTarget>> watchTargetsForBudget(String budgetClientId);
   Stream<List<BudgetPeriodState>> watchPeriodStatesForBudget(
       String budgetClientId);
 
@@ -99,8 +99,8 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
   }
 
   @override
-  Future<List<Budgetable>> getTargetsForBudget(String budgetClientId) {
-    return (database.select(database.budgetables)
+  Future<List<BudgetTarget>> getTargetsForBudget(String budgetClientId) {
+    return (database.select(database.budgetTargets)
           ..where((bt) => bt.budgetClientId.equals(budgetClientId)))
         .get();
   }
@@ -125,8 +125,8 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
   }
 
   @override
-  Stream<List<Budgetable>> watchTargetsForBudget(String budgetClientId) {
-    return (database.select(database.budgetables)
+  Stream<List<BudgetTarget>> watchTargetsForBudget(String budgetClientId) {
+    return (database.select(database.budgetTargets)
           ..where((bt) => bt.budgetClientId.equals(budgetClientId)))
         .watch();
   }
@@ -188,8 +188,8 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
           );
 
       for (final t in targets) {
-        await database.into(database.budgetables).insert(
-              BudgetablesCompanion.insert(
+        await database.into(database.budgetTargets).insert(
+              BudgetTargetsCompanion.insert(
                 budgetClientId: clientId,
                 targetType: t.type,
                 targetClientId: t.clientId,
@@ -263,12 +263,12 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
       );
 
       if (targets != null) {
-        await (database.delete(database.budgetables)
+        await (database.delete(database.budgetTargets)
               ..where((bt) => bt.budgetClientId.equals(clientId)))
             .go();
         for (final t in targets) {
-          await database.into(database.budgetables).insert(
-                BudgetablesCompanion.insert(
+          await database.into(database.budgetTargets).insert(
+                BudgetTargetsCompanion.insert(
                   budgetClientId: clientId,
                   targetType: t.type,
                   targetClientId: t.clientId,
@@ -329,7 +329,7 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
           ..where((b) => b.clientId.equals(clientId)))
         .getSingle();
     await database.transaction(() async {
-      await (database.delete(database.budgetables)
+      await (database.delete(database.budgetTargets)
             ..where((bt) => bt.budgetClientId.equals(clientId)))
           .go();
       await (database.delete(database.budgetPeriodStates)

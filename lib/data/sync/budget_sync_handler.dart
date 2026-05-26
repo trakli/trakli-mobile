@@ -87,7 +87,7 @@ class BudgetSyncHandler
 
   @override
   Future<void> deleteAllLocal() async {
-    await db.budgetables.deleteAll();
+    await db.budgetTargets.deleteAll();
     await db.budgetPeriodStates.deleteAll();
     await table.deleteAll();
   }
@@ -101,7 +101,7 @@ class BudgetSyncHandler
   @override
   Future<void> deleteLocal(BudgetCompleteDto entity) async {
     final clientId = entity.budget.clientId;
-    await (db.delete(db.budgetables)
+    await (db.delete(db.budgetTargets)
           ..where((t) => t.budgetClientId.equals(clientId)))
         .go();
     await (db.delete(db.budgetPeriodStates)
@@ -194,7 +194,7 @@ class BudgetSyncHandler
     await table.insertOnConflictUpdate(companion);
 
     if (entity.targets.isNotEmpty || _shouldResetTargets(entity)) {
-      await (db.delete(db.budgetables)
+      await (db.delete(db.budgetTargets)
             ..where((t) => t.budgetClientId.equals(budget.clientId)))
           .go();
       for (final t in entity.targets) {
@@ -202,8 +202,8 @@ class BudgetSyncHandler
         if (targetClientId == null || targetClientId.isEmpty) {
           continue;
         }
-        await db.into(db.budgetables).insert(
-              BudgetablesCompanion.insert(
+        await db.into(db.budgetTargets).insert(
+              BudgetTargetsCompanion.insert(
                 budgetClientId: budget.clientId,
                 targetType: t.type,
                 targetClientId: targetClientId,

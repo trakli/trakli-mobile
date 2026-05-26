@@ -38,7 +38,7 @@ class BudgetMapper {
     );
   }
 
-  static BudgetTargetEntity targetFromDb(db.Budgetable row, {String? name}) {
+  static BudgetTargetEntity targetFromDb(db.BudgetTarget row, {String? name}) {
     return BudgetTargetEntity(
       type: row.targetType,
       clientId: row.targetClientId,

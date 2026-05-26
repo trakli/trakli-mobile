@@ -7354,12 +7354,12 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
   }
 }
 
-class $BudgetablesTable extends Budgetables
-    with TableInfo<$BudgetablesTable, Budgetable> {
+class $BudgetTargetsTable extends BudgetTargets
+    with TableInfo<$BudgetTargetsTable, BudgetTarget> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BudgetablesTable(this.attachedDatabase, [this._alias]);
+  $BudgetTargetsTable(this.attachedDatabase, [this._alias]);
   @override
   late final GeneratedColumn<String> budgetClientId = GeneratedColumn<String>(
       'budget_client_id', aliasedName, false,
@@ -7372,7 +7372,7 @@ class $BudgetablesTable extends Budgetables
       targetType = GeneratedColumn<String>('target_type', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<BudgetTargetType>(
-              $BudgetablesTable.$convertertargetType);
+              $BudgetTargetsTable.$convertertargetType);
   @override
   late final GeneratedColumn<String> targetClientId = GeneratedColumn<String>(
       'target_client_id', aliasedName, false,
@@ -7384,17 +7384,17 @@ class $BudgetablesTable extends Budgetables
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'budgetables';
+  static const String $name = 'budget_targets';
   @override
   Set<GeneratedColumn> get $primaryKey =>
       {budgetClientId, targetType, targetClientId};
   @override
-  Budgetable map(Map<String, dynamic> data, {String? tablePrefix}) {
+  BudgetTarget map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Budgetable(
+    return BudgetTarget(
       budgetClientId: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}budget_client_id'])!,
-      targetType: $BudgetablesTable.$convertertargetType.fromSql(
+      targetType: $BudgetTargetsTable.$convertertargetType.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}target_type'])!),
       targetClientId: attachedDatabase.typeMapping.read(
@@ -7403,8 +7403,8 @@ class $BudgetablesTable extends Budgetables
   }
 
   @override
-  $BudgetablesTable createAlias(String alias) {
-    return $BudgetablesTable(attachedDatabase, alias);
+  $BudgetTargetsTable createAlias(String alias) {
+    return $BudgetTargetsTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<BudgetTargetType, String, String>
@@ -7412,11 +7412,11 @@ class $BudgetablesTable extends Budgetables
       const EnumNameConverter<BudgetTargetType>(BudgetTargetType.values);
 }
 
-class Budgetable extends DataClass implements Insertable<Budgetable> {
+class BudgetTarget extends DataClass implements Insertable<BudgetTarget> {
   final String budgetClientId;
   final BudgetTargetType targetType;
   final String targetClientId;
-  const Budgetable(
+  const BudgetTarget(
       {required this.budgetClientId,
       required this.targetType,
       required this.targetClientId});
@@ -7426,26 +7426,26 @@ class Budgetable extends DataClass implements Insertable<Budgetable> {
     map['budget_client_id'] = Variable<String>(budgetClientId);
     {
       map['target_type'] = Variable<String>(
-          $BudgetablesTable.$convertertargetType.toSql(targetType));
+          $BudgetTargetsTable.$convertertargetType.toSql(targetType));
     }
     map['target_client_id'] = Variable<String>(targetClientId);
     return map;
   }
 
-  BudgetablesCompanion toCompanion(bool nullToAbsent) {
-    return BudgetablesCompanion(
+  BudgetTargetsCompanion toCompanion(bool nullToAbsent) {
+    return BudgetTargetsCompanion(
       budgetClientId: Value(budgetClientId),
       targetType: Value(targetType),
       targetClientId: Value(targetClientId),
     );
   }
 
-  factory Budgetable.fromJson(Map<String, dynamic> json,
+  factory BudgetTarget.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Budgetable(
+    return BudgetTarget(
       budgetClientId: serializer.fromJson<String>(json['budgetClientId']),
-      targetType: $BudgetablesTable.$convertertargetType
+      targetType: $BudgetTargetsTable.$convertertargetType
           .fromJson(serializer.fromJson<String>(json['targetType'])),
       targetClientId: serializer.fromJson<String>(json['targetClientId']),
     );
@@ -7456,22 +7456,22 @@ class Budgetable extends DataClass implements Insertable<Budgetable> {
     return <String, dynamic>{
       'budgetClientId': serializer.toJson<String>(budgetClientId),
       'targetType': serializer.toJson<String>(
-          $BudgetablesTable.$convertertargetType.toJson(targetType)),
+          $BudgetTargetsTable.$convertertargetType.toJson(targetType)),
       'targetClientId': serializer.toJson<String>(targetClientId),
     };
   }
 
-  Budgetable copyWith(
+  BudgetTarget copyWith(
           {String? budgetClientId,
           BudgetTargetType? targetType,
           String? targetClientId}) =>
-      Budgetable(
+      BudgetTarget(
         budgetClientId: budgetClientId ?? this.budgetClientId,
         targetType: targetType ?? this.targetType,
         targetClientId: targetClientId ?? this.targetClientId,
       );
-  Budgetable copyWithCompanion(BudgetablesCompanion data) {
-    return Budgetable(
+  BudgetTarget copyWithCompanion(BudgetTargetsCompanion data) {
+    return BudgetTarget(
       budgetClientId: data.budgetClientId.present
           ? data.budgetClientId.value
           : this.budgetClientId,
@@ -7485,7 +7485,7 @@ class Budgetable extends DataClass implements Insertable<Budgetable> {
 
   @override
   String toString() {
-    return (StringBuffer('Budgetable(')
+    return (StringBuffer('BudgetTarget(')
           ..write('budgetClientId: $budgetClientId, ')
           ..write('targetType: $targetType, ')
           ..write('targetClientId: $targetClientId')
@@ -7498,24 +7498,24 @@ class Budgetable extends DataClass implements Insertable<Budgetable> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Budgetable &&
+      (other is BudgetTarget &&
           other.budgetClientId == this.budgetClientId &&
           other.targetType == this.targetType &&
           other.targetClientId == this.targetClientId);
 }
 
-class BudgetablesCompanion extends UpdateCompanion<Budgetable> {
+class BudgetTargetsCompanion extends UpdateCompanion<BudgetTarget> {
   final Value<String> budgetClientId;
   final Value<BudgetTargetType> targetType;
   final Value<String> targetClientId;
   final Value<int> rowid;
-  const BudgetablesCompanion({
+  const BudgetTargetsCompanion({
     this.budgetClientId = const Value.absent(),
     this.targetType = const Value.absent(),
     this.targetClientId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  BudgetablesCompanion.insert({
+  BudgetTargetsCompanion.insert({
     required String budgetClientId,
     required BudgetTargetType targetType,
     required String targetClientId,
@@ -7523,7 +7523,7 @@ class BudgetablesCompanion extends UpdateCompanion<Budgetable> {
   })  : budgetClientId = Value(budgetClientId),
         targetType = Value(targetType),
         targetClientId = Value(targetClientId);
-  static Insertable<Budgetable> custom({
+  static Insertable<BudgetTarget> custom({
     Expression<String>? budgetClientId,
     Expression<String>? targetType,
     Expression<String>? targetClientId,
@@ -7537,12 +7537,12 @@ class BudgetablesCompanion extends UpdateCompanion<Budgetable> {
     });
   }
 
-  BudgetablesCompanion copyWith(
+  BudgetTargetsCompanion copyWith(
       {Value<String>? budgetClientId,
       Value<BudgetTargetType>? targetType,
       Value<String>? targetClientId,
       Value<int>? rowid}) {
-    return BudgetablesCompanion(
+    return BudgetTargetsCompanion(
       budgetClientId: budgetClientId ?? this.budgetClientId,
       targetType: targetType ?? this.targetType,
       targetClientId: targetClientId ?? this.targetClientId,
@@ -7558,7 +7558,7 @@ class BudgetablesCompanion extends UpdateCompanion<Budgetable> {
     }
     if (targetType.present) {
       map['target_type'] = Variable<String>(
-          $BudgetablesTable.$convertertargetType.toSql(targetType.value));
+          $BudgetTargetsTable.$convertertargetType.toSql(targetType.value));
     }
     if (targetClientId.present) {
       map['target_client_id'] = Variable<String>(targetClientId.value);
@@ -7571,7 +7571,7 @@ class BudgetablesCompanion extends UpdateCompanion<Budgetable> {
 
   @override
   String toString() {
-    return (StringBuffer('BudgetablesCompanion(')
+    return (StringBuffer('BudgetTargetsCompanion(')
           ..write('budgetClientId: $budgetClientId, ')
           ..write('targetType: $targetType, ')
           ..write('targetClientId: $targetClientId, ')
@@ -8216,7 +8216,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MediaFilesTable mediaFiles = $MediaFilesTable(this);
   late final $TransfersTable transfers = $TransfersTable(this);
   late final $BudgetsTable budgets = $BudgetsTable(this);
-  late final $BudgetablesTable budgetables = $BudgetablesTable(this);
+  late final $BudgetTargetsTable budgetTargets = $BudgetTargetsTable(this);
   late final $BudgetPeriodStatesTable budgetPeriodStates =
       $BudgetPeriodStatesTable(this);
   @override
@@ -8238,7 +8238,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         mediaFiles,
         transfers,
         budgets,
-        budgetables,
+        budgetTargets,
         budgetPeriodStates
       ];
   @override
@@ -12808,18 +12808,18 @@ final class $$BudgetsTableReferences
     extends BaseReferences<_$AppDatabase, $BudgetsTable, Budget> {
   $$BudgetsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$BudgetablesTable, List<Budgetable>>
-      _budgetablesRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.budgetables,
+  static MultiTypedResultKey<$BudgetTargetsTable, List<BudgetTarget>>
+      _budgetTargetsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.budgetTargets,
               aliasName: $_aliasNameGenerator(
-                  db.budgets.clientId, db.budgetables.budgetClientId));
+                  db.budgets.clientId, db.budgetTargets.budgetClientId));
 
-  $$BudgetablesTableProcessedTableManager get budgetablesRefs {
-    final manager = $$BudgetablesTableTableManager($_db, $_db.budgetables)
+  $$BudgetTargetsTableProcessedTableManager get budgetTargetsRefs {
+    final manager = $$BudgetTargetsTableTableManager($_db, $_db.budgetTargets)
         .filter((f) => f.budgetClientId.clientId
             .sqlEquals($_itemColumn<String>('client_id')!));
 
-    final cache = $_typedResult.readTableOrNull(_budgetablesRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_budgetTargetsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -12923,19 +12923,19 @@ class $$BudgetsTableFilterComposer
   ColumnFilters<int> get ownerId => $composableBuilder(
       column: $table.ownerId, builder: (column) => ColumnFilters(column));
 
-  Expression<bool> budgetablesRefs(
-      Expression<bool> Function($$BudgetablesTableFilterComposer f) f) {
-    final $$BudgetablesTableFilterComposer composer = $composerBuilder(
+  Expression<bool> budgetTargetsRefs(
+      Expression<bool> Function($$BudgetTargetsTableFilterComposer f) f) {
+    final $$BudgetTargetsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.clientId,
-        referencedTable: $db.budgetables,
+        referencedTable: $db.budgetTargets,
         getReferencedColumn: (t) => t.budgetClientId,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetablesTableFilterComposer(
+            $$BudgetTargetsTableFilterComposer(
               $db: $db,
-              $table: $db.budgetables,
+              $table: $db.budgetTargets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13122,19 +13122,19 @@ class $$BudgetsTableAnnotationComposer
   GeneratedColumn<int> get ownerId =>
       $composableBuilder(column: $table.ownerId, builder: (column) => column);
 
-  Expression<T> budgetablesRefs<T extends Object>(
-      Expression<T> Function($$BudgetablesTableAnnotationComposer a) f) {
-    final $$BudgetablesTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> budgetTargetsRefs<T extends Object>(
+      Expression<T> Function($$BudgetTargetsTableAnnotationComposer a) f) {
+    final $$BudgetTargetsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.clientId,
-        referencedTable: $db.budgetables,
+        referencedTable: $db.budgetTargets,
         getReferencedColumn: (t) => t.budgetClientId,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetablesTableAnnotationComposer(
+            $$BudgetTargetsTableAnnotationComposer(
               $db: $db,
-              $table: $db.budgetables,
+              $table: $db.budgetTargets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13178,7 +13178,7 @@ class $$BudgetsTableTableManager extends RootTableManager<
     (Budget, $$BudgetsTableReferences),
     Budget,
     PrefetchHooks Function(
-        {bool budgetablesRefs, bool budgetPeriodStatesRefs})> {
+        {bool budgetTargetsRefs, bool budgetPeriodStatesRefs})> {
   $$BudgetsTableTableManager(_$AppDatabase db, $BudgetsTable table)
       : super(TableManagerState(
           db: db,
@@ -13294,25 +13294,25 @@ class $$BudgetsTableTableManager extends RootTableManager<
                   (e.readTable(table), $$BudgetsTableReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: (
-              {budgetablesRefs = false, budgetPeriodStatesRefs = false}) {
+              {budgetTargetsRefs = false, budgetPeriodStatesRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (budgetablesRefs) db.budgetables,
+                if (budgetTargetsRefs) db.budgetTargets,
                 if (budgetPeriodStatesRefs) db.budgetPeriodStates
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (budgetablesRefs)
+                  if (budgetTargetsRefs)
                     await $_getPrefetchedData<Budget, $BudgetsTable,
-                            Budgetable>(
+                            BudgetTarget>(
                         currentTable: table,
-                        referencedTable:
-                            $$BudgetsTableReferences._budgetablesRefsTable(db),
+                        referencedTable: $$BudgetsTableReferences
+                            ._budgetTargetsRefsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$BudgetsTableReferences(db, table, p0)
-                                .budgetablesRefs,
+                                .budgetTargetsRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems.where(
                                 (e) => e.budgetClientId == item.clientId),
@@ -13349,15 +13349,15 @@ typedef $$BudgetsTableProcessedTableManager = ProcessedTableManager<
     (Budget, $$BudgetsTableReferences),
     Budget,
     PrefetchHooks Function(
-        {bool budgetablesRefs, bool budgetPeriodStatesRefs})>;
-typedef $$BudgetablesTableCreateCompanionBuilder = BudgetablesCompanion
+        {bool budgetTargetsRefs, bool budgetPeriodStatesRefs})>;
+typedef $$BudgetTargetsTableCreateCompanionBuilder = BudgetTargetsCompanion
     Function({
   required String budgetClientId,
   required BudgetTargetType targetType,
   required String targetClientId,
   Value<int> rowid,
 });
-typedef $$BudgetablesTableUpdateCompanionBuilder = BudgetablesCompanion
+typedef $$BudgetTargetsTableUpdateCompanionBuilder = BudgetTargetsCompanion
     Function({
   Value<String> budgetClientId,
   Value<BudgetTargetType> targetType,
@@ -13365,13 +13365,14 @@ typedef $$BudgetablesTableUpdateCompanionBuilder = BudgetablesCompanion
   Value<int> rowid,
 });
 
-final class $$BudgetablesTableReferences
-    extends BaseReferences<_$AppDatabase, $BudgetablesTable, Budgetable> {
-  $$BudgetablesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$BudgetTargetsTableReferences
+    extends BaseReferences<_$AppDatabase, $BudgetTargetsTable, BudgetTarget> {
+  $$BudgetTargetsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
 
   static $BudgetsTable _budgetClientIdTable(_$AppDatabase db) =>
       db.budgets.createAlias($_aliasNameGenerator(
-          db.budgetables.budgetClientId, db.budgets.clientId));
+          db.budgetTargets.budgetClientId, db.budgets.clientId));
 
   $$BudgetsTableProcessedTableManager get budgetClientId {
     final $_column = $_itemColumn<String>('budget_client_id')!;
@@ -13385,9 +13386,9 @@ final class $$BudgetablesTableReferences
   }
 }
 
-class $$BudgetablesTableFilterComposer
-    extends Composer<_$AppDatabase, $BudgetablesTable> {
-  $$BudgetablesTableFilterComposer({
+class $$BudgetTargetsTableFilterComposer
+    extends Composer<_$AppDatabase, $BudgetTargetsTable> {
+  $$BudgetTargetsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -13424,9 +13425,9 @@ class $$BudgetablesTableFilterComposer
   }
 }
 
-class $$BudgetablesTableOrderingComposer
-    extends Composer<_$AppDatabase, $BudgetablesTable> {
-  $$BudgetablesTableOrderingComposer({
+class $$BudgetTargetsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BudgetTargetsTable> {
+  $$BudgetTargetsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -13461,9 +13462,9 @@ class $$BudgetablesTableOrderingComposer
   }
 }
 
-class $$BudgetablesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $BudgetablesTable> {
-  $$BudgetablesTableAnnotationComposer({
+class $$BudgetTargetsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BudgetTargetsTable> {
+  $$BudgetTargetsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -13498,35 +13499,35 @@ class $$BudgetablesTableAnnotationComposer
   }
 }
 
-class $$BudgetablesTableTableManager extends RootTableManager<
+class $$BudgetTargetsTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $BudgetablesTable,
-    Budgetable,
-    $$BudgetablesTableFilterComposer,
-    $$BudgetablesTableOrderingComposer,
-    $$BudgetablesTableAnnotationComposer,
-    $$BudgetablesTableCreateCompanionBuilder,
-    $$BudgetablesTableUpdateCompanionBuilder,
-    (Budgetable, $$BudgetablesTableReferences),
-    Budgetable,
+    $BudgetTargetsTable,
+    BudgetTarget,
+    $$BudgetTargetsTableFilterComposer,
+    $$BudgetTargetsTableOrderingComposer,
+    $$BudgetTargetsTableAnnotationComposer,
+    $$BudgetTargetsTableCreateCompanionBuilder,
+    $$BudgetTargetsTableUpdateCompanionBuilder,
+    (BudgetTarget, $$BudgetTargetsTableReferences),
+    BudgetTarget,
     PrefetchHooks Function({bool budgetClientId})> {
-  $$BudgetablesTableTableManager(_$AppDatabase db, $BudgetablesTable table)
+  $$BudgetTargetsTableTableManager(_$AppDatabase db, $BudgetTargetsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$BudgetablesTableFilterComposer($db: db, $table: table),
+              $$BudgetTargetsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$BudgetablesTableOrderingComposer($db: db, $table: table),
+              $$BudgetTargetsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$BudgetablesTableAnnotationComposer($db: db, $table: table),
+              $$BudgetTargetsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> budgetClientId = const Value.absent(),
             Value<BudgetTargetType> targetType = const Value.absent(),
             Value<String> targetClientId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
-              BudgetablesCompanion(
+              BudgetTargetsCompanion(
             budgetClientId: budgetClientId,
             targetType: targetType,
             targetClientId: targetClientId,
@@ -13538,7 +13539,7 @@ class $$BudgetablesTableTableManager extends RootTableManager<
             required String targetClientId,
             Value<int> rowid = const Value.absent(),
           }) =>
-              BudgetablesCompanion.insert(
+              BudgetTargetsCompanion.insert(
             budgetClientId: budgetClientId,
             targetType: targetType,
             targetClientId: targetClientId,
@@ -13547,7 +13548,7 @@ class $$BudgetablesTableTableManager extends RootTableManager<
           withReferenceMapper: (p0) => p0
               .map((e) => (
                     e.readTable(table),
-                    $$BudgetablesTableReferences(db, table, e)
+                    $$BudgetTargetsTableReferences(db, table, e)
                   ))
               .toList(),
           prefetchHooksCallback: ({budgetClientId = false}) {
@@ -13572,8 +13573,8 @@ class $$BudgetablesTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.budgetClientId,
                     referencedTable:
-                        $$BudgetablesTableReferences._budgetClientIdTable(db),
-                    referencedColumn: $$BudgetablesTableReferences
+                        $$BudgetTargetsTableReferences._budgetClientIdTable(db),
+                    referencedColumn: $$BudgetTargetsTableReferences
                         ._budgetClientIdTable(db)
                         .clientId,
                   ) as T;
@@ -13589,17 +13590,17 @@ class $$BudgetablesTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$BudgetablesTableProcessedTableManager = ProcessedTableManager<
+typedef $$BudgetTargetsTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
-    $BudgetablesTable,
-    Budgetable,
-    $$BudgetablesTableFilterComposer,
-    $$BudgetablesTableOrderingComposer,
-    $$BudgetablesTableAnnotationComposer,
-    $$BudgetablesTableCreateCompanionBuilder,
-    $$BudgetablesTableUpdateCompanionBuilder,
-    (Budgetable, $$BudgetablesTableReferences),
-    Budgetable,
+    $BudgetTargetsTable,
+    BudgetTarget,
+    $$BudgetTargetsTableFilterComposer,
+    $$BudgetTargetsTableOrderingComposer,
+    $$BudgetTargetsTableAnnotationComposer,
+    $$BudgetTargetsTableCreateCompanionBuilder,
+    $$BudgetTargetsTableUpdateCompanionBuilder,
+    (BudgetTarget, $$BudgetTargetsTableReferences),
+    BudgetTarget,
     PrefetchHooks Function({bool budgetClientId})>;
 typedef $$BudgetPeriodStatesTableCreateCompanionBuilder
     = BudgetPeriodStatesCompanion Function({
@@ -14063,8 +14064,8 @@ class $AppDatabaseManager {
       $$TransfersTableTableManager(_db, _db.transfers);
   $$BudgetsTableTableManager get budgets =>
       $$BudgetsTableTableManager(_db, _db.budgets);
-  $$BudgetablesTableTableManager get budgetables =>
-      $$BudgetablesTableTableManager(_db, _db.budgetables);
+  $$BudgetTargetsTableTableManager get budgetTargets =>
+      $$BudgetTargetsTableTableManager(_db, _db.budgetTargets);
   $$BudgetPeriodStatesTableTableManager get budgetPeriodStates =>
       $$BudgetPeriodStatesTableTableManager(_db, _db.budgetPeriodStates);
 }
