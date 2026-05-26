@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
+import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/budget/add_budget_screen.dart';
 import 'package:trakli/presentation/budget/budget_detail_screen.dart';
 import 'package:trakli/presentation/budget/cubit/budget_cubit.dart';
@@ -38,9 +40,9 @@ class _BudgetScreenState extends State<BudgetScreen> {
     return Scaffold(
       backgroundColor: tones.bgPage,
       appBar: PageAppBar(
-        title: 'Budgets',
+        title: LocaleKeys.budgetPageTitle.tr(),
         onSearchChanged: (v) => setState(() => _query = v),
-        searchHint: 'Search budgets',
+        searchHint: LocaleKeys.searchBudgets.tr(),
         actions: [
           PageAppBarAction(icon: Icons.add, onTap: _add, primary: true),
         ],
@@ -141,9 +143,9 @@ class _FilterChips extends StatelessWidget {
 
     return Row(
       children: [
-        chip('All', !onlyActive, () => onChange(false)),
+        chip(LocaleKeys.filterAll.tr(), !onlyActive, () => onChange(false)),
         SizedBox(width: 8.w),
-        chip('Active', onlyActive, () => onChange(true)),
+        chip(LocaleKeys.filterActive.tr(), onlyActive, () => onChange(true)),
       ],
     );
   }
@@ -164,24 +166,24 @@ class _BudgetCard extends StatelessWidget {
 
   String _periodLabel() {
     return switch (budget.periodType) {
-      BudgetPeriodType.weekly => 'Weekly',
-      BudgetPeriodType.monthly => 'Monthly',
-      BudgetPeriodType.yearly => 'Yearly',
-      BudgetPeriodType.custom => 'Custom',
+      BudgetPeriodType.weekly => LocaleKeys.periodWeekly.tr(),
+      BudgetPeriodType.monthly => LocaleKeys.periodMonthly.tr(),
+      BudgetPeriodType.yearly => LocaleKeys.periodYearly.tr(),
+      BudgetPeriodType.custom => LocaleKeys.periodCustom.tr(),
     };
   }
 
   String _periodShort() {
     return switch (budget.periodType) {
-      BudgetPeriodType.weekly => '/wk',
-      BudgetPeriodType.monthly => '/mo',
-      BudgetPeriodType.yearly => '/yr',
+      BudgetPeriodType.weekly => LocaleKeys.periodWeeklyShort.tr(),
+      BudgetPeriodType.monthly => LocaleKeys.periodMonthlyShort.tr(),
+      BudgetPeriodType.yearly => LocaleKeys.periodYearlyShort.tr(),
       BudgetPeriodType.custom => '',
     };
   }
 
   String _scopeText() {
-    if (budget.targets.isEmpty) return 'All transactions';
+    if (budget.targets.isEmpty) return LocaleKeys.scopeAllTransactions.tr();
     final byType = <BudgetTargetType, int>{};
     for (final t in budget.targets) {
       byType[t.type] = (byType[t.type] ?? 0) + 1;
@@ -189,11 +191,11 @@ class _BudgetCard extends StatelessWidget {
     final parts = byType.entries.map((e) {
       final label = switch (e.key) {
         BudgetTargetType.category =>
-          '${e.value} ${e.value == 1 ? 'category' : 'categories'}',
+          '${e.value} ${e.value == 1 ? LocaleKeys.targetTypeCategorySingular.tr() : LocaleKeys.categories.tr()}',
         BudgetTargetType.wallet =>
-          '${e.value} ${e.value == 1 ? 'wallet' : 'wallets'}',
+          '${e.value} ${e.value == 1 ? LocaleKeys.targetTypeWalletSingular.tr() : LocaleKeys.wallets.tr()}',
         BudgetTargetType.group =>
-          '${e.value} ${e.value == 1 ? 'group' : 'groups'}',
+          '${e.value} ${e.value == 1 ? LocaleKeys.targetTypeGroupSingular.tr() : LocaleKeys.groups.tr()}',
       };
       return label;
     });
@@ -246,9 +248,9 @@ class _BudgetCard extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   iconSize: 18.sp,
                   itemBuilder: (_) => [
-                    const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                    const PopupMenuItem(
-                        value: 'delete', child: Text('Delete')),
+                    PopupMenuItem(value: 'edit', child: Text(LocaleKeys.edit.tr())),
+                    PopupMenuItem(
+                        value: 'delete', child: Text(LocaleKeys.delete.tr())),
                   ],
                   onSelected: (v) {
                     if (v == 'edit') onEdit();
@@ -275,7 +277,7 @@ class _BudgetCard extends StatelessWidget {
                 ),
                 if (!budget.isActive) ...[
                   SizedBox(width: 8.w),
-                  _MiniChip(label: 'Inactive', muted: true),
+                  _MiniChip(label: LocaleKeys.statusInactive.tr(), muted: true),
                 ],
               ],
             ),
@@ -330,7 +332,7 @@ class _EmptyState extends StatelessWidget {
             Icon(Icons.savings_outlined, size: 56.sp, color: tones.textMuted),
             SizedBox(height: 16.h),
             Text(
-              'No budgets yet',
+              LocaleKeys.noBudgetsYet.tr(),
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
@@ -339,7 +341,7 @@ class _EmptyState extends StatelessWidget {
             ),
             SizedBox(height: 6.h),
             Text(
-              'Track your spending against a target.\nSet a limit and we\'ll watch it for you.',
+              LocaleKeys.noBudgetsDescription.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13.sp,
@@ -350,7 +352,7 @@ class _EmptyState extends StatelessWidget {
             FilledButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.add),
-              label: const Text('Create budget'),
+              label: Text(LocaleKeys.createBudget.tr()),
             ),
           ],
         ),
@@ -371,8 +373,8 @@ class _NoMatches extends StatelessWidget {
       child: Center(
         child: Text(
           query.isEmpty
-              ? 'No budgets match this filter.'
-              : 'No matches for "$query".',
+              ? LocaleKeys.noBudgetsMatchFilter.tr()
+              : LocaleKeys.noMatchesForQuery.tr().replaceFirst('{0}', query),
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 14.sp, color: tones.textSecondary),
         ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,8 @@ import 'package:trakli/domain/entities/category_entity.dart';
 import 'package:trakli/domain/entities/group_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/domain/repositories/budget_repository.dart';
+import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/helpers.dart' show showSnackBar;
 import 'package:trakli/presentation/budget/cubit/budget_cubit.dart';
 import 'package:trakli/presentation/category/cubit/category_cubit.dart';
 import 'package:trakli/presentation/groups/cubit/group_cubit.dart';
@@ -104,23 +107,17 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
   Future<void> _submit() async {
     final name = _name.text.trim();
     if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a name')),
-      );
+      showSnackBar(message: LocaleKeys.budgetNameRequired.tr());
       return;
     }
     final amount = double.tryParse(_amount.text.trim());
     if (amount == null || amount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid amount')),
-      );
+      showSnackBar(message: LocaleKeys.budgetAmountRequired.tr());
       return;
     }
     final currency = _currency.text.trim().toUpperCase();
     if (currency.length != 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Currency must be 3 letters')),
-      );
+      showSnackBar(message: LocaleKeys.budgetCurrencyRequired.tr());
       return;
     }
 
@@ -134,9 +131,8 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
         periodType: _periodType,
         startDate: _startDate,
         endDate: _endDate,
-        description: _description.text.trim().isEmpty
-            ? null
-            : _description.text.trim(),
+        description:
+            _description.text.trim().isEmpty ? null : _description.text.trim(),
         rolloverEnabled: _rolloverEnabled,
         thresholdPercent: _threshold,
         forecastAlertsEnabled: _forecastAlertsEnabled,
@@ -151,9 +147,8 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
         periodType: _periodType,
         startDate: _startDate,
         endDate: _endDate,
-        description: _description.text.trim().isEmpty
-            ? null
-            : _description.text.trim(),
+        description:
+            _description.text.trim().isEmpty ? null : _description.text.trim(),
         rolloverEnabled: _rolloverEnabled,
         thresholdPercent: _threshold,
         forecastAlertsEnabled: _forecastAlertsEnabled,
@@ -171,7 +166,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
     return Scaffold(
       backgroundColor: tones.bgPage,
       appBar: AppBar(
-        title: Text(_isEdit ? 'Edit budget' : 'New budget'),
+        title: Text(_isEdit ? LocaleKeys.editBudget.tr() : LocaleKeys.newBudget.tr()),
       ),
       body: BlocBuilder<BudgetCubit, BudgetState>(
         builder: (context, state) {
@@ -182,16 +177,16 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _SectionLabel(text: 'Name'),
+                    _SectionLabel(text: LocaleKeys.name.tr()),
                     TextField(
                       controller: _name,
-                      decoration: const InputDecoration(
-                        hintText: 'e.g. Groceries',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        hintText: LocaleKeys.nameHint.tr(),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     SizedBox(height: 14.h),
-                    _SectionLabel(text: 'Amount'),
+                    _SectionLabel(text: LocaleKeys.amount.tr()),
                     Row(
                       children: [
                         Expanded(
@@ -206,9 +201,9 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                 RegExp(r'[0-9.]'),
                               ),
                             ],
-                            decoration: const InputDecoration(
-                              hintText: '0.00',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              hintText: LocaleKeys.amountHint.tr(),
+                              border: const OutlineInputBorder(),
                             ),
                           ),
                         ),
@@ -227,28 +222,28 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                       ],
                     ),
                     SizedBox(height: 14.h),
-                    _SectionLabel(text: 'Period'),
+                    _SectionLabel(text: LocaleKeys.period.tr()),
                     _PeriodChips(
                       selected: _periodType,
                       onChange: (p) => setState(() => _periodType = p),
                     ),
                     SizedBox(height: 14.h),
-                    _SectionLabel(text: 'Start date'),
+                    _SectionLabel(text: LocaleKeys.startDate.tr()),
                     _DateRow(
                       date: _startDate,
                       onTap: () => _pickDate(isStart: true),
                     ),
                     if (_periodType == BudgetPeriodType.custom) ...[
                       SizedBox(height: 14.h),
-                      _SectionLabel(text: 'End date'),
+                      _SectionLabel(text: LocaleKeys.endDate.tr()),
                       _DateRow(
                         date: _endDate,
                         onTap: () => _pickDate(isStart: false),
-                        placeholder: 'Select end date',
+                        placeholder: LocaleKeys.selectEndDate.tr(),
                       ),
                     ],
                     SizedBox(height: 14.h),
-                    _SectionLabel(text: 'Targets'),
+                    _SectionLabel(text: LocaleKeys.targets.tr()),
                     InkWell(
                       onTap: _pickTargets,
                       borderRadius: BorderRadius.circular(AppRadii.md),
@@ -266,8 +261,8 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                             Expanded(
                               child: Text(
                                 _targets.isEmpty
-                                    ? 'Apply to all transactions'
-                                    : '${_targets.length} ${_targets.length == 1 ? 'target' : 'targets'} selected',
+                                    ? LocaleKeys.budgetTargetsApplyAll.tr()
+                                    : '${_targets.length} ${_targets.length == 1 ? LocaleKeys.target.tr() : LocaleKeys.targets.tr()} ${LocaleKeys.selected.tr()}',
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: _targets.isEmpty
@@ -286,7 +281,9 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                       ),
                     ),
                     SizedBox(height: 14.h),
-                    _SectionLabel(text: 'Alert at $_threshold% used'),
+                    _SectionLabel(
+                      text: LocaleKeys.alertAtThreshold.tr().replaceFirst('{0}', '$_threshold'),
+                    ),
                     Slider(
                       value: _threshold.toDouble(),
                       min: 50,
@@ -297,19 +294,15 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                     ),
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Roll over unused amount'),
-                      subtitle: const Text(
-                        'Carry leftover budget into next period',
-                      ),
+                      title: Text(LocaleKeys.budgetRollover.tr()),
+                      subtitle: Text(LocaleKeys.budgetRolloverDescription.tr()),
                       value: _rolloverEnabled,
                       onChanged: (v) => setState(() => _rolloverEnabled = v),
                     ),
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Forecast alerts'),
-                      subtitle: const Text(
-                        'Warn me if I\'m projected to overspend',
-                      ),
+                      title: Text(LocaleKeys.budgetForecastAlerts.tr()),
+                      subtitle: Text(LocaleKeys.budgetForecastAlertsDescription.tr()),
                       value: _forecastAlertsEnabled,
                       onChanged: (v) =>
                           setState(() => _forecastAlertsEnabled = v),
@@ -317,12 +310,12 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                     if (_isEdit)
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: const Text('Active'),
+                        title: Text(LocaleKeys.active.tr()),
                         value: _isActive,
                         onChanged: (v) => setState(() => _isActive = v),
                       ),
                     SizedBox(height: 14.h),
-                    _SectionLabel(text: 'Description (optional)'),
+                    _SectionLabel(text: LocaleKeys.description.tr()),
                     TextField(
                       controller: _description,
                       maxLines: 3,
@@ -358,7 +351,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                               width: 18,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : Text(_isEdit ? 'Save changes' : 'Create budget'),
+                          : Text(_isEdit ? LocaleKeys.saveChanges.tr() : LocaleKeys.createBudget.tr()),
                     ),
                   ),
                 ),
@@ -430,10 +423,10 @@ class _PeriodChips extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          chip(BudgetPeriodType.weekly, 'Weekly'),
-          chip(BudgetPeriodType.monthly, 'Monthly'),
-          chip(BudgetPeriodType.yearly, 'Yearly'),
-          chip(BudgetPeriodType.custom, 'Custom'),
+          chip(BudgetPeriodType.weekly, LocaleKeys.periodWeekly.tr()),
+          chip(BudgetPeriodType.monthly, LocaleKeys.periodMonthly.tr()),
+          chip(BudgetPeriodType.yearly, LocaleKeys.periodYearly.tr()),
+          chip(BudgetPeriodType.custom, LocaleKeys.periodCustom.tr()),
         ],
       ),
     );
@@ -453,8 +446,11 @@ class _DateRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tones = context.tones;
+    final displayPlaceholder = placeholder == 'Select date'
+        ? LocaleKeys.selectDate.tr()
+        : placeholder;
     final label = date == null
-        ? placeholder
+        ? displayPlaceholder
         : '${date!.year}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}';
     return InkWell(
       onTap: onTap,
@@ -478,9 +474,7 @@ class _DateRow extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 14.sp,
-                  color: date == null
-                      ? tones.textMuted
-                      : tones.textPrimary,
+                  color: date == null ? tones.textMuted : tones.textPrimary,
                 ),
               ),
             ),
@@ -555,23 +549,23 @@ class _TargetPickerSheetState extends State<_TargetPickerSheet>
                 children: [
                   Expanded(
                     child: Text(
-                      'Select targets',
+                      LocaleKeys.selectTargets.tr(),
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                  TextButton(onPressed: _confirm, child: const Text('Done')),
+                  TextButton(onPressed: _confirm, child: Text(LocaleKeys.done.tr())),
                 ],
               ),
             ),
             TabBar(
               controller: _tabs,
-              tabs: const [
-                Tab(text: 'Categories'),
-                Tab(text: 'Wallets'),
-                Tab(text: 'Groups'),
+              tabs: [
+                Tab(text: LocaleKeys.categories.tr()),
+                Tab(text: LocaleKeys.wallets.tr()),
+                Tab(text: LocaleKeys.groups.tr()),
               ],
             ),
             Expanded(
@@ -619,15 +613,14 @@ class _CategoryList extends StatelessWidget {
       builder: (context, state) {
         final items = state.categories;
         if (items.isEmpty) {
-          return const Center(child: Text('No categories yet'));
+          return Center(child: Text(LocaleKeys.noCategoriesYet.tr()));
         }
         return ListView.builder(
           controller: scrollController,
           itemCount: items.length,
           itemBuilder: (_, i) => _TargetTile<CategoryEntity>(
             label: items[i].name,
-            selected:
-                selectedKeys.contains('category::${items[i].clientId}'),
+            selected: selectedKeys.contains('category::${items[i].clientId}'),
             onToggle: () => onToggle(items[i].clientId),
           ),
         );
@@ -652,7 +645,7 @@ class _WalletList extends StatelessWidget {
       builder: (context, state) {
         final items = state.wallets;
         if (items.isEmpty) {
-          return const Center(child: Text('No wallets yet'));
+          return Center(child: Text(LocaleKeys.noWalletsYet.tr()));
         }
         return ListView.builder(
           controller: scrollController,
@@ -684,7 +677,7 @@ class _GroupList extends StatelessWidget {
       builder: (context, state) {
         final items = state.groups;
         if (items.isEmpty) {
-          return const Center(child: Text('No groups yet'));
+          return Center(child: Text(LocaleKeys.noGroupsYet.tr()));
         }
         return ListView.builder(
           controller: scrollController,
