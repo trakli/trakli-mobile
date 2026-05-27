@@ -4,17 +4,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/failures/failures.dart';
+import 'package:trakli/core/usecases/usecase.dart';
 import 'package:trakli/core/utils/services/logger.dart';
 import 'package:trakli/data/datasources/ai/dto/chat_message_dto.dart';
 import 'package:trakli/data/datasources/ai/dto/chat_session_dto.dart';
-import 'package:trakli/domain/repositories/ai_repository.dart';
+import 'package:trakli/domain/usecases/ai/create_session_usecase.dart';
+import 'package:trakli/domain/usecases/ai/delete_session_usecase.dart';
+import 'package:trakli/domain/usecases/ai/get_session_usecase.dart';
+import 'package:trakli/domain/usecases/ai/list_sessions_usecase.dart';
+import 'package:trakli/domain/usecases/ai/send_message_usecase.dart';
 
 part 'ai_chat_cubit.freezed.dart';
 part 'ai_chat_state.dart';
 
 @injectable
 class AiChatCubit extends Cubit<AiChatState> {
-  final AiRepository _repo;
+  final ListSessionsUseCase _listSessionsUseCase;
+  final GetSessionUseCase _getSessionUseCase;
+  final CreateSessionUseCase _createSessionUseCase;
+  final SendMessageUseCase _sendMessageUseCase;
+  final DeleteSessionUseCase _deleteSessionUseCase;
 
   static const Duration _pollInterval = Duration(seconds: 3);
   static const Duration _stuckThreshold = Duration(seconds: 90);
@@ -22,13 +31,24 @@ class AiChatCubit extends Cubit<AiChatState> {
   Timer? _pollTimer;
   DateTime? _pollStartedAt;
 
-  AiChatCubit(this._repo) : super(AiChatState.initial());
+  AiChatCubit({
+    required ListSessionsUseCase listSessionsUseCase,
+    required GetSessionUseCase getSessionUseCase,
+    required CreateSessionUseCase createSessionUseCase,
+    required SendMessageUseCase sendMessageUseCase,
+    required DeleteSessionUseCase deleteSessionUseCase,
+  })  : _listSessionsUseCase = listSessionsUseCase,
+        _getSessionUseCase = getSessionUseCase,
+        _createSessionUseCase = createSessionUseCase,
+        _sendMessageUseCase = sendMessageUseCase,
+        _deleteSessionUseCase = deleteSessionUseCase,
+        super(AiChatState.initial());
 
   Future<void> loadMostRecent() async {
     if (state.isInitializing) return;
     emit(state.copyWith(isInitializing: true, failure: null));
 
-    final result = await _repo.listSessions();
+    final result = await _listSessionsUseCase(NoParams());
     await result.fold(
       (failure) async {
         emit(state.copyWith(isInitializing: false, failure: failure));
@@ -45,7 +65,7 @@ class AiChatCubit extends Cubit<AiChatState> {
   }
 
   Future<void> _loadSession(int id) async {
-    final result = await _repo.getSession(id);
+    final result = await _getSessionUseCase(GetSessionParams(id: id));
     result.fold(
       (failure) => emit(state.copyWith(failure: failure)),
       (session) => emit(
@@ -62,7 +82,7 @@ class AiChatCubit extends Cubit<AiChatState> {
   }
 
   Future<void> deleteSession(int id) async {
-    final result = await _repo.deleteSession(id);
+    final result = await _deleteSessionUseCase(DeleteSessionParams(id: id));
     result.fold(
       (failure) {
         logger.e('AI deleteSession failed (id=$id): $failure');
@@ -89,7 +109,9 @@ class AiChatCubit extends Cubit<AiChatState> {
     emit(state.copyWith(isSending: true, failure: null));
 
     if (!state.hasSession) {
-      final result = await _repo.createSession(message: trimmed);
+      final result = await _createSessionUseCase(
+        CreateSessionParams(message: trimmed),
+      );
       result.fold(
         (failure) {
           logger.e('AI createSession failed: $failure');
@@ -108,9 +130,8 @@ class AiChatCubit extends Cubit<AiChatState> {
     }
 
     final sessionId = state.session!.id;
-    final result = await _repo.sendMessage(
-      sessionId: sessionId,
-      message: trimmed,
+    final result = await _sendMessageUseCase(
+      SendMessageParams(sessionId: sessionId, message: trimmed),
     );
     result.fold(
       (failure) {
@@ -148,7 +169,7 @@ class AiChatCubit extends Cubit<AiChatState> {
       return;
     }
 
-    final result = await _repo.getSession(session.id);
+    final result = await _getSessionUseCase(GetSessionParams(id: session.id));
     result.fold(
       (_) {},
       (fresh) {
