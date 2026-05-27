@@ -4,11 +4,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/failures/failures.dart';
+import 'package:trakli/core/usecases/usecase.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_transactions_response.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
 import 'package:trakli/domain/entities/budget_period_state_entity.dart';
 import 'package:trakli/domain/entities/budget_progress_entity.dart';
 import 'package:trakli/domain/entities/budget_target_entity.dart';
+import 'package:trakli/domain/usecases/budget/close_budget_period_usecase.dart';
+import 'package:trakli/domain/usecases/budget/delete_budget_usecase.dart';
+import 'package:trakli/domain/usecases/budget/fetch_budget_progress_usecase.dart';
+import 'package:trakli/domain/usecases/budget/fetch_budget_transactions_usecase.dart';
+import 'package:trakli/domain/usecases/budget/get_all_budgets_usecase.dart';
+import 'package:trakli/domain/usecases/budget/insert_budget_usecase.dart';
+import 'package:trakli/domain/usecases/budget/listen_to_budgets_usecase.dart';
+import 'package:trakli/domain/usecases/budget/listen_to_period_states_usecase.dart';
+import 'package:trakli/domain/usecases/budget/listen_to_targets_usecase.dart';
+import 'package:trakli/domain/usecases/budget/refresh_period_states_usecase.dart';
+import 'package:trakli/domain/usecases/budget/update_budget_usecase.dart';
 import 'package:trakli/domain/repositories/budget_repository.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
@@ -17,19 +29,53 @@ part 'budget_state.dart';
 
 @injectable
 class BudgetCubit extends Cubit<BudgetState> {
-  final BudgetRepository _repository;
+  final GetAllBudgetsUseCase _getAllBudgetsUseCase;
+  final InsertBudgetUseCase _insertBudgetUseCase;
+  final UpdateBudgetUseCase _updateBudgetUseCase;
+  final DeleteBudgetUseCase _deleteBudgetUseCase;
+  final FetchBudgetProgressUseCase _fetchBudgetProgressUseCase;
+  final FetchBudgetTransactionsUseCase _fetchBudgetTransactionsUseCase;
+  final CloseBudgetPeriodUseCase _closeBudgetPeriodUseCase;
+  final ListenToBudgetsUseCase _listenToBudgetsUseCase;
+  final ListenToTargetsUseCase _listenToTargetsUseCase;
+  final ListenToPeriodStatesUseCase _listenToPeriodStatesUseCase;
+  final RefreshPeriodStatesUseCase _refreshPeriodStatesUseCase;
+
   StreamSubscription? _budgetsSubscription;
   StreamSubscription? _targetsSubscription;
   StreamSubscription? _periodStatesSubscription;
   String? _watchedBudgetClientId;
 
-  BudgetCubit(this._repository) : super(BudgetState.initial()) {
+  BudgetCubit({
+    required GetAllBudgetsUseCase getAllBudgetsUseCase,
+    required InsertBudgetUseCase insertBudgetUseCase,
+    required UpdateBudgetUseCase updateBudgetUseCase,
+    required DeleteBudgetUseCase deleteBudgetUseCase,
+    required FetchBudgetProgressUseCase fetchBudgetProgressUseCase,
+    required FetchBudgetTransactionsUseCase fetchBudgetTransactionsUseCase,
+    required CloseBudgetPeriodUseCase closeBudgetPeriodUseCase,
+    required ListenToBudgetsUseCase listenToBudgetsUseCase,
+    required ListenToTargetsUseCase listenToTargetsUseCase,
+    required ListenToPeriodStatesUseCase listenToPeriodStatesUseCase,
+    required RefreshPeriodStatesUseCase refreshPeriodStatesUseCase,
+  })  : _getAllBudgetsUseCase = getAllBudgetsUseCase,
+        _insertBudgetUseCase = insertBudgetUseCase,
+        _updateBudgetUseCase = updateBudgetUseCase,
+        _deleteBudgetUseCase = deleteBudgetUseCase,
+        _fetchBudgetProgressUseCase = fetchBudgetProgressUseCase,
+        _fetchBudgetTransactionsUseCase = fetchBudgetTransactionsUseCase,
+        _closeBudgetPeriodUseCase = closeBudgetPeriodUseCase,
+        _listenToBudgetsUseCase = listenToBudgetsUseCase,
+        _listenToTargetsUseCase = listenToTargetsUseCase,
+        _listenToPeriodStatesUseCase = listenToPeriodStatesUseCase,
+        _refreshPeriodStatesUseCase = refreshPeriodStatesUseCase,
+        super(BudgetState.initial()) {
     listenToBudgets();
   }
 
   Future<void> loadBudgets({bool? active}) async {
     emit(state.copyWith(isLoading: true, failure: const Failure.none()));
-    final result = await _repository.getAllBudgets(active: active);
+    final result = await _getAllBudgetsUseCase(GetAllBudgetsParams(active: active));
     result.fold(
       (failure) => emit(state.copyWith(isLoading: false, failure: failure)),
       (budgets) => emit(state.copyWith(
@@ -43,7 +89,7 @@ class BudgetCubit extends Cubit<BudgetState> {
   void listenToBudgets({bool? active}) {
     _budgetsSubscription?.cancel();
     _budgetsSubscription =
-        _repository.listenToBudgets(active: active).listen((either) {
+        _listenToBudgetsUseCase(ListenToBudgetsParams(active: active)).listen((either) {
       either.fold(
         (failure) => emit(state.copyWith(failure: failure)),
         (budgets) => emit(state.copyWith(
@@ -69,19 +115,21 @@ class BudgetCubit extends Cubit<BudgetState> {
     List<BudgetTargetSelection> targets = const [],
   }) async {
     emit(state.copyWith(isSaving: true, failure: const Failure.none()));
-    final result = await _repository.insertBudget(
-      name: name,
-      amount: amount,
-      currency: currency,
-      periodType: periodType,
-      startDate: startDate,
-      endDate: endDate,
-      description: description,
-      rolloverEnabled: rolloverEnabled,
-      thresholdPercent: thresholdPercent,
-      forecastAlertsEnabled: forecastAlertsEnabled,
-      isActive: isActive,
-      targets: targets,
+    final result = await _insertBudgetUseCase(
+      InsertBudgetParams(
+        name: name,
+        amount: amount,
+        currency: currency,
+        periodType: periodType,
+        startDate: startDate,
+        endDate: endDate,
+        description: description,
+        rolloverEnabled: rolloverEnabled,
+        thresholdPercent: thresholdPercent,
+        forecastAlertsEnabled: forecastAlertsEnabled,
+        isActive: isActive,
+        targets: targets,
+      ),
     );
     result.fold(
       (failure) => emit(state.copyWith(isSaving: false, failure: failure)),
@@ -108,20 +156,22 @@ class BudgetCubit extends Cubit<BudgetState> {
     List<BudgetTargetSelection>? targets,
   }) async {
     emit(state.copyWith(isSaving: true, failure: const Failure.none()));
-    final result = await _repository.updateBudget(
-      clientId,
-      name: name,
-      amount: amount,
-      currency: currency,
-      periodType: periodType,
-      startDate: startDate,
-      endDate: endDate,
-      description: description,
-      rolloverEnabled: rolloverEnabled,
-      thresholdPercent: thresholdPercent,
-      forecastAlertsEnabled: forecastAlertsEnabled,
-      isActive: isActive,
-      targets: targets,
+    final result = await _updateBudgetUseCase(
+      UpdateBudgetParams(
+        clientId: clientId,
+        name: name,
+        amount: amount,
+        currency: currency,
+        periodType: periodType,
+        startDate: startDate,
+        endDate: endDate,
+        description: description,
+        rolloverEnabled: rolloverEnabled,
+        thresholdPercent: thresholdPercent,
+        forecastAlertsEnabled: forecastAlertsEnabled,
+        isActive: isActive,
+        targets: targets,
+      ),
     );
     result.fold(
       (failure) => emit(state.copyWith(isSaving: false, failure: failure)),
@@ -138,7 +188,9 @@ class BudgetCubit extends Cubit<BudgetState> {
         state.budgets.where((b) => b.clientId != clientId).toList();
     emit(state.copyWith(budgets: optimistic));
 
-    final result = await _repository.deleteBudget(clientId);
+    final result = await _deleteBudgetUseCase(
+      DeleteBudgetParams(clientId: clientId),
+    );
     result.fold(
       (failure) => emit(state.copyWith(isDeleting: false, failure: failure)),
       (_) => emit(state.copyWith(
@@ -154,7 +206,7 @@ class BudgetCubit extends Cubit<BudgetState> {
 
     _targetsSubscription?.cancel();
     _targetsSubscription =
-        _repository.listenToTargetsForBudget(clientId).listen((either) {
+        _listenToTargetsUseCase(ListenToTargetsParams(budgetClientId: clientId)).listen((either) {
       either.fold(
         (failure) => emit(state.copyWith(failure: failure)),
         (targets) => emit(state.copyWith(
@@ -166,7 +218,7 @@ class BudgetCubit extends Cubit<BudgetState> {
 
     _periodStatesSubscription?.cancel();
     _periodStatesSubscription =
-        _repository.listenToPeriodStates(clientId).listen((either) {
+        _listenToPeriodStatesUseCase(ListenToPeriodStatesParams(budgetClientId: clientId)).listen((either) {
       either.fold(
         (failure) => emit(state.copyWith(failure: failure)),
         (states) => emit(state.copyWith(
@@ -179,7 +231,9 @@ class BudgetCubit extends Cubit<BudgetState> {
 
   Future<void> fetchProgress(int serverId) async {
     emit(state.copyWith(isProgressLoading: true));
-    final result = await _repository.fetchBudgetProgress(serverId);
+    final result = await _fetchBudgetProgressUseCase(
+      FetchBudgetProgressParams(id: serverId),
+    );
     result.fold(
       (failure) => emit(state.copyWith(
         isProgressLoading: false,
@@ -195,8 +249,9 @@ class BudgetCubit extends Cubit<BudgetState> {
 
   Future<void> fetchPeriodTransactions(int serverId, {int limit = 50}) async {
     emit(state.copyWith(isPeriodTransactionsLoading: true));
-    final result =
-        await _repository.fetchBudgetTransactions(serverId, limit: limit);
+    final result = await _fetchBudgetTransactionsUseCase(
+      FetchBudgetTransactionsParams(id: serverId, limit: limit),
+    );
     result.fold(
       (failure) => emit(state.copyWith(
         isPeriodTransactionsLoading: false,
@@ -212,7 +267,9 @@ class BudgetCubit extends Cubit<BudgetState> {
 
   Future<void> closeBudgetPeriod(int serverId) async {
     emit(state.copyWith(isClosingPeriod: true));
-    final result = await _repository.closeBudgetPeriod(serverId);
+    final result = await _closeBudgetPeriodUseCase(
+      CloseBudgetPeriodParams(id: serverId),
+    );
     result.fold(
       (failure) => emit(state.copyWith(
         isClosingPeriod: false,
@@ -223,14 +280,14 @@ class BudgetCubit extends Cubit<BudgetState> {
           isClosingPeriod: false,
           failure: const Failure.none(),
         ));
-        await _repository.refreshPeriodStates();
+        await _refreshPeriodStatesUseCase(NoParams());
         await fetchProgress(serverId);
       },
     );
   }
 
   Future<void> refreshPeriodStates() async {
-    await _repository.refreshPeriodStates();
+    await _refreshPeriodStatesUseCase(NoParams());
   }
 
   @override
