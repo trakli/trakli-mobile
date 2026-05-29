@@ -26,8 +26,9 @@ import 'package:trakli/presentation/utils/bottom_sheets/pick_group_bottom_sheet.
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/globals.dart';
-import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
+import 'package:trakli/presentation/utils/icon_background_decor.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/transaction_expansion_tile.dart';
 import 'package:trakli/presentation/utils/wallet_tile.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
@@ -142,6 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tones = context.tones;
     final walletState = context.watch<WalletCubit>().state;
     final wallets = walletState.wallets;
     final currentWalletIndex = walletState.currentSelectedWalletIndex;
@@ -194,6 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
     selectedGroup = selectedGroup ?? groups.firstOrNull;
 
     return Scaffold(
+      backgroundColor: tones.bgPage,
       appBar: PageAppBar(
         title: '',
         titleWidget: Theme.of(context).brightness == Brightness.dark
@@ -302,202 +305,207 @@ class _HomeScreenState extends State<HomeScreen> {
             return const EmptyHomeWidget();
           }
 
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 15.w,
-              vertical: 15.h,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (wallets.isNotEmpty) ...[
-                  Builder(
-                    builder: (context) {
-                      // Mark carousel as built when widget is in tree
-                      if (!_carouselBuilt) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (mounted) {
-                            setState(() {
-                              _carouselBuilt = true;
+          return Stack(
+            children: [
+              IconBackgroundDecor(iconPath: Assets.images.home),
+              SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 15.w,
+                  vertical: 15.h,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (wallets.isNotEmpty) ...[
+                      Builder(
+                        builder: (context) {
+                          // Mark carousel as built when widget is in tree
+                          if (!_carouselBuilt) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted) {
+                                setState(() {
+                                  _carouselBuilt = true;
+                                });
+                              }
                             });
                           }
-                        });
-                      }
-                      // carouselInitialPage is already calculated correctly (0 for All Wallets, or walletIndex + 1)
-                      final int adjustedInitialPage = carouselInitialPage;
+                          // carouselInitialPage is already calculated correctly (0 for All Wallets, or walletIndex + 1)
+                          final int adjustedInitialPage = carouselInitialPage;
 
-                      return CarouselSlider.builder(
-                        carouselController: _carouselController,
-                        options: CarouselOptions(
-                          enableInfiniteScroll: false,
-                          height: 190.h,
-                          viewportFraction: 1,
-                          enlargeCenterPage: true,
-                          enlargeFactor: 0.2,
-                          initialPage: adjustedInitialPage,
-                          onPageChanged: (index, reason) {
-                            // Convert carousel index back to wallet index
-                            final walletIndex =
-                                index == 0 ? allWalletsIndex : index - 1;
-                            context
-                                .read<WalletCubit>()
-                                .setCurrentSelectedWalletIndex(walletIndex);
-                          },
-                        ),
-                        itemCount: wallets.length + 1,
-                        itemBuilder: (context, index, pageViewIndex) {
-                          if (index == 0) {
-                            return AllWalletsTile(wallets: wallets);
-                          }
-                          return WalletTile(
-                            wallet: wallets[index - 1],
-                            canDelete: false,
-                            showDefaultWallet: true,
+                          return CarouselSlider.builder(
+                            carouselController: _carouselController,
+                            options: CarouselOptions(
+                              enableInfiniteScroll: false,
+                              height: 190.h,
+                              viewportFraction: 1,
+                              enlargeCenterPage: true,
+                              enlargeFactor: 0.2,
+                              initialPage: adjustedInitialPage,
+                              onPageChanged: (index, reason) {
+                                // Convert carousel index back to wallet index
+                                final walletIndex =
+                                    index == 0 ? allWalletsIndex : index - 1;
+                                context
+                                    .read<WalletCubit>()
+                                    .setCurrentSelectedWalletIndex(walletIndex);
+                              },
+                            ),
+                            itemCount: wallets.length + 1,
+                            itemBuilder: (context, index, pageViewIndex) {
+                              if (index == 0) {
+                                return AllWalletsTile(wallets: wallets);
+                              }
+                              return WalletTile(
+                                wallet: wallets[index - 1],
+                                canDelete: false,
+                                showDefaultWallet: true,
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                  ),
-                  SizedBox(height: 12.h),
-                  Align(
-                    child: AnimatedSmoothIndicator(
-                      activeIndex: currentWalletIndex == allWalletsIndex
-                          ? 0
-                          : currentWalletIndex + 1,
-                      count: wallets.length + 1,
-                      effect: ExpandingDotsEffect(
-                        activeDotColor: Theme.of(context).primaryColor,
-                        dotWidth: 8.r,
-                        dotHeight: 8.r,
                       ),
-                    ),
-                  ),
-                ],
-                Text(
-                  LocaleKeys.transactions.tr(),
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        final groupEntity =
-                            await showCustomBottomSheet<GroupEntity>(
-                          context,
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          widget: PickGroupBottomSheet(
-                            group: selectedGroup,
+                      SizedBox(height: 12.h),
+                      Align(
+                        child: AnimatedSmoothIndicator(
+                          activeIndex: currentWalletIndex == allWalletsIndex
+                              ? 0
+                              : currentWalletIndex + 1,
+                          count: wallets.length + 1,
+                          effect: ExpandingDotsEffect(
+                            activeDotColor: Theme.of(context).primaryColor,
+                            dotWidth: 8.r,
+                            dotHeight: 8.r,
                           ),
-                        );
+                        ),
+                      ),
+                    ],
+                    Text(
+                      LocaleKeys.transactions.tr(),
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            final groupEntity =
+                                await showCustomBottomSheet<GroupEntity>(
+                              context,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              widget: PickGroupBottomSheet(
+                                group: selectedGroup,
+                              ),
+                            );
 
-                        if (mounted && groupEntity != null) {
-                          setState(() {
-                            context
-                                .read<TransactionCubit>()
-                                .setCurrentGroup(groupEntity);
-                          });
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: appOrange.withAlpha(40),
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        padding: EdgeInsets.all(8.r),
-                        child: Row(
-                          spacing: 8.w,
-                          children: [
-                            ImageWidget(
-                              mediaEntity: selectedGroup?.icon,
-                              accentColor: appOrange,
-                              iconSize: 16.sp,
-                              emojiSize: 16.sp,
-                              placeholderIcon: Icons.folder_outlined,
+                            if (mounted && groupEntity != null) {
+                              setState(() {
+                                context
+                                    .read<TransactionCubit>()
+                                    .setCurrentGroup(groupEntity);
+                              });
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: appOrange.withAlpha(40),
+                              borderRadius: BorderRadius.circular(8.r),
                             ),
-                            Text(
-                              selectedGroup?.name ?? LocaleKeys.group.tr(),
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w700,
+                            padding: EdgeInsets.all(8.r),
+                            child: Row(
+                              spacing: 8.w,
+                              children: [
+                                ImageWidget(
+                                  mediaEntity: selectedGroup?.icon,
+                                  accentColor: appOrange,
+                                  iconSize: 16.sp,
+                                  emojiSize: 16.sp,
+                                  placeholderIcon: Icons.folder_outlined,
+                                ),
+                                Text(
+                                  selectedGroup?.name ?? LocaleKeys.group.tr(),
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SvgPicture.asset(
+                                  width: 16.w,
+                                  height: 16.h,
+                                  Assets.images.arrowRight,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            AppNavigator.push(context, const HistoryScreen());
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: seeAllBoxColor,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            padding: EdgeInsets.all(8.r),
+                            child: Row(
+                              spacing: 8.w,
+                              children: [
+                                Text(
+                                  LocaleKeys.seeAll.tr(),
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SvgPicture.asset(
+                                  width: 16.w,
+                                  height: 16.h,
+                                  Assets.images.arrowRight,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12.h),
+                    transactions.isEmpty
+                        ? SizedBox(
+                            height: 0.25.sh,
+                            child: Center(
+                              child: Text(
+                                LocaleKeys.noTransactionsFound.tr(),
+                                style: TextStyle(
+                                    fontSize: 16.sp, color: Colors.grey),
                               ),
                             ),
-                            SvgPicture.asset(
-                              width: 16.w,
-                              height: 16.h,
-                              Assets.images.arrowRight,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        AppNavigator.push(context, const HistoryScreen());
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: seeAllBoxColor,
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        padding: EdgeInsets.all(8.r),
-                        child: Row(
-                          spacing: 8.w,
-                          children: [
-                            Text(
-                              LocaleKeys.seeAll.tr(),
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            SvgPicture.asset(
-                              width: 16.w,
-                              height: 16.h,
-                              Assets.images.arrowRight,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                          )
+                        : ListView.builder(
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: months.length,
+                            itemBuilder: (context, index) {
+                              final month = months[index];
+                              final monthTransactions = grouped[month]!;
+                              return TransactionExpansionTile(
+                                title: month,
+                                transactions: monthTransactions,
+                                isExpanded: index == 0,
+                              );
+                            },
+                          ),
+                    SizedBox(height: 100.h),
                   ],
                 ),
-                SizedBox(height: 12.h),
-                transactions.isEmpty
-                    ? SizedBox(
-                        height: 0.25.sh,
-                        child: Center(
-                          child: Text(
-                            LocaleKeys.noTransactionsFound.tr(),
-                            style:
-                                TextStyle(fontSize: 16.sp, color: Colors.grey),
-                          ),
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: EdgeInsets.zero,
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: months.length,
-                        itemBuilder: (context, index) {
-                          final month = months[index];
-                          final monthTransactions = grouped[month]!;
-                          return TransactionExpansionTile(
-                            title: month,
-                            transactions: monthTransactions,
-                            isExpanded: index == 0,
-                          );
-                        },
-                      ),
-                SizedBox(height: 100.h),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),
