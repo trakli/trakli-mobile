@@ -19,9 +19,9 @@ import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
-import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/popovers/category_list_popover.dart';
 import 'package:trakli/presentation/utils/popovers/date_list_popover.dart';
 import 'package:trakli/presentation/utils/popovers/wallet_list_popover.dart';
@@ -89,6 +89,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tones = context.tones;
     return BlocBuilder<TransactionCubit, TransactionState>(
       builder: (context, state) {
         final exchangeRateEntity =
@@ -107,6 +108,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         final totalBalance = totalIncome - totalExpense;
 
         return Scaffold(
+          backgroundColor: tones.bgPage,
           appBar: PageAppBar(
             title: LocaleKeys.transactionHistory.tr(),
             actions: [
@@ -478,9 +480,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               label: filterType.filterName.tr(),
                               onSelect: (category) {
                                 setState(() {
-                                  if (!selectedItems.any((item) =>
-                                      (item is CategoryEntity &&
-                                          item.clientId == category.clientId))) {
+                                  if (!selectedItems.any((item) => (item
+                                          is CategoryEntity &&
+                                      item.clientId == category.clientId))) {
                                     selectedItems.add(category);
                                   }
                                 });

@@ -21,15 +21,17 @@ import 'package:trakli/presentation/statistics/month_in_review/month_in_review_d
 import 'package:trakli/presentation/statistics/month_in_review/month_in_review_screen.dart';
 import 'package:trakli/presentation/statistics/reports/reports_screen.dart';
 import 'package:trakli/presentation/statistics/widgets/month_in_review_card.dart';
-import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
+import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/category_tile.dart';
 import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/dashboard_expenses.dart';
 import 'package:trakli/presentation/utils/dashboard_pie_data.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/graph_widget.dart';
+import 'package:trakli/presentation/utils/icon_background_decor.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 import 'package:trakli/presentation/utils/wallet_mini_tile.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 import 'package:trakli/providers/chart_data_provider.dart';
@@ -234,6 +236,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
       builder: (context, filterState) {
         return BlocBuilder<TransactionCubit, TransactionState>(
           builder: (context, state) {
+            final tones = context.tones;
             // Aggregate transactions
             final allTransactions = state.transactions;
             final wallets = context.watch<WalletCubit>().state.wallets;
@@ -291,6 +294,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                 .map((e) => MapEntry(categoryMap[e.key]!, e.value))
                 .toList();
             return Scaffold(
+              backgroundColor: tones.bgPage,
               appBar: PageAppBar(
                 title: LocaleKeys.statistics.tr(),
                 showBack: false,
@@ -303,108 +307,73 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                   ),
                 ],
               ),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: 16.h),
-                    Builder(builder: (cardContext) {
-                      final recap = buildMonthInReview(transactions);
-                      // Build a 30-day net-flow sparkline for the recap
-                      // card; tiny but it gives the card colour and life.
-                      final spark = _buildSparkline(transactions);
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: MonthInReviewCard(
-                          data: recap,
-                          sparkline: spark,
-                          onTap: recap == null
-                              ? null
-                              : () => MonthInReviewScreen.show(
-                                    cardContext,
-                                    recap,
-                                  ),
-                        ),
-                      );
-                    }),
-                    SizedBox(height: 16.h),
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 16.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
+              body: Stack(
+                children: [
+                  IconBackgroundDecor(iconPath: Assets.images.chart),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 16.h),
+                        Builder(builder: (cardContext) {
+                          final recap = buildMonthInReview(transactions);
+                          // Build a 30-day net-flow sparkline for the recap
+                          // card; tiny but it gives the card colour and life.
+                          final spark = _buildSparkline(transactions);
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: MonthInReviewCard(
+                              data: recap,
+                              sparkline: spark,
+                              onTap: recap == null
+                                  ? null
+                                  : () => MonthInReviewScreen.show(
+                                        cardContext,
+                                        recap,
+                                      ),
                             ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                  padding: EdgeInsets.all(8.r),
-                                  child: GestureDetector(
-                                    onTap: () => _pickWallet(context, wallets),
-                                    child: Row(
-                                      spacing: 8.w,
-                                      children: [
-                                        Text(
-                                          (selectedWallet?.name ??
-                                                  LocaleKeys.allWallets.tr())
-                                              .extractWords(maxSize: 15),
-                                          style: TextStyle(
-                                            fontSize: 10.sp,
-                                          ),
-                                        ),
-                                        SvgPicture.asset(
-                                          Assets.images.arrowDown,
-                                          width: 16.w,
-                                          colorFilter: ColorFilter.mode(
-                                            Theme.of(context)
-                                                .colorScheme
-                                                .onSurface,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                          );
+                        }),
+                        SizedBox(height: 16.h),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Column(
+                            children: [
+                              SizedBox(height: 16.h),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
                                 ),
-                                const Spacer(),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                  padding: EdgeInsets.all(8.r),
-                                  child: Row(
-                                    spacing: 8.w,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () => _pickDateRange(context),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                      ),
+                                      padding: EdgeInsets.all(8.r),
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            _pickWallet(context, wallets),
                                         child: Row(
+                                          spacing: 8.w,
                                           children: [
                                             Text(
-                                              filterState.startDate != null &&
-                                                      filterState.endDate !=
-                                                          null
-                                                  ? '${dateFormat.format(filterState.startDate!)} - ${dateFormat.format(filterState.endDate!)}'
-                                                  : dateFormat
-                                                      .format(DateTime.now()),
+                                              (selectedWallet?.name ??
+                                                      LocaleKeys.allWallets
+                                                          .tr())
+                                                  .extractWords(maxSize: 15),
                                               style: TextStyle(
                                                 fontSize: 10.sp,
                                               ),
                                             ),
-                                            SizedBox(width: 4.w),
                                             SvgPicture.asset(
                                               Assets.images.arrowDown,
                                               width: 16.w,
@@ -418,108 +387,156 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    const Spacer(),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                      ),
+                                      padding: EdgeInsets.all(8.r),
+                                      child: Row(
+                                        spacing: 8.w,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () =>
+                                                _pickDateRange(context),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  filterState.startDate !=
+                                                              null &&
+                                                          filterState.endDate !=
+                                                              null
+                                                      ? '${dateFormat.format(filterState.startDate!)} - ${dateFormat.format(filterState.endDate!)}'
+                                                      : dateFormat.format(
+                                                          DateTime.now()),
+                                                  style: TextStyle(
+                                                    fontSize: 10.sp,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4.w),
+                                                SvgPicture.asset(
+                                                  Assets.images.arrowDown,
+                                                  width: 16.w,
+                                                  colorFilter: ColorFilter.mode(
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface,
+                                                    BlendMode.srcIn,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
+                              SizedBox(height: 8.h),
+                              SizedBox(
+                                height: 0.38.sh,
+                                child: PageView(
+                                  controller: pageController,
+                                  onPageChanged: (index) {
+                                    final statCubit =
+                                        context.read<StatisticsFilterCubit>();
+                                    statCubit.setViewIndex(index);
+                                  },
+                                  children: [
+                                    statOne(
+                                      transactions: transactions,
+                                      walletClientId:
+                                          filterState.walletClientId,
+                                    ),
+                                    statTwo(
+                                      transactions: transactions,
+                                      walletClientId:
+                                          filterState.walletClientId,
+                                    ),
+                                    statThree(
+                                      transactions: transactions,
+                                      startDate: filterState.startDate,
+                                      endDate: filterState.endDate,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 12.h),
+                        SmoothPageIndicator(
+                          controller: pageController,
+                          count: 3,
+                          effect: ExpandingDotsEffect(
+                            activeDotColor: Theme.of(context).primaryColor,
+                            dotWidth: 8.sp,
+                            dotHeight: 8.sp,
+                          ),
+                        ),
+                        SizedBox(height: 12.h),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            // vertical:
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: TabBar(
+                            controller: tabController,
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            indicatorColor: Colors.transparent,
+                            dividerHeight: 0,
+                            indicator: BoxDecoration(
+                              color: (tabController.index == 0)
+                                  ? Theme.of(context).primaryColor
+                                  : const Color(0xFFEB5757),
+                              borderRadius: BorderRadius.circular(8.r),
                             ),
-                          ),
-                          SizedBox(height: 8.h),
-                          SizedBox(
-                            height: 0.38.sh,
-                            child: PageView(
-                              controller: pageController,
-                              onPageChanged: (index) {
-                                final statCubit =
-                                    context.read<StatisticsFilterCubit>();
-                                statCubit.setViewIndex(index);
-                              },
-                              children: [
-                                statOne(
-                                  transactions: transactions,
-                                  walletClientId: filterState.walletClientId,
-                                ),
-                                statTwo(
-                                  transactions: transactions,
-                                  walletClientId: filterState.walletClientId,
-                                ),
-                                statThree(
-                                  transactions: transactions,
-                                  startDate: filterState.startDate,
-                                  endDate: filterState.endDate,
-                                ),
-                              ],
+                            unselectedLabelStyle: TextStyle(
+                              fontSize: 16.sp,
                             ),
+                            labelStyle: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            tabs: [
+                              Tab(
+                                text: LocaleKeys.transactionIncome.tr(),
+                              ),
+                              Tab(
+                                text: LocaleKeys.transactionExpense.tr(),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-                    SmoothPageIndicator(
-                      controller: pageController,
-                      count: 3,
-                      effect: ExpandingDotsEffect(
-                        activeDotColor: Theme.of(context).primaryColor,
-                        dotWidth: 8.sp,
-                        dotHeight: 8.sp,
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        // vertical:
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: TabBar(
-                        controller: tabController,
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        indicatorColor: Colors.transparent,
-                        dividerHeight: 0,
-                        indicator: BoxDecoration(
-                          color: (tabController.index == 0)
-                              ? Theme.of(context).primaryColor
-                              : const Color(0xFFEB5757),
-                          borderRadius: BorderRadius.circular(8.r),
                         ),
-                        unselectedLabelStyle: TextStyle(
-                          fontSize: 16.sp,
-                        ),
-                        labelStyle: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        tabs: [
-                          Tab(
-                            text: LocaleKeys.transactionIncome.tr(),
+                        SizedBox(height: 12.h),
+                        if (tabController.index == 0)
+                          incomeListWidget(
+                            incomeListData,
+                            selectedWallet,
+                            startDate: filterState.startDate,
+                            endDate: filterState.endDate,
+                          )
+                        else
+                          expenseListWidget(
+                            expenseListData,
+                            selectedWallet,
+                            startDate: filterState.startDate,
+                            endDate: filterState.endDate,
                           ),
-                          Tab(
-                            text: LocaleKeys.transactionExpense.tr(),
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
-                    SizedBox(height: 12.h),
-                    if (tabController.index == 0)
-                      incomeListWidget(
-                        incomeListData,
-                        selectedWallet,
-                        startDate: filterState.startDate,
-                        endDate: filterState.endDate,
-                      )
-                    else
-                      expenseListWidget(
-                        expenseListData,
-                        selectedWallet,
-                        startDate: filterState.startDate,
-                        endDate: filterState.endDate,
-                      ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
