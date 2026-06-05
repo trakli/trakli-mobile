@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 // import 'package:logger/logger.dart';
 
 import 'package:logger/logger.dart';
@@ -50,9 +53,15 @@ class LoggerInterceptor extends Interceptor {
   ) {
     logger.d(
       'StatusCode: ${response.statusCode} \n'
-      'Headers: ${response.headers.toString()} \n'
-      'Data: ${response.data}',
-    ); // Debug log
+      'Headers: ${response.headers.toString()}',
+    );
+    final encoded = jsonEncode(response.data);
+    const chunkSize = 800;
+    for (var i = 0; i < encoded.length; i += chunkSize) {
+      final end =
+          (i + chunkSize < encoded.length) ? i + chunkSize : encoded.length;
+      debugPrint('Data[${i ~/ chunkSize}]: ${encoded.substring(i, end)}');
+    }
     return super.onResponse(response, handler);
   }
 }

@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/constants/fileable_type_constants.dart';
 import 'package:trakli/core/utils/date_util.dart';
+import 'package:trakli/data/services/budget/budget_progress_recomputer.dart';
 import 'package:trakli/data/database/app_database.dart';
 import 'package:trakli/data/datasources/media_file/media_file_local_datasource.dart';
 import 'package:trakli/data/datasources/transaction/dto/transaction_complete_dto.dart';
@@ -42,10 +43,15 @@ abstract class TransactionLocalDataSource {
 
 @Injectable(as: TransactionLocalDataSource)
 class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
-  TransactionLocalDataSourceImpl(this.database, this._mediaFileLocalDataSource);
+  TransactionLocalDataSourceImpl(
+    this.database,
+    this._mediaFileLocalDataSource,
+    this._budgetProgressRecomputer,
+  );
 
   final AppDatabase database;
   final MediaFileLocalDataSource _mediaFileLocalDataSource;
+  final BudgetProgressRecomputer _budgetProgressRecomputer;
 
   List<TransactionCompleteDto> mapTransactionAndComplete(
     List<TypedResult> rows,
@@ -306,7 +312,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     }
 
     // Transaction: writes only + reads that depend on those writes.
-    return database.transaction(() async {
+    final result = await database.transaction(() async {
       final model = await database.into(database.transactions).insertReturning(
             TransactionsCompanion.insert(
               clientId: Value(clientId),
@@ -384,6 +390,13 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
             .toList(),
       );
     });
+
+    await _budgetProgressRecomputer.recomputeAffectedBy(
+      walletClientId: walletClientId,
+      groupClientId: groupClientId,
+      categoryClientIds: categoryIds.toSet(),
+    );
+    return result;
   }
 
   @override
@@ -398,7 +411,17 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     String? groupClientId,
     String? transferClientId,
   }) async {
-    return database.transaction(() async {
+    // Capture original tag-set before the mutation so we can also recompute
+    // budgets the transaction *used to* affect.
+    final originalSnapshot = await (database.select(database.transactions)
+          ..where((t) => t.clientId.equals(id)))
+        .getSingleOrNull();
+    final originalCategories = originalSnapshot == null
+        ? const <Category>[]
+        : await database.getCategoriesForTransaction(
+            id, CategorizableType.transaction);
+
+    final result = await database.transaction(() async {
       final originalTransaction = await (database.select(database.transactions)
             ..where((t) => t.clientId.equals(id)))
           .getSingle();
@@ -566,11 +589,35 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
         files: files,
       );
     });
+
+    final affectedCategoryIds = <String>{
+      ...originalCategories.map((c) => c.clientId),
+      ...result.categories.map((c) => c.clientId),
+    };
+    final affectedWallets = <String>{
+      if (originalSnapshot != null) originalSnapshot.walletClientId,
+      result.wallet.clientId,
+    };
+    final affectedGroups = <String?>{
+      originalSnapshot?.groupClientId,
+      result.group?.clientId,
+    }..removeWhere((g) => g == null);
+
+    for (final walletId in affectedWallets) {
+      for (final groupId in affectedGroups.isEmpty ? <String?>{null} : affectedGroups) {
+        await _budgetProgressRecomputer.recomputeAffectedBy(
+          walletClientId: walletId,
+          groupClientId: groupId,
+          categoryClientIds: affectedCategoryIds,
+        );
+      }
+    }
+    return result;
   }
 
   @override
   Future<TransactionCompleteDto> deleteTransaction(String id) async {
-    return database.transaction(() async {
+    final result = await database.transaction(() async {
       final transaction = await (database.select(database.transactions)
             ..where((t) => t.clientId.equals(id)))
           .getSingle();
@@ -629,6 +676,14 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
         files: files,
       );
     });
+
+    await _budgetProgressRecomputer.recomputeAffectedBy(
+      walletClientId: result.wallet.clientId,
+      groupClientId: result.group?.clientId,
+      categoryClientIds:
+          result.categories.map((c) => c.clientId).toSet(),
+    );
+    return result;
   }
 
   @override

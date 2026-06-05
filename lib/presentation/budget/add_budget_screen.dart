@@ -1,3 +1,4 @@
+import 'package:currency_picker/currency_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/helpers.dart' show showSnackBar;
 import 'package:trakli/presentation/budget/cubit/budget_cubit.dart';
 import 'package:trakli/presentation/category/cubit/category_cubit.dart';
+import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
 import 'package:trakli/presentation/groups/cubit/group_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
@@ -168,7 +170,8 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
       appBar: AppBar(
         title: Text(_isEdit ? LocaleKeys.editBudget.tr() : LocaleKeys.newBudget.tr()),
       ),
-      body: BlocBuilder<BudgetCubit, BudgetState>(
+      body: SafeArea(
+        child: BlocBuilder<BudgetCubit, BudgetState>(
         builder: (context, state) {
           return Stack(
             children: [
@@ -209,14 +212,9 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                         ),
                         SizedBox(width: 10.w),
                         Expanded(
-                          child: TextField(
+                          child: _CurrencyPickerField(
                             controller: _currency,
-                            textCapitalization: TextCapitalization.characters,
-                            maxLength: 3,
-                            decoration: const InputDecoration(
-                              counterText: '',
-                              border: OutlineInputBorder(),
-                            ),
+                            onChanged: () => setState(() {}),
                           ),
                         ),
                       ],
@@ -359,6 +357,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
             ],
           );
         },
+        ),
       ),
     );
   }
@@ -713,3 +712,68 @@ class _TargetTile<T> extends StatelessWidget {
     );
   }
 }
+
+/// Tap-to-open currency picker bound to a `TextEditingController` so the
+/// existing `_submit()` flow (which reads `_currency.text`) keeps working
+/// unchanged. Restricted to the user's wallet currencies plus the app default
+/// (and the current value) so a usable exchange rate exists for conversion.
+class _CurrencyPickerField extends StatelessWidget {
+  final TextEditingController controller;
+  final VoidCallback onChanged;
+  const _CurrencyPickerField({
+    required this.controller,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final code = controller.text.trim().toUpperCase();
+    return InkWell(
+      borderRadius: BorderRadius.circular(4.r),
+      onTap: () {
+        final wallets = context.read<WalletCubit>().state.wallets;
+        final defaultCode =
+            context.read<ExchangeRateCubit>().state.entity?.baseCode;
+        final filter = <String>{
+          for (final w in wallets) w.currencyCode.toUpperCase(),
+          if (defaultCode != null && defaultCode.isNotEmpty)
+            defaultCode.toUpperCase(),
+          if (code.isNotEmpty) code,
+        };
+        showCurrencyPicker(
+          context: context,
+          currencyFilter: filter.isEmpty ? null : filter.toList(),
+          theme: CurrencyPickerThemeData(
+            bottomSheetHeight: 0.7.sh,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            flagSize: 24.sp,
+            subtitleTextStyle: TextStyle(
+              fontSize: 12.sp,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+          onSelect: (Currency currency) {
+            controller.text = currency.code;
+            onChanged();
+          },
+        );
+      },
+      child: InputDecorator(
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              code.isEmpty ? '—' : code,
+              style: TextStyle(fontSize: 14.sp),
+            ),
+            Icon(Icons.arrow_drop_down, size: 20.sp),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

@@ -7,6 +7,7 @@ import 'package:trakli/data/database/tables/budgets.dart';
 import 'package:trakli/data/database/tables/sync_table.dart';
 import 'package:trakli/data/datasources/budget/budget_remote_datasource.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_complete_dto.dart';
+import 'package:trakli/data/mappers/budget_mapper.dart';
 
 @lazySingleton
 class BudgetSyncHandler
@@ -185,6 +186,9 @@ class BudgetSyncHandler
       isActive: Value(budget.isActive),
       ownerType: Value(budget.ownerType),
       ownerId: Value(budget.ownerId),
+      progress: Value(entity.progress != null
+          ? BudgetMapper.progressFromDto(entity.progress!)
+          : null),
       createdAt: Value(budget.createdAt),
       updatedAt: Value(budget.updatedAt),
       lastSyncedAt: Value(budget.lastSyncedAt),

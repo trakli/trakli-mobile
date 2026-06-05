@@ -55,6 +55,21 @@ class BudgetMapper {
     );
   }
 
+  static BudgetPeriodStateEntity periodStateToDomain(db.BudgetPeriodState row) {
+    return BudgetPeriodStateEntity(
+      clientId: row.clientId,
+      id: row.id,
+      budgetClientId: row.budgetClientId,
+      periodStart: row.periodStart,
+      periodEnd: row.periodEnd,
+      netSpent: row.netSpent,
+      rolloverIn: row.rolloverIn,
+      rolloverOut: row.rolloverOut,
+      closedAt: row.closedAt,
+      lastSyncedAt: row.lastSyncedAt,
+    );
+  }
+
   static BudgetProgressEntity progressFromDto(BudgetProgressDto dto) {
     return BudgetProgressEntity(
       periodStart: dto.periodStart,
@@ -74,18 +89,4 @@ class BudgetMapper {
     );
   }
 
-  static BudgetPeriodStateEntity periodStateToDomain(db.BudgetPeriodState row) {
-    return BudgetPeriodStateEntity(
-      clientId: row.clientId,
-      id: row.id,
-      budgetClientId: row.budgetClientId,
-      periodStart: row.periodStart,
-      periodEnd: row.periodEnd,
-      netSpent: row.netSpent,
-      rolloverIn: row.rolloverIn,
-      rolloverOut: row.rolloverOut,
-      closedAt: row.closedAt,
-      lastSyncedAt: row.lastSyncedAt,
-    );
-  }
 }

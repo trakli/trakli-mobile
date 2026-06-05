@@ -1,8 +1,8 @@
 import 'dart:async';
+
+import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
-import 'package:drift/drift.dart';
-import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/core/error/repository_error_handler.dart';
 import 'package:trakli/data/database/app_database.dart' as db;
@@ -42,7 +42,8 @@ class BudgetRepositoryImpl
       final out = <BudgetEntity>[];
       for (final row in rows) {
         final targets = await _domainTargets(row.clientId);
-        out.add(BudgetMapper.toDomain(row, targets: targets));
+        out.add(BudgetMapper.toDomain(row,
+            targets: targets, progress: row.progress));
       }
       return out;
     });
@@ -54,7 +55,8 @@ class BudgetRepositoryImpl
       final row = await localDataSource.getBudgetByClientId(clientId);
       if (row == null) return null;
       final targets = await _domainTargets(clientId);
-      return BudgetMapper.toDomain(row, targets: targets);
+      return BudgetMapper.toDomain(row,
+          targets: targets, progress: row.progress);
     });
   }
 
@@ -165,7 +167,8 @@ class BudgetRepositoryImpl
         final out = <BudgetEntity>[];
         for (final row in rows) {
           final targets = await _domainTargets(row.clientId);
-          out.add(BudgetMapper.toDomain(row, targets: targets));
+          out.add(BudgetMapper.toDomain(row,
+              targets: targets, progress: row.progress));
         }
         return Right<Failure, List<BudgetEntity>>(out);
       } catch (_) {
@@ -207,13 +210,18 @@ class BudgetRepositoryImpl
     return RepositoryErrorHandler.handleApiCall(() async {
       final dto = await remoteDataSource.getBudgetProgress(id);
       if (dto == null) return null;
-      return BudgetMapper.progressFromDto(dto);
+      final progress = BudgetMapper.progressFromDto(dto);
+
+      await localDataSource.updateBudgetProgressByServerId(id, progress);
+
+      return progress;
     });
   }
 
   @override
-  Future<Either<Failure, BudgetTransactionsResponse?>>
-      fetchBudgetTransactions(int id, {int limit = 50}) {
+  Future<Either<Failure, BudgetTransactionsResponse?>> fetchBudgetTransactions(
+      int id,
+      {int limit = 50}) {
     return RepositoryErrorHandler.handleApiCall(() async {
       return remoteDataSource.getBudgetTransactions(id, limit: limit);
     });
@@ -223,53 +231,6 @@ class BudgetRepositoryImpl
   Future<Either<Failure, Unit>> closeBudgetPeriod(int id) {
     return RepositoryErrorHandler.handleApiCall(() async {
       await remoteDataSource.closeBudgetPeriod(id);
-      return unit;
-    });
-  }
-
-  @override
-  Future<Either<Failure, Unit>> refreshPeriodStates() {
-    return RepositoryErrorHandler.handleApiCall(() async {
-      final dtos = await remoteDataSource.getAllPeriodStates();
-      final localBudgets = await localDataSource.getAllBudgets();
-      final byServerId = {
-        for (final b in localBudgets)
-          if (b.id != null) b.id!: b.clientId,
-      };
-      final byClientId = {for (final b in localBudgets) b.clientId: b};
-
-      for (final dto in dtos) {
-        String? budgetClientId;
-        if (dto.budgetClientGeneratedId != null &&
-            byClientId.containsKey(dto.budgetClientGeneratedId)) {
-          budgetClientId = dto.budgetClientGeneratedId;
-        } else if (dto.budgetId != null) {
-          budgetClientId = byServerId[dto.budgetId];
-        }
-        if (budgetClientId == null) continue;
-
-        await super.db.into(super.db.budgetPeriodStates).insert(
-              db.BudgetPeriodStatesCompanion(
-                id: Value(dto.id),
-                clientId: Value(dto.clientId),
-                budgetClientId: Value(budgetClientId),
-                periodStart: Value(dto.periodStart),
-                periodEnd: Value(dto.periodEnd),
-                netSpent: Value(dto.netSpent),
-                rolloverIn: Value(dto.rolloverIn),
-                rolloverOut: Value(dto.rolloverOut),
-                closedAt: Value(dto.closedAt),
-                lastSyncedAt: Value(dto.lastSyncedAt),
-                createdAt: dto.createdAt != null
-                    ? Value(dto.createdAt!)
-                    : const Value.absent(),
-                updatedAt: dto.updatedAt != null
-                    ? Value(dto.updatedAt!)
-                    : const Value.absent(),
-              ),
-              mode: InsertMode.insertOrReplace,
-            );
-      }
       return unit;
     });
   }

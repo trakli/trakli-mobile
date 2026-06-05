@@ -34,7 +34,6 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
     final id = widget.budget.id;
     if (id != null) {
       cubit.fetchProgress(id);
-      cubit.refreshPeriodStates();
     }
   }
 
@@ -108,7 +107,8 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
           ),
         ],
       ),
-      body: BlocListener<BudgetCubit, BudgetState>(
+      body: SafeArea(
+        child: BlocListener<BudgetCubit, BudgetState>(
         listenWhen: (prev, curr) {
           final deletionCompleted = prev.isDeleting && !curr.isDeleting;
           final closingCompleted =
@@ -143,17 +143,18 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
         child: BlocBuilder<BudgetCubit, BudgetState>(
           builder: (context, state) {
             final budget = _currentBudget(state);
-            final progress = state.selectedBudgetProgress;
+            // Prefer the locally-streamed value (kept fresh by the recomputer
+            // on edits and by the sync handler on server reconciliation).
+            // Fall back to the cubit's selectedBudgetProgress only if the
+            // budget row hasn't been written yet.
+            final progress = budget.progress ?? state.selectedBudgetProgress;
             final targets = state.selectedBudgetTargets;
             final periods = state.selectedBudgetPeriodStates;
             return RefreshIndicator(
               onRefresh: () {
                 final id = budget.id;
                 if (id != null) {
-                  return Future.wait([
-                    context.read<BudgetCubit>().fetchProgress(id),
-                    context.read<BudgetCubit>().refreshPeriodStates(),
-                  ]);
+                  return context.read<BudgetCubit>().fetchProgress(id);
                 }
                 return Future.value();
               },
@@ -173,10 +174,12 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
                   SizedBox(height: 20.h),
                   _SectionHeader(text: LocaleKeys.budgetTargetsLabel.tr()),
                   _TargetsBlock(budget: budget, targets: targets),
-                  SizedBox(height: 20.h),
-                  _SectionHeader(
-                      text: LocaleKeys.budgetPeriodHistoryLabel.tr()),
-                  _PeriodHistoryBlock(periods: periods),
+                  if (budget.rolloverEnabled) ...[
+                    SizedBox(height: 20.h),
+                    _SectionHeader(
+                        text: LocaleKeys.budgetPeriodHistoryLabel.tr()),
+                    _PeriodHistoryBlock(periods: periods),
+                  ],
                   if (budget.rolloverEnabled && budget.id != null) ...[
                     SizedBox(height: 24.h),
                     FilledButton.icon(
@@ -197,6 +200,7 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
               ),
             );
           },
+        ),
         ),
       ),
     );

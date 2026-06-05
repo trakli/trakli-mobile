@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/core/constants/key_constants.dart';
 import 'package:trakli/core/error/error_handler.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/core/error/repository_error_handler.dart';
-import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/data/datasources/exchange-rate/exchange_rate_local_datasource.dart';
 import 'package:trakli/data/datasources/exchange-rate/exchange_rate_remote_datasource.dart';
 import 'package:trakli/data/mappers/exchange_rate_mapper.dart';
@@ -24,6 +24,9 @@ class ExchangeRateRepositoryImpl extends ExchangeRateRepository {
   final _exchangeRateController =
       StreamController<ExchangeRateEntity>.broadcast();
 
+  final _rateCachedController =
+      StreamController<ExchangeRateEntity>.broadcast();
+
   var defaultCurrencyCode = KeyConstants.defaultCurrencyCode;
 
   ExchangeRateRepositoryImpl({
@@ -36,6 +39,10 @@ class ExchangeRateRepositoryImpl extends ExchangeRateRepository {
   Stream<ExchangeRateEntity> get listenToExchangeRate async* {
     yield* _getAndEmitExchangeRate();
   }
+
+  @override
+  Stream<ExchangeRateEntity> get onExchangeRateUpdated =>
+      _rateCachedController.stream;
 
   Stream<ExchangeRateEntity> _getAndEmitExchangeRate() async* {
     String currencyCode = defaultCurrencyCode;
@@ -69,6 +76,8 @@ class ExchangeRateRepositoryImpl extends ExchangeRateRepository {
         await localDataSource.saveExchangeRate(
             exchangeRateRemote.baseCode, exchangeRateRemote);
 
+        _rateCachedController.add(exchangeRateEntity);
+
         yield exchangeRateEntity;
       } on DioException catch (err) {
         throw ErrorHandler.handleDioException(err);
@@ -93,6 +102,7 @@ class ExchangeRateRepositoryImpl extends ExchangeRateRepository {
           ExchangeRateMapper.toDomain(exchangeRateRemote);
 
       _exchangeRateController.add(exchangeRateEntity);
+      _rateCachedController.add(exchangeRateEntity);
 
       return exchangeRateEntity;
     });
@@ -105,6 +115,27 @@ class ExchangeRateRepositoryImpl extends ExchangeRateRepository {
           await remoteDataSource.getExchangeRate(defaultCurrencyCode);
       return ExchangeRateMapper.toDomain(exchangeRateRemote);
     });
+  }
+
+  @override
+  Future<ExchangeRateEntity?> getCachedExchangeRate() async {
+    String currencyCode = defaultCurrencyCode;
+
+    final configResult = await configRepository.getConfigByKey(
+      ConfigConstants.defaultCurrency,
+    );
+    configResult.fold(
+      (_) {},
+      (config) {
+        if (config.value != null) {
+          currencyCode = config.value as String;
+        }
+      },
+    );
+
+    final cached = await localDataSource.getExchangeRate(currencyCode);
+    if (cached == null) return null;
+    return ExchangeRateMapper.toDomain(cached);
   }
 
   @override
@@ -127,6 +158,7 @@ class ExchangeRateRepositoryImpl extends ExchangeRateRepository {
         final exchangeRateEntity =
             ExchangeRateMapper.toDomain(exchangeRateRemote);
         _exchangeRateController.add(exchangeRateEntity);
+        _rateCachedController.add(exchangeRateEntity);
         return exchangeRateEntity;
       }
 

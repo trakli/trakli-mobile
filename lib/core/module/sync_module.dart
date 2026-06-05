@@ -1,6 +1,7 @@
 import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/sync/sync_dependency_manager.dart';
+import 'package:trakli/data/sync/budget_period_state_sync_handler.dart';
 import 'package:trakli/data/sync/budget_sync_handler.dart';
 import 'package:trakli/data/sync/category_sync_handler.dart';
 import 'package:trakli/data/sync/config_sync_handler.dart';
@@ -26,6 +27,7 @@ abstract class SyncModule {
     TransferSyncHandler transferTypeHandler,
     MediaSyncHandler mediaSyncHandler,
     BudgetSyncHandler budgetTypeHandler,
+    BudgetPeriodStateSyncHandler budgetPeriodStateTypeHandler,
   ) {
     return {
       categoryTypeHandler,
@@ -38,6 +40,7 @@ abstract class SyncModule {
       transferTypeHandler,
       mediaSyncHandler,
       budgetTypeHandler,
+      budgetPeriodStateTypeHandler,
     };
   }
 

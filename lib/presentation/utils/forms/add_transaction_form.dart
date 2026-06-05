@@ -176,575 +176,560 @@ class _AddTransactionFormState extends State<AddTransactionForm>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<TransactionCubit, TransactionState>(
-      listenWhen: (previous, current) {
-        // Listen when saving completes (isSaving goes from true to false)
-        return previous.isSaving && !current.isSaving;
-      },
-      listener: (context, state) {
-        // Only navigate if save was successful (no error)
-        if (!state.failure.hasError && mounted) {
-          Navigator.pop(context);
-        }
-      },
-      child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          vertical: 16.h,
-        ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                LocaleKeys.transactionAmount.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-              ),
-              SizedBox(height: 8.h),
-              IntrinsicHeight(
-                child: Row(
-                  spacing: 16.w,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: amountController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: LocaleKeys.exampleAmount.tr(),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              color: widget.accentColor,
-                            ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 16.h,
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              LocaleKeys.transactionAmount.tr(),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+            SizedBox(height: 8.h),
+            IntrinsicHeight(
+              child: Row(
+                spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: amountController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: LocaleKeys.exampleAmount.tr(),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: widget.accentColor,
                           ),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return LocaleKeys.amountIsRequired.tr();
-                          }
-                          final number = double.tryParse(value);
-                          if (number == null) {
-                            return LocaleKeys.mustBeNumber.tr();
-                          }
-                          if (number == 0) {
-                            return LocaleKeys.amountMustNotBeZero.tr();
-                          }
-                          return null;
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return LocaleKeys.amountIsRequired.tr();
+                        }
+                        final number = double.tryParse(value);
+                        if (number == null) {
+                          return LocaleKeys.mustBeNumber.tr();
+                        }
+                        if (number == 0) {
+                          return LocaleKeys.amountMustNotBeZero.tr();
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showCurrencyPicker(
+                        context: context,
+                        theme: CurrencyPickerThemeData(
+                            bottomSheetHeight: 0.7.sh,
+                            backgroundColor: Colors.white,
+                            flagSize: 24.sp,
+                            subtitleTextStyle: TextStyle(
+                              fontSize: 12.sp,
+                              color: Theme.of(context).primaryColor,
+                            )),
+                        onSelect: (Currency currencyValue) {
+                          setState(() {
+                            currency = currencyValue;
+                            setAmountController(currency);
+                          });
                         },
+                      );
+                    },
+                    child: Container(
+                      width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Text(currency?.code ?? "XAF"),
                       ),
                     ),
-                    GestureDetector(
+                  )
+                ],
+              ),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              LocaleKeys.wallet.tr(),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+            SizedBox(height: 8.h),
+            IntrinsicHeight(
+              child: Row(
+                spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      readOnly: true,
+                      controller: walletController,
                       onTap: () {
-                        showCurrencyPicker(
-                          context: context,
-                          theme: CurrencyPickerThemeData(
-                              bottomSheetHeight: 0.7.sh,
-                              backgroundColor: Colors.white,
-                              flagSize: 24.sp,
-                              subtitleTextStyle: TextStyle(
-                                fontSize: 12.sp,
-                                color: Theme.of(context).primaryColor,
-                              )),
-                          onSelect: (Currency currencyValue) {
-                            setState(() {
-                              currency = currencyValue;
-                              setAmountController(currency);
-                            });
-                          },
+                        showCustomBottomSheet(
+                          context,
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          widget: BlocBuilder<WalletCubit, WalletState>(
+                            builder: (context, state) {
+                              return SelectWalletBottomSheet(
+                                wallets: state.wallets,
+                                onSelect: (wallet) {
+                                  setState(() {
+                                    selectedWallet = wallet;
+                                    walletController.text = wallet.name;
+                                    // Update currency when wallet changes
+                                    currency = wallet.currency;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              );
+                            },
+                          ),
                         );
                       },
-                      child: Container(
-                        width: 60.w,
-                        constraints: BoxConstraints(
-                          maxHeight: 50.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
+                      decoration: InputDecoration(
+                        hintText: LocaleKeys.selectWallet.tr(),
+                        focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: widget.accentColor,
+                          ),
                         ),
-                        child: Center(
-                          child: Text(currency?.code ?? "XAF"),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                LocaleKeys.wallet.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-              ),
-              SizedBox(height: 8.h),
-              IntrinsicHeight(
-                child: Row(
-                  spacing: 16.w,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        readOnly: true,
-                        controller: walletController,
-                        onTap: () {
-                          showCustomBottomSheet(
-                            context,
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            widget: BlocBuilder<WalletCubit, WalletState>(
-                              builder: (context, state) {
-                                return SelectWalletBottomSheet(
-                                  wallets: state.wallets,
-                                  onSelect: (wallet) {
-                                    setState(() {
-                                      selectedWallet = wallet;
-                                      walletController.text = wallet.name;
-                                      // Update currency when wallet changes
-                                      currency = wallet.currency;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                );
-                              },
-                            ),
-                          );
-                        },
-                        decoration: InputDecoration(
-                          hintText: LocaleKeys.selectWallet.tr(),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              color: widget.accentColor,
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: SvgPicture.asset(
+                            Assets.images.arrowDown,
+                            colorFilter: ColorFilter.mode(
+                              Colors.grey.shade500,
+                              BlendMode.srcIn,
                             ),
                           ),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return LocaleKeys.walletIsRequired.tr();
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      AppNavigator.push(context, const AddWalletScreen());
+                    },
+                    child: Container(
+                      width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.add),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(height: 16.h),
+            Row(
+              spacing: 16.w,
+              children: [
+                Expanded(
+                  child: Column(
+                    spacing: 8.h,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        LocaleKeys.transactionDate.tr(),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      TextFormField(
+                        readOnly: true,
+                        controller: dateController,
+                        decoration: InputDecoration(
                           suffixIcon: Padding(
                             padding: const EdgeInsets.all(12),
                             child: SvgPicture.asset(
-                              Assets.images.arrowDown,
-                              colorFilter: ColorFilter.mode(
-                                Colors.grey.shade500,
-                                BlendMode.srcIn,
-                              ),
+                              Assets.images.calendar,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: widget.accentColor,
                             ),
                           ),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return LocaleKeys.walletIsRequired.tr();
+                        onTap: () async {
+                          final selectDate = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now().subtract(
+                              const Duration(days: 1000),
+                            ),
+                            lastDate: DateTime.now().add(
+                              const Duration(days: 1000),
+                            ),
+                          );
+                          if (selectDate != null) {
+                            setState(() {
+                              date = selectDate;
+                              dateController.text = dateFormat.format(date);
+                            });
                           }
-                          return null;
                         },
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        AppNavigator.push(context, const AddWalletScreen());
-                      },
-                      child: Container(
-                        width: 60.w,
-                        constraints: BoxConstraints(
-                          maxHeight: 50.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.add),
-                        ),
-                      ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 16.h),
-              Row(
+                Expanded(
+                  child: Column(
+                    spacing: 8.h,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        LocaleKeys.transactionTime.tr(),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      TextFormField(
+                        readOnly: true,
+                        controller: timeController,
+                        decoration: InputDecoration(
+                          suffixIcon: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: SvgPicture.asset(
+                              Assets.images.clock,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: widget.accentColor,
+                            ),
+                          ),
+                        ),
+                        onTap: () async {
+                          final selectTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (selectTime != null) {
+                            setState(() {
+                              time = selectTime;
+                              date = DateTime(
+                                date.year,
+                                date.month,
+                                date.day,
+                                selectTime.hour,
+                                selectTime.minute,
+                              );
+                              timeController.text = timeFormat.format(date);
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              widget.transactionType == TransactionType.expense
+                  ? '${LocaleKeys.transactionSentTo.tr()} (${LocaleKeys.party.tr()})'
+                  : '${LocaleKeys.transactionReceivedFrom.tr()} (${LocaleKeys.party.tr()})',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+            SizedBox(height: 8.h),
+            IntrinsicHeight(
+              child: Row(
                 spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: Column(
-                      spacing: 8.h,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          LocaleKeys.transactionDate.tr(),
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        TextFormField(
-                          readOnly: true,
-                          controller: dateController,
-                          decoration: InputDecoration(
-                            suffixIcon: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: SvgPicture.asset(
-                                Assets.images.calendar,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: widget.accentColor,
-                              ),
-                            ),
-                          ),
-                          onTap: () async {
-                            final selectDate = await showDatePicker(
-                              context: context,
-                              firstDate: DateTime.now().subtract(
-                                const Duration(days: 1000),
-                              ),
-                              lastDate: DateTime.now().add(
-                                const Duration(days: 1000),
-                              ),
-                            );
-                            if (selectDate != null) {
-                              setState(() {
-                                date = selectDate;
-                                dateController.text = dateFormat.format(date);
-                              });
-                            }
+                    child: BlocBuilder<PartyCubit, PartyState>(
+                      builder: (context, state) {
+                        return CustomDropdownSearch<PartyEntity>(
+                          label: "",
+                          accentColor: widget.accentColor,
+                          selectedItem: selectedParty,
+                          items: (filter, infiniteScrollProps) {
+                            return state.parties;
                           },
-                        ),
-                      ],
+                          itemAsString: (item) => item.name,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedParty = value;
+                            });
+                          },
+                          compareFn: (i1, i2) => i1.clientId == i2.clientId,
+                          filterFn: (el, filter) => el.name
+                              .toLowerCase()
+                              .contains(filter.toLowerCase()),
+                        );
+                      },
                     ),
                   ),
-                  Expanded(
-                    child: Column(
-                      spacing: 8.h,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          LocaleKeys.transactionTime.tr(),
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        TextFormField(
-                          readOnly: true,
-                          controller: timeController,
-                          decoration: InputDecoration(
-                            suffixIcon: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: SvgPicture.asset(
-                                Assets.images.clock,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: widget.accentColor,
-                              ),
-                            ),
-                          ),
-                          onTap: () async {
-                            final selectTime = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay.now(),
-                            );
-                            if (selectTime != null) {
-                              setState(() {
-                                time = selectTime;
-                                date = DateTime(
-                                  date.year,
-                                  date.month,
-                                  date.day,
-                                  selectTime.hour,
-                                  selectTime.minute,
-                                );
-                                timeController.text = timeFormat.format(date);
-                              });
-                            }
-                          },
-                        ),
-                      ],
+                  GestureDetector(
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AddPartyDialog();
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.add),
+                      ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 16.h),
-              Text(
-                widget.transactionType == TransactionType.expense
-                    ? '${LocaleKeys.transactionSentTo.tr()} (${LocaleKeys.party.tr()})'
-                    : '${LocaleKeys.transactionReceivedFrom.tr()} (${LocaleKeys.party.tr()})',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-              ),
-              SizedBox(height: 8.h),
-              IntrinsicHeight(
-                child: Row(
-                  spacing: 16.w,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: BlocBuilder<PartyCubit, PartyState>(
-                        builder: (context, state) {
-                          return CustomDropdownSearch<PartyEntity>(
-                            label: "",
-                            accentColor: widget.accentColor,
-                            selectedItem: selectedParty,
-                            items: (filter, infiniteScrollProps) {
-                              return state.parties;
-                            },
-                            itemAsString: (item) => item.name,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedParty = value;
-                              });
-                            },
-                            compareFn: (i1, i2) => i1.clientId == i2.clientId,
-                            filterFn: (el, filter) => el.name
-                                .toLowerCase()
-                                .contains(filter.toLowerCase()),
-                          );
-                        },
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return const AddPartyDialog();
-                          },
-                        );
-                      },
-                      child: Container(
-                        width: 60.w,
-                        constraints: BoxConstraints(
-                          maxHeight: 50.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.add),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                LocaleKeys.transactionCategory.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-              ),
-              SizedBox(height: 8.h),
-              IntrinsicHeight(
-                child: Row(
-                  spacing: 16.w,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: categoryController,
-                        readOnly: true,
-                        onTap: () {
-                          showCustomBottomSheet(
-                            context,
-                            widget: BlocBuilder<CategoryCubit, CategoryState>(
-                              builder: (context, state) {
-                                //Category by transaction type
-                                final searchCategories = state.categories.where(
-                                    (element) =>
-                                        element.type == widget.transactionType);
-
-                                return CustomDropdownSearch<CategoryEntity>(
-                                  label: "",
-                                  accentColor: widget.accentColor,
-                                  selectedItem: selectedCategory,
-                                  items: (filter, infiniteScrollProps) {
-                                    return searchCategories
-                                        .map((data) => data)
-                                        .toList()
-                                        .where((CategoryEntity el) => el.name
-                                            .toLowerCase()
-                                            .contains(filter.toLowerCase()))
-                                        .toList();
-                                  },
-                                  itemAsString: (item) => item.name,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedCategory = value;
-                                      if (value != null) {
-                                        categoryController.text = value.name;
-                                      }
-
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                  compareFn: (i1, i2) =>
-                                      i1.clientId == i2.clientId,
-                                  filterFn: (el, filter) {
-                                    return el.name.toLowerCase().contains(
-                                          filter.toLowerCase(),
-                                        );
-                                  },
-                                );
-                              },
-                            ),
-                          );
-                        },
-                        decoration: InputDecoration(
-                          hintText: LocaleKeys.selectCategory.tr(),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              color: widget.accentColor,
-                            ),
-                          ),
-                          suffixIcon: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: SvgPicture.asset(
-                              Assets.images.arrowDown,
-                              colorFilter: ColorFilter.mode(
-                                Colors.grey.shade500,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return LocaleKeys.categoryIsRequired.tr();
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        AppNavigator.push(
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              LocaleKeys.transactionCategory.tr(),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+            SizedBox(height: 8.h),
+            IntrinsicHeight(
+              child: Row(
+                spacing: 16.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: categoryController,
+                      readOnly: true,
+                      onTap: () {
+                        showCustomBottomSheet(
                           context,
-                          AddCategoryScreen(
-                            accentColor: widget.accentColor,
-                            type: widget.transactionType,
+                          widget: BlocBuilder<CategoryCubit, CategoryState>(
+                            builder: (context, state) {
+                              //Category by transaction type
+                              final searchCategories = state.categories.where(
+                                  (element) =>
+                                      element.type == widget.transactionType);
+
+                              return CustomDropdownSearch<CategoryEntity>(
+                                label: "",
+                                accentColor: widget.accentColor,
+                                selectedItem: selectedCategory,
+                                items: (filter, infiniteScrollProps) {
+                                  return searchCategories
+                                      .map((data) => data)
+                                      .toList()
+                                      .where((CategoryEntity el) => el.name
+                                          .toLowerCase()
+                                          .contains(filter.toLowerCase()))
+                                      .toList();
+                                },
+                                itemAsString: (item) => item.name,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedCategory = value;
+                                    if (value != null) {
+                                      categoryController.text = value.name;
+                                    }
+
+                                    Navigator.pop(context);
+                                  });
+                                },
+                                compareFn: (i1, i2) =>
+                                    i1.clientId == i2.clientId,
+                                filterFn: (el, filter) {
+                                  return el.name.toLowerCase().contains(
+                                        filter.toLowerCase(),
+                                      );
+                                },
+                              );
+                            },
                           ),
                         );
                       },
-                      child: Container(
-                        width: 60.w,
-                        constraints: BoxConstraints(
-                          maxHeight: 50.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
+                      decoration: InputDecoration(
+                        hintText: LocaleKeys.selectCategory.tr(),
+                        focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: widget.accentColor,
+                          ),
                         ),
-                        child: const Center(
-                          child: Icon(Icons.add),
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: SvgPicture.asset(
+                            Assets.images.arrowDown,
+                            colorFilter: ColorFilter.mode(
+                              Colors.grey.shade500,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                LocaleKeys.transactionDescription.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-              ),
-              SizedBox(height: 8.h),
-              TextFormField(
-                controller: descriptionController,
-                decoration: InputDecoration(
-                  hintText: LocaleKeys.transactionTypeHere.tr(),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      color: widget.accentColor,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return LocaleKeys.categoryIsRequired.tr();
+                        }
+                        return null;
+                      },
                     ),
                   ),
-                ),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                LocaleKeys.transactionAttachment.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-              ),
-              SizedBox(height: 8.h),
-              AttachmentSourceRow(
-                accentColor: widget.accentColor,
-                onFileAdded: _addAttachmentPath,
-              ),
-              if (_allAttachments.isNotEmpty) ...[
-                SizedBox(height: 12.h),
-                SizedBox(
-                  height: 72.h,
-                  child: AttachmentListView(
-                    items: _allAttachments,
-                    showRemoveButton: true,
-                    accentColor: widget.accentColor,
-                    onRemove: _handleRemove,
-                  ),
-                ),
-              ],
-              SizedBox(height: 20.h),
-              SizedBox(
-                height: 56.h,
-                width: double.infinity,
-                child: Builder(
-                  builder: (context) {
-                    return DecoratedBox(
+                  GestureDetector(
+                    onTap: () async {
+                      AppNavigator.push(
+                        context,
+                        AddCategoryScreen(
+                          accentColor: widget.accentColor,
+                          type: widget.transactionType,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 60.w,
+                      constraints: BoxConstraints(
+                        maxHeight: 50.h,
+                      ),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(11.r),
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.add),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              LocaleKeys.transactionDescription.tr(),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+            SizedBox(height: 8.h),
+            TextFormField(
+              controller: descriptionController,
+              decoration: InputDecoration(
+                hintText: LocaleKeys.transactionTypeHere.tr(),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: widget.accentColor,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              LocaleKeys.transactionAttachment.tr(),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+            SizedBox(height: 8.h),
+            AttachmentSourceRow(
+              accentColor: widget.accentColor,
+              onFileAdded: _addAttachmentPath,
+            ),
+            if (_allAttachments.isNotEmpty) ...[
+              SizedBox(height: 12.h),
+              SizedBox(
+                height: 72.h,
+                child: AttachmentListView(
+                  items: _allAttachments,
+                  showRemoveButton: true,
+                  accentColor: widget.accentColor,
+                  onRemove: _handleRemove,
+                ),
+              ),
+            ],
+            SizedBox(height: 20.h),
+            SizedBox(
+              height: 56.h,
+              width: double.infinity,
+              child: Builder(
+                builder: (context) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(11.r),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          widget.accentColor,
+                          Color.alphaBlend(
+                            Colors.black.withValues(alpha: 0.08),
                             widget.accentColor,
-                            Color.alphaBlend(
-                              Colors.black.withValues(alpha: 0.08),
-                              widget.accentColor,
-                            ),
-                          ],
-                        ),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.35),
-                          width: 1,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: widget.accentColor.withValues(alpha: 0.4),
-                            blurRadius: 18,
-                            offset: const Offset(0, 8),
                           ),
                         ],
                       ),
-                      child: ElevatedButton(
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.35),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: widget.accentColor.withValues(alpha: 0.4),
+                          blurRadius: 18,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
                             const WidgetStatePropertyAll(Colors.transparent),
                         foregroundColor:
                             const WidgetStatePropertyAll(Colors.white),
-                        elevation:
-                            const WidgetStatePropertyAll(0),
-                        shadowColor: const WidgetStatePropertyAll(
-                            Colors.transparent),
+                        elevation: const WidgetStatePropertyAll(0),
+                        shadowColor:
+                            const WidgetStatePropertyAll(Colors.transparent),
                         overlayColor: WidgetStatePropertyAll(
                             Colors.white.withValues(alpha: 0.16)),
                         shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(14.r),
+                            borderRadius: BorderRadius.circular(14.r),
                           ),
                         ),
                         textStyle: WidgetStatePropertyAll(
@@ -822,13 +807,12 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         ],
                       ),
                     ),
-                    );
-                  },
-                ),
+                  );
+                },
               ),
-              SizedBox(height: 20.h),
-            ],
-          ),
+            ),
+            SizedBox(height: 20.h),
+          ],
         ),
       ),
     );
