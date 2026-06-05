@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/failures/failures.dart';
-import 'package:trakli/core/usecases/usecase.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_transactions_response.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
 import 'package:trakli/domain/entities/budget_period_state_entity.dart';
@@ -19,7 +18,6 @@ import 'package:trakli/domain/usecases/budget/insert_budget_usecase.dart';
 import 'package:trakli/domain/usecases/budget/listen_to_budgets_usecase.dart';
 import 'package:trakli/domain/usecases/budget/listen_to_period_states_usecase.dart';
 import 'package:trakli/domain/usecases/budget/listen_to_targets_usecase.dart';
-import 'package:trakli/domain/usecases/budget/refresh_period_states_usecase.dart';
 import 'package:trakli/domain/usecases/budget/update_budget_usecase.dart';
 import 'package:trakli/domain/repositories/budget_repository.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -39,7 +37,6 @@ class BudgetCubit extends Cubit<BudgetState> {
   final ListenToBudgetsUseCase _listenToBudgetsUseCase;
   final ListenToTargetsUseCase _listenToTargetsUseCase;
   final ListenToPeriodStatesUseCase _listenToPeriodStatesUseCase;
-  final RefreshPeriodStatesUseCase _refreshPeriodStatesUseCase;
 
   StreamSubscription? _budgetsSubscription;
   StreamSubscription? _targetsSubscription;
@@ -57,7 +54,6 @@ class BudgetCubit extends Cubit<BudgetState> {
     required ListenToBudgetsUseCase listenToBudgetsUseCase,
     required ListenToTargetsUseCase listenToTargetsUseCase,
     required ListenToPeriodStatesUseCase listenToPeriodStatesUseCase,
-    required RefreshPeriodStatesUseCase refreshPeriodStatesUseCase,
   })  : _getAllBudgetsUseCase = getAllBudgetsUseCase,
         _insertBudgetUseCase = insertBudgetUseCase,
         _updateBudgetUseCase = updateBudgetUseCase,
@@ -68,7 +64,6 @@ class BudgetCubit extends Cubit<BudgetState> {
         _listenToBudgetsUseCase = listenToBudgetsUseCase,
         _listenToTargetsUseCase = listenToTargetsUseCase,
         _listenToPeriodStatesUseCase = listenToPeriodStatesUseCase,
-        _refreshPeriodStatesUseCase = refreshPeriodStatesUseCase,
         super(BudgetState.initial()) {
     listenToBudgets();
   }
@@ -217,8 +212,9 @@ class BudgetCubit extends Cubit<BudgetState> {
     });
 
     _periodStatesSubscription?.cancel();
-    _periodStatesSubscription =
-        _listenToPeriodStatesUseCase(ListenToPeriodStatesParams(budgetClientId: clientId)).listen((either) {
+    _periodStatesSubscription = _listenToPeriodStatesUseCase(
+      ListenToPeriodStatesParams(budgetClientId: clientId),
+    ).listen((either) {
       either.fold(
         (failure) => emit(state.copyWith(failure: failure)),
         (states) => emit(state.copyWith(
@@ -280,14 +276,9 @@ class BudgetCubit extends Cubit<BudgetState> {
           isClosingPeriod: false,
           failure: const Failure.none(),
         ));
-        await _refreshPeriodStatesUseCase(NoParams());
         await fetchProgress(serverId);
       },
     );
-  }
-
-  Future<void> refreshPeriodStates() async {
-    await _refreshPeriodStatesUseCase(NoParams());
   }
 
   @override

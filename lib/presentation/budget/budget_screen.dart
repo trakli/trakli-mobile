@@ -47,63 +47,68 @@ class _BudgetScreenState extends State<BudgetScreen> {
           PageAppBarAction(icon: Icons.add, onTap: _add, primary: true),
         ],
       ),
-      body: BlocBuilder<BudgetCubit, BudgetState>(
-        builder: (context, state) {
-          if (state.isLoading && state.budgets.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: SafeArea(
+        child: BlocBuilder<BudgetCubit, BudgetState>(
+          builder: (context, state) {
+            if (state.isLoading && state.budgets.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final q = _query.trim().toLowerCase();
-          final filtered = state.budgets.where((b) {
-            if (_onlyActive && !b.isActive) return false;
-            if (q.isEmpty) return true;
-            return '${b.name} ${b.description ?? ''}'
-                .toLowerCase()
-                .contains(q);
-          }).toList();
+            final q = _query.trim().toLowerCase();
+            final filtered = state.budgets.where((b) {
+              if (_onlyActive && !b.isActive) return false;
+              if (q.isEmpty) return true;
+              return '${b.name} ${b.description ?? ''}'
+                  .toLowerCase()
+                  .contains(q);
+            }).toList();
 
-          if (state.budgets.isEmpty) {
-            return _EmptyState(onAdd: _add);
-          }
+            if (state.budgets.isEmpty) {
+              return _EmptyState(onAdd: _add);
+            }
 
-          return Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 4.h),
-                child: _FilterChips(
-                  onlyActive: _onlyActive,
-                  onChange: (v) => setState(() => _onlyActive = v),
-                ),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 4.h),
+                    child: _FilterChips(
+                      onlyActive: _onlyActive,
+                      onChange: (v) => setState(() => _onlyActive = v),
+                    ),
+                  ),
+                  if (filtered.isEmpty)
+                    _NoMatches(query: _query)
+                  else
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, __) => SizedBox(height: 10.h),
+                      itemBuilder: (_, i) {
+                        final budget = filtered[i];
+                        return _BudgetCard(
+                          budget: budget,
+                          onTap: () => AppNavigator.push(
+                            context,
+                            BudgetDetailScreen(budget: budget),
+                          ),
+                          onEdit: () => AppNavigator.push(
+                            context,
+                            AddBudgetScreen(budget: budget),
+                          ),
+                          onDelete: () => context
+                              .read<BudgetCubit>()
+                              .deleteBudget(budget.clientId),
+                        );
+                      },
+                    ),
+                ],
               ),
-              Expanded(
-                child: filtered.isEmpty
-                    ? _NoMatches(query: _query)
-                    : ListView.separated(
-                        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
-                        itemCount: filtered.length,
-                        separatorBuilder: (_, __) => SizedBox(height: 10.h),
-                        itemBuilder: (_, i) {
-                          final budget = filtered[i];
-                          return _BudgetCard(
-                            budget: budget,
-                            onTap: () => AppNavigator.push(
-                              context,
-                              BudgetDetailScreen(budget: budget),
-                            ),
-                            onEdit: () => AppNavigator.push(
-                              context,
-                              AddBudgetScreen(budget: budget),
-                            ),
-                            onDelete: () => context
-                                .read<BudgetCubit>()
-                                .deleteBudget(budget.clientId),
-                          );
-                        },
-                      ),
-              ),
-            ],
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -248,7 +253,8 @@ class _BudgetCard extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   iconSize: 18.sp,
                   itemBuilder: (_) => [
-                    PopupMenuItem(value: 'edit', child: Text(LocaleKeys.edit.tr())),
+                    PopupMenuItem(
+                        value: 'edit', child: Text(LocaleKeys.edit.tr())),
                     PopupMenuItem(
                         value: 'delete', child: Text(LocaleKeys.delete.tr())),
                   ],
@@ -299,9 +305,8 @@ class _MiniChip extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
       decoration: BoxDecoration(
-        color: muted
-            ? tones.bgPage
-            : tones.brand.accent.withValues(alpha: 0.12),
+        color:
+            muted ? tones.bgPage : tones.brand.accent.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
       child: Text(

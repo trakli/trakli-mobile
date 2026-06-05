@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,12 +54,14 @@ class CustomDrawer extends StatelessWidget {
     }
   }
 
-  Future<void> _copyEmailAndShowSnackbar(BuildContext context, String email) async {
+  Future<void> _copyEmailAndShowSnackbar(
+      BuildContext context, String email) async {
     await Clipboard.setData(ClipboardData(text: email));
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(LocaleKeys.supportEmailCopied.tr().replaceFirst('{0}', email)),
+          content: Text(
+              LocaleKeys.supportEmailCopied.tr().replaceFirst('{0}', email)),
         ),
       );
     }
@@ -82,9 +85,7 @@ class CustomDrawer extends StatelessWidget {
               child: Row(
                 children: [
                   SvgPicture.asset(
-                    isDark
-                        ? Assets.images.appLogo
-                        : Assets.images.appLogoGreen,
+                    isDark ? Assets.images.appLogo : Assets.images.appLogoGreen,
                     height: 28.h,
                   ),
                   SizedBox(width: 10.w),
@@ -209,8 +210,7 @@ class CustomDrawer extends StatelessWidget {
                               Icon(
                                 Icons.savings_outlined,
                                 size: 20.sp,
-                                color:
-                                    Theme.of(context).colorScheme.onSurface,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                               SizedBox(width: 14.w),
                               Expanded(
@@ -219,9 +219,8 @@ class CustomDrawer extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w600,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
@@ -244,8 +243,7 @@ class CustomDrawer extends StatelessWidget {
                               Icon(
                                 Icons.file_upload_outlined,
                                 size: 20.sp,
-                                color:
-                                    Theme.of(context).colorScheme.onSurface,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                               SizedBox(width: 14.w),
                               Expanded(
@@ -254,9 +252,8 @@ class CustomDrawer extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w600,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
@@ -282,7 +279,7 @@ class CustomDrawer extends StatelessWidget {
                       ),
                       BlocBuilder<ConfigCubit, ConfigState>(
                         builder: (context, state) {
-                          if (state.showDebug == true) {
+                          if (kDebugMode || state.showDebug == true) {
                             return Column(
                               children: [
                                 const Divider(),

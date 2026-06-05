@@ -1,40 +1,44 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:drift_sync_core/drift_sync_core.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:trakli/core/utils/services/logger.dart';
+import 'package:trakli/data/database/converters/budget_progress_json_converter.dart';
 import 'package:trakli/data/database/converters/media_converter.dart';
 import 'package:trakli/data/database/converters/party_type_converter.dart';
+import 'package:trakli/data/database/converters/string_to_double_converter.dart';
 import 'package:trakli/data/database/converters/wallet_stats_converter.dart';
 import 'package:trakli/data/database/converters/wallet_type_converter.dart';
+import 'package:trakli/data/database/tables/budget_period_states.dart';
+import 'package:trakli/data/database/tables/budget_targets.dart';
+import 'package:trakli/data/database/tables/budgets.dart';
 import 'package:trakli/data/database/tables/categories.dart';
+import 'package:trakli/data/database/tables/categorizables.dart';
 import 'package:trakli/data/database/tables/configs.dart';
 import 'package:trakli/data/database/tables/groups.dart';
 import 'package:trakli/data/database/tables/local_changes.dart';
-import 'package:trakli/core/utils/services/logger.dart';
+import 'package:trakli/data/database/tables/media_files.dart';
+import 'package:trakli/data/database/tables/notifications.dart';
 import 'package:trakli/data/database/tables/parties.dart';
 import 'package:trakli/data/database/tables/sync_table.dart';
 import 'package:trakli/data/database/tables/transactions.dart';
+import 'package:trakli/data/database/tables/transfers.dart';
 import 'package:trakli/data/database/tables/users.dart';
 import 'package:trakli/data/database/tables/wallets.dart';
 import 'package:trakli/data/models/media.dart';
+import 'package:trakli/data/models/wallet_stats.dart';
+import 'package:trakli/domain/entities/budget_progress_entity.dart';
 import 'package:trakli/domain/entities/config_entity.dart';
 import 'package:trakli/domain/entities/party_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
-import 'package:trakli/data/models/wallet_stats.dart';
-import 'dart:io';
-import 'tables/sync_meta_data.dart';
-import 'package:trakli/data/database/tables/categorizables.dart';
-import 'package:trakli/data/database/tables/notifications.dart';
-import 'package:trakli/data/database/tables/media_files.dart';
-import 'package:trakli/data/database/tables/transfers.dart';
-import 'package:trakli/data/database/tables/budgets.dart';
-import 'package:trakli/data/database/tables/budget_targets.dart';
-import 'package:trakli/data/database/tables/budget_period_states.dart';
+
 import 'app_database.steps.dart';
+import 'tables/sync_meta_data.dart';
 
 part 'app_database.g.dart';
-
 
 @DriftDatabase(tables: [
   Transactions,
@@ -75,11 +79,6 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
       onUpgrade: (Migrator m, int from, int to) async {
         if (from < 4) {
           await _schemaUpgrade(m, from, 4);
-        }
-        if (from < 5 && to >= 5) {
-          await m.createTable(budgets);
-          await m.createTable(budgetTargets);
-          await m.createTable(budgetPeriodStates);
         }
       },
     );
@@ -292,9 +291,8 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
 }
 
 extension Migrations on GeneratedDatabase {
-  // Extracting the `stepByStep` call into a getter ensures that you're not
-  // accidentally referring to the current database schema (via a getter on the database class).
-  // This ensures that each step brings the database into the correct snapshot.
+  // A getter (not a field) so each step uses its own schema snapshot, not the
+  // current one.
   OnUpgrade get _schemaUpgrade => stepByStep(
         from1To2: (m, schema) async {
           await m.createTable(schema.notifications);
@@ -304,11 +302,17 @@ extension Migrations on GeneratedDatabase {
         },
         from3To4: (m, schema) async {
           await m.createTable(schema.transfers);
-          await m.addColumn(schema.transactions, schema.transactions.transferId);
+          await m.addColumn(
+              schema.transactions, schema.transactions.transferId);
           await m.addColumn(
             schema.transactions,
             schema.transactions.transferClientId,
           );
+        },
+        from4To5: (Migrator m, Schema5 schema) async {
+          await m.createTable(schema.budgets);
+          await m.createTable(schema.budgetTargets);
+          await m.createTable(schema.budgetPeriodStates);
         },
       );
 }

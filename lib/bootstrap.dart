@@ -16,6 +16,7 @@ import 'package:trakli/core/error/crash_reporting.dart';
 import 'package:trakli/core/error/crash_reporting/user_context_service.dart';
 import 'package:trakli/core/error/error_handler.dart';
 import 'package:trakli/core/sync/sync_database.dart';
+import 'package:trakli/data/services/budget/budget_progress_recomputer.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/presentation/utils/globals.dart';
 
@@ -76,6 +77,8 @@ Future<void> bootstrap(
       );
       await triggers.attach();
       getIt.registerSingleton<SyncTriggers>(triggers);
+
+      getIt<BudgetProgressRecomputer>().attachFxSelfHeal();
 
       // Set up error handler with crash reporting
       ErrorHandler.setCrashReportingService(crashReportingService!);

@@ -3,7 +3,9 @@ import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/exceptions.dart';
 import 'package:trakli/core/utils/date_util.dart';
 import 'package:trakli/core/utils/id_helper.dart';
+import 'package:trakli/data/services/budget/budget_progress_recomputer.dart';
 import 'package:trakli/data/database/app_database.dart';
+import 'package:trakli/domain/entities/budget_progress_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
 class BudgetTargetInput {
@@ -74,12 +76,16 @@ abstract class BudgetLocalDataSource {
 
   Future<List<ResolvedBudgetTarget>> getResolvedTargetsForBudget(
       String budgetClientId);
+
+  Future<void> updateBudgetProgressByServerId(
+      int id, BudgetProgressEntity progress);
 }
 
 @Injectable(as: BudgetLocalDataSource)
 class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
-  BudgetLocalDataSourceImpl(this.database);
+  BudgetLocalDataSourceImpl(this.database, this._recomputer);
   final AppDatabase database;
+  final BudgetProgressRecomputer _recomputer;
 
   @override
   Future<List<Budget>> getAllBudgets({bool? active}) async {
@@ -166,7 +172,7 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
     final now = getNewFormattedUtcDateTime();
     final clientId = await generateDeviceScopedId();
 
-    return database.transaction(() async {
+    final inserted = await database.transaction(() async {
       final inserted = await database.into(database.budgets).insertReturning(
             BudgetsCompanion.insert(
               clientId: Value(clientId),
@@ -200,6 +206,9 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
 
       return inserted;
     });
+
+    await _recomputer.recomputeFor(inserted.clientId);
+    return inserted;
   }
 
   @override
@@ -231,7 +240,7 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
 
     final now = getNewFormattedUtcDateTime();
 
-    return database.transaction(() async {
+    final updated = await database.transaction(() async {
       final updated = await (database.update(database.budgets)
             ..where((b) => b.clientId.equals(clientId)))
           .writeReturning(
@@ -280,6 +289,9 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
 
       return updated.first;
     });
+
+    await _recomputer.recomputeFor(updated.clientId);
+    return updated;
   }
 
   @override
@@ -321,6 +333,13 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
       ));
     }
     return out;
+  }
+
+  @override
+  Future<void> updateBudgetProgressByServerId(
+      int id, BudgetProgressEntity progress) async {
+    await (database.update(database.budgets)..where((b) => b.id.equals(id)))
+        .write(BudgetsCompanion(progress: Value(progress)));
   }
 
   @override

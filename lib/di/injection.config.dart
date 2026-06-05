@@ -94,6 +94,8 @@ import '../data/repositories/subscription_repository_imp.dart' as _i1047;
 import '../data/repositories/transaction_repository_impl.dart' as _i114;
 import '../data/repositories/transfer_repository_impl.dart' as _i268;
 import '../data/repositories/wallet_repository_impl.dart' as _i305;
+import '../data/services/budget/budget_progress_recomputer.dart' as _i176;
+import '../data/sync/budget_period_state_sync_handler.dart' as _i161;
 import '../data/sync/budget_sync_handler.dart' as _i918;
 import '../data/sync/category_sync_handler.dart' as _i463;
 import '../data/sync/config_sync_handler.dart' as _i480;
@@ -156,7 +158,6 @@ import '../domain/usecases/budget/listen_to_budgets_usecase.dart' as _i377;
 import '../domain/usecases/budget/listen_to_period_states_usecase.dart'
     as _i920;
 import '../domain/usecases/budget/listen_to_targets_usecase.dart' as _i442;
-import '../domain/usecases/budget/refresh_period_states_usecase.dart' as _i141;
 import '../domain/usecases/budget/update_budget_usecase.dart' as _i617;
 import '../domain/usecases/category/add_category_usecase.dart' as _i445;
 import '../domain/usecases/category/delete_category_usecase.dart' as _i292;
@@ -323,8 +324,6 @@ _i174.GetIt $initGetIt(
       () => _i849.WalletLocalDataSourceImpl(database: gh<_i704.AppDatabase>()));
   gh.factory<_i514.ConfigLocalDataSource>(
       () => _i514.ConfigLocalDataSourceImpl(database: gh<_i704.AppDatabase>()));
-  gh.factory<_i293.BudgetLocalDataSource>(
-      () => _i293.BudgetLocalDataSourceImpl(gh<_i704.AppDatabase>()));
   gh.factory<_i148.CategoryLocalDataSource>(
       () => _i148.CategoryLocalDataSourceImpl(gh<_i704.AppDatabase>()));
   gh.lazySingleton<_i361.Dio>(
@@ -382,11 +381,6 @@ _i174.GetIt $initGetIt(
       () => _i481.UserContextService(gh<_i538.CrashReportingService>()));
   gh.lazySingleton<_i542.AiRepository>(
       () => _i841.AiRepositoryImpl(remote: gh<_i514.AiRemoteDataSource>()));
-  gh.factory<_i662.TransactionLocalDataSource>(
-      () => _i662.TransactionLocalDataSourceImpl(
-            gh<_i704.AppDatabase>(),
-            gh<_i216.MediaFileLocalDataSource>(),
-          ));
   gh.lazySingleton<_i32.ImportRepository>(() => _i337.ImportRepositoryImpl(
       remoteDataSource: gh<_i76.ImportRemoteDataSource>()));
   gh.factory<_i587.ConfigRemoteDataSource>(
@@ -464,11 +458,6 @@ _i174.GetIt $initGetIt(
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
-  gh.lazySingleton<_i225.TransferSyncHandler>(() => _i225.TransferSyncHandler(
-        gh<_i704.AppDatabase>(),
-        gh<_i783.TransferRemoteDataSource>(),
-        gh<_i662.TransactionLocalDataSource>(),
-      ));
   gh.singleton<_i800.AuthRepository>(() => _i135.AuthRepositoryImpl(
         remoteDataSource: gh<_i496.AuthRemoteDataSource>(),
         localDataSource: gh<_i276.AuthLocalDataSource>(),
@@ -508,13 +497,11 @@ _i174.GetIt $initGetIt(
         gh<_i704.AppDatabase>(),
         gh<_i760.BudgetRemoteDataSource>(),
       ));
-  gh.lazySingleton<_i118.TransactionRepository>(() =>
-      _i114.TransactionRepositoryImpl(
-        syncHandler: gh<_i893.TransactionSyncHandler>(),
-        localDataSource: gh<_i662.TransactionLocalDataSource>(),
-        db: gh<_i704.AppDatabase>(),
-        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
-      ));
+  gh.lazySingleton<_i161.BudgetPeriodStateSyncHandler>(
+      () => _i161.BudgetPeriodStateSyncHandler(
+            gh<_i704.AppDatabase>(),
+            gh<_i760.BudgetRemoteDataSource>(),
+          ));
   gh.factory<_i929.GetImportSessionsUseCase>(
       () => _i929.GetImportSessionsUseCase(gh<_i32.ImportRepository>()));
   gh.factory<_i36.ConfirmSessionUseCase>(
@@ -523,13 +510,6 @@ _i174.GetIt $initGetIt(
       () => _i661.GetImportSessionUseCase(gh<_i32.ImportRepository>()));
   gh.factory<_i60.AnalyzeDocumentUseCase>(
       () => _i60.AnalyzeDocumentUseCase(gh<_i32.ImportRepository>()));
-  gh.lazySingleton<_i340.BudgetRepository>(() => _i81.BudgetRepositoryImpl(
-        syncHandler: gh<_i918.BudgetSyncHandler>(),
-        localDataSource: gh<_i293.BudgetLocalDataSource>(),
-        remoteDataSource: gh<_i760.BudgetRemoteDataSource>(),
-        db: gh<_i704.AppDatabase>(),
-        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
-      ));
   gh.factory<_i56.DeletePartyUseCase>(
       () => _i56.DeletePartyUseCase(gh<_i661.PartyRepository>()));
   gh.factory<_i84.AddPartyUseCase>(
@@ -579,14 +559,6 @@ _i174.GetIt $initGetIt(
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
-  gh.factory<_i163.DeleteTransactionUseCase>(
-      () => _i163.DeleteTransactionUseCase(gh<_i118.TransactionRepository>()));
-  gh.factory<_i973.ListenToTransactionsUseCase>(() =>
-      _i973.ListenToTransactionsUseCase(gh<_i118.TransactionRepository>()));
-  gh.factory<_i241.UpdateTransactionUseCase>(
-      () => _i241.UpdateTransactionUseCase(gh<_i118.TransactionRepository>()));
-  gh.factory<_i947.GetAllTransactionsUseCase>(
-      () => _i947.GetAllTransactionsUseCase(gh<_i118.TransactionRepository>()));
   gh.factory<_i415.AiChatCubit>(() => _i415.AiChatCubit(
         listSessionsUseCase: gh<_i505.ListSessionsUseCase>(),
         getSessionUseCase: gh<_i752.GetSessionUseCase>(),
@@ -632,14 +604,6 @@ _i174.GetIt $initGetIt(
       () => _i436.UpdateConfigUseCase(gh<_i899.ConfigRepository>()));
   gh.factory<_i536.DeleteConfigUseCase>(
       () => _i536.DeleteConfigUseCase(gh<_i899.ConfigRepository>()));
-  gh.lazySingleton<_i55.TransferRepository>(() => _i268.TransferRepositoryImpl(
-        syncHandler: gh<_i225.TransferSyncHandler>(),
-        localDataSource: gh<_i432.TransferLocalDataSource>(),
-        transactionLocalDataSource: gh<_i662.TransactionLocalDataSource>(),
-        transactionRepository: gh<_i114.TransactionRepositoryImpl>(),
-        db: gh<_i704.AppDatabase>(),
-        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
-      ));
   gh.singleton<_i1057.ExchangeRateRepository>(
       () => _i827.ExchangeRateRepositoryImpl(
             remoteDataSource: gh<_i632.ExchangeRateRemoteDataSource>(),
@@ -677,30 +641,6 @@ _i174.GetIt $initGetIt(
         gh<_i542.PasswordResetCodeUseCase>(),
         gh<_i494.PasswordResetUseCase>(),
       ));
-  gh.factory<_i920.ListenToPeriodStatesUseCase>(
-      () => _i920.ListenToPeriodStatesUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i102.GetBudgetUseCase>(
-      () => _i102.GetBudgetUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i377.ListenToBudgetsUseCase>(
-      () => _i377.ListenToBudgetsUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i893.CloseBudgetPeriodUseCase>(
-      () => _i893.CloseBudgetPeriodUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i442.ListenToTargetsUseCase>(
-      () => _i442.ListenToTargetsUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i617.UpdateBudgetUseCase>(
-      () => _i617.UpdateBudgetUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i141.RefreshPeriodStatesUseCase>(
-      () => _i141.RefreshPeriodStatesUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i363.InsertBudgetUseCase>(
-      () => _i363.InsertBudgetUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i59.FetchBudgetTransactionsUseCase>(
-      () => _i59.FetchBudgetTransactionsUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i748.DeleteBudgetUseCase>(
-      () => _i748.DeleteBudgetUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i598.FetchBudgetProgressUseCase>(
-      () => _i598.FetchBudgetProgressUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i884.GetAllBudgetsUseCase>(
-      () => _i884.GetAllBudgetsUseCase(gh<_i340.BudgetRepository>()));
   gh.factory<_i831.RegisterCubit>(() => _i831.RegisterCubit(
         gh<_i705.RegisterUseCase>(),
         gh<_i402.GetOtpCodeUseCase>(),
@@ -732,13 +672,6 @@ _i174.GetIt $initGetIt(
         ensureDefaultWalletExistsUseCase:
             gh<_i225.EnsureDefaultWalletExistsUseCase>(),
       ));
-  gh.factory<_i1004.CreateTransferWithTransactionsUseCase>(() =>
-      _i1004.CreateTransferWithTransactionsUseCase(
-          gh<_i55.TransferRepository>()));
-  gh.factory<_i453.AddTransferUseCase>(
-      () => _i453.AddTransferUseCase(gh<_i55.TransferRepository>()));
-  gh.factory<_i744.ListenToTransfersUseCase>(
-      () => _i744.ListenToTransfersUseCase(gh<_i55.TransferRepository>()));
   gh.factory<_i397.ListenExchangeRate>(
       () => _i397.ListenExchangeRate(gh<_i1057.ExchangeRateRepository>()));
   gh.factory<_i759.DeleteGroupUseCase>(
@@ -751,23 +684,10 @@ _i174.GetIt $initGetIt(
       () => _i353.AddGroupUseCase(gh<_i957.GroupRepository>()));
   gh.factory<_i820.UpdateGroupUseCase>(
       () => _i820.UpdateGroupUseCase(gh<_i957.GroupRepository>()));
-  gh.factory<_i611.TransferCubit>(() => _i611.TransferCubit(
-        createTransferWithTransactionsUseCase:
-            gh<_i1004.CreateTransferWithTransactionsUseCase>(),
-        listenToTransfersUseCase: gh<_i744.ListenToTransfersUseCase>(),
-      ));
-  gh.lazySingleton<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(
-      () => syncModule.provideSyncTypeHandlers(
-            gh<_i463.CategorySyncHandler>(),
-            gh<_i480.ConfigSyncHandler>(),
-            gh<_i849.WalletSyncHandler>(),
-            gh<_i280.PartySyncHandler>(),
-            gh<_i235.GroupSyncHandler>(),
-            gh<_i217.NotificationSyncHandler>(),
-            gh<_i893.TransactionSyncHandler>(),
-            gh<_i225.TransferSyncHandler>(),
-            gh<_i382.MediaSyncHandler>(),
-            gh<_i918.BudgetSyncHandler>(),
+  gh.lazySingleton<_i176.BudgetProgressRecomputer>(
+      () => _i176.BudgetProgressRecomputer(
+            gh<_i704.AppDatabase>(),
+            gh<_i1057.ExchangeRateRepository>(),
           ));
   gh.factory<_i408.ConfigCubit>(() => _i408.ConfigCubit(
         gh<_i132.GetConfigsUseCase>(),
@@ -784,20 +704,6 @@ _i174.GetIt $initGetIt(
       ));
   gh.factory<_i977.PlansCubit>(
       () => _i977.PlansCubit(gh<_i314.FetchSubscriptionPlans>()));
-  gh.factory<_i1064.BudgetCubit>(() => _i1064.BudgetCubit(
-        getAllBudgetsUseCase: gh<_i884.GetAllBudgetsUseCase>(),
-        insertBudgetUseCase: gh<_i363.InsertBudgetUseCase>(),
-        updateBudgetUseCase: gh<_i617.UpdateBudgetUseCase>(),
-        deleteBudgetUseCase: gh<_i748.DeleteBudgetUseCase>(),
-        fetchBudgetProgressUseCase: gh<_i598.FetchBudgetProgressUseCase>(),
-        fetchBudgetTransactionsUseCase:
-            gh<_i59.FetchBudgetTransactionsUseCase>(),
-        closeBudgetPeriodUseCase: gh<_i893.CloseBudgetPeriodUseCase>(),
-        listenToBudgetsUseCase: gh<_i377.ListenToBudgetsUseCase>(),
-        listenToTargetsUseCase: gh<_i442.ListenToTargetsUseCase>(),
-        listenToPeriodStatesUseCase: gh<_i920.ListenToPeriodStatesUseCase>(),
-        refreshPeriodStatesUseCase: gh<_i141.RefreshPeriodStatesUseCase>(),
-      ));
   gh.factory<_i798.UpdateDefaultCurrencyUseCase>(() =>
       _i798.UpdateDefaultCurrencyUseCase(gh<_i1057.ExchangeRateRepository>()));
   gh.factory<_i676.GroupCubit>(() => _i676.GroupCubit(
@@ -808,11 +714,21 @@ _i174.GetIt $initGetIt(
         gh<_i146.ListenToGroupsUseCase>(),
         gh<_i833.SaveConfigUseCase>(),
       ));
-  gh.factory<_i669.CreateTransactionUseCase>(
-      () => _i669.CreateTransactionUseCase(
-            gh<_i118.TransactionRepository>(),
-            gh<_i1057.ExchangeRateRepository>(),
+  gh.factory<_i662.TransactionLocalDataSource>(
+      () => _i662.TransactionLocalDataSourceImpl(
+            gh<_i704.AppDatabase>(),
+            gh<_i216.MediaFileLocalDataSource>(),
+            gh<_i176.BudgetProgressRecomputer>(),
           ));
+  gh.lazySingleton<_i225.TransferSyncHandler>(() => _i225.TransferSyncHandler(
+        gh<_i704.AppDatabase>(),
+        gh<_i783.TransferRemoteDataSource>(),
+        gh<_i662.TransactionLocalDataSource>(),
+      ));
+  gh.factory<_i293.BudgetLocalDataSource>(() => _i293.BudgetLocalDataSourceImpl(
+        gh<_i704.AppDatabase>(),
+        gh<_i176.BudgetProgressRecomputer>(),
+      ));
   gh.factory<_i150.GetFileContentUseCase>(
       () => _i150.GetFileContentUseCase(gh<_i442.MediaRepository>()));
   gh.factory<_i706.DeleteMediaUseCase>(
@@ -827,17 +743,57 @@ _i174.GetIt $initGetIt(
         gh<_i608.ListenToConfigsUseCase>(),
         gh<_i798.UpdateDefaultCurrencyUseCase>(),
       ));
+  gh.lazySingleton<_i118.TransactionRepository>(() =>
+      _i114.TransactionRepositoryImpl(
+        syncHandler: gh<_i893.TransactionSyncHandler>(),
+        localDataSource: gh<_i662.TransactionLocalDataSource>(),
+        db: gh<_i704.AppDatabase>(),
+        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
+      ));
   gh.factory<_i311.ExchangeRateCubit>(
       () => _i311.ExchangeRateCubit(gh<_i397.ListenExchangeRate>()));
-  gh.lazySingleton<_i646.SynchAppDatabase>(() => _i646.SynchAppDatabase(
-        appDatabase: gh<_i704.AppDatabase>(),
-        typeHandlers:
-            gh<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(),
-        dependencyManager: gh<_i877.SyncDependencyManagerBase>(),
+  gh.lazySingleton<_i340.BudgetRepository>(() => _i81.BudgetRepositoryImpl(
+        syncHandler: gh<_i918.BudgetSyncHandler>(),
+        localDataSource: gh<_i293.BudgetLocalDataSource>(),
+        remoteDataSource: gh<_i760.BudgetRemoteDataSource>(),
+        db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
-        logger: gh<_i877.SyncLogger>(),
-        crashReporter: gh<_i877.SyncCrashReporter>(),
       ));
+  gh.factory<_i163.DeleteTransactionUseCase>(
+      () => _i163.DeleteTransactionUseCase(gh<_i118.TransactionRepository>()));
+  gh.factory<_i973.ListenToTransactionsUseCase>(() =>
+      _i973.ListenToTransactionsUseCase(gh<_i118.TransactionRepository>()));
+  gh.factory<_i241.UpdateTransactionUseCase>(
+      () => _i241.UpdateTransactionUseCase(gh<_i118.TransactionRepository>()));
+  gh.factory<_i947.GetAllTransactionsUseCase>(
+      () => _i947.GetAllTransactionsUseCase(gh<_i118.TransactionRepository>()));
+  gh.factory<_i669.CreateTransactionUseCase>(
+      () => _i669.CreateTransactionUseCase(
+            gh<_i118.TransactionRepository>(),
+            gh<_i1057.ExchangeRateRepository>(),
+          ));
+  gh.lazySingleton<_i55.TransferRepository>(() => _i268.TransferRepositoryImpl(
+        syncHandler: gh<_i225.TransferSyncHandler>(),
+        localDataSource: gh<_i432.TransferLocalDataSource>(),
+        transactionLocalDataSource: gh<_i662.TransactionLocalDataSource>(),
+        transactionRepository: gh<_i114.TransactionRepositoryImpl>(),
+        db: gh<_i704.AppDatabase>(),
+        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
+      ));
+  gh.lazySingleton<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(
+      () => syncModule.provideSyncTypeHandlers(
+            gh<_i463.CategorySyncHandler>(),
+            gh<_i480.ConfigSyncHandler>(),
+            gh<_i849.WalletSyncHandler>(),
+            gh<_i280.PartySyncHandler>(),
+            gh<_i235.GroupSyncHandler>(),
+            gh<_i217.NotificationSyncHandler>(),
+            gh<_i893.TransactionSyncHandler>(),
+            gh<_i225.TransferSyncHandler>(),
+            gh<_i382.MediaSyncHandler>(),
+            gh<_i918.BudgetSyncHandler>(),
+            gh<_i161.BudgetPeriodStateSyncHandler>(),
+          ));
   gh.factory<_i117.TransactionCubit>(() => _i117.TransactionCubit(
         getAllTransactionsUseCase: gh<_i1022.GetAllTransactionsUseCase>(),
         createTransactionUseCase: gh<_i1022.CreateTransactionUseCase>(),
@@ -850,6 +806,62 @@ _i174.GetIt $initGetIt(
         deleteTransactionUseCase: gh<_i1022.DeleteTransactionUseCase>(),
         listenToTransactionsUseCase: gh<_i1022.ListenToTransactionsUseCase>(),
         getWalletsUseCase: gh<_i713.GetWalletsUseCase>(),
+      ));
+  gh.factory<_i102.GetBudgetUseCase>(
+      () => _i102.GetBudgetUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i377.ListenToBudgetsUseCase>(
+      () => _i377.ListenToBudgetsUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i893.CloseBudgetPeriodUseCase>(
+      () => _i893.CloseBudgetPeriodUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i442.ListenToTargetsUseCase>(
+      () => _i442.ListenToTargetsUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i617.UpdateBudgetUseCase>(
+      () => _i617.UpdateBudgetUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i363.InsertBudgetUseCase>(
+      () => _i363.InsertBudgetUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i59.FetchBudgetTransactionsUseCase>(
+      () => _i59.FetchBudgetTransactionsUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i748.DeleteBudgetUseCase>(
+      () => _i748.DeleteBudgetUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i598.FetchBudgetProgressUseCase>(
+      () => _i598.FetchBudgetProgressUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i884.GetAllBudgetsUseCase>(
+      () => _i884.GetAllBudgetsUseCase(gh<_i340.BudgetRepository>()));
+  gh.factory<_i920.ListenToPeriodStatesUseCase>(
+      () => _i920.ListenToPeriodStatesUseCase(gh<_i340.BudgetRepository>()));
+  gh.lazySingleton<_i646.SynchAppDatabase>(() => _i646.SynchAppDatabase(
+        appDatabase: gh<_i704.AppDatabase>(),
+        typeHandlers:
+            gh<Set<_i877.SyncTypeHandler<dynamic, dynamic, dynamic>>>(),
+        dependencyManager: gh<_i877.SyncDependencyManagerBase>(),
+        requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
+        logger: gh<_i877.SyncLogger>(),
+        crashReporter: gh<_i877.SyncCrashReporter>(),
+      ));
+  gh.factory<_i1004.CreateTransferWithTransactionsUseCase>(() =>
+      _i1004.CreateTransferWithTransactionsUseCase(
+          gh<_i55.TransferRepository>()));
+  gh.factory<_i453.AddTransferUseCase>(
+      () => _i453.AddTransferUseCase(gh<_i55.TransferRepository>()));
+  gh.factory<_i744.ListenToTransfersUseCase>(
+      () => _i744.ListenToTransfersUseCase(gh<_i55.TransferRepository>()));
+  gh.factory<_i611.TransferCubit>(() => _i611.TransferCubit(
+        createTransferWithTransactionsUseCase:
+            gh<_i1004.CreateTransferWithTransactionsUseCase>(),
+        listenToTransfersUseCase: gh<_i744.ListenToTransfersUseCase>(),
+      ));
+  gh.factory<_i1064.BudgetCubit>(() => _i1064.BudgetCubit(
+        getAllBudgetsUseCase: gh<_i884.GetAllBudgetsUseCase>(),
+        insertBudgetUseCase: gh<_i363.InsertBudgetUseCase>(),
+        updateBudgetUseCase: gh<_i617.UpdateBudgetUseCase>(),
+        deleteBudgetUseCase: gh<_i748.DeleteBudgetUseCase>(),
+        fetchBudgetProgressUseCase: gh<_i598.FetchBudgetProgressUseCase>(),
+        fetchBudgetTransactionsUseCase:
+            gh<_i59.FetchBudgetTransactionsUseCase>(),
+        closeBudgetPeriodUseCase: gh<_i893.CloseBudgetPeriodUseCase>(),
+        listenToBudgetsUseCase: gh<_i377.ListenToBudgetsUseCase>(),
+        listenToTargetsUseCase: gh<_i442.ListenToTargetsUseCase>(),
+        listenToPeriodStatesUseCase: gh<_i920.ListenToPeriodStatesUseCase>(),
       ));
   return getIt;
 }

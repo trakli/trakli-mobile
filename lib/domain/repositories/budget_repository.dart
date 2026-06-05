@@ -61,6 +61,4 @@ abstract class BudgetRepository {
       int id,
       {int limit = 50});
   Future<Either<Failure, Unit>> closeBudgetPeriod(int id);
-
-  Future<Either<Failure, Unit>> refreshPeriodStates();
 }

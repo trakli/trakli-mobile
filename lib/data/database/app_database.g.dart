@@ -6548,9 +6548,10 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
       'description', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   @override
-  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
-      'amount', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+  late final GeneratedColumnWithTypeConverter<double, String> amount =
+      GeneratedColumn<String>('amount', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<double>($BudgetsTable.$converteramount);
   @override
   late final GeneratedColumn<String> currency = GeneratedColumn<String>(
       'currency', aliasedName, false,
@@ -6609,6 +6610,12 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
       'owner_id', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
   @override
+  late final GeneratedColumnWithTypeConverter<BudgetProgressEntity?, String>
+      progress = GeneratedColumn<String>('progress', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<BudgetProgressEntity?>(
+              $BudgetsTable.$converterprogressn);
+  @override
   List<GeneratedColumn> get $columns => [
         id,
         userId,
@@ -6631,7 +6638,8 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
         forecastAlertsEnabled,
         isActive,
         ownerType,
-        ownerId
+        ownerId,
+        progress
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6666,8 +6674,9 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
           .read(DriftSqlType.string, data['${effectivePrefix}slug'])!,
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
-      amount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
+      amount: $BudgetsTable.$converteramount.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}amount'])!),
       currency: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}currency'])!,
       periodType: $BudgetsTable.$converterperiodType.fromSql(attachedDatabase
@@ -6690,6 +6699,9 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
           .read(DriftSqlType.string, data['${effectivePrefix}owner_type'])!,
       ownerId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}owner_id']),
+      progress: $BudgetsTable.$converterprogressn.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}progress'])),
     );
   }
 
@@ -6698,9 +6710,16 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
     return $BudgetsTable(attachedDatabase, alias);
   }
 
+  static JsonTypeConverter2<double, String, String> $converteramount =
+      const StringToDoubleConverter();
   static JsonTypeConverter2<BudgetPeriodType, String, String>
       $converterperiodType =
       const EnumNameConverter<BudgetPeriodType>(BudgetPeriodType.values);
+  static JsonTypeConverter2<BudgetProgressEntity, String, Map<String, Object?>>
+      $converterprogress = const BudgetProgressJsonConverter();
+  static JsonTypeConverter2<BudgetProgressEntity?, String?,
+          Map<String, Object?>?> $converterprogressn =
+      JsonTypeConverter2.asNullable($converterprogress);
 }
 
 class Budget extends DataClass implements Insertable<Budget> {
@@ -6726,6 +6745,7 @@ class Budget extends DataClass implements Insertable<Budget> {
   final bool isActive;
   final String ownerType;
   final int? ownerId;
+  final BudgetProgressEntity? progress;
   const Budget(
       {this.id,
       this.userId,
@@ -6748,7 +6768,8 @@ class Budget extends DataClass implements Insertable<Budget> {
       required this.forecastAlertsEnabled,
       required this.isActive,
       required this.ownerType,
-      this.ownerId});
+      this.ownerId,
+      this.progress});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -6775,7 +6796,10 @@ class Budget extends DataClass implements Insertable<Budget> {
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
-    map['amount'] = Variable<double>(amount);
+    {
+      map['amount'] =
+          Variable<String>($BudgetsTable.$converteramount.toSql(amount));
+    }
     map['currency'] = Variable<String>(currency);
     {
       map['period_type'] = Variable<String>(
@@ -6792,6 +6816,10 @@ class Budget extends DataClass implements Insertable<Budget> {
     map['owner_type'] = Variable<String>(ownerType);
     if (!nullToAbsent || ownerId != null) {
       map['owner_id'] = Variable<int>(ownerId);
+    }
+    if (!nullToAbsent || progress != null) {
+      map['progress'] =
+          Variable<String>($BudgetsTable.$converterprogressn.toSql(progress));
     }
     return map;
   }
@@ -6831,6 +6859,9 @@ class Budget extends DataClass implements Insertable<Budget> {
       ownerId: ownerId == null && nullToAbsent
           ? const Value.absent()
           : Value(ownerId),
+      progress: progress == null && nullToAbsent
+          ? const Value.absent()
+          : Value(progress),
     );
   }
 
@@ -6849,19 +6880,22 @@ class Budget extends DataClass implements Insertable<Budget> {
       name: serializer.fromJson<String>(json['name']),
       slug: serializer.fromJson<String>(json['slug']),
       description: serializer.fromJson<String?>(json['description']),
-      amount: serializer.fromJson<double>(json['amount']),
+      amount: $BudgetsTable.$converteramount
+          .fromJson(serializer.fromJson<String>(json['amount'])),
       currency: serializer.fromJson<String>(json['currency']),
       periodType: $BudgetsTable.$converterperiodType
-          .fromJson(serializer.fromJson<String>(json['periodType'])),
-      startDate: serializer.fromJson<DateTime>(json['startDate']),
-      endDate: serializer.fromJson<DateTime?>(json['endDate']),
-      rolloverEnabled: serializer.fromJson<bool>(json['rolloverEnabled']),
-      thresholdPercent: serializer.fromJson<int>(json['thresholdPercent']),
+          .fromJson(serializer.fromJson<String>(json['period_type'])),
+      startDate: serializer.fromJson<DateTime>(json['start_date']),
+      endDate: serializer.fromJson<DateTime?>(json['end_date']),
+      rolloverEnabled: serializer.fromJson<bool>(json['rollover_enabled']),
+      thresholdPercent: serializer.fromJson<int>(json['threshold_percent']),
       forecastAlertsEnabled:
-          serializer.fromJson<bool>(json['forecastAlertsEnabled']),
-      isActive: serializer.fromJson<bool>(json['isActive']),
-      ownerType: serializer.fromJson<String>(json['ownerType']),
-      ownerId: serializer.fromJson<int?>(json['ownerId']),
+          serializer.fromJson<bool>(json['forecast_alerts_enabled']),
+      isActive: serializer.fromJson<bool>(json['is_active']),
+      ownerType: serializer.fromJson<String>(json['owner_type']),
+      ownerId: serializer.fromJson<int?>(json['owner_id']),
+      progress: $BudgetsTable.$converterprogressn.fromJson(
+          serializer.fromJson<Map<String, Object?>?>(json['progress'])),
     );
   }
   @override
@@ -6879,18 +6913,21 @@ class Budget extends DataClass implements Insertable<Budget> {
       'name': serializer.toJson<String>(name),
       'slug': serializer.toJson<String>(slug),
       'description': serializer.toJson<String?>(description),
-      'amount': serializer.toJson<double>(amount),
+      'amount': serializer
+          .toJson<String>($BudgetsTable.$converteramount.toJson(amount)),
       'currency': serializer.toJson<String>(currency),
-      'periodType': serializer.toJson<String>(
+      'period_type': serializer.toJson<String>(
           $BudgetsTable.$converterperiodType.toJson(periodType)),
-      'startDate': serializer.toJson<DateTime>(startDate),
-      'endDate': serializer.toJson<DateTime?>(endDate),
-      'rolloverEnabled': serializer.toJson<bool>(rolloverEnabled),
-      'thresholdPercent': serializer.toJson<int>(thresholdPercent),
-      'forecastAlertsEnabled': serializer.toJson<bool>(forecastAlertsEnabled),
-      'isActive': serializer.toJson<bool>(isActive),
-      'ownerType': serializer.toJson<String>(ownerType),
-      'ownerId': serializer.toJson<int?>(ownerId),
+      'start_date': serializer.toJson<DateTime>(startDate),
+      'end_date': serializer.toJson<DateTime?>(endDate),
+      'rollover_enabled': serializer.toJson<bool>(rolloverEnabled),
+      'threshold_percent': serializer.toJson<int>(thresholdPercent),
+      'forecast_alerts_enabled': serializer.toJson<bool>(forecastAlertsEnabled),
+      'is_active': serializer.toJson<bool>(isActive),
+      'owner_type': serializer.toJson<String>(ownerType),
+      'owner_id': serializer.toJson<int?>(ownerId),
+      'progress': serializer.toJson<Map<String, Object?>?>(
+          $BudgetsTable.$converterprogressn.toJson(progress)),
     };
   }
 
@@ -6916,7 +6953,8 @@ class Budget extends DataClass implements Insertable<Budget> {
           bool? forecastAlertsEnabled,
           bool? isActive,
           String? ownerType,
-          Value<int?> ownerId = const Value.absent()}) =>
+          Value<int?> ownerId = const Value.absent(),
+          Value<BudgetProgressEntity?> progress = const Value.absent()}) =>
       Budget(
         id: id.present ? id.value : this.id,
         userId: userId.present ? userId.value : this.userId,
@@ -6942,6 +6980,7 @@ class Budget extends DataClass implements Insertable<Budget> {
         isActive: isActive ?? this.isActive,
         ownerType: ownerType ?? this.ownerType,
         ownerId: ownerId.present ? ownerId.value : this.ownerId,
+        progress: progress.present ? progress.value : this.progress,
       );
   Budget copyWithCompanion(BudgetsCompanion data) {
     return Budget(
@@ -6977,6 +7016,7 @@ class Budget extends DataClass implements Insertable<Budget> {
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
       ownerType: data.ownerType.present ? data.ownerType.value : this.ownerType,
       ownerId: data.ownerId.present ? data.ownerId.value : this.ownerId,
+      progress: data.progress.present ? data.progress.value : this.progress,
     );
   }
 
@@ -7004,7 +7044,8 @@ class Budget extends DataClass implements Insertable<Budget> {
           ..write('forecastAlertsEnabled: $forecastAlertsEnabled, ')
           ..write('isActive: $isActive, ')
           ..write('ownerType: $ownerType, ')
-          ..write('ownerId: $ownerId')
+          ..write('ownerId: $ownerId, ')
+          ..write('progress: $progress')
           ..write(')'))
         .toString();
   }
@@ -7032,7 +7073,8 @@ class Budget extends DataClass implements Insertable<Budget> {
         forecastAlertsEnabled,
         isActive,
         ownerType,
-        ownerId
+        ownerId,
+        progress
       ]);
   @override
   bool operator ==(Object other) =>
@@ -7059,7 +7101,8 @@ class Budget extends DataClass implements Insertable<Budget> {
           other.forecastAlertsEnabled == this.forecastAlertsEnabled &&
           other.isActive == this.isActive &&
           other.ownerType == this.ownerType &&
-          other.ownerId == this.ownerId);
+          other.ownerId == this.ownerId &&
+          other.progress == this.progress);
 }
 
 class BudgetsCompanion extends UpdateCompanion<Budget> {
@@ -7085,6 +7128,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
   final Value<bool> isActive;
   final Value<String> ownerType;
   final Value<int?> ownerId;
+  final Value<BudgetProgressEntity?> progress;
   final Value<int> rowid;
   const BudgetsCompanion({
     this.id = const Value.absent(),
@@ -7109,6 +7153,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     this.isActive = const Value.absent(),
     this.ownerType = const Value.absent(),
     this.ownerId = const Value.absent(),
+    this.progress = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BudgetsCompanion.insert({
@@ -7134,6 +7179,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     this.isActive = const Value.absent(),
     this.ownerType = const Value.absent(),
     this.ownerId = const Value.absent(),
+    this.progress = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : name = Value(name),
         slug = Value(slug),
@@ -7153,7 +7199,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     Expression<String>? name,
     Expression<String>? slug,
     Expression<String>? description,
-    Expression<double>? amount,
+    Expression<String>? amount,
     Expression<String>? currency,
     Expression<String>? periodType,
     Expression<DateTime>? startDate,
@@ -7164,6 +7210,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     Expression<bool>? isActive,
     Expression<String>? ownerType,
     Expression<int>? ownerId,
+    Expression<String>? progress,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -7190,6 +7237,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
       if (isActive != null) 'is_active': isActive,
       if (ownerType != null) 'owner_type': ownerType,
       if (ownerId != null) 'owner_id': ownerId,
+      if (progress != null) 'progress': progress,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -7217,6 +7265,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
       Value<bool>? isActive,
       Value<String>? ownerType,
       Value<int?>? ownerId,
+      Value<BudgetProgressEntity?>? progress,
       Value<int>? rowid}) {
     return BudgetsCompanion(
       id: id ?? this.id,
@@ -7242,6 +7291,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
       isActive: isActive ?? this.isActive,
       ownerType: ownerType ?? this.ownerType,
       ownerId: ownerId ?? this.ownerId,
+      progress: progress ?? this.progress,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -7283,7 +7333,8 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
       map['description'] = Variable<String>(description.value);
     }
     if (amount.present) {
-      map['amount'] = Variable<double>(amount.value);
+      map['amount'] =
+          Variable<String>($BudgetsTable.$converteramount.toSql(amount.value));
     }
     if (currency.present) {
       map['currency'] = Variable<String>(currency.value);
@@ -7317,6 +7368,10 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     if (ownerId.present) {
       map['owner_id'] = Variable<int>(ownerId.value);
     }
+    if (progress.present) {
+      map['progress'] = Variable<String>(
+          $BudgetsTable.$converterprogressn.toSql(progress.value));
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -7348,6 +7403,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
           ..write('isActive: $isActive, ')
           ..write('ownerType: $ownerType, ')
           ..write('ownerId: $ownerId, ')
+          ..write('progress: $progress, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -12776,6 +12832,7 @@ typedef $$BudgetsTableCreateCompanionBuilder = BudgetsCompanion Function({
   Value<bool> isActive,
   Value<String> ownerType,
   Value<int?> ownerId,
+  Value<BudgetProgressEntity?> progress,
   Value<int> rowid,
 });
 typedef $$BudgetsTableUpdateCompanionBuilder = BudgetsCompanion Function({
@@ -12801,6 +12858,7 @@ typedef $$BudgetsTableUpdateCompanionBuilder = BudgetsCompanion Function({
   Value<bool> isActive,
   Value<String> ownerType,
   Value<int?> ownerId,
+  Value<BudgetProgressEntity?> progress,
   Value<int> rowid,
 });
 
@@ -12885,8 +12943,10 @@ class $$BudgetsTableFilterComposer
   ColumnFilters<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<double> get amount => $composableBuilder(
-      column: $table.amount, builder: (column) => ColumnFilters(column));
+  ColumnWithTypeConverterFilters<double, double, String> get amount =>
+      $composableBuilder(
+          column: $table.amount,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<String> get currency => $composableBuilder(
       column: $table.currency, builder: (column) => ColumnFilters(column));
@@ -12922,6 +12982,12 @@ class $$BudgetsTableFilterComposer
 
   ColumnFilters<int> get ownerId => $composableBuilder(
       column: $table.ownerId, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<BudgetProgressEntity?, BudgetProgressEntity,
+          String>
+      get progress => $composableBuilder(
+          column: $table.progress,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   Expression<bool> budgetTargetsRefs(
       Expression<bool> Function($$BudgetTargetsTableFilterComposer f) f) {
@@ -13009,7 +13075,7 @@ class $$BudgetsTableOrderingComposer
   ColumnOrderings<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<double> get amount => $composableBuilder(
+  ColumnOrderings<String> get amount => $composableBuilder(
       column: $table.amount, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get currency => $composableBuilder(
@@ -13044,6 +13110,9 @@ class $$BudgetsTableOrderingComposer
 
   ColumnOrderings<int> get ownerId => $composableBuilder(
       column: $table.ownerId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get progress => $composableBuilder(
+      column: $table.progress, builder: (column) => ColumnOrderings(column));
 }
 
 class $$BudgetsTableAnnotationComposer
@@ -13088,7 +13157,7 @@ class $$BudgetsTableAnnotationComposer
   GeneratedColumn<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => column);
 
-  GeneratedColumn<double> get amount =>
+  GeneratedColumnWithTypeConverter<double, String> get amount =>
       $composableBuilder(column: $table.amount, builder: (column) => column);
 
   GeneratedColumn<String> get currency =>
@@ -13121,6 +13190,10 @@ class $$BudgetsTableAnnotationComposer
 
   GeneratedColumn<int> get ownerId =>
       $composableBuilder(column: $table.ownerId, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<BudgetProgressEntity?, String>
+      get progress => $composableBuilder(
+          column: $table.progress, builder: (column) => column);
 
   Expression<T> budgetTargetsRefs<T extends Object>(
       Expression<T> Function($$BudgetTargetsTableAnnotationComposer a) f) {
@@ -13212,6 +13285,7 @@ class $$BudgetsTableTableManager extends RootTableManager<
             Value<bool> isActive = const Value.absent(),
             Value<String> ownerType = const Value.absent(),
             Value<int?> ownerId = const Value.absent(),
+            Value<BudgetProgressEntity?> progress = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BudgetsCompanion(
@@ -13237,6 +13311,7 @@ class $$BudgetsTableTableManager extends RootTableManager<
             isActive: isActive,
             ownerType: ownerType,
             ownerId: ownerId,
+            progress: progress,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -13262,6 +13337,7 @@ class $$BudgetsTableTableManager extends RootTableManager<
             Value<bool> isActive = const Value.absent(),
             Value<String> ownerType = const Value.absent(),
             Value<int?> ownerId = const Value.absent(),
+            Value<BudgetProgressEntity?> progress = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BudgetsCompanion.insert(
@@ -13287,6 +13363,7 @@ class $$BudgetsTableTableManager extends RootTableManager<
             isActive: isActive,
             ownerType: ownerType,
             ownerId: ownerId,
+            progress: progress,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
