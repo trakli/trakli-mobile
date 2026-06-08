@@ -4,7 +4,7 @@ import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 
 
-class AppTheme{
+abstract class AppTheme{
   AppTheme._();
 
   static ThemeData get lightTheme {
@@ -31,6 +31,9 @@ class AppTheme{
         ),
         headerBackgroundColor: tones.brand.deep,
         headerForegroundColor: Colors.white,
+        backgroundColor: tones.bgSurface,
+        rangePickerBackgroundColor: tones.bgSurface,
+        rangeSelectionBackgroundColor: tones.brand.deep.withValues(alpha: 0.1),
         todayBackgroundColor: WidgetStatePropertyAll(tones.brand.deep),
         todayForegroundColor: const WidgetStatePropertyAll(Colors.white),
         cancelButtonStyle: ButtonStyle(
@@ -237,6 +240,8 @@ class AppTheme{
         headerBackgroundColor: tones.brand.deep,
         headerForegroundColor: Colors.white,
         backgroundColor: tones.bgSurface,
+        rangePickerBackgroundColor: tones.bgSurface,
+        rangeSelectionBackgroundColor: tones.brand.deep.withValues(alpha: 0.1),
         todayBackgroundColor: WidgetStatePropertyAll(tones.brand.deep),
         todayForegroundColor: const WidgetStatePropertyAll(Colors.white),
         cancelButtonStyle: ButtonStyle(
