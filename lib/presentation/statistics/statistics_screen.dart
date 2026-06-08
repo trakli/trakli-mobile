@@ -24,7 +24,6 @@ import 'package:trakli/presentation/statistics/widgets/month_in_review_card.dart
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/category_tile.dart';
-import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/dashboard_expenses.dart';
 import 'package:trakli/presentation/utils/dashboard_pie_data.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
@@ -488,7 +487,8 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                               color: (tabController.index == 0)
                                   ? tones.income.accent
                                   : tones.expense.accent,
-                              borderRadius: BorderRadius.circular(AppRadii.xl.r),
+                              borderRadius:
+                                  BorderRadius.circular(AppRadii.xl.r),
                             ),
                             unselectedLabelStyle: TextStyle(
                               fontSize: 16.sp,
