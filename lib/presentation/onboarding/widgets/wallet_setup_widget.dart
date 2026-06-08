@@ -319,7 +319,7 @@ class _WalletSetupWidgetState extends State<WalletSetupWidget> {
                           context: context,
                           theme: CurrencyPickerThemeData(
                               bottomSheetHeight: 0.7.sh,
-                              backgroundColor: Colors.white,
+                              backgroundColor: Theme.of(context).colorScheme.surface,
                               flagSize: 24.sp,
                               subtitleTextStyle: TextStyle(
                                 fontSize: 12.sp,

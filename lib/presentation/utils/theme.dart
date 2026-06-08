@@ -202,7 +202,7 @@ class AppTheme{
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.xl.r),
           side: BorderSide(
-            width: 1,
+            width: 1.0,
             color: tones.borderLight,
           ),
         ),
@@ -294,7 +294,7 @@ class AppTheme{
             fontSize: 16.sp,
           ),
           backgroundColor: tones.brand.deep,
-          foregroundColor: Colors.black,
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadii.md.r),
             side: BorderSide.none,
@@ -360,10 +360,10 @@ class AppTheme{
         ),
       ),
       cardTheme: CardThemeData(
-        color: tones.bgCard,
+        color: tones.bgSurface,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadii.md.r),
+          borderRadius: BorderRadius.circular(AppRadii.xl.r),
           side: BorderSide(color: tones.borderLight),
         ),
         margin: EdgeInsets.zero,
