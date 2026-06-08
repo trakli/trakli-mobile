@@ -334,13 +334,9 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                           );
                         }),
                         SizedBox(height: 16.h),
-                        Container(
+                        Card(
                           margin: EdgeInsets.symmetric(
                             horizontal: 16.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Column(
                             children: [
@@ -480,14 +476,9 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                           ),
                         ),
                         SizedBox(height: 12.h),
-                        Container(
+                        Card(
                           margin: EdgeInsets.symmetric(
                             horizontal: 16.w,
-                            // vertical:
-                          ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: TabBar(
                             controller: tabController,
@@ -498,7 +489,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                               color: (tabController.index == 0)
                                   ? Theme.of(context).primaryColor
                                   : const Color(0xFFEB5757),
-                              borderRadius: BorderRadius.circular(8.r),
+                              borderRadius: BorderRadius.circular(AppRadii.xl.r),
                             ),
                             unselectedLabelStyle: TextStyle(
                               fontSize: 16.sp,
