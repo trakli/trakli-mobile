@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:trakli/di/injection.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/notifications/cubit/notification_cubit.dart';
-import 'package:trakli/presentation/utils/back_button.dart';
 import 'package:trakli/presentation/utils/colors.dart';
-import 'package:trakli/presentation/utils/custom_appbar.dart';
 import 'package:trakli/presentation/utils/notification_tile.dart';
-import 'package:trakli/di/injection.dart';
+import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
@@ -20,11 +19,8 @@ class NotificationsScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<NotificationCubit>()..loadNotifications(),
       child: Scaffold(
-        appBar: CustomAppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          leading: const CustomBackButton(),
-          titleText: LocaleKeys.notifications.tr(),
-          headerTextColor: const Color(0xFFEBEDEC),
+        appBar: PageAppBar(
+          title: LocaleKeys.notifications.tr(),
         ),
         body: BlocBuilder<NotificationCubit, NotificationState>(
           builder: (context, state) {
