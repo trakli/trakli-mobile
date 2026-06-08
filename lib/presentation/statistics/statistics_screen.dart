@@ -87,11 +87,12 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   void _pickDateRange(BuildContext context) async {
     final filterCubit = context.read<StatisticsFilterCubit>();
     final filter = filterCubit.state;
+    final tones = context.tones;
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
-      barrierColor: const Color(0xFFD9D9D9),
+      barrierColor: tones.bgPage.withValues(alpha: 0.8),
       initialDateRange: filter.startDate != null && filter.endDate != null
           ? DateTimeRange(start: filter.startDate!, end: filter.endDate!)
           : null,
@@ -99,19 +100,17 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: appPrimaryColor,
+                  primary: tones.brand.deep,
                   onPrimary: Colors.white,
-                  surface: Colors.white,
-                  onSurface: neutralN900,
+                  surface: tones.bgSurface,
+                  onSurface: tones.textPrimary,
                 ),
-            datePickerTheme: DatePickerThemeData(
-              rangePickerBackgroundColor: const Color(0xFFD9D9D9),
-              rangeSelectionBackgroundColor:
-                  appPrimaryColor.withValues(alpha: 0.1),
-            ),
-            dialogTheme: const DialogThemeData(
-              backgroundColor: Color(0xFFD9D9D9),
-            ),
+            datePickerTheme: Theme.of(context).datePickerTheme.copyWith(
+                  rangePickerBackgroundColor: tones.bgSurface,
+                  rangeSelectionBackgroundColor:
+                      tones.brand.deep.withValues(alpha: 0.1),
+                  dividerColor: tones.borderLight,
+                ),
           ),
           child: child!,
         );
@@ -487,8 +486,8 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                             dividerHeight: 0,
                             indicator: BoxDecoration(
                               color: (tabController.index == 0)
-                                  ? Theme.of(context).primaryColor
-                                  : const Color(0xFFEB5757),
+                                  ? tones.income.accent
+                                  : tones.expense.accent,
                               borderRadius: BorderRadius.circular(AppRadii.xl.r),
                             ),
                             unselectedLabelStyle: TextStyle(
