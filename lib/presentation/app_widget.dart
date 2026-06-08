@@ -359,8 +359,8 @@ class _AppViewState extends State<AppView> {
             locale: context.locale,
             supportedLocales: context.supportedLocales,
             localizationsDelegates: context.localizationDelegates,
-            theme: lightTheme,
-            darkTheme: darkTheme,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
             themeMode: themeMode,
             builder: (context, child) {
               return GestureDetector(
