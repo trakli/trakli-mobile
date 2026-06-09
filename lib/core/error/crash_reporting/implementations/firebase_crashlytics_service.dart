@@ -17,6 +17,8 @@ class FirebaseCrashlyticsService implements CrashReportingInterface {
   Future<void> initialize() async {
     try {
       setupFlutterErrorHandling();
+      await _crashlyticsInstance.setCrashlyticsCollectionEnabled(true);
+      await _crashlyticsInstance.sendUnsentReports();
       logger.i('Firebase Crashlytics initialized successfully');
     } catch (e, stackTrace) {
       logger.e(

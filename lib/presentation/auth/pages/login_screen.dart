@@ -158,16 +158,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   _OAuthButton(
                     label: LocaleKeys.loginGoogle.tr(),
                     iconPath: Assets.images.google,
-                    onTap: () =>
-                        context.read<OAuthCubit>().signInWithGoogle(),
+                    onTap: () => context.read<OAuthCubit>().signInWithGoogle(),
                   ),
                   if (Platform.isIOS) ...[
                     SizedBox(height: 10.h),
                     _OAuthButton(
                       label: LocaleKeys.loginApple.tr(),
                       iconPath: Assets.images.apple,
-                      onTap: () =>
-                          context.read<OAuthCubit>().signInWithApple(),
+                      onTap: () => context.read<OAuthCubit>().signInWithApple(),
                     ),
                   ],
                   SizedBox(height: 14.h),
