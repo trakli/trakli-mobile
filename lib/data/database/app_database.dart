@@ -77,9 +77,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
         await m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        if (from < 4) {
-          await _schemaUpgrade(m, from, 4);
-        }
+        await _schemaUpgrade(m, from, to);
       },
     );
   }
