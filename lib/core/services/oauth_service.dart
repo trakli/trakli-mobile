@@ -1,20 +1,21 @@
 import 'dart:convert';
-import 'dart:math';
 import 'dart:io';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:math';
+
 import 'package:crypto/crypto.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
-import 'package:trakli/core/utils/services/logger.dart' show logger;
-import 'package:trakli/core/error/repository_error_handler.dart';
-import 'package:trakli/core/error/exceptions.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:trakli/core/error/crash_reporting/crash_reporting_service.dart';
+import 'package:trakli/core/error/exceptions.dart';
+import 'package:trakli/core/error/failures/failures.dart';
+import 'package:trakli/core/error/repository_error_handler.dart';
+import 'package:trakli/core/utils/services/logger.dart' show logger;
 import 'package:trakli/data/datasources/auth/auth_remote_data_source.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/domain/entities/user_entity.dart';
-import 'package:fpdart/fpdart.dart';
-import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/domain/repositories/auth_repository.dart';
 
 /// Service to handle OAuth authentication with backend API integration.
@@ -111,15 +112,13 @@ class OAuthService {
       } on FirebaseAuthException catch (e, stackTrace) {
         logger.e('Google Sign-In Firebase error: ${e.code} - ${e.message}',
             error: e);
-        await _crashReporting.recordError(
-          e,
-          stackTrace: stackTrace,
-          reason: 'Google Sign-In FirebaseAuthException',
-          information: {
-            'code': e.code,
-            'message': e.message ?? '',
-          }
-        );
+        await _crashReporting.recordError(e,
+            stackTrace: stackTrace,
+            reason: 'Google Sign-In FirebaseAuthException',
+            information: {
+              'code': e.code,
+              'message': e.message ?? '',
+            });
         throw _mapFirebaseException(e);
       }
     });
@@ -151,7 +150,8 @@ class OAuthService {
         nonce: nonce,
       );
     } on SignInWithAppleAuthorizationException catch (e, stackTrace) {
-      logger.e('Apple Sign-In authorization error: ${e.code}', error: e);
+      logger.e('Apple Sign-In authorization error: ${e.code} - ${e.message}',
+          error: e);
 
       if (e.code == AuthorizationErrorCode.canceled) {
         return const Left(Failure.cancel());
@@ -162,9 +162,11 @@ class OAuthService {
         reason: 'Apple Sign-In authorization failed',
         information: {
           'code': e.code.name,
+          'message': e.message,
         },
       );
-      return const Left(Failure.unauthorizedError());
+      return Left(Failure.badRequest(
+          error: 'Apple Sign-In failed (${e.code.name}): ${e.message}'));
     }
 
     return RepositoryErrorHandler.handleApiCall<UserEntity>(() async {
