@@ -312,26 +312,6 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                     child: Column(
                       children: [
                         SizedBox(height: 16.h),
-                        Builder(builder: (cardContext) {
-                          final recap = buildMonthInReview(transactions);
-                          // Build a 30-day net-flow sparkline for the recap
-                          // card; tiny but it gives the card colour and life.
-                          final spark = _buildSparkline(transactions);
-                          return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: MonthInReviewCard(
-                              data: recap,
-                              sparkline: spark,
-                              onTap: recap == null
-                                  ? null
-                                  : () => MonthInReviewScreen.show(
-                                        cardContext,
-                                        recap,
-                                      ),
-                            ),
-                          );
-                        }),
-                        SizedBox(height: 16.h),
                         Card(
                           margin: EdgeInsets.symmetric(
                             horizontal: 16.w,
