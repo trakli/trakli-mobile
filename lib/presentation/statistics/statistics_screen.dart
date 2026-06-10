@@ -17,10 +17,7 @@ import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
 import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
 import 'package:trakli/presentation/statistics/cubit/statistics_filter_cubit.dart';
-import 'package:trakli/presentation/statistics/month_in_review/month_in_review_data.dart';
-import 'package:trakli/presentation/statistics/month_in_review/month_in_review_screen.dart';
 import 'package:trakli/presentation/statistics/reports/reports_screen.dart';
-import 'package:trakli/presentation/statistics/widgets/month_in_review_card.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/category_tile.dart';
@@ -781,31 +778,6 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         return SizedBox(height: 8.h);
       },
     );
-  }
-
-  /// Build a 30-day net-flow sparkline for the recap teaser card. Returns
-  /// a list of daily net values (income − expense) so the card can render
-  /// a tiny line without owning chart logic.
-  List<double> _buildSparkline(
-    List<TransactionCompleteEntity> transactions,
-  ) {
-    final today = DateTime.now();
-    final start = DateTime(today.year, today.month, today.day)
-        .subtract(const Duration(days: 29));
-    final daily = List<double>.filled(30, 0);
-    for (final t in transactions) {
-      final d = t.transaction.datetime;
-      final key = DateTime(d.year, d.month, d.day);
-      final idx = key.difference(start).inDays;
-      if (idx < 0 || idx > 29) continue;
-      final amt = t.transaction.amount;
-      if (t.transaction.type == TransactionType.income) {
-        daily[idx] += amt;
-      } else {
-        daily[idx] -= amt;
-      }
-    }
-    return daily;
   }
 }
 
