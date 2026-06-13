@@ -21,11 +21,8 @@ mixin _$BudgetState {
   bool get isSaving => throw _privateConstructorUsedError;
   bool get isDeleting => throw _privateConstructorUsedError;
   bool get isProgressLoading => throw _privateConstructorUsedError;
-  bool get isPeriodTransactionsLoading => throw _privateConstructorUsedError;
   bool get isClosingPeriod => throw _privateConstructorUsedError;
   BudgetProgressEntity? get selectedBudgetProgress =>
-      throw _privateConstructorUsedError;
-  BudgetTransactionsResponse? get selectedBudgetTransactions =>
       throw _privateConstructorUsedError;
   List<BudgetTargetEntity> get selectedBudgetTargets =>
       throw _privateConstructorUsedError;
@@ -52,10 +49,8 @@ abstract class $BudgetStateCopyWith<$Res> {
       bool isSaving,
       bool isDeleting,
       bool isProgressLoading,
-      bool isPeriodTransactionsLoading,
       bool isClosingPeriod,
       BudgetProgressEntity? selectedBudgetProgress,
-      BudgetTransactionsResponse? selectedBudgetTransactions,
       List<BudgetTargetEntity> selectedBudgetTargets,
       List<BudgetPeriodStateEntity> selectedBudgetPeriodStates,
       Failure failure});
@@ -84,10 +79,8 @@ class _$BudgetStateCopyWithImpl<$Res, $Val extends BudgetState>
     Object? isSaving = null,
     Object? isDeleting = null,
     Object? isProgressLoading = null,
-    Object? isPeriodTransactionsLoading = null,
     Object? isClosingPeriod = null,
     Object? selectedBudgetProgress = freezed,
-    Object? selectedBudgetTransactions = freezed,
     Object? selectedBudgetTargets = null,
     Object? selectedBudgetPeriodStates = null,
     Object? failure = null,
@@ -113,10 +106,6 @@ class _$BudgetStateCopyWithImpl<$Res, $Val extends BudgetState>
           ? _value.isProgressLoading
           : isProgressLoading // ignore: cast_nullable_to_non_nullable
               as bool,
-      isPeriodTransactionsLoading: null == isPeriodTransactionsLoading
-          ? _value.isPeriodTransactionsLoading
-          : isPeriodTransactionsLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
       isClosingPeriod: null == isClosingPeriod
           ? _value.isClosingPeriod
           : isClosingPeriod // ignore: cast_nullable_to_non_nullable
@@ -125,10 +114,6 @@ class _$BudgetStateCopyWithImpl<$Res, $Val extends BudgetState>
           ? _value.selectedBudgetProgress
           : selectedBudgetProgress // ignore: cast_nullable_to_non_nullable
               as BudgetProgressEntity?,
-      selectedBudgetTransactions: freezed == selectedBudgetTransactions
-          ? _value.selectedBudgetTransactions
-          : selectedBudgetTransactions // ignore: cast_nullable_to_non_nullable
-              as BudgetTransactionsResponse?,
       selectedBudgetTargets: null == selectedBudgetTargets
           ? _value.selectedBudgetTargets
           : selectedBudgetTargets // ignore: cast_nullable_to_non_nullable
@@ -184,10 +169,8 @@ abstract class _$$BudgetStateImplCopyWith<$Res>
       bool isSaving,
       bool isDeleting,
       bool isProgressLoading,
-      bool isPeriodTransactionsLoading,
       bool isClosingPeriod,
       BudgetProgressEntity? selectedBudgetProgress,
-      BudgetTransactionsResponse? selectedBudgetTransactions,
       List<BudgetTargetEntity> selectedBudgetTargets,
       List<BudgetPeriodStateEntity> selectedBudgetPeriodStates,
       Failure failure});
@@ -216,10 +199,8 @@ class __$$BudgetStateImplCopyWithImpl<$Res>
     Object? isSaving = null,
     Object? isDeleting = null,
     Object? isProgressLoading = null,
-    Object? isPeriodTransactionsLoading = null,
     Object? isClosingPeriod = null,
     Object? selectedBudgetProgress = freezed,
-    Object? selectedBudgetTransactions = freezed,
     Object? selectedBudgetTargets = null,
     Object? selectedBudgetPeriodStates = null,
     Object? failure = null,
@@ -245,10 +226,6 @@ class __$$BudgetStateImplCopyWithImpl<$Res>
           ? _value.isProgressLoading
           : isProgressLoading // ignore: cast_nullable_to_non_nullable
               as bool,
-      isPeriodTransactionsLoading: null == isPeriodTransactionsLoading
-          ? _value.isPeriodTransactionsLoading
-          : isPeriodTransactionsLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
       isClosingPeriod: null == isClosingPeriod
           ? _value.isClosingPeriod
           : isClosingPeriod // ignore: cast_nullable_to_non_nullable
@@ -257,10 +234,6 @@ class __$$BudgetStateImplCopyWithImpl<$Res>
           ? _value.selectedBudgetProgress
           : selectedBudgetProgress // ignore: cast_nullable_to_non_nullable
               as BudgetProgressEntity?,
-      selectedBudgetTransactions: freezed == selectedBudgetTransactions
-          ? _value.selectedBudgetTransactions
-          : selectedBudgetTransactions // ignore: cast_nullable_to_non_nullable
-              as BudgetTransactionsResponse?,
       selectedBudgetTargets: null == selectedBudgetTargets
           ? _value._selectedBudgetTargets
           : selectedBudgetTargets // ignore: cast_nullable_to_non_nullable
@@ -286,10 +259,8 @@ class _$BudgetStateImpl implements _BudgetState {
       required this.isSaving,
       required this.isDeleting,
       required this.isProgressLoading,
-      required this.isPeriodTransactionsLoading,
       required this.isClosingPeriod,
       this.selectedBudgetProgress,
-      this.selectedBudgetTransactions,
       required final List<BudgetTargetEntity> selectedBudgetTargets,
       required final List<BudgetPeriodStateEntity> selectedBudgetPeriodStates,
       required this.failure})
@@ -314,13 +285,9 @@ class _$BudgetStateImpl implements _BudgetState {
   @override
   final bool isProgressLoading;
   @override
-  final bool isPeriodTransactionsLoading;
-  @override
   final bool isClosingPeriod;
   @override
   final BudgetProgressEntity? selectedBudgetProgress;
-  @override
-  final BudgetTransactionsResponse? selectedBudgetTransactions;
   final List<BudgetTargetEntity> _selectedBudgetTargets;
   @override
   List<BudgetTargetEntity> get selectedBudgetTargets {
@@ -344,7 +311,7 @@ class _$BudgetStateImpl implements _BudgetState {
 
   @override
   String toString() {
-    return 'BudgetState(budgets: $budgets, isLoading: $isLoading, isSaving: $isSaving, isDeleting: $isDeleting, isProgressLoading: $isProgressLoading, isPeriodTransactionsLoading: $isPeriodTransactionsLoading, isClosingPeriod: $isClosingPeriod, selectedBudgetProgress: $selectedBudgetProgress, selectedBudgetTransactions: $selectedBudgetTransactions, selectedBudgetTargets: $selectedBudgetTargets, selectedBudgetPeriodStates: $selectedBudgetPeriodStates, failure: $failure)';
+    return 'BudgetState(budgets: $budgets, isLoading: $isLoading, isSaving: $isSaving, isDeleting: $isDeleting, isProgressLoading: $isProgressLoading, isClosingPeriod: $isClosingPeriod, selectedBudgetProgress: $selectedBudgetProgress, selectedBudgetTargets: $selectedBudgetTargets, selectedBudgetPeriodStates: $selectedBudgetPeriodStates, failure: $failure)';
   }
 
   @override
@@ -361,18 +328,10 @@ class _$BudgetStateImpl implements _BudgetState {
                 other.isDeleting == isDeleting) &&
             (identical(other.isProgressLoading, isProgressLoading) ||
                 other.isProgressLoading == isProgressLoading) &&
-            (identical(other.isPeriodTransactionsLoading,
-                    isPeriodTransactionsLoading) ||
-                other.isPeriodTransactionsLoading ==
-                    isPeriodTransactionsLoading) &&
             (identical(other.isClosingPeriod, isClosingPeriod) ||
                 other.isClosingPeriod == isClosingPeriod) &&
             (identical(other.selectedBudgetProgress, selectedBudgetProgress) ||
                 other.selectedBudgetProgress == selectedBudgetProgress) &&
-            (identical(other.selectedBudgetTransactions,
-                    selectedBudgetTransactions) ||
-                other.selectedBudgetTransactions ==
-                    selectedBudgetTransactions) &&
             const DeepCollectionEquality()
                 .equals(other._selectedBudgetTargets, _selectedBudgetTargets) &&
             const DeepCollectionEquality().equals(
@@ -389,10 +348,8 @@ class _$BudgetStateImpl implements _BudgetState {
       isSaving,
       isDeleting,
       isProgressLoading,
-      isPeriodTransactionsLoading,
       isClosingPeriod,
       selectedBudgetProgress,
-      selectedBudgetTransactions,
       const DeepCollectionEquality().hash(_selectedBudgetTargets),
       const DeepCollectionEquality().hash(_selectedBudgetPeriodStates),
       failure);
@@ -413,10 +370,8 @@ abstract class _BudgetState implements BudgetState {
       required final bool isSaving,
       required final bool isDeleting,
       required final bool isProgressLoading,
-      required final bool isPeriodTransactionsLoading,
       required final bool isClosingPeriod,
       final BudgetProgressEntity? selectedBudgetProgress,
-      final BudgetTransactionsResponse? selectedBudgetTransactions,
       required final List<BudgetTargetEntity> selectedBudgetTargets,
       required final List<BudgetPeriodStateEntity> selectedBudgetPeriodStates,
       required final Failure failure}) = _$BudgetStateImpl;
@@ -432,13 +387,9 @@ abstract class _BudgetState implements BudgetState {
   @override
   bool get isProgressLoading;
   @override
-  bool get isPeriodTransactionsLoading;
-  @override
   bool get isClosingPeriod;
   @override
   BudgetProgressEntity? get selectedBudgetProgress;
-  @override
-  BudgetTransactionsResponse? get selectedBudgetTransactions;
   @override
   List<BudgetTargetEntity> get selectedBudgetTargets;
   @override

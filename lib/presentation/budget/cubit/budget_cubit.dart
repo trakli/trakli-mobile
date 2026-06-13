@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/failures/failures.dart';
-import 'package:trakli/data/datasources/budget/dtos/budget_transactions_response.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
 import 'package:trakli/domain/entities/budget_period_state_entity.dart';
 import 'package:trakli/domain/entities/budget_progress_entity.dart';
@@ -12,7 +11,6 @@ import 'package:trakli/domain/entities/budget_target_entity.dart';
 import 'package:trakli/domain/usecases/budget/close_budget_period_usecase.dart';
 import 'package:trakli/domain/usecases/budget/delete_budget_usecase.dart';
 import 'package:trakli/domain/usecases/budget/fetch_budget_progress_usecase.dart';
-import 'package:trakli/domain/usecases/budget/fetch_budget_transactions_usecase.dart';
 import 'package:trakli/domain/usecases/budget/get_all_budgets_usecase.dart';
 import 'package:trakli/domain/usecases/budget/insert_budget_usecase.dart';
 import 'package:trakli/domain/usecases/budget/listen_to_budgets_usecase.dart';
@@ -32,7 +30,6 @@ class BudgetCubit extends Cubit<BudgetState> {
   final UpdateBudgetUseCase _updateBudgetUseCase;
   final DeleteBudgetUseCase _deleteBudgetUseCase;
   final FetchBudgetProgressUseCase _fetchBudgetProgressUseCase;
-  final FetchBudgetTransactionsUseCase _fetchBudgetTransactionsUseCase;
   final CloseBudgetPeriodUseCase _closeBudgetPeriodUseCase;
   final ListenToBudgetsUseCase _listenToBudgetsUseCase;
   final ListenToTargetsUseCase _listenToTargetsUseCase;
@@ -49,7 +46,6 @@ class BudgetCubit extends Cubit<BudgetState> {
     required UpdateBudgetUseCase updateBudgetUseCase,
     required DeleteBudgetUseCase deleteBudgetUseCase,
     required FetchBudgetProgressUseCase fetchBudgetProgressUseCase,
-    required FetchBudgetTransactionsUseCase fetchBudgetTransactionsUseCase,
     required CloseBudgetPeriodUseCase closeBudgetPeriodUseCase,
     required ListenToBudgetsUseCase listenToBudgetsUseCase,
     required ListenToTargetsUseCase listenToTargetsUseCase,
@@ -59,7 +55,6 @@ class BudgetCubit extends Cubit<BudgetState> {
         _updateBudgetUseCase = updateBudgetUseCase,
         _deleteBudgetUseCase = deleteBudgetUseCase,
         _fetchBudgetProgressUseCase = fetchBudgetProgressUseCase,
-        _fetchBudgetTransactionsUseCase = fetchBudgetTransactionsUseCase,
         _closeBudgetPeriodUseCase = closeBudgetPeriodUseCase,
         _listenToBudgetsUseCase = listenToBudgetsUseCase,
         _listenToTargetsUseCase = listenToTargetsUseCase,
@@ -238,24 +233,6 @@ class BudgetCubit extends Cubit<BudgetState> {
       (progress) => emit(state.copyWith(
         isProgressLoading: false,
         selectedBudgetProgress: progress,
-        failure: const Failure.none(),
-      )),
-    );
-  }
-
-  Future<void> fetchPeriodTransactions(int serverId, {int limit = 50}) async {
-    emit(state.copyWith(isPeriodTransactionsLoading: true));
-    final result = await _fetchBudgetTransactionsUseCase(
-      FetchBudgetTransactionsParams(id: serverId, limit: limit),
-    );
-    result.fold(
-      (failure) => emit(state.copyWith(
-        isPeriodTransactionsLoading: false,
-        failure: failure,
-      )),
-      (response) => emit(state.copyWith(
-        isPeriodTransactionsLoading: false,
-        selectedBudgetTransactions: response,
         failure: const Failure.none(),
       )),
     );
