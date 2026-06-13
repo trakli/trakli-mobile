@@ -10,7 +10,6 @@ import 'package:trakli/data/datasources/budget/budget_local_datasource.dart';
 import 'package:trakli/data/datasources/budget/budget_remote_datasource.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_complete_dto.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_target_dto.dart';
-import 'package:trakli/data/datasources/budget/dtos/budget_transactions_response.dart';
 import 'package:trakli/data/mappers/budget_mapper.dart';
 import 'package:trakli/data/sync/budget_sync_handler.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
@@ -215,15 +214,6 @@ class BudgetRepositoryImpl
       await localDataSource.updateBudgetProgressByServerId(id, progress);
 
       return progress;
-    });
-  }
-
-  @override
-  Future<Either<Failure, BudgetTransactionsResponse?>> fetchBudgetTransactions(
-      int id,
-      {int limit = 50}) {
-    return RepositoryErrorHandler.handleApiCall(() async {
-      return remoteDataSource.getBudgetTransactions(id, limit: limit);
     });
   }
 

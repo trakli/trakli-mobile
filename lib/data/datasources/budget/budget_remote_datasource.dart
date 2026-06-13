@@ -5,7 +5,6 @@ import 'package:trakli/core/utils/json_defaults.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_complete_dto.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_period_state_dto.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_progress_dto.dart';
-import 'package:trakli/data/datasources/budget/dtos/budget_transactions_response.dart';
 import 'package:trakli/data/datasources/core/api_response.dart';
 import 'package:trakli/data/datasources/core/pagination_response.dart';
 
@@ -20,10 +19,6 @@ abstract class BudgetRemoteDataSource {
   Future<BudgetCompleteDto> updateBudget(BudgetCompleteDto dto);
   Future<void> deleteBudget(int id);
   Future<BudgetProgressDto?> getBudgetProgress(int id);
-  Future<BudgetTransactionsResponse?> getBudgetTransactions(
-    int id, {
-    int limit = 50,
-  });
   Future<BudgetCompleteDto?> closeBudgetPeriod(int id);
   Future<List<BudgetPeriodStateDto>> getAllPeriodStates({
     DateTime? syncedSince,
@@ -120,22 +115,6 @@ class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
     if (response.data == null) return null;
     final apiResponse = ApiResponse.fromJson(response.data);
     return BudgetProgressDto.fromJson(
-      apiResponse.data as Map<String, dynamic>,
-    );
-  }
-
-  @override
-  Future<BudgetTransactionsResponse?> getBudgetTransactions(
-    int id, {
-    int limit = 50,
-  }) async {
-    final response = await dio.get(
-      'budgets/$id/transactions',
-      queryParameters: {'limit': limit},
-    );
-    if (response.data == null) return null;
-    final apiResponse = ApiResponse.fromJson(response.data);
-    return BudgetTransactionsResponse.fromJson(
       apiResponse.data as Map<String, dynamic>,
     );
   }

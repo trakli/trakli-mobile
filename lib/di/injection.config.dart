@@ -149,8 +149,6 @@ import '../domain/usecases/auth/verify_email_usecase.dart' as _i100;
 import '../domain/usecases/budget/close_budget_period_usecase.dart' as _i893;
 import '../domain/usecases/budget/delete_budget_usecase.dart' as _i748;
 import '../domain/usecases/budget/fetch_budget_progress_usecase.dart' as _i598;
-import '../domain/usecases/budget/fetch_budget_transactions_usecase.dart'
-    as _i59;
 import '../domain/usecases/budget/get_all_budgets_usecase.dart' as _i884;
 import '../domain/usecases/budget/get_budget_usecase.dart' as _i102;
 import '../domain/usecases/budget/insert_budget_usecase.dart' as _i363;
@@ -819,8 +817,6 @@ _i174.GetIt $initGetIt(
       () => _i617.UpdateBudgetUseCase(gh<_i340.BudgetRepository>()));
   gh.factory<_i363.InsertBudgetUseCase>(
       () => _i363.InsertBudgetUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i59.FetchBudgetTransactionsUseCase>(
-      () => _i59.FetchBudgetTransactionsUseCase(gh<_i340.BudgetRepository>()));
   gh.factory<_i748.DeleteBudgetUseCase>(
       () => _i748.DeleteBudgetUseCase(gh<_i340.BudgetRepository>()));
   gh.factory<_i598.FetchBudgetProgressUseCase>(
@@ -856,8 +852,6 @@ _i174.GetIt $initGetIt(
         updateBudgetUseCase: gh<_i617.UpdateBudgetUseCase>(),
         deleteBudgetUseCase: gh<_i748.DeleteBudgetUseCase>(),
         fetchBudgetProgressUseCase: gh<_i598.FetchBudgetProgressUseCase>(),
-        fetchBudgetTransactionsUseCase:
-            gh<_i59.FetchBudgetTransactionsUseCase>(),
         closeBudgetPeriodUseCase: gh<_i893.CloseBudgetPeriodUseCase>(),
         listenToBudgetsUseCase: gh<_i377.ListenToBudgetsUseCase>(),
         listenToTargetsUseCase: gh<_i442.ListenToTargetsUseCase>(),

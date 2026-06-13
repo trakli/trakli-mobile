@@ -1,6 +1,5 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:trakli/core/error/failures/failures.dart';
-import 'package:trakli/data/datasources/budget/dtos/budget_transactions_response.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
 import 'package:trakli/domain/entities/budget_period_state_entity.dart';
 import 'package:trakli/domain/entities/budget_progress_entity.dart';
@@ -57,8 +56,5 @@ abstract class BudgetRepository {
       String budgetClientId);
 
   Future<Either<Failure, BudgetProgressEntity?>> fetchBudgetProgress(int id);
-  Future<Either<Failure, BudgetTransactionsResponse?>> fetchBudgetTransactions(
-      int id,
-      {int limit = 50});
   Future<Either<Failure, Unit>> closeBudgetPeriod(int id);
 }
