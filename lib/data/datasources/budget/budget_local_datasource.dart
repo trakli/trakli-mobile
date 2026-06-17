@@ -5,7 +5,6 @@ import 'package:trakli/core/utils/date_util.dart';
 import 'package:trakli/core/utils/id_helper.dart';
 import 'package:trakli/data/services/budget/budget_progress_recomputer.dart';
 import 'package:trakli/data/database/app_database.dart';
-import 'package:trakli/domain/entities/budget_progress_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
 class BudgetTargetInput {
@@ -76,9 +75,6 @@ abstract class BudgetLocalDataSource {
 
   Future<List<ResolvedBudgetTarget>> getResolvedTargetsForBudget(
       String budgetClientId);
-
-  Future<void> updateBudgetProgressByServerId(
-      int id, BudgetProgressEntity progress);
 }
 
 @Injectable(as: BudgetLocalDataSource)
@@ -333,13 +329,6 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
       ));
     }
     return out;
-  }
-
-  @override
-  Future<void> updateBudgetProgressByServerId(
-      int id, BudgetProgressEntity progress) async {
-    await (database.update(database.budgets)..where((b) => b.id.equals(id)))
-        .write(BudgetsCompanion(progress: Value(progress)));
   }
 
   @override

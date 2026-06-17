@@ -14,7 +14,6 @@ import 'package:trakli/data/mappers/budget_mapper.dart';
 import 'package:trakli/data/sync/budget_sync_handler.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
 import 'package:trakli/domain/entities/budget_period_state_entity.dart';
-import 'package:trakli/domain/entities/budget_progress_entity.dart';
 import 'package:trakli/domain/entities/budget_target_entity.dart';
 import 'package:trakli/domain/repositories/budget_repository.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -201,19 +200,6 @@ class BudgetRepositoryImpl
       return Right<Failure, List<BudgetPeriodStateEntity>>(
         rows.map(BudgetMapper.periodStateToDomain).toList(),
       );
-    });
-  }
-
-  @override
-  Future<Either<Failure, BudgetProgressEntity?>> fetchBudgetProgress(int id) {
-    return RepositoryErrorHandler.handleApiCall(() async {
-      final dto = await remoteDataSource.getBudgetProgress(id);
-      if (dto == null) return null;
-      final progress = BudgetMapper.progressFromDto(dto);
-
-      await localDataSource.updateBudgetProgressByServerId(id, progress);
-
-      return progress;
     });
   }
 

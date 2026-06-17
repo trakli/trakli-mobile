@@ -1,6 +1,5 @@
 import 'package:trakli/data/database/app_database.dart' as db;
 import 'package:trakli/data/datasources/budget/dtos/budget_progress_dto.dart';
-import 'package:trakli/data/datasources/budget/dtos/budget_target_dto.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
 import 'package:trakli/domain/entities/budget_period_state_entity.dart';
 import 'package:trakli/domain/entities/budget_progress_entity.dart';
@@ -35,23 +34,6 @@ class BudgetMapper {
       createdAt: budget.createdAt,
       updatedAt: budget.updatedAt,
       lastSyncedAt: budget.lastSyncedAt,
-    );
-  }
-
-  static BudgetTargetEntity targetFromDb(db.BudgetTarget row, {String? name}) {
-    return BudgetTargetEntity(
-      type: row.targetType,
-      clientId: row.targetClientId,
-      name: name,
-    );
-  }
-
-  static BudgetTargetEntity targetFromDto(BudgetTargetDto dto) {
-    return BudgetTargetEntity(
-      type: dto.type,
-      id: dto.id,
-      clientId: dto.clientId,
-      name: dto.name,
     );
   }
 

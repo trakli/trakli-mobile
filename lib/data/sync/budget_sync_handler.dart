@@ -219,9 +219,6 @@ class BudgetSyncHandler
   }
 
   bool _shouldResetTargets(BudgetCompleteDto entity) {
-    // Server payloads always include the canonical target list (possibly empty).
-    // Locally-composed DTOs always populate it from the DB. Either way, the
-    // server-state of targets is authoritative.
     return true;
   }
 }

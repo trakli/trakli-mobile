@@ -11,9 +11,9 @@ import 'package:trakli/presentation/budget/add_budget_screen.dart';
 import 'package:trakli/presentation/budget/cubit/budget_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
-import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/dialogs.dart'
     show showDeleteConfirmationDialog, showConfirmationDialog;
+import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart'
     show showSnackBar, formatDateYmd;
 
@@ -31,10 +31,6 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
     super.initState();
     final cubit = context.read<BudgetCubit>();
     cubit.watchBudget(widget.budget.clientId);
-    final id = widget.budget.id;
-    if (id != null) {
-      cubit.fetchProgress(id);
-    }
   }
 
   BudgetEntity _currentBudget(BudgetState state) {
@@ -52,7 +48,8 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
     final confirm = await showDeleteConfirmationDialog(
       context,
       title: LocaleKeys.deleteBudget.tr(),
-      message: LocaleKeys.deleteBudgetConfirm.tr(namedArgs: {'name': budget.name}),
+      message:
+          LocaleKeys.deleteBudgetConfirm.tr(namedArgs: {'name': budget.name}),
     );
     if (!confirm || !mounted) return;
 
@@ -109,63 +106,49 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
       ),
       body: SafeArea(
         child: BlocListener<BudgetCubit, BudgetState>(
-        listenWhen: (prev, curr) {
-          final deletionCompleted = prev.isDeleting && !curr.isDeleting;
-          final closingCompleted =
-              prev.isClosingPeriod && !curr.isClosingPeriod;
-          return deletionCompleted || closingCompleted;
-        },
-        listener: (context, state) {
-          if (state.isDeleting || state.isClosingPeriod) return;
+          listenWhen: (prev, curr) {
+            final deletionCompleted = prev.isDeleting && !curr.isDeleting;
+            final closingCompleted =
+                prev.isClosingPeriod && !curr.isClosingPeriod;
+            return deletionCompleted || closingCompleted;
+          },
+          listener: (context, state) {
+            if (state.isDeleting || state.isClosingPeriod) return;
 
-          if (state.failure != const Failure.none()) {
-            showSnackBar(
-              message: state.isDeleting
-                  ? LocaleKeys.deleteBudgetError.tr()
-                  : LocaleKeys.closePeriodError.tr(),
-            );
-            return;
-          }
+            if (state.failure != const Failure.none()) {
+              showSnackBar(
+                message: state.isDeleting
+                    ? LocaleKeys.deleteBudgetError.tr()
+                    : LocaleKeys.closePeriodError.tr(),
+              );
+              return;
+            }
 
-          if (_budgetWasDeleted(state)) {
-            showSnackBar(
-              message: LocaleKeys.deleteBudgetSuccess.tr(),
-              isSuccess: true,
-            );
-            AppNavigator.pop(context);
-          } else {
-            showSnackBar(
-              message: LocaleKeys.closePeriodSuccess.tr(),
-              isSuccess: true,
-            );
-          }
-        },
-        child: BlocBuilder<BudgetCubit, BudgetState>(
-          builder: (context, state) {
-            final budget = _currentBudget(state);
-            // Prefer the locally-streamed value (kept fresh by the recomputer
-            // on edits and by the sync handler on server reconciliation).
-            // Fall back to the cubit's selectedBudgetProgress only if the
-            // budget row hasn't been written yet.
-            final progress = budget.progress ?? state.selectedBudgetProgress;
-            final targets = state.selectedBudgetTargets;
-            final periods = state.selectedBudgetPeriodStates;
-            return RefreshIndicator(
-              onRefresh: () {
-                final id = budget.id;
-                if (id != null) {
-                  return context.read<BudgetCubit>().fetchProgress(id);
-                }
-                return Future.value();
-              },
-              child: ListView(
+            if (_budgetWasDeleted(state)) {
+              showSnackBar(
+                message: LocaleKeys.deleteBudgetSuccess.tr(),
+                isSuccess: true,
+              );
+              AppNavigator.pop(context);
+            } else {
+              showSnackBar(
+                message: LocaleKeys.closePeriodSuccess.tr(),
+                isSuccess: true,
+              );
+            }
+          },
+          child: BlocBuilder<BudgetCubit, BudgetState>(
+            builder: (context, state) {
+              final budget = _currentBudget(state);
+              final progress = budget.progress;
+              final targets = state.selectedBudgetTargets;
+              final periods = state.selectedBudgetPeriodStates;
+              return ListView(
                 padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
                 children: [
                   _HeaderCard(budget: budget, progress: progress),
                   SizedBox(height: 14.h),
-                  if (state.isProgressLoading && progress == null)
-                    const Center(child: CircularProgressIndicator())
-                  else if (progress != null)
+                  if (progress != null)
                     _KpiGrid(budget: budget, progress: progress)
                   else if (budget.id == null)
                     _InfoBanner(
@@ -197,10 +180,9 @@ class _BudgetDetailScreenState extends State<BudgetDetailScreen> {
                     ),
                   ],
                 ],
-              ),
-            );
-          },
-        ),
+              );
+            },
+          ),
         ),
       ),
     );

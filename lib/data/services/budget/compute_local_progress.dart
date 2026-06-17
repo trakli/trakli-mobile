@@ -3,7 +3,6 @@ import 'package:trakli/domain/entities/budget_progress_entity.dart';
 import 'package:trakli/domain/entities/exchange_rate_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
-/// A transaction enriched with the category client ids it is tagged with.
 class BudgetTxnInput {
   final TransactionType type;
   final double amount;
@@ -74,7 +73,6 @@ BudgetProgressEntity computeLocalProgress({
           ? null
           : _convert(t.amount, txnCurrency, budget.currency, exchangeRate);
       if (converted == null) {
-        // No usable rate — exclude until one is cached (see attachFxSelfHeal).
         continue;
       }
       grossSpent += converted;
@@ -119,7 +117,6 @@ BudgetProgressEntity computeLocalProgress({
     effectiveLimit: effectiveLimit,
     remaining: remaining,
     percentUsed: percentUsed,
-    // Projection/forecast are server-only signals; default locally.
     projectedSpend: netSpent,
     status: status,
     isThresholdCrossed: isThresholdCrossed,
@@ -127,9 +124,7 @@ BudgetProgressEntity computeLocalProgress({
   );
 }
 
-/// Converts [amount] from [from] to [to] via the base-relative snapshot
-/// (`amount / rate(from) * rate(to)`). Returns `null` when a rate is missing
-/// or the source rate is zero, so the caller can exclude the transaction.
+// FX conversion via base-relative snapshot: amount / rate(from) * rate(to).
 double? _convert(double amount, String from, String to, ExchangeRateEntity fx) {
   if (from == to) return amount;
   final rateFrom = from == fx.baseCode ? 1.0 : fx.rates[from];
@@ -152,7 +147,6 @@ BudgetStatus _deriveStatus({
 }
 
 (DateTime, DateTime) _periodWindow(Budget budget, DateTime now) {
-  // Clamp the reference to start_date so pre-start dates still yield a window.
   final ref = now.isBefore(budget.startDate) ? budget.startDate : now;
 
   switch (budget.periodType) {
