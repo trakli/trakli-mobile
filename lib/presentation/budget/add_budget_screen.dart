@@ -713,10 +713,6 @@ class _TargetTile<T> extends StatelessWidget {
   }
 }
 
-/// Tap-to-open currency picker bound to a `TextEditingController` so the
-/// existing `_submit()` flow (which reads `_currency.text`) keeps working
-/// unchanged. Restricted to the user's wallet currencies plus the app default
-/// (and the current value) so a usable exchange rate exists for conversion.
 class _CurrencyPickerField extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onChanged;

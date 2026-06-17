@@ -8,8 +8,7 @@ import 'package:trakli/domain/entities/exchange_rate_entity.dart';
 import 'package:trakli/domain/repositories/exchange_rate_repository.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
-/// Computes and persists local budget progress, writing the result to the
-/// `budgets.progress` column. Server reconciliation later overwrites it.
+// Server reconciliation later overwrites the persisted progress.
 @lazySingleton
 class BudgetProgressRecomputer {
   BudgetProgressRecomputer(this._db, this._exchangeRateRepository);
@@ -19,9 +18,7 @@ class BudgetProgressRecomputer {
 
   StreamSubscription<ExchangeRateEntity>? _fxSub;
 
-  /// Recomputes all budgets whenever a fresh rate is cached, re-folding
-  /// foreign-currency transactions that an earlier offline recompute excluded.
-  /// Call once at app boot; idempotent.
+  // FX self-heal: re-fold foreign-currency txns excluded while offline once a rate is cached.
   void attachFxSelfHeal() {
     if (_fxSub != null) return;
     _fxSub = _exchangeRateRepository.onExchangeRateUpdated.listen((_) {
@@ -29,13 +26,11 @@ class BudgetProgressRecomputer {
     });
   }
 
-  /// Cancels the self-heal subscription (mainly for tests).
   Future<void> dispose() async {
     await _fxSub?.cancel();
     _fxSub = null;
   }
 
-  /// Recompute progress for a single budget by its client id.
   Future<void> recomputeFor(String budgetClientId) async {
     final budget = await (_db.select(_db.budgets)
           ..where((b) => b.clientId.equals(budgetClientId)))
@@ -44,8 +39,6 @@ class BudgetProgressRecomputer {
     await _recomputeAndWrite(budget);
   }
 
-  /// Recompute every active budget affected by the given transaction (empty
-  /// targets = catch-all, else a target must match its wallet/group/category).
   Future<void> recomputeAffectedBy({
     required String walletClientId,
     String? groupClientId,
@@ -74,7 +67,6 @@ class BudgetProgressRecomputer {
     }
   }
 
-  /// Recompute progress for every active budget.
   Future<void> recomputeAll() async {
     final activeBudgets = await (_db.select(_db.budgets)
           ..where((b) => b.isActive.equals(true)))
@@ -90,8 +82,6 @@ class BudgetProgressRecomputer {
   }) async {
     final ts = targets ?? await _targetsFor(budget.clientId);
     final txns = await _txnInputs();
-    // Cache-only, offline-safe read; when absent, foreign-currency txns are
-    // excluded until a rate is cached (see attachFxSelfHeal).
     final exchangeRate = await _exchangeRateRepository.getCachedExchangeRate();
     final progress = computeLocalProgress(
       budget: budget,
@@ -112,7 +102,6 @@ class BudgetProgressRecomputer {
         .get();
   }
 
-  /// Joins transactions with their category client ids and wallet currency.
   Future<List<BudgetTxnInput>> _txnInputs() async {
     final txns = await _db.select(_db.transactions).get();
     if (txns.isEmpty) return const [];
@@ -128,7 +117,6 @@ class BudgetProgressRecomputer {
           .add(row.categoryClientId);
     }
 
-    // One-shot wallet → currency lookup so the per-txn cost stays O(1).
     final wallets = await _db.select(_db.wallets).get();
     final currencyByWallet = {
       for (final w in wallets) w.clientId: w.currency,

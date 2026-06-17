@@ -2,7 +2,6 @@ import 'package:fpdart/fpdart.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/domain/entities/budget_entity.dart';
 import 'package:trakli/domain/entities/budget_period_state_entity.dart';
-import 'package:trakli/domain/entities/budget_progress_entity.dart';
 import 'package:trakli/domain/entities/budget_target_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
@@ -55,6 +54,5 @@ abstract class BudgetRepository {
   Stream<Either<Failure, List<BudgetPeriodStateEntity>>> listenToPeriodStates(
       String budgetClientId);
 
-  Future<Either<Failure, BudgetProgressEntity?>> fetchBudgetProgress(int id);
   Future<Either<Failure, Unit>> closeBudgetPeriod(int id);
 }

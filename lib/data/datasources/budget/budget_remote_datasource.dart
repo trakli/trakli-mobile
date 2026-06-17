@@ -4,7 +4,6 @@ import 'package:trakli/core/utils/date_util.dart';
 import 'package:trakli/core/utils/json_defaults.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_complete_dto.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_period_state_dto.dart';
-import 'package:trakli/data/datasources/budget/dtos/budget_progress_dto.dart';
 import 'package:trakli/data/datasources/core/api_response.dart';
 import 'package:trakli/data/datasources/core/pagination_response.dart';
 
@@ -18,7 +17,6 @@ abstract class BudgetRemoteDataSource {
   Future<BudgetCompleteDto> insertBudget(BudgetCompleteDto dto);
   Future<BudgetCompleteDto> updateBudget(BudgetCompleteDto dto);
   Future<void> deleteBudget(int id);
-  Future<BudgetProgressDto?> getBudgetProgress(int id);
   Future<BudgetCompleteDto?> closeBudgetPeriod(int id);
   Future<List<BudgetPeriodStateDto>> getAllPeriodStates({
     DateTime? syncedSince,
@@ -43,10 +41,10 @@ class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
 
     while (true) {
       final queryParams = <String, dynamic>{'page': currentPage};
-      if (syncedSince != null) {
-        queryParams['synced_since'] =
-            formatServerIsoDateTimeString(syncedSince);
-      }
+      // if (syncedSince != null) {
+      //   queryParams['synced_since'] =
+      //       formatServerIsoDateTimeString(syncedSince);
+      // }
       if (noClientId != null) {
         queryParams['no_client_id'] = noClientId;
       }
@@ -107,16 +105,6 @@ class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
   @override
   Future<void> deleteBudget(int id) async {
     await dio.delete('budgets/$id');
-  }
-
-  @override
-  Future<BudgetProgressDto?> getBudgetProgress(int id) async {
-    final response = await dio.get('budgets/$id/progress');
-    if (response.data == null) return null;
-    final apiResponse = ApiResponse.fromJson(response.data);
-    return BudgetProgressDto.fromJson(
-      apiResponse.data as Map<String, dynamic>,
-    );
   }
 
   @override

@@ -32,8 +32,10 @@ class ErrorHandler {
     }
 
     if (err.type == DioExceptionType.unknown) {
+      _recordApiError(err);
       return UnknownException('Unknown error');
     }
+
     final statusCode = err.response?.statusCode;
     final responseDataForMessage = err.response?.data;
     final message = responseDataForMessage is Map
