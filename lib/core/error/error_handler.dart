@@ -53,6 +53,9 @@ class ErrorHandler {
         return ForbiddenException(message, statusCode: statusCode, data: data);
       case 404:
         return NotFoundException(message, statusCode: statusCode, data: data);
+      case 413:
+        return FileTooLargeException(message,
+            statusCode: statusCode, data: data);
       case 422:
         final errors = _extractValidationErrors(data);
         return ValidationException(message, errors: errors);

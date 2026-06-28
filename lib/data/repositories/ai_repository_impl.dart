@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/failures/failures.dart';
@@ -30,12 +32,14 @@ class AiRepositoryImpl implements AiRepository {
     required String message,
     String? formatHint,
     String? title,
+    bool deferProcessing = false,
   }) {
     return RepositoryErrorHandler.handleApiCall(
       () => remote.createSession(
         message: message,
         formatHint: formatHint,
         title: title,
+        deferProcessing: deferProcessing,
       ),
     );
   }
@@ -45,20 +49,67 @@ class AiRepositoryImpl implements AiRepository {
     required int sessionId,
     required String message,
     String? formatHint,
+    bool deferProcessing = false,
   }) {
     return RepositoryErrorHandler.handleApiCall(
       () => remote.addMessage(
         sessionId: sessionId,
         message: message,
         formatHint: formatHint,
+        deferProcessing: deferProcessing,
       ),
     );
+  }
+
+  @override
+  Future<Either<Failure, Unit>> uploadFiles({
+    required int sessionId,
+    required int messageId,
+    required List<File> files,
+    String? documentType,
+  }) {
+    return RepositoryErrorHandler.handleApiCall(() async {
+      await remote.uploadFiles(
+        sessionId: sessionId,
+        messageId: messageId,
+        files: files,
+        documentType: documentType,
+      );
+      return unit;
+    });
   }
 
   @override
   Future<Either<Failure, Unit>> deleteSession(int id) {
     return RepositoryErrorHandler.handleApiCall(() async {
       await remote.deleteSession(id);
+      return unit;
+    });
+  }
+
+  @override
+  Future<Either<Failure, Unit>> confirmAction({
+    required int sessionId,
+    required int actionId,
+    Map<String, dynamic>? overrides,
+  }) {
+    return RepositoryErrorHandler.handleApiCall(() async {
+      await remote.confirmAction(
+        sessionId: sessionId,
+        actionId: actionId,
+        overrides: overrides,
+      );
+      return unit;
+    });
+  }
+
+  @override
+  Future<Either<Failure, Unit>> rejectAction({
+    required int sessionId,
+    required int actionId,
+  }) {
+    return RepositoryErrorHandler.handleApiCall(() async {
+      await remote.rejectAction(sessionId: sessionId, actionId: actionId);
       return unit;
     });
   }

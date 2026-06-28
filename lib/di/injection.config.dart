@@ -123,11 +123,14 @@ import '../domain/repositories/transaction_repository.dart' as _i118;
 import '../domain/repositories/transfer_repository.dart' as _i55;
 import '../domain/repositories/wallet_repository.dart' as _i368;
 import '../domain/usecases/ai/check_health_usecase.dart' as _i605;
+import '../domain/usecases/ai/confirm_action_usecase.dart' as _i82;
 import '../domain/usecases/ai/create_session_usecase.dart' as _i995;
 import '../domain/usecases/ai/delete_session_usecase.dart' as _i236;
 import '../domain/usecases/ai/get_session_usecase.dart' as _i752;
 import '../domain/usecases/ai/list_sessions_usecase.dart' as _i505;
+import '../domain/usecases/ai/reject_action_usecase.dart' as _i391;
 import '../domain/usecases/ai/send_message_usecase.dart' as _i308;
+import '../domain/usecases/ai/upload_files_usecase.dart' as _i633;
 import '../domain/usecases/app_update/check_app_update_usecase.dart' as _i150;
 import '../domain/usecases/auth/delete_account_usecase.dart' as _i684;
 import '../domain/usecases/auth/get_loggedin_user.dart' as _i880;
@@ -490,15 +493,15 @@ _i174.GetIt $initGetIt(
       () => _i444.StreamAuthStatus(gh<_i800.AuthRepository>()));
   gh.factory<_i828.IsOnboardingCompleted>(
       () => _i828.IsOnboardingCompleted(gh<_i800.AuthRepository>()));
-  gh.lazySingleton<_i918.BudgetSyncHandler>(() => _i918.BudgetSyncHandler(
-        gh<_i704.AppDatabase>(),
-        gh<_i760.BudgetRemoteDataSource>(),
-      ));
   gh.lazySingleton<_i161.BudgetPeriodStateSyncHandler>(
       () => _i161.BudgetPeriodStateSyncHandler(
             gh<_i704.AppDatabase>(),
             gh<_i760.BudgetRemoteDataSource>(),
           ));
+  gh.lazySingleton<_i918.BudgetSyncHandler>(() => _i918.BudgetSyncHandler(
+        gh<_i704.AppDatabase>(),
+        gh<_i760.BudgetRemoteDataSource>(),
+      ));
   gh.factory<_i929.GetImportSessionsUseCase>(
       () => _i929.GetImportSessionsUseCase(gh<_i32.ImportRepository>()));
   gh.factory<_i36.ConfirmSessionUseCase>(
@@ -517,6 +520,10 @@ _i174.GetIt $initGetIt(
       () => _i12.GetPartiesUseCase(gh<_i661.PartyRepository>()));
   gh.factory<_i714.ListenToPartiesUseCase>(
       () => _i714.ListenToPartiesUseCase(gh<_i661.PartyRepository>()));
+  gh.factory<_i82.ConfirmActionUseCase>(
+      () => _i82.ConfirmActionUseCase(gh<_i542.AiRepository>()));
+  gh.factory<_i633.UploadFilesUseCase>(
+      () => _i633.UploadFilesUseCase(gh<_i542.AiRepository>()));
   gh.factory<_i995.CreateSessionUseCase>(
       () => _i995.CreateSessionUseCase(gh<_i542.AiRepository>()));
   gh.factory<_i236.DeleteSessionUseCase>(
@@ -527,6 +534,8 @@ _i174.GetIt $initGetIt(
       () => _i308.SendMessageUseCase(gh<_i542.AiRepository>()));
   gh.factory<_i605.CheckHealthUseCase>(
       () => _i605.CheckHealthUseCase(gh<_i542.AiRepository>()));
+  gh.factory<_i391.RejectActionUseCase>(
+      () => _i391.RejectActionUseCase(gh<_i542.AiRepository>()));
   gh.factory<_i505.ListSessionsUseCase>(
       () => _i505.ListSessionsUseCase(gh<_i542.AiRepository>()));
   gh.factory<_i559.AppUpdateCubit>(
@@ -555,13 +564,6 @@ _i174.GetIt $initGetIt(
         localDataSource: gh<_i849.WalletLocalDataSource>(),
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
-      ));
-  gh.factory<_i415.AiChatCubit>(() => _i415.AiChatCubit(
-        listSessionsUseCase: gh<_i505.ListSessionsUseCase>(),
-        getSessionUseCase: gh<_i752.GetSessionUseCase>(),
-        createSessionUseCase: gh<_i995.CreateSessionUseCase>(),
-        sendMessageUseCase: gh<_i308.SendMessageUseCase>(),
-        deleteSessionUseCase: gh<_i236.DeleteSessionUseCase>(),
       ));
   gh.factory<_i422.GetNotificationsUseCase>(
       () => _i422.GetNotificationsUseCase(gh<_i965.NotificationRepository>()));
@@ -611,6 +613,16 @@ _i174.GetIt $initGetIt(
       _i225.EnsureDefaultWalletExistsUseCase(gh<_i368.WalletRepository>()));
   gh.factory<_i82.ListenToWalletsUseCase>(
       () => _i82.ListenToWalletsUseCase(gh<_i368.WalletRepository>()));
+  gh.lazySingleton<_i415.AiChatCubit>(() => _i415.AiChatCubit(
+        listSessionsUseCase: gh<_i505.ListSessionsUseCase>(),
+        getSessionUseCase: gh<_i752.GetSessionUseCase>(),
+        createSessionUseCase: gh<_i995.CreateSessionUseCase>(),
+        sendMessageUseCase: gh<_i308.SendMessageUseCase>(),
+        deleteSessionUseCase: gh<_i236.DeleteSessionUseCase>(),
+        confirmActionUseCase: gh<_i82.ConfirmActionUseCase>(),
+        rejectActionUseCase: gh<_i391.RejectActionUseCase>(),
+        uploadFilesUseCase: gh<_i633.UploadFilesUseCase>(),
+      ));
   gh.factory<_i524.LoginWithEmailUseCase>(
       () => _i524.LoginWithEmailUseCase(gh<_i800.AuthRepository>()));
   gh.factory<_i705.RegisterUseCase>(
@@ -804,6 +816,8 @@ _i174.GetIt $initGetIt(
         listenToTransactionsUseCase: gh<_i1022.ListenToTransactionsUseCase>(),
         getWalletsUseCase: gh<_i713.GetWalletsUseCase>(),
       ));
+  gh.factory<_i920.ListenToPeriodStatesUseCase>(
+      () => _i920.ListenToPeriodStatesUseCase(gh<_i340.BudgetRepository>()));
   gh.factory<_i102.GetBudgetUseCase>(
       () => _i102.GetBudgetUseCase(gh<_i340.BudgetRepository>()));
   gh.factory<_i377.ListenToBudgetsUseCase>(
@@ -820,8 +834,6 @@ _i174.GetIt $initGetIt(
       () => _i748.DeleteBudgetUseCase(gh<_i340.BudgetRepository>()));
   gh.factory<_i884.GetAllBudgetsUseCase>(
       () => _i884.GetAllBudgetsUseCase(gh<_i340.BudgetRepository>()));
-  gh.factory<_i920.ListenToPeriodStatesUseCase>(
-      () => _i920.ListenToPeriodStatesUseCase(gh<_i340.BudgetRepository>()));
   gh.lazySingleton<_i646.SynchAppDatabase>(() => _i646.SynchAppDatabase(
         appDatabase: gh<_i704.AppDatabase>(),
         typeHandlers:

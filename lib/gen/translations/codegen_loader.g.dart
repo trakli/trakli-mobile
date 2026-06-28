@@ -138,6 +138,7 @@ abstract class  LocaleKeys {
   static const noError = 'noError';
   static const internetConnectionDesc = 'internetConnectionDesc';
   static const notFoundDesc = 'notFoundDesc';
+  static const fileTooLargeDesc = 'fileTooLargeDesc';
   static const serverErrorDesc = 'serverErrorDesc';
   static const cacheErrorDesc = 'cacheErrorDesc';
   static const syncErrorDesc = 'syncErrorDesc';
@@ -736,5 +737,34 @@ abstract class  LocaleKeys {
   static const supportEmailCopied = 'supportEmailCopied';
   static const defaultUserName = 'defaultUserName';
   static const appTitle = 'appTitle';
+  static const aiGreetingMorning = 'aiGreetingMorning';
+  static const aiGreetingAfternoon = 'aiGreetingAfternoon';
+  static const aiGreetingEvening = 'aiGreetingEvening';
+  static const aiStatNetFlow = 'aiStatNetFlow';
+  static const aiStatSaved = 'aiStatSaved';
+  static const aiLandingNoData = 'aiLandingNoData';
+  static const aiSuggestSpendMonth = 'aiSuggestSpendMonth';
+  static const aiSuggestTopCategory = 'aiSuggestTopCategory';
+  static const aiSuggestIncomeVsExpense = 'aiSuggestIncomeVsExpense';
+  static const aiSuggestBalance = 'aiSuggestBalance';
+  static const aiContinueSession = 'aiContinueSession';
+  static const aiStartNewSession = 'aiStartNewSession';
+  static const aiStatTransactions = 'aiStatTransactions';
+  static const aiStatAvgExpense = 'aiStatAvgExpense';
+  static const aiSpotlightSaved = 'aiSpotlightSaved';
+  static const aiSpotlightSpent = 'aiSpotlightSpent';
+  static const aiSpotlightNetPositive = 'aiSpotlightNetPositive';
+  static const aiSpotlightNetNegative = 'aiSpotlightNetNegative';
+  static const aiSpotlightTransactions = 'aiSpotlightTransactions';
+  static const aiSpotlightAvgExpense = 'aiSpotlightAvgExpense';
+  static const aiServiceUnavailable = 'aiServiceUnavailable';
+  static const none = 'none';
+  static const dismissed = 'dismissed';
+  static const aiReviewImport = 'aiReviewImport';
+  static const aiOpenCanvas = 'aiOpenCanvas';
+  static const aiImportStatusAnalyzing = 'aiImportStatusAnalyzing';
+  static const aiImportStatusReady = 'aiImportStatusReady';
+  static const aiImportStatusConfirmed = 'aiImportStatusConfirmed';
+  static const aiImportStatusFailed = 'aiImportStatusFailed';
 
 }

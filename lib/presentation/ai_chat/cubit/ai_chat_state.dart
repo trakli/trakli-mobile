@@ -7,6 +7,7 @@ class AiChatState with _$AiChatState {
     @Default(false) bool isSending,
     @Default(false) bool isPolling,
     ChatSessionDto? session,
+    ChatSessionDto? recentSession,
     @Default(<ChatMessageDto>[]) List<ChatMessageDto> messages,
     Failure? failure,
   }) = _AiChatState;

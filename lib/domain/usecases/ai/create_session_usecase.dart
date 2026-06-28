@@ -9,11 +9,13 @@ class CreateSessionParams {
   final String message;
   final String? formatHint;
   final String? title;
+  final bool deferProcessing;
 
   const CreateSessionParams({
     required this.message,
     this.formatHint,
     this.title,
+    this.deferProcessing = false,
   });
 }
 
@@ -31,6 +33,7 @@ class CreateSessionUseCase
       message: params.message,
       formatHint: params.formatHint,
       title: params.title,
+      deferProcessing: params.deferProcessing,
     );
   }
 }

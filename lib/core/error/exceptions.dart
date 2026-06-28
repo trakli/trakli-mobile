@@ -62,6 +62,11 @@ class ValidationException extends ApiException {
       : super(statusCode: 422);
 }
 
+class FileTooLargeException extends ApiException {
+  FileTooLargeException(super.message, {int? statusCode, super.data})
+      : super(statusCode: statusCode ?? 413);
+}
+
 class DuplicateException extends ApiException {
   DuplicateException(super.message, {int? statusCode, super.data})
       : super(statusCode: statusCode ?? 409);

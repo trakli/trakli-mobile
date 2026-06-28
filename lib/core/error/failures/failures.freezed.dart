@@ -24,6 +24,7 @@ mixin _$Failure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -41,6 +42,7 @@ mixin _$Failure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -57,6 +59,7 @@ mixin _$Failure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -74,6 +77,7 @@ mixin _$Failure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -90,6 +94,7 @@ mixin _$Failure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -106,6 +111,7 @@ mixin _$Failure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -212,6 +218,7 @@ class _$ServerFailureImpl extends ServerFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -232,6 +239,7 @@ class _$ServerFailureImpl extends ServerFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -251,6 +259,7 @@ class _$ServerFailureImpl extends ServerFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -274,6 +283,7 @@ class _$ServerFailureImpl extends ServerFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -293,6 +303,7 @@ class _$ServerFailureImpl extends ServerFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -312,6 +323,7 @@ class _$ServerFailureImpl extends ServerFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -388,6 +400,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -408,6 +421,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -427,6 +441,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -450,6 +465,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -469,6 +485,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -488,6 +505,7 @@ class _$NetworkFailureImpl extends NetworkFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -583,6 +601,7 @@ class _$CacheFailureImpl extends CacheFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -603,6 +622,7 @@ class _$CacheFailureImpl extends CacheFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -622,6 +642,7 @@ class _$CacheFailureImpl extends CacheFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -645,6 +666,7 @@ class _$CacheFailureImpl extends CacheFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -664,6 +686,7 @@ class _$CacheFailureImpl extends CacheFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -683,6 +706,7 @@ class _$CacheFailureImpl extends CacheFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -786,6 +810,7 @@ class _$SyncFailureImpl extends SyncFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -806,6 +831,7 @@ class _$SyncFailureImpl extends SyncFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -825,6 +851,7 @@ class _$SyncFailureImpl extends SyncFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -848,6 +875,7 @@ class _$SyncFailureImpl extends SyncFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -867,6 +895,7 @@ class _$SyncFailureImpl extends SyncFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -886,6 +915,7 @@ class _$SyncFailureImpl extends SyncFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -1007,6 +1037,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -1027,6 +1058,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1046,6 +1078,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1069,6 +1102,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -1088,6 +1122,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -1107,6 +1142,7 @@ class _$ValidationFailureImpl extends ValidationFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -1136,6 +1172,181 @@ abstract class ValidationFailure extends Failure {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ValidationFailureImplCopyWith<_$ValidationFailureImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$FileTooLargeFailureImplCopyWith<$Res> {
+  factory _$$FileTooLargeFailureImplCopyWith(_$FileTooLargeFailureImpl value,
+          $Res Function(_$FileTooLargeFailureImpl) then) =
+      __$$FileTooLargeFailureImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$FileTooLargeFailureImplCopyWithImpl<$Res>
+    extends _$FailureCopyWithImpl<$Res, _$FileTooLargeFailureImpl>
+    implements _$$FileTooLargeFailureImplCopyWith<$Res> {
+  __$$FileTooLargeFailureImplCopyWithImpl(_$FileTooLargeFailureImpl _value,
+      $Res Function(_$FileTooLargeFailureImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of Failure
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$FileTooLargeFailureImpl extends FileTooLargeFailure {
+  const _$FileTooLargeFailureImpl() : super._();
+
+  @override
+  String toString() {
+    return 'Failure.fileTooLarge()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FileTooLargeFailureImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) serverError,
+    required TResult Function() networkError,
+    required TResult Function(String message) cacheError,
+    required TResult Function(String message) syncError,
+    required TResult Function(String message, List<FieldError> errors)
+        validationError,
+    required TResult Function() fileTooLarge,
+    required TResult Function() unauthorizedError,
+    required TResult Function() unknownError,
+    required TResult Function(List<FieldError>? errors, String? error)
+        badRequest,
+    required TResult Function() none,
+    required TResult Function() notFound,
+    required TResult Function(String message) duplicate,
+    required TResult Function() cancel,
+  }) {
+    return fileTooLarge();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? serverError,
+    TResult? Function()? networkError,
+    TResult? Function(String message)? cacheError,
+    TResult? Function(String message)? syncError,
+    TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
+    TResult? Function()? unauthorizedError,
+    TResult? Function()? unknownError,
+    TResult? Function(List<FieldError>? errors, String? error)? badRequest,
+    TResult? Function()? none,
+    TResult? Function()? notFound,
+    TResult? Function(String message)? duplicate,
+    TResult? Function()? cancel,
+  }) {
+    return fileTooLarge?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? serverError,
+    TResult Function()? networkError,
+    TResult Function(String message)? cacheError,
+    TResult Function(String message)? syncError,
+    TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
+    TResult Function()? unauthorizedError,
+    TResult Function()? unknownError,
+    TResult Function(List<FieldError>? errors, String? error)? badRequest,
+    TResult Function()? none,
+    TResult Function()? notFound,
+    TResult Function(String message)? duplicate,
+    TResult Function()? cancel,
+    required TResult orElse(),
+  }) {
+    if (fileTooLarge != null) {
+      return fileTooLarge();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ServerFailure value) serverError,
+    required TResult Function(NetworkFailure value) networkError,
+    required TResult Function(CacheFailure value) cacheError,
+    required TResult Function(SyncFailure value) syncError,
+    required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
+    required TResult Function(UnauthorizedFailure value) unauthorizedError,
+    required TResult Function(UnknownFailure value) unknownError,
+    required TResult Function(_BadRequest value) badRequest,
+    required TResult Function(NoneFailure value) none,
+    required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(DuplicateFailure value) duplicate,
+    required TResult Function(CancelFailure value) cancel,
+  }) {
+    return fileTooLarge(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ServerFailure value)? serverError,
+    TResult? Function(NetworkFailure value)? networkError,
+    TResult? Function(CacheFailure value)? cacheError,
+    TResult? Function(SyncFailure value)? syncError,
+    TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
+    TResult? Function(UnauthorizedFailure value)? unauthorizedError,
+    TResult? Function(UnknownFailure value)? unknownError,
+    TResult? Function(_BadRequest value)? badRequest,
+    TResult? Function(NoneFailure value)? none,
+    TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(DuplicateFailure value)? duplicate,
+    TResult? Function(CancelFailure value)? cancel,
+  }) {
+    return fileTooLarge?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ServerFailure value)? serverError,
+    TResult Function(NetworkFailure value)? networkError,
+    TResult Function(CacheFailure value)? cacheError,
+    TResult Function(SyncFailure value)? syncError,
+    TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
+    TResult Function(UnauthorizedFailure value)? unauthorizedError,
+    TResult Function(UnknownFailure value)? unknownError,
+    TResult Function(_BadRequest value)? badRequest,
+    TResult Function(NoneFailure value)? none,
+    TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(DuplicateFailure value)? duplicate,
+    TResult Function(CancelFailure value)? cancel,
+    required TResult orElse(),
+  }) {
+    if (fileTooLarge != null) {
+      return fileTooLarge(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FileTooLargeFailure extends Failure {
+  const factory FileTooLargeFailure() = _$FileTooLargeFailureImpl;
+  const FileTooLargeFailure._() : super._();
 }
 
 /// @nodoc
@@ -1186,6 +1397,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -1206,6 +1418,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1225,6 +1438,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1248,6 +1462,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -1267,6 +1482,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -1286,6 +1502,7 @@ class _$UnauthorizedFailureImpl extends UnauthorizedFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -1354,6 +1571,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -1374,6 +1592,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1393,6 +1612,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1416,6 +1636,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -1435,6 +1656,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -1454,6 +1676,7 @@ class _$UnknownFailureImpl extends UnknownFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -1568,6 +1791,7 @@ class _$BadRequestImpl extends _BadRequest {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -1588,6 +1812,7 @@ class _$BadRequestImpl extends _BadRequest {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1607,6 +1832,7 @@ class _$BadRequestImpl extends _BadRequest {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1630,6 +1856,7 @@ class _$BadRequestImpl extends _BadRequest {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -1649,6 +1876,7 @@ class _$BadRequestImpl extends _BadRequest {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -1668,6 +1896,7 @@ class _$BadRequestImpl extends _BadRequest {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -1746,6 +1975,7 @@ class _$NoneFailureImpl extends NoneFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -1766,6 +1996,7 @@ class _$NoneFailureImpl extends NoneFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1785,6 +2016,7 @@ class _$NoneFailureImpl extends NoneFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1808,6 +2040,7 @@ class _$NoneFailureImpl extends NoneFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -1827,6 +2060,7 @@ class _$NoneFailureImpl extends NoneFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -1846,6 +2080,7 @@ class _$NoneFailureImpl extends NoneFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -1914,6 +2149,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -1934,6 +2170,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1953,6 +2190,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -1976,6 +2214,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -1995,6 +2234,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -2014,6 +2254,7 @@ class _$NotFoundFailureImpl extends NotFoundFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -2110,6 +2351,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -2130,6 +2372,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -2149,6 +2392,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -2172,6 +2416,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -2191,6 +2436,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -2210,6 +2456,7 @@ class _$DuplicateFailureImpl extends DuplicateFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,
@@ -2286,6 +2533,7 @@ class _$CancelFailureImpl extends CancelFailure {
     required TResult Function(String message) syncError,
     required TResult Function(String message, List<FieldError> errors)
         validationError,
+    required TResult Function() fileTooLarge,
     required TResult Function() unauthorizedError,
     required TResult Function() unknownError,
     required TResult Function(List<FieldError>? errors, String? error)
@@ -2306,6 +2554,7 @@ class _$CancelFailureImpl extends CancelFailure {
     TResult? Function(String message)? cacheError,
     TResult? Function(String message)? syncError,
     TResult? Function(String message, List<FieldError> errors)? validationError,
+    TResult? Function()? fileTooLarge,
     TResult? Function()? unauthorizedError,
     TResult? Function()? unknownError,
     TResult? Function(List<FieldError>? errors, String? error)? badRequest,
@@ -2325,6 +2574,7 @@ class _$CancelFailureImpl extends CancelFailure {
     TResult Function(String message)? cacheError,
     TResult Function(String message)? syncError,
     TResult Function(String message, List<FieldError> errors)? validationError,
+    TResult Function()? fileTooLarge,
     TResult Function()? unauthorizedError,
     TResult Function()? unknownError,
     TResult Function(List<FieldError>? errors, String? error)? badRequest,
@@ -2348,6 +2598,7 @@ class _$CancelFailureImpl extends CancelFailure {
     required TResult Function(CacheFailure value) cacheError,
     required TResult Function(SyncFailure value) syncError,
     required TResult Function(ValidationFailure value) validationError,
+    required TResult Function(FileTooLargeFailure value) fileTooLarge,
     required TResult Function(UnauthorizedFailure value) unauthorizedError,
     required TResult Function(UnknownFailure value) unknownError,
     required TResult Function(_BadRequest value) badRequest,
@@ -2367,6 +2618,7 @@ class _$CancelFailureImpl extends CancelFailure {
     TResult? Function(CacheFailure value)? cacheError,
     TResult? Function(SyncFailure value)? syncError,
     TResult? Function(ValidationFailure value)? validationError,
+    TResult? Function(FileTooLargeFailure value)? fileTooLarge,
     TResult? Function(UnauthorizedFailure value)? unauthorizedError,
     TResult? Function(UnknownFailure value)? unknownError,
     TResult? Function(_BadRequest value)? badRequest,
@@ -2386,6 +2638,7 @@ class _$CancelFailureImpl extends CancelFailure {
     TResult Function(CacheFailure value)? cacheError,
     TResult Function(SyncFailure value)? syncError,
     TResult Function(ValidationFailure value)? validationError,
+    TResult Function(FileTooLargeFailure value)? fileTooLarge,
     TResult Function(UnauthorizedFailure value)? unauthorizedError,
     TResult Function(UnknownFailure value)? unknownError,
     TResult Function(_BadRequest value)? badRequest,

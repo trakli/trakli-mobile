@@ -8,6 +8,10 @@ import 'package:path_provider/path_provider.dart';
 class ImportFilePicker {
   ImportFilePicker._();
 
+  /// Downscale and recompress images so they stay under the upload size limit.
+  static const double _maxImageDimension = 2000;
+  static const int _imageQuality = 85;
+
   static Future<File?> pickSpreadsheet() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -31,13 +35,23 @@ class ImportFilePicker {
   }
 
   static Future<File?> captureFromCamera() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.camera);
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxWidth: _maxImageDimension,
+      maxHeight: _maxImageDimension,
+      imageQuality: _imageQuality,
+    );
     if (picked == null) return null;
     return _stableCopy(File(picked.path));
   }
 
   static Future<File?> pickFromGallery() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: _maxImageDimension,
+      maxHeight: _maxImageDimension,
+      imageQuality: _imageQuality,
+    );
     if (picked == null) return null;
     return _stableCopy(File(picked.path));
   }
