@@ -20,6 +20,7 @@ mixin _$AiChatState {
   bool get isSending => throw _privateConstructorUsedError;
   bool get isPolling => throw _privateConstructorUsedError;
   ChatSessionDto? get session => throw _privateConstructorUsedError;
+  ChatSessionDto? get recentSession => throw _privateConstructorUsedError;
   List<ChatMessageDto> get messages => throw _privateConstructorUsedError;
   Failure? get failure => throw _privateConstructorUsedError;
 
@@ -41,10 +42,12 @@ abstract class $AiChatStateCopyWith<$Res> {
       bool isSending,
       bool isPolling,
       ChatSessionDto? session,
+      ChatSessionDto? recentSession,
       List<ChatMessageDto> messages,
       Failure? failure});
 
   $ChatSessionDtoCopyWith<$Res>? get session;
+  $ChatSessionDtoCopyWith<$Res>? get recentSession;
   $FailureCopyWith<$Res>? get failure;
 }
 
@@ -67,6 +70,7 @@ class _$AiChatStateCopyWithImpl<$Res, $Val extends AiChatState>
     Object? isSending = null,
     Object? isPolling = null,
     Object? session = freezed,
+    Object? recentSession = freezed,
     Object? messages = null,
     Object? failure = freezed,
   }) {
@@ -86,6 +90,10 @@ class _$AiChatStateCopyWithImpl<$Res, $Val extends AiChatState>
       session: freezed == session
           ? _value.session
           : session // ignore: cast_nullable_to_non_nullable
+              as ChatSessionDto?,
+      recentSession: freezed == recentSession
+          ? _value.recentSession
+          : recentSession // ignore: cast_nullable_to_non_nullable
               as ChatSessionDto?,
       messages: null == messages
           ? _value.messages
@@ -109,6 +117,20 @@ class _$AiChatStateCopyWithImpl<$Res, $Val extends AiChatState>
 
     return $ChatSessionDtoCopyWith<$Res>(_value.session!, (value) {
       return _then(_value.copyWith(session: value) as $Val);
+    });
+  }
+
+  /// Create a copy of AiChatState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ChatSessionDtoCopyWith<$Res>? get recentSession {
+    if (_value.recentSession == null) {
+      return null;
+    }
+
+    return $ChatSessionDtoCopyWith<$Res>(_value.recentSession!, (value) {
+      return _then(_value.copyWith(recentSession: value) as $Val);
     });
   }
 
@@ -140,11 +162,14 @@ abstract class _$$AiChatStateImplCopyWith<$Res>
       bool isSending,
       bool isPolling,
       ChatSessionDto? session,
+      ChatSessionDto? recentSession,
       List<ChatMessageDto> messages,
       Failure? failure});
 
   @override
   $ChatSessionDtoCopyWith<$Res>? get session;
+  @override
+  $ChatSessionDtoCopyWith<$Res>? get recentSession;
   @override
   $FailureCopyWith<$Res>? get failure;
 }
@@ -166,6 +191,7 @@ class __$$AiChatStateImplCopyWithImpl<$Res>
     Object? isSending = null,
     Object? isPolling = null,
     Object? session = freezed,
+    Object? recentSession = freezed,
     Object? messages = null,
     Object? failure = freezed,
   }) {
@@ -185,6 +211,10 @@ class __$$AiChatStateImplCopyWithImpl<$Res>
       session: freezed == session
           ? _value.session
           : session // ignore: cast_nullable_to_non_nullable
+              as ChatSessionDto?,
+      recentSession: freezed == recentSession
+          ? _value.recentSession
+          : recentSession // ignore: cast_nullable_to_non_nullable
               as ChatSessionDto?,
       messages: null == messages
           ? _value._messages
@@ -206,6 +236,7 @@ class _$AiChatStateImpl extends _AiChatState {
       this.isSending = false,
       this.isPolling = false,
       this.session,
+      this.recentSession,
       final List<ChatMessageDto> messages = const <ChatMessageDto>[],
       this.failure})
       : _messages = messages,
@@ -222,6 +253,8 @@ class _$AiChatStateImpl extends _AiChatState {
   final bool isPolling;
   @override
   final ChatSessionDto? session;
+  @override
+  final ChatSessionDto? recentSession;
   final List<ChatMessageDto> _messages;
   @override
   @JsonKey()
@@ -236,7 +269,7 @@ class _$AiChatStateImpl extends _AiChatState {
 
   @override
   String toString() {
-    return 'AiChatState(isInitializing: $isInitializing, isSending: $isSending, isPolling: $isPolling, session: $session, messages: $messages, failure: $failure)';
+    return 'AiChatState(isInitializing: $isInitializing, isSending: $isSending, isPolling: $isPolling, session: $session, recentSession: $recentSession, messages: $messages, failure: $failure)';
   }
 
   @override
@@ -251,6 +284,8 @@ class _$AiChatStateImpl extends _AiChatState {
             (identical(other.isPolling, isPolling) ||
                 other.isPolling == isPolling) &&
             (identical(other.session, session) || other.session == session) &&
+            (identical(other.recentSession, recentSession) ||
+                other.recentSession == recentSession) &&
             const DeepCollectionEquality().equals(other._messages, _messages) &&
             (identical(other.failure, failure) || other.failure == failure));
   }
@@ -262,6 +297,7 @@ class _$AiChatStateImpl extends _AiChatState {
       isSending,
       isPolling,
       session,
+      recentSession,
       const DeepCollectionEquality().hash(_messages),
       failure);
 
@@ -280,6 +316,7 @@ abstract class _AiChatState extends AiChatState {
       final bool isSending,
       final bool isPolling,
       final ChatSessionDto? session,
+      final ChatSessionDto? recentSession,
       final List<ChatMessageDto> messages,
       final Failure? failure}) = _$AiChatStateImpl;
   const _AiChatState._() : super._();
@@ -292,6 +329,8 @@ abstract class _AiChatState extends AiChatState {
   bool get isPolling;
   @override
   ChatSessionDto? get session;
+  @override
+  ChatSessionDto? get recentSession;
   @override
   List<ChatMessageDto> get messages;
   @override

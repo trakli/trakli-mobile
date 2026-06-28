@@ -18,6 +18,8 @@ class RepositoryErrorHandler {
       return left(const UnauthorizedFailure());
     } on ValidationException catch (e) {
       return left(ValidationFailure(e.message, errors: e.errors));
+    } on FileTooLargeException {
+      return left(const FileTooLargeFailure());
     } on BadRequestException catch (e) {
       return left(ServerFailure(e.message));
     } on ServerException catch (e) {
@@ -44,6 +46,7 @@ class RepositoryErrorHandler {
       syncError: (SyncFailure f) => ServerException(f.message),
       validationError: (ValidationFailure f) =>
           ValidationException(f.message, errors: f.errors),
+      fileTooLarge: (_) => FileTooLargeException('File too large'),
       unauthorizedError: (_) => UnauthorizedException('Unauthorized'),
       unknownError: (_) => UnknownException('Unknown error occurred'),
       badRequest: (f) {

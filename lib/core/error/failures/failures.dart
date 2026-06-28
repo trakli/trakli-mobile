@@ -13,6 +13,7 @@ class Failure with _$Failure {
   const factory Failure.syncError(String message) = SyncFailure;
   const factory Failure.validationError(String message,
       {required List<FieldError> errors}) = ValidationFailure;
+  const factory Failure.fileTooLarge() = FileTooLargeFailure;
   const factory Failure.unauthorizedError() = UnauthorizedFailure;
   const factory Failure.unknownError() = UnknownFailure;
   const factory Failure.badRequest({
@@ -47,6 +48,8 @@ class Failure with _$Failure {
         },
         none: (NoneFailure _) => LocaleKeys.noError.tr(),
         notFound: (NotFoundFailure _) => LocaleKeys.notFoundDesc.tr(),
+        fileTooLarge: (FileTooLargeFailure _) =>
+            LocaleKeys.fileTooLargeDesc.tr(),
         networkError: (NetworkFailure _) =>
             LocaleKeys.internetConnectionDesc.tr(),
         serverError: (ServerFailure failure) => LocaleKeys.serverErrorDesc.tr(),

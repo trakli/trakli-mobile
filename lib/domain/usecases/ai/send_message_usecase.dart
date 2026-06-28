@@ -9,11 +9,13 @@ class SendMessageParams {
   final int sessionId;
   final String message;
   final String? formatHint;
+  final bool deferProcessing;
 
   const SendMessageParams({
     required this.sessionId,
     required this.message,
     this.formatHint,
+    this.deferProcessing = false,
   });
 }
 
@@ -29,6 +31,7 @@ class SendMessageUseCase implements UseCase<MessagePairDto, SendMessageParams> {
       sessionId: params.sessionId,
       message: params.message,
       formatHint: params.formatHint,
+      deferProcessing: params.deferProcessing,
     );
   }
 }

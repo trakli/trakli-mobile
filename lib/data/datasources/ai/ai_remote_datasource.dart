@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:trakli/core/error/error_handler.dart';
 import 'package:trakli/data/datasources/ai/dto/chat_session_dto.dart';
 import 'package:trakli/data/datasources/ai/dto/message_pair_dto.dart';
 import 'package:trakli/data/datasources/core/api_response.dart';
@@ -11,13 +14,30 @@ abstract class AiRemoteDataSource {
     required String message,
     String? formatHint,
     String? title,
+    bool deferProcessing,
   });
   Future<MessagePairDto> addMessage({
     required int sessionId,
     required String message,
     String? formatHint,
+    bool deferProcessing,
+  });
+  Future<void> uploadFiles({
+    required int sessionId,
+    required int messageId,
+    required List<File> files,
+    String? documentType,
   });
   Future<void> deleteSession(int id);
+  Future<void> confirmAction({
+    required int sessionId,
+    required int actionId,
+    Map<String, dynamic>? overrides,
+  });
+  Future<void> rejectAction({
+    required int sessionId,
+    required int actionId,
+  });
   Future<bool> checkHealth();
 }
 
@@ -53,11 +73,13 @@ class AiRemoteDataSourceImpl implements AiRemoteDataSource {
     required String message,
     String? formatHint,
     String? title,
+    bool deferProcessing = false,
   }) async {
     final body = <String, dynamic>{
       'message': message,
       if (formatHint != null) 'format_hint': formatHint,
       if (title != null) 'title': title,
+      if (deferProcessing) 'defer_processing': true,
     };
     final response = await dio.post('ai/chats', data: body);
     final apiResponse = ApiResponse.fromJson(response.data);
@@ -69,10 +91,12 @@ class AiRemoteDataSourceImpl implements AiRemoteDataSource {
     required int sessionId,
     required String message,
     String? formatHint,
+    bool deferProcessing = false,
   }) async {
     final body = <String, dynamic>{
       'message': message,
       if (formatHint != null) 'format_hint': formatHint,
+      if (deferProcessing) 'defer_processing': true,
     };
     final response = await dio.post('ai/chats/$sessionId/messages', data: body);
     final apiResponse = ApiResponse.fromJson(response.data);
@@ -80,8 +104,56 @@ class AiRemoteDataSourceImpl implements AiRemoteDataSource {
   }
 
   @override
+  Future<void> uploadFiles({
+    required int sessionId,
+    required int messageId,
+    required List<File> files,
+    String? documentType,
+  }) {
+    return ErrorHandler.handleApiCall(() async {
+      final form = FormData();
+      for (final file in files) {
+        final name = file.uri.pathSegments.isNotEmpty
+            ? file.uri.pathSegments.last
+            : 'file';
+        form.files.add(
+          MapEntry('files[]',
+              await MultipartFile.fromFile(file.path, filename: name)),
+        );
+      }
+      if (documentType != null && documentType.isNotEmpty) {
+        form.fields.add(MapEntry('document_type', documentType));
+      }
+      await dio.post(
+        'ai/chats/$sessionId/messages/$messageId/files',
+        data: form,
+      );
+    });
+  }
+
+  @override
   Future<void> deleteSession(int id) async {
     await dio.delete('ai/chats/$id');
+  }
+
+  @override
+  Future<void> confirmAction({
+    required int sessionId,
+    required int actionId,
+    Map<String, dynamic>? overrides,
+  }) async {
+    final body = (overrides != null && overrides.isNotEmpty)
+        ? {'overrides': overrides}
+        : <String, dynamic>{};
+    await dio.post('ai/chats/$sessionId/actions/$actionId/confirm', data: body);
+  }
+
+  @override
+  Future<void> rejectAction({
+    required int sessionId,
+    required int actionId,
+  }) async {
+    await dio.post('ai/chats/$sessionId/actions/$actionId/reject');
   }
 
   @override
@@ -101,4 +173,3 @@ class AiRemoteDataSourceImpl implements AiRemoteDataSource {
     }
   }
 }
-

@@ -41,6 +41,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
       backgroundColor: tones.bgPage,
       appBar: PageAppBar(
         title: LocaleKeys.budgetPageTitle.tr(),
+        showBack: false,
         onSearchChanged: (v) => setState(() => _query = v),
         searchHint: LocaleKeys.searchBudgets.tr(),
         actions: [

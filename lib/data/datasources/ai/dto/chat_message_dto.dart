@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:trakli/data/datasources/ai/dto/chat_blocks_dto.dart';
 import 'package:trakli/data/datasources/core/util.dart';
 
 part 'chat_message_dto.freezed.dart';
@@ -34,6 +35,37 @@ extension ChatMessageDtoX on ChatMessageDto {
   bool get isInFlight => status == 'pending' || status == 'processing';
   bool get isFailed => status == 'failed';
   bool get isCompleted => status == 'completed';
+
+  /// The backend/SmartQL returns `source: unavailable` with an English-only
+  /// fallback message when the data service is down. Detect it so the client
+  /// can show a localized message instead of the raw server text.
+  bool get isServiceUnavailable => result?['source'] == 'unavailable';
+
+  /// All agent "widget" blocks on this message, parsed into typed models and
+  /// kept in order (markdown, table, kpi, chart, proposed_action, …).
+  List<ChatBlock> get blocks {
+    final b = result?['blocks'];
+    if (b is! List) return const [];
+    return b
+        .whereType<Map>()
+        .map((e) => ChatBlock.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  /// The legacy SmartQL result (`format_type` + `rows`) when the message has no
+  /// agent blocks — render it with the legacy renderer. Null otherwise.
+  LegacyResult? get legacyResult {
+    final r = result;
+    if (r == null) return null;
+    final b = r['blocks'];
+    if (b is List && b.isNotEmpty) return null;
+    final rows = r['rows'];
+    final ft = r['format_type'];
+    if (rows is List && rows.isNotEmpty && ft is String && ft.isNotEmpty) {
+      return LegacyResult.fromJson(r);
+    }
+    return null;
+  }
 
   String? get humanResponse {
     final r = result;

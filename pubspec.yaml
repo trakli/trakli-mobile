@@ -106,6 +106,7 @@ dependencies:
   update_available: ^3.2.1
   in_app_update: ^4.2.5
   firebase_remote_config: ^5.5.0
+  gpt_markdown: ^1.1.7
 
 # Pinning these to the versions in pubspec.lock; the current Flutter SDK
 # pins newer matcher/test_api but other transitives (freezed, bloc_test)
