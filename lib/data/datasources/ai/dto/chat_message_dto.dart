@@ -36,13 +36,8 @@ extension ChatMessageDtoX on ChatMessageDto {
   bool get isFailed => status == 'failed';
   bool get isCompleted => status == 'completed';
 
-  /// The backend/SmartQL returns `source: unavailable` with an English-only
-  /// fallback message when the data service is down. Detect it so the client
-  /// can show a localized message instead of the raw server text.
   bool get isServiceUnavailable => result?['source'] == 'unavailable';
 
-  /// All agent "widget" blocks on this message, parsed into typed models and
-  /// kept in order (markdown, table, kpi, chart, proposed_action, …).
   List<ChatBlock> get blocks {
     final b = result?['blocks'];
     if (b is! List) return const [];
@@ -52,8 +47,6 @@ extension ChatMessageDtoX on ChatMessageDto {
         .toList();
   }
 
-  /// The legacy SmartQL result (`format_type` + `rows`) when the message has no
-  /// agent blocks — render it with the legacy renderer. Null otherwise.
   LegacyResult? get legacyResult {
     final r = result;
     if (r == null) return null;

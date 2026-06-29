@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 
 /// Shared chrome + tiny formatting helpers for the AI chat block renderers.
-/// Each block type lives in its own widget under `blocks/` and composes these.
 
 /// The standard card wrapper used by most blocks: an optional bold title above
 /// the block's [child].

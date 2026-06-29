@@ -7,8 +7,7 @@ import 'package:trakli/presentation/ai_chat/widgets/blocks/chat_block_card.dart'
 import 'package:trakli/presentation/ai_chat/widgets/blocks/chat_block_widget.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 
-/// Renders a canvas block: a tappable card summarizing nested blocks; tapping
-/// opens them full-height in a bottom sheet.
+/// A tappable card that opens its nested blocks in a bottom sheet.
 class ChatCanvasBlock extends StatelessWidget {
   final CanvasBlock block;
   const ChatCanvasBlock({super.key, required this.block});

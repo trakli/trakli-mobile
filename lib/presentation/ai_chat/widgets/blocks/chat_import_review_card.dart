@@ -13,9 +13,8 @@ import 'package:trakli/presentation/imports/suggestion_review_screen.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 
-/// An `import_review` block: shows the uploaded file's analysis status and,
-/// once ready, a "Review import" action. Polls the import session every few
-/// seconds (independent of chat polling) so the status advances like the web.
+/// An `import_review` block: shows the file's analysis status and, once ready,
+/// a "Review import" action. Polls the import session every few seconds.
 class ChatImportReviewCard extends StatefulWidget {
   final ImportReviewBlock block;
   const ChatImportReviewCard({super.key, required this.block});

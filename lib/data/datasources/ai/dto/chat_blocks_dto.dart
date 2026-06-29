@@ -1,10 +1,5 @@
-// Typed models for the AI agent's result "blocks" and the legacy SmartQL
-// result. Parsed in the data layer so the presentation layer switches on real
-// types instead of poking at `Map<String, dynamic>`.
-//
-// Row-level payloads (`rows`, `data`, `series`, `items` of tables/charts/lists)
-// are intentionally `List<Map<String, dynamic>>`: their columns are arbitrary
-// and defined by the query, so they can't be statically typed.
+// Typed models for the AI agent's result "blocks" and legacy SmartQL result.
+// Row-level payloads stay `List<Map<String, dynamic>>` (query-defined columns).
 
 // ---- small parse helpers ----------------------------------------------------
 
