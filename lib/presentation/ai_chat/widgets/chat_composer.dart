@@ -84,72 +84,101 @@ class ComposerState extends State<Composer> {
           });
         }
 
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40.w,
-                    height: 4.h,
-                    decoration: BoxDecoration(
-                      color: tones.borderLight,
-                      borderRadius: BorderRadius.circular(2.r),
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.52,
+          minChildSize: 0.4,
+          maxChildSize: 0.95,
+          builder: (context, scrollController) {
+            return SafeArea(
+              child: ListView(
+                controller: scrollController,
+                padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40.w,
+                      height: 4.h,
+                      decoration: BoxDecoration(
+                        color: tones.borderLight,
+                        borderRadius: BorderRadius.circular(2.r),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 16.h),
-                Text(
-                  LocaleKeys.importScanDocument.tr(),
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: tones.textPrimary,
+                  SizedBox(height: 16.h),
+                  Text(
+                    LocaleKeys.importScanDocument.tr(),
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                      color: tones.textPrimary,
+                    ),
                   ),
-                ),
-                SizedBox(height: 16.h),
-                ImportSourceButton(
-                  icon: Icons.account_balance_outlined,
-                  label: LocaleKeys.importDocBankStatement.tr(),
-                  subtitle: LocaleKeys.importSourceFileDesc.tr(),
-                  onTap: () =>
-                      pick(ImportFilePicker.pickDocument, 'bank_statement'),
-                ),
-                SizedBox(height: 8.h),
-                ImportSourceButton(
-                  icon: Icons.receipt_long_outlined,
-                  label: LocaleKeys.importDocReceipt.tr(),
-                  subtitle: LocaleKeys.importSourceCameraDesc.tr(),
-                  onTap: () =>
-                      pick(ImportFilePicker.captureFromCamera, 'receipt'),
-                ),
-                SizedBox(height: 8.h),
-                ImportSourceButton(
-                  icon: Icons.description_outlined,
-                  label: LocaleKeys.importDocInvoice.tr(),
-                  subtitle: LocaleKeys.importSourceFileDesc.tr(),
-                  onTap: () => pick(ImportFilePicker.pickDocument, 'invoice'),
-                ),
-                SizedBox(height: 8.h),
-                ImportSourceButton(
-                  icon: Icons.photo_library_outlined,
-                  label: LocaleKeys.importSourceGallery.tr(),
-                  subtitle: LocaleKeys.importSourceGalleryDesc.tr(),
-                  onTap: () => pick(ImportFilePicker.pickFromGallery, null),
-                ),
-                SizedBox(height: 8.h),
-                ImportSourceButton(
-                  icon: Icons.folder_outlined,
-                  label: LocaleKeys.importSourceFile.tr(),
-                  subtitle: LocaleKeys.importSourceFileDesc.tr(),
-                  onTap: () => pick(ImportFilePicker.pickDocument, null),
-                ),
-              ],
-            ),
-          ),
+                  SizedBox(height: 16.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _SourceSquare(
+                          icon: Icons.photo_camera_outlined,
+                          label: LocaleKeys.importSourceCamera.tr(),
+                          onTap: () =>
+                              pick(ImportFilePicker.captureFromCamera, null),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: _SourceSquare(
+                          icon: Icons.photo_library_outlined,
+                          label: LocaleKeys.importSourceGallery.tr(),
+                          onTap: () =>
+                              pick(ImportFilePicker.pickFromGallery, null),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+                  Text(
+                    LocaleKeys.importDocTypeLabel.tr(),
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w700,
+                      color: tones.textSecondary,
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  ImportSourceButton(
+                    icon: Icons.account_balance_outlined,
+                    label: LocaleKeys.importDocBankStatement.tr(),
+                    subtitle: LocaleKeys.importSourceFileDesc.tr(),
+                    onTap: () =>
+                        pick(ImportFilePicker.pickDocument, 'bank_statement'),
+                  ),
+                  SizedBox(height: 8.h),
+                  ImportSourceButton(
+                    icon: Icons.receipt_long_outlined,
+                    label: LocaleKeys.importDocReceipt.tr(),
+                    subtitle: LocaleKeys.importSourceFileDesc.tr(),
+                    onTap: () =>
+                        pick(ImportFilePicker.pickDocument, 'receipt'),
+                  ),
+                  SizedBox(height: 8.h),
+                  ImportSourceButton(
+                    icon: Icons.description_outlined,
+                    label: LocaleKeys.importDocInvoice.tr(),
+                    subtitle: LocaleKeys.importSourceFileDesc.tr(),
+                    onTap: () => pick(ImportFilePicker.pickDocument, 'invoice'),
+                  ),
+                  SizedBox(height: 8.h),
+                  ImportSourceButton(
+                    icon: Icons.folder_outlined,
+                    label: LocaleKeys.importSourceFile.tr(),
+                    subtitle: LocaleKeys.importSourceFileDesc.tr(),
+                    onTap: () => pick(ImportFilePicker.pickDocument, null),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
@@ -251,9 +280,6 @@ class ComposerState extends State<Composer> {
   }
 }
 
-/// A square preview tile for a pending attachment: an image thumbnail or a
-/// document card (file-type icon + extension), with an overlaid remove button
-/// and a filename caption.
 class _AttachmentPreview extends StatelessWidget {
   final File file;
   final VoidCallback onRemove;
@@ -269,8 +295,7 @@ class _AttachmentPreview extends StatelessWidget {
     'bmp'
   };
 
-  String get _name =>
-      file.uri.pathSegments.isNotEmpty ? file.uri.pathSegments.last : 'file';
+  String get _name => ImportFilePicker.displayName(file.path);
 
   String get _ext {
     final dot = _name.lastIndexOf('.');
@@ -441,6 +466,52 @@ class _AttachButton extends StatelessWidget {
             Icons.add_rounded,
             size: 20.sp,
             color: tones.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SourceSquare extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  const _SourceSquare({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final tones = context.tones;
+    return Material(
+      color: tones.bgCard,
+      borderRadius: BorderRadius.circular(14.r),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14.r),
+        child: Container(
+          height: 96.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14.r),
+            border: Border.all(color: tones.borderLight),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 28.sp, color: tones.brand.deep),
+              SizedBox(height: 8.h),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                  color: tones.textPrimary,
+                ),
+              ),
+            ],
           ),
         ),
       ),

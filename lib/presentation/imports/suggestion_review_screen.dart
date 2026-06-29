@@ -232,21 +232,22 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
           },
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(12.w),
-          child: BlocBuilder<ImportCubit, ImportState>(
-            builder: (context, state) {
-              final session = state.currentSession;
-              final canConfirm = session != null &&
-                  session.status == ImportSessionStatus.ready &&
-                  !state.isConfirming;
-              return SizedBox(
+      bottomNavigationBar: BlocBuilder<ImportCubit, ImportState>(
+        builder: (context, state) {
+          final session = state.currentSession;
+          final showConfirm = session != null &&
+              session.status == ImportSessionStatus.ready &&
+              session.suggestions.isNotEmpty;
+          if (!showConfirm) return const SizedBox.shrink();
+          return SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(12.w),
+              child: SizedBox(
                 height: 52.h,
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed:
-                      canConfirm ? () => _onConfirmTap(session) : null,
+                      state.isConfirming ? null : () => _onConfirmTap(session),
                   child: state.isConfirming
                       ? const SizedBox(
                           width: 20,
@@ -262,10 +263,10 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
                           ],
                         ),
                 ),
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -285,15 +286,7 @@ class _SuggestionReviewScreenState extends State<SuggestionReviewScreen> {
 
     // Empty suggestions take priority over the failed-status banner.
     if (session.suggestions.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.all(24.w),
-          child: Text(
-            LocaleKeys.importNoSuggestions.tr(),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
+      return const _NoSuggestions();
     }
 
     if (session.status == ImportSessionStatus.failed) {
@@ -411,6 +404,52 @@ class _AnalysisFailed extends StatelessWidget {
               LocaleKeys.importAnalysisFailedHint.tr(),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 24.h),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+              label: Text(LocaleKeys.cancel.tr()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NoSuggestions extends StatelessWidget {
+  const _NoSuggestions();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(32.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 96.r,
+              height: 96.r,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.colorScheme.surfaceContainerHighest,
+              ),
+              child: Icon(
+                Icons.search_off_rounded,
+                size: 48.r,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            SizedBox(height: 20.h),
+            Text(
+              LocaleKeys.importNoSuggestions.tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
             ),

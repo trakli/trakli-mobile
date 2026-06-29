@@ -66,9 +66,10 @@ class _ChatImportReviewCardState extends State<ChatImportReviewCard> {
     final tones = context.tones;
     final analyzing = _status.isInFlight;
     final sessionId = widget.block.importSessionId;
-    final canReview = sessionId != null &&
-        (_status == ImportSessionStatus.ready ||
-            _status == ImportSessionStatus.confirmed);
+    final canReview =
+        sessionId != null && _status != ImportSessionStatus.unknown;
+    final showReadyIcon = _status == ImportSessionStatus.ready ||
+        _status == ImportSessionStatus.confirmed;
     final fileName = widget.block.fileName ?? '';
     final statusLabel = switch (_status) {
       ImportSessionStatus.ready => LocaleKeys.aiImportStatusReady.tr(),
@@ -122,7 +123,7 @@ class _ChatImportReviewCardState extends State<ChatImportReviewCard> {
                 Icon(Icons.error_outline_rounded,
                     size: 14.sp, color: tones.expense.deep),
                 SizedBox(width: 6.w),
-              ] else if (canReview) ...[
+              ] else if (showReadyIcon) ...[
                 Icon(Icons.check_circle_rounded,
                     size: 14.sp, color: tones.income.deep),
                 SizedBox(width: 6.w),
