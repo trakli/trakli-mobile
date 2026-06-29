@@ -317,8 +317,11 @@ class AiChatCubit extends Cubit<AiChatState> {
     _maybeStartPolling();
   }
 
-  String _fileName(File f) =>
-      f.uri.pathSegments.isNotEmpty ? f.uri.pathSegments.last : 'file';
+  String _fileName(File f) {
+    final last =
+        f.uri.pathSegments.isNotEmpty ? f.uri.pathSegments.last : 'file';
+    return last.replaceFirst(RegExp(r'^\d+_'), '');
+  }
 
   int? _inFlightAssistantId() {
     for (var i = state.messages.length - 1; i >= 0; i--) {
