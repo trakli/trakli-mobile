@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,53 +71,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     MainNavigationPageState.values.indexOf(state),
                   ),
                 ),
-                // WhatsApp-style AI assistant FAB (bottom-right), slightly
-                // smaller than the centre add-transaction button.
-                // WhatsApp-style AI assistant button: a gradient circle with a
-                // warm glow so it stands out from the solid-green add button.
-                Positioned(
-                  right: 16.w,
-                  bottom: 150.h,
-                  child: Container(
-                    height: 56.r,
-                    width: 56.r,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          _shade(context.tones.accentWarm, 0.10),
-                          _shade(context.tones.accentWarm, -0.12),
-                        ],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.tones.accentWarm.withAlpha(120),
-                          blurRadius: 18,
-                          spreadRadius: 1,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      shape: const CircleBorder(),
-                      clipBehavior: Clip.antiAlias,
-                      child: InkWell(
-                        onTap: () =>
-                            AppNavigator.push(context, const AiChatScreen()),
-                        child: Center(
-                          child: Icon(
-                            Icons.smart_toy_rounded,
-                            color: Colors.white,
-                            size: 26.r,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                const _AiAssistantFab(),
               ],
             ),
             floatingActionButtonLocation:
@@ -180,11 +137,115 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 }
 
-/// Returns [color] lightened/darkened by [lightnessDelta] (in HSL space), so a
-/// gradient can be derived from a single theme token without hardcoding hexes.
-Color _shade(Color color, double lightnessDelta) {
-  final hsl = HSLColor.fromColor(color);
-  return hsl
-      .withLightness((hsl.lightness + lightnessDelta).clamp(0.0, 1.0))
-      .toColor();
+enum _FabAnim { pulse, spin }
+
+class _AiAssistantFab extends StatefulWidget {
+  const _AiAssistantFab();
+
+  @override
+  State<_AiAssistantFab> createState() => _AiAssistantFabState();
+}
+
+class _AiAssistantFabState extends State<_AiAssistantFab>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scale;
+  late final Animation<double> _rotation;
+  final Random _rng = Random();
+  Timer? _timer;
+  _FabAnim _mode = _FabAnim.pulse;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
+    _scale = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 1.0, end: 1.14)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 1,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 1.14, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeIn)),
+        weight: 1,
+      ),
+    ]).animate(_controller);
+    _rotation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    _startAttentionLoop();
+  }
+
+  void _startAttentionLoop() {
+    Future<void>.delayed(const Duration(milliseconds: 600), () {
+      if (!mounted) return;
+      _runBurst();
+      _timer = Timer.periodic(const Duration(seconds: 20), (_) => _runBurst());
+    });
+  }
+
+  Future<void> _runBurst() async {
+    if (!mounted) return;
+    final mode = _rng.nextBool() ? _FabAnim.pulse : _FabAnim.spin;
+    setState(() => _mode = mode);
+    final reps = mode == _FabAnim.pulse ? 2 : 1;
+    for (var i = 0; i < reps && mounted; i++) {
+      await _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tones = context.tones;
+    final scaleAnim = _mode == _FabAnim.pulse
+        ? _scale
+        : const AlwaysStoppedAnimation<double>(1.0);
+    final turnsAnim = _mode == _FabAnim.spin
+        ? _rotation
+        : const AlwaysStoppedAnimation<double>(0.0);
+    return Positioned(
+      right: 16.w,
+      bottom: 150.h,
+      child: ScaleTransition(
+        scale: scaleAnim,
+        child: Container(
+          height: 56.r,
+          width: 56.r,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: tones.accentWarm,
+          ),
+          child: Material(
+            color: Colors.transparent,
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: () => AppNavigator.push(context, const AiChatScreen()),
+              child: Center(
+                child: RotationTransition(
+                  turns: turnsAnim,
+                  child: Icon(
+                    Icons.smart_toy_rounded,
+                    color: Colors.white,
+                    size: 26.r,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

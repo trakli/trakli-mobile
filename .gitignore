@@ -71,3 +71,5 @@ android/vendor/
 # macOS generated files
 **/macos/Flutter/ephemeral/
 trakli_demo/
+# VSCode workspace file
+trakli-mobile.code-workspace

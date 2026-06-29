@@ -292,8 +292,7 @@ class ChatLandingState extends State<ChatLanding>
     );
   }
 
-  /// An auto-playing carousel of "this month" insights, computed client-side
-  /// from the existing transaction data (same source the dashboard uses).
+  /// Auto-playing carousel of "this month" insights from transaction data.
   Widget _statsCard(BuildContext context) {
     final tones = context.tones;
     return BlocBuilder<TransactionCubit, TransactionState>(
