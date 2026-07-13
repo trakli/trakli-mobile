@@ -1700,6 +1700,12 @@ class $TransactionsTable extends Transactions
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<TransactionType>($TransactionsTable.$convertertype);
   @override
+  late final GeneratedColumn<String> intent = GeneratedColumn<String>(
+      'intent', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('regular'));
+  @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
@@ -1760,6 +1766,7 @@ class $TransactionsTable extends Transactions
         lastSyncedAt,
         amount,
         type,
+        intent,
         description,
         datetime,
         partyId,
@@ -1803,6 +1810,8 @@ class $TransactionsTable extends Transactions
       type: $TransactionsTable.$convertertype.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}type'])!),
+      intent: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}intent'])!,
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
       datetime: attachedDatabase.typeMapping
@@ -1846,6 +1855,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final DateTime? lastSyncedAt;
   final double amount;
   final TransactionType type;
+  final String intent;
   final String? description;
   final DateTime? datetime;
   final int? partyId;
@@ -1867,6 +1877,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       this.lastSyncedAt,
       required this.amount,
       required this.type,
+      required this.intent,
       this.description,
       this.datetime,
       this.partyId,
@@ -1903,6 +1914,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       map['type'] =
           Variable<String>($TransactionsTable.$convertertype.toSql(type));
     }
+    map['intent'] = Variable<String>(intent);
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
@@ -1951,6 +1963,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           : Value(lastSyncedAt),
       amount: Value(amount),
       type: Value(type),
+      intent: Value(intent),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
@@ -1997,6 +2010,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       amount: serializer.fromJson<double>(json['amount']),
       type: $TransactionsTable.$convertertype
           .fromJson(serializer.fromJson<String>(json['type'])),
+      intent: serializer.fromJson<String>(json['intent']),
       description: serializer.fromJson<String?>(json['description']),
       datetime: serializer.fromJson<DateTime?>(json['datetime']),
       partyId: serializer.fromJson<int?>(json['party_id']),
@@ -2025,6 +2039,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'amount': serializer.toJson<double>(amount),
       'type': serializer
           .toJson<String>($TransactionsTable.$convertertype.toJson(type)),
+      'intent': serializer.toJson<String>(intent),
       'description': serializer.toJson<String?>(description),
       'datetime': serializer.toJson<DateTime?>(datetime),
       'party_id': serializer.toJson<int?>(partyId),
@@ -2049,6 +2064,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           Value<DateTime?> lastSyncedAt = const Value.absent(),
           double? amount,
           TransactionType? type,
+          String? intent,
           Value<String?> description = const Value.absent(),
           Value<DateTime?> datetime = const Value.absent(),
           Value<int?> partyId = const Value.absent(),
@@ -2071,6 +2087,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
             lastSyncedAt.present ? lastSyncedAt.value : this.lastSyncedAt,
         amount: amount ?? this.amount,
         type: type ?? this.type,
+        intent: intent ?? this.intent,
         description: description.present ? description.value : this.description,
         datetime: datetime.present ? datetime.value : this.datetime,
         partyId: partyId.present ? partyId.value : this.partyId,
@@ -2100,6 +2117,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           : this.lastSyncedAt,
       amount: data.amount.present ? data.amount.value : this.amount,
       type: data.type.present ? data.type.value : this.type,
+      intent: data.intent.present ? data.intent.value : this.intent,
       description:
           data.description.present ? data.description.value : this.description,
       datetime: data.datetime.present ? data.datetime.value : this.datetime,
@@ -2136,6 +2154,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('lastSyncedAt: $lastSyncedAt, ')
           ..write('amount: $amount, ')
           ..write('type: $type, ')
+          ..write('intent: $intent, ')
           ..write('description: $description, ')
           ..write('datetime: $datetime, ')
           ..write('partyId: $partyId, ')
@@ -2151,27 +2170,29 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      userId,
-      clientId,
-      rev,
-      createdAt,
-      updatedAt,
-      deletedAt,
-      lastSyncedAt,
-      amount,
-      type,
-      description,
-      datetime,
-      partyId,
-      walletId,
-      groupId,
-      walletClientId,
-      partyClientId,
-      groupClientId,
-      transferId,
-      transferClientId);
+  int get hashCode => Object.hashAll([
+        id,
+        userId,
+        clientId,
+        rev,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        lastSyncedAt,
+        amount,
+        type,
+        intent,
+        description,
+        datetime,
+        partyId,
+        walletId,
+        groupId,
+        walletClientId,
+        partyClientId,
+        groupClientId,
+        transferId,
+        transferClientId
+      ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2186,6 +2207,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.lastSyncedAt == this.lastSyncedAt &&
           other.amount == this.amount &&
           other.type == this.type &&
+          other.intent == this.intent &&
           other.description == this.description &&
           other.datetime == this.datetime &&
           other.partyId == this.partyId &&
@@ -2209,6 +2231,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<DateTime?> lastSyncedAt;
   final Value<double> amount;
   final Value<TransactionType> type;
+  final Value<String> intent;
   final Value<String?> description;
   final Value<DateTime?> datetime;
   final Value<int?> partyId;
@@ -2231,6 +2254,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.lastSyncedAt = const Value.absent(),
     this.amount = const Value.absent(),
     this.type = const Value.absent(),
+    this.intent = const Value.absent(),
     this.description = const Value.absent(),
     this.datetime = const Value.absent(),
     this.partyId = const Value.absent(),
@@ -2254,6 +2278,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.lastSyncedAt = const Value.absent(),
     required double amount,
     required TransactionType type,
+    this.intent = const Value.absent(),
     this.description = const Value.absent(),
     this.datetime = const Value.absent(),
     this.partyId = const Value.absent(),
@@ -2279,6 +2304,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Expression<DateTime>? lastSyncedAt,
     Expression<double>? amount,
     Expression<String>? type,
+    Expression<String>? intent,
     Expression<String>? description,
     Expression<DateTime>? datetime,
     Expression<int>? partyId,
@@ -2302,6 +2328,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       if (lastSyncedAt != null) 'last_synced_at': lastSyncedAt,
       if (amount != null) 'amount': amount,
       if (type != null) 'type': type,
+      if (intent != null) 'intent': intent,
       if (description != null) 'description': description,
       if (datetime != null) 'datetime': datetime,
       if (partyId != null) 'party_id': partyId,
@@ -2327,6 +2354,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       Value<DateTime?>? lastSyncedAt,
       Value<double>? amount,
       Value<TransactionType>? type,
+      Value<String>? intent,
       Value<String?>? description,
       Value<DateTime?>? datetime,
       Value<int?>? partyId,
@@ -2349,6 +2377,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
       amount: amount ?? this.amount,
       type: type ?? this.type,
+      intent: intent ?? this.intent,
       description: description ?? this.description,
       datetime: datetime ?? this.datetime,
       partyId: partyId ?? this.partyId,
@@ -2396,6 +2425,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (type.present) {
       map['type'] =
           Variable<String>($TransactionsTable.$convertertype.toSql(type.value));
+    }
+    if (intent.present) {
+      map['intent'] = Variable<String>(intent.value);
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -2446,6 +2478,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
           ..write('lastSyncedAt: $lastSyncedAt, ')
           ..write('amount: $amount, ')
           ..write('type: $type, ')
+          ..write('intent: $intent, ')
           ..write('description: $description, ')
           ..write('datetime: $datetime, ')
           ..write('partyId: $partyId, ')
@@ -8255,6 +8288,706 @@ class BudgetPeriodStatesCompanion extends UpdateCompanion<BudgetPeriodState> {
   }
 }
 
+class $HoldingsTable extends Holdings
+    with TableInfo<$HoldingsTable, HoldingRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HoldingsTable(this.attachedDatabase, [this._alias]);
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<String> symbol = GeneratedColumn<String>(
+      'symbol', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<double> quantity = GeneratedColumn<double>(
+      'quantity', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+      'currency', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<double> unitPrice = GeneratedColumn<double>(
+      'unit_price', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+      'value', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  late final GeneratedColumn<String> priceSource = GeneratedColumn<String>(
+      'price_source', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('manual'));
+  @override
+  late final GeneratedColumn<String> provider = GeneratedColumn<String>(
+      'provider', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<String> externalRef = GeneratedColumn<String>(
+      'external_ref', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<DateTime> lastPricedAt = GeneratedColumn<DateTime>(
+      'last_priced_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        symbol,
+        quantity,
+        currency,
+        unitPrice,
+        value,
+        priceSource,
+        provider,
+        externalRef,
+        lastPricedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'holdings';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HoldingRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HoldingRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      symbol: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}symbol']),
+      quantity: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}quantity'])!,
+      currency: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}currency'])!,
+      unitPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}unit_price'])!,
+      value: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}value'])!,
+      priceSource: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}price_source'])!,
+      provider: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}provider']),
+      externalRef: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}external_ref']),
+      lastPricedAt: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}last_priced_at']),
+    );
+  }
+
+  @override
+  $HoldingsTable createAlias(String alias) {
+    return $HoldingsTable(attachedDatabase, alias);
+  }
+}
+
+class HoldingRow extends DataClass implements Insertable<HoldingRow> {
+  final int id;
+  final String name;
+  final String? symbol;
+  final double quantity;
+  final String currency;
+  final double unitPrice;
+  final double value;
+  final String priceSource;
+  final String? provider;
+  final String? externalRef;
+  final DateTime? lastPricedAt;
+  const HoldingRow(
+      {required this.id,
+      required this.name,
+      this.symbol,
+      required this.quantity,
+      required this.currency,
+      required this.unitPrice,
+      required this.value,
+      required this.priceSource,
+      this.provider,
+      this.externalRef,
+      this.lastPricedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || symbol != null) {
+      map['symbol'] = Variable<String>(symbol);
+    }
+    map['quantity'] = Variable<double>(quantity);
+    map['currency'] = Variable<String>(currency);
+    map['unit_price'] = Variable<double>(unitPrice);
+    map['value'] = Variable<double>(value);
+    map['price_source'] = Variable<String>(priceSource);
+    if (!nullToAbsent || provider != null) {
+      map['provider'] = Variable<String>(provider);
+    }
+    if (!nullToAbsent || externalRef != null) {
+      map['external_ref'] = Variable<String>(externalRef);
+    }
+    if (!nullToAbsent || lastPricedAt != null) {
+      map['last_priced_at'] = Variable<DateTime>(lastPricedAt);
+    }
+    return map;
+  }
+
+  HoldingsCompanion toCompanion(bool nullToAbsent) {
+    return HoldingsCompanion(
+      id: Value(id),
+      name: Value(name),
+      symbol:
+          symbol == null && nullToAbsent ? const Value.absent() : Value(symbol),
+      quantity: Value(quantity),
+      currency: Value(currency),
+      unitPrice: Value(unitPrice),
+      value: Value(value),
+      priceSource: Value(priceSource),
+      provider: provider == null && nullToAbsent
+          ? const Value.absent()
+          : Value(provider),
+      externalRef: externalRef == null && nullToAbsent
+          ? const Value.absent()
+          : Value(externalRef),
+      lastPricedAt: lastPricedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastPricedAt),
+    );
+  }
+
+  factory HoldingRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HoldingRow(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      symbol: serializer.fromJson<String?>(json['symbol']),
+      quantity: serializer.fromJson<double>(json['quantity']),
+      currency: serializer.fromJson<String>(json['currency']),
+      unitPrice: serializer.fromJson<double>(json['unit_price']),
+      value: serializer.fromJson<double>(json['value']),
+      priceSource: serializer.fromJson<String>(json['price_source']),
+      provider: serializer.fromJson<String?>(json['provider']),
+      externalRef: serializer.fromJson<String?>(json['external_ref']),
+      lastPricedAt: serializer.fromJson<DateTime?>(json['last_priced_at']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'symbol': serializer.toJson<String?>(symbol),
+      'quantity': serializer.toJson<double>(quantity),
+      'currency': serializer.toJson<String>(currency),
+      'unit_price': serializer.toJson<double>(unitPrice),
+      'value': serializer.toJson<double>(value),
+      'price_source': serializer.toJson<String>(priceSource),
+      'provider': serializer.toJson<String?>(provider),
+      'external_ref': serializer.toJson<String?>(externalRef),
+      'last_priced_at': serializer.toJson<DateTime?>(lastPricedAt),
+    };
+  }
+
+  HoldingRow copyWith(
+          {int? id,
+          String? name,
+          Value<String?> symbol = const Value.absent(),
+          double? quantity,
+          String? currency,
+          double? unitPrice,
+          double? value,
+          String? priceSource,
+          Value<String?> provider = const Value.absent(),
+          Value<String?> externalRef = const Value.absent(),
+          Value<DateTime?> lastPricedAt = const Value.absent()}) =>
+      HoldingRow(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        symbol: symbol.present ? symbol.value : this.symbol,
+        quantity: quantity ?? this.quantity,
+        currency: currency ?? this.currency,
+        unitPrice: unitPrice ?? this.unitPrice,
+        value: value ?? this.value,
+        priceSource: priceSource ?? this.priceSource,
+        provider: provider.present ? provider.value : this.provider,
+        externalRef: externalRef.present ? externalRef.value : this.externalRef,
+        lastPricedAt:
+            lastPricedAt.present ? lastPricedAt.value : this.lastPricedAt,
+      );
+  HoldingRow copyWithCompanion(HoldingsCompanion data) {
+    return HoldingRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      symbol: data.symbol.present ? data.symbol.value : this.symbol,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      currency: data.currency.present ? data.currency.value : this.currency,
+      unitPrice: data.unitPrice.present ? data.unitPrice.value : this.unitPrice,
+      value: data.value.present ? data.value.value : this.value,
+      priceSource:
+          data.priceSource.present ? data.priceSource.value : this.priceSource,
+      provider: data.provider.present ? data.provider.value : this.provider,
+      externalRef:
+          data.externalRef.present ? data.externalRef.value : this.externalRef,
+      lastPricedAt: data.lastPricedAt.present
+          ? data.lastPricedAt.value
+          : this.lastPricedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HoldingRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('symbol: $symbol, ')
+          ..write('quantity: $quantity, ')
+          ..write('currency: $currency, ')
+          ..write('unitPrice: $unitPrice, ')
+          ..write('value: $value, ')
+          ..write('priceSource: $priceSource, ')
+          ..write('provider: $provider, ')
+          ..write('externalRef: $externalRef, ')
+          ..write('lastPricedAt: $lastPricedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, symbol, quantity, currency,
+      unitPrice, value, priceSource, provider, externalRef, lastPricedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HoldingRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.symbol == this.symbol &&
+          other.quantity == this.quantity &&
+          other.currency == this.currency &&
+          other.unitPrice == this.unitPrice &&
+          other.value == this.value &&
+          other.priceSource == this.priceSource &&
+          other.provider == this.provider &&
+          other.externalRef == this.externalRef &&
+          other.lastPricedAt == this.lastPricedAt);
+}
+
+class HoldingsCompanion extends UpdateCompanion<HoldingRow> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String?> symbol;
+  final Value<double> quantity;
+  final Value<String> currency;
+  final Value<double> unitPrice;
+  final Value<double> value;
+  final Value<String> priceSource;
+  final Value<String?> provider;
+  final Value<String?> externalRef;
+  final Value<DateTime?> lastPricedAt;
+  const HoldingsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.symbol = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.currency = const Value.absent(),
+    this.unitPrice = const Value.absent(),
+    this.value = const Value.absent(),
+    this.priceSource = const Value.absent(),
+    this.provider = const Value.absent(),
+    this.externalRef = const Value.absent(),
+    this.lastPricedAt = const Value.absent(),
+  });
+  HoldingsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.symbol = const Value.absent(),
+    this.quantity = const Value.absent(),
+    required String currency,
+    this.unitPrice = const Value.absent(),
+    this.value = const Value.absent(),
+    this.priceSource = const Value.absent(),
+    this.provider = const Value.absent(),
+    this.externalRef = const Value.absent(),
+    this.lastPricedAt = const Value.absent(),
+  })  : name = Value(name),
+        currency = Value(currency);
+  static Insertable<HoldingRow> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? symbol,
+    Expression<double>? quantity,
+    Expression<String>? currency,
+    Expression<double>? unitPrice,
+    Expression<double>? value,
+    Expression<String>? priceSource,
+    Expression<String>? provider,
+    Expression<String>? externalRef,
+    Expression<DateTime>? lastPricedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (symbol != null) 'symbol': symbol,
+      if (quantity != null) 'quantity': quantity,
+      if (currency != null) 'currency': currency,
+      if (unitPrice != null) 'unit_price': unitPrice,
+      if (value != null) 'value': value,
+      if (priceSource != null) 'price_source': priceSource,
+      if (provider != null) 'provider': provider,
+      if (externalRef != null) 'external_ref': externalRef,
+      if (lastPricedAt != null) 'last_priced_at': lastPricedAt,
+    });
+  }
+
+  HoldingsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String?>? symbol,
+      Value<double>? quantity,
+      Value<String>? currency,
+      Value<double>? unitPrice,
+      Value<double>? value,
+      Value<String>? priceSource,
+      Value<String?>? provider,
+      Value<String?>? externalRef,
+      Value<DateTime?>? lastPricedAt}) {
+    return HoldingsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      symbol: symbol ?? this.symbol,
+      quantity: quantity ?? this.quantity,
+      currency: currency ?? this.currency,
+      unitPrice: unitPrice ?? this.unitPrice,
+      value: value ?? this.value,
+      priceSource: priceSource ?? this.priceSource,
+      provider: provider ?? this.provider,
+      externalRef: externalRef ?? this.externalRef,
+      lastPricedAt: lastPricedAt ?? this.lastPricedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (symbol.present) {
+      map['symbol'] = Variable<String>(symbol.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<double>(quantity.value);
+    }
+    if (currency.present) {
+      map['currency'] = Variable<String>(currency.value);
+    }
+    if (unitPrice.present) {
+      map['unit_price'] = Variable<double>(unitPrice.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (priceSource.present) {
+      map['price_source'] = Variable<String>(priceSource.value);
+    }
+    if (provider.present) {
+      map['provider'] = Variable<String>(provider.value);
+    }
+    if (externalRef.present) {
+      map['external_ref'] = Variable<String>(externalRef.value);
+    }
+    if (lastPricedAt.present) {
+      map['last_priced_at'] = Variable<DateTime>(lastPricedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HoldingsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('symbol: $symbol, ')
+          ..write('quantity: $quantity, ')
+          ..write('currency: $currency, ')
+          ..write('unitPrice: $unitPrice, ')
+          ..write('value: $value, ')
+          ..write('priceSource: $priceSource, ')
+          ..write('provider: $provider, ')
+          ..write('externalRef: $externalRef, ')
+          ..write('lastPricedAt: $lastPricedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FinancialPositionCacheTable extends FinancialPositionCache
+    with TableInfo<$FinancialPositionCacheTable, FinancialPositionCacheRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FinancialPositionCacheTable(this.attachedDatabase, [this._alias]);
+  @override
+  late final GeneratedColumn<String> cacheKey = GeneratedColumn<String>(
+      'cache_key', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+      'payload', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+      'currency', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumn<DateTime> fetchedAt = GeneratedColumn<DateTime>(
+      'fetched_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [cacheKey, payload, currency, fetchedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'financial_position_cache';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {cacheKey};
+  @override
+  FinancialPositionCacheRow map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FinancialPositionCacheRow(
+      cacheKey: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}cache_key'])!,
+      payload: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}payload'])!,
+      currency: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}currency']),
+      fetchedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}fetched_at'])!,
+    );
+  }
+
+  @override
+  $FinancialPositionCacheTable createAlias(String alias) {
+    return $FinancialPositionCacheTable(attachedDatabase, alias);
+  }
+}
+
+class FinancialPositionCacheRow extends DataClass
+    implements Insertable<FinancialPositionCacheRow> {
+  final String cacheKey;
+
+  /// JSON-encoded `position` payload as returned by the server.
+  final String payload;
+  final String? currency;
+  final DateTime fetchedAt;
+  const FinancialPositionCacheRow(
+      {required this.cacheKey,
+      required this.payload,
+      this.currency,
+      required this.fetchedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['cache_key'] = Variable<String>(cacheKey);
+    map['payload'] = Variable<String>(payload);
+    if (!nullToAbsent || currency != null) {
+      map['currency'] = Variable<String>(currency);
+    }
+    map['fetched_at'] = Variable<DateTime>(fetchedAt);
+    return map;
+  }
+
+  FinancialPositionCacheCompanion toCompanion(bool nullToAbsent) {
+    return FinancialPositionCacheCompanion(
+      cacheKey: Value(cacheKey),
+      payload: Value(payload),
+      currency: currency == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currency),
+      fetchedAt: Value(fetchedAt),
+    );
+  }
+
+  factory FinancialPositionCacheRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FinancialPositionCacheRow(
+      cacheKey: serializer.fromJson<String>(json['cacheKey']),
+      payload: serializer.fromJson<String>(json['payload']),
+      currency: serializer.fromJson<String?>(json['currency']),
+      fetchedAt: serializer.fromJson<DateTime>(json['fetchedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'cacheKey': serializer.toJson<String>(cacheKey),
+      'payload': serializer.toJson<String>(payload),
+      'currency': serializer.toJson<String?>(currency),
+      'fetchedAt': serializer.toJson<DateTime>(fetchedAt),
+    };
+  }
+
+  FinancialPositionCacheRow copyWith(
+          {String? cacheKey,
+          String? payload,
+          Value<String?> currency = const Value.absent(),
+          DateTime? fetchedAt}) =>
+      FinancialPositionCacheRow(
+        cacheKey: cacheKey ?? this.cacheKey,
+        payload: payload ?? this.payload,
+        currency: currency.present ? currency.value : this.currency,
+        fetchedAt: fetchedAt ?? this.fetchedAt,
+      );
+  FinancialPositionCacheRow copyWithCompanion(
+      FinancialPositionCacheCompanion data) {
+    return FinancialPositionCacheRow(
+      cacheKey: data.cacheKey.present ? data.cacheKey.value : this.cacheKey,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      currency: data.currency.present ? data.currency.value : this.currency,
+      fetchedAt: data.fetchedAt.present ? data.fetchedAt.value : this.fetchedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FinancialPositionCacheRow(')
+          ..write('cacheKey: $cacheKey, ')
+          ..write('payload: $payload, ')
+          ..write('currency: $currency, ')
+          ..write('fetchedAt: $fetchedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(cacheKey, payload, currency, fetchedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FinancialPositionCacheRow &&
+          other.cacheKey == this.cacheKey &&
+          other.payload == this.payload &&
+          other.currency == this.currency &&
+          other.fetchedAt == this.fetchedAt);
+}
+
+class FinancialPositionCacheCompanion
+    extends UpdateCompanion<FinancialPositionCacheRow> {
+  final Value<String> cacheKey;
+  final Value<String> payload;
+  final Value<String?> currency;
+  final Value<DateTime> fetchedAt;
+  final Value<int> rowid;
+  const FinancialPositionCacheCompanion({
+    this.cacheKey = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.currency = const Value.absent(),
+    this.fetchedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FinancialPositionCacheCompanion.insert({
+    required String cacheKey,
+    required String payload,
+    this.currency = const Value.absent(),
+    required DateTime fetchedAt,
+    this.rowid = const Value.absent(),
+  })  : cacheKey = Value(cacheKey),
+        payload = Value(payload),
+        fetchedAt = Value(fetchedAt);
+  static Insertable<FinancialPositionCacheRow> custom({
+    Expression<String>? cacheKey,
+    Expression<String>? payload,
+    Expression<String>? currency,
+    Expression<DateTime>? fetchedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (cacheKey != null) 'cache_key': cacheKey,
+      if (payload != null) 'payload': payload,
+      if (currency != null) 'currency': currency,
+      if (fetchedAt != null) 'fetched_at': fetchedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FinancialPositionCacheCompanion copyWith(
+      {Value<String>? cacheKey,
+      Value<String>? payload,
+      Value<String?>? currency,
+      Value<DateTime>? fetchedAt,
+      Value<int>? rowid}) {
+    return FinancialPositionCacheCompanion(
+      cacheKey: cacheKey ?? this.cacheKey,
+      payload: payload ?? this.payload,
+      currency: currency ?? this.currency,
+      fetchedAt: fetchedAt ?? this.fetchedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (cacheKey.present) {
+      map['cache_key'] = Variable<String>(cacheKey.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (currency.present) {
+      map['currency'] = Variable<String>(currency.value);
+    }
+    if (fetchedAt.present) {
+      map['fetched_at'] = Variable<DateTime>(fetchedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FinancialPositionCacheCompanion(')
+          ..write('cacheKey: $cacheKey, ')
+          ..write('payload: $payload, ')
+          ..write('currency: $currency, ')
+          ..write('fetchedAt: $fetchedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -8275,6 +9008,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $BudgetTargetsTable budgetTargets = $BudgetTargetsTable(this);
   late final $BudgetPeriodStatesTable budgetPeriodStates =
       $BudgetPeriodStatesTable(this);
+  late final $HoldingsTable holdings = $HoldingsTable(this);
+  late final $FinancialPositionCacheTable financialPositionCache =
+      $FinancialPositionCacheTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -8295,7 +9031,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         transfers,
         budgets,
         budgetTargets,
-        budgetPeriodStates
+        budgetPeriodStates,
+        holdings,
+        financialPositionCache
       ];
   @override
   DriftDatabaseOptions get options =>
@@ -9429,6 +10167,7 @@ typedef $$TransactionsTableCreateCompanionBuilder = TransactionsCompanion
   Value<DateTime?> lastSyncedAt,
   required double amount,
   required TransactionType type,
+  Value<String> intent,
   Value<String?> description,
   Value<DateTime?> datetime,
   Value<int?> partyId,
@@ -9453,6 +10192,7 @@ typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
   Value<DateTime?> lastSyncedAt,
   Value<double> amount,
   Value<TransactionType> type,
+  Value<String> intent,
   Value<String?> description,
   Value<DateTime?> datetime,
   Value<int?> partyId,
@@ -9556,6 +10296,9 @@ class $$TransactionsTableFilterComposer
       get type => $composableBuilder(
           column: $table.type,
           builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<String> get intent => $composableBuilder(
+      column: $table.intent, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnFilters(column));
@@ -9680,6 +10423,9 @@ class $$TransactionsTableOrderingComposer
   ColumnOrderings<String> get type => $composableBuilder(
       column: $table.type, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get intent => $composableBuilder(
+      column: $table.intent, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnOrderings(column));
 
@@ -9802,6 +10548,9 @@ class $$TransactionsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<TransactionType, String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
 
+  GeneratedColumn<String> get intent =>
+      $composableBuilder(column: $table.intent, builder: (column) => column);
+
   GeneratedColumn<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => column);
 
@@ -9918,6 +10667,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             Value<DateTime?> lastSyncedAt = const Value.absent(),
             Value<double> amount = const Value.absent(),
             Value<TransactionType> type = const Value.absent(),
+            Value<String> intent = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<DateTime?> datetime = const Value.absent(),
             Value<int?> partyId = const Value.absent(),
@@ -9941,6 +10691,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             lastSyncedAt: lastSyncedAt,
             amount: amount,
             type: type,
+            intent: intent,
             description: description,
             datetime: datetime,
             partyId: partyId,
@@ -9964,6 +10715,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             Value<DateTime?> lastSyncedAt = const Value.absent(),
             required double amount,
             required TransactionType type,
+            Value<String> intent = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<DateTime?> datetime = const Value.absent(),
             Value<int?> partyId = const Value.absent(),
@@ -9987,6 +10739,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             lastSyncedAt: lastSyncedAt,
             amount: amount,
             type: type,
+            intent: intent,
             description: description,
             datetime: datetime,
             partyId: partyId,
@@ -14109,6 +14862,421 @@ typedef $$BudgetPeriodStatesTableProcessedTableManager = ProcessedTableManager<
     (BudgetPeriodState, $$BudgetPeriodStatesTableReferences),
     BudgetPeriodState,
     PrefetchHooks Function({bool budgetClientId})>;
+typedef $$HoldingsTableCreateCompanionBuilder = HoldingsCompanion Function({
+  Value<int> id,
+  required String name,
+  Value<String?> symbol,
+  Value<double> quantity,
+  required String currency,
+  Value<double> unitPrice,
+  Value<double> value,
+  Value<String> priceSource,
+  Value<String?> provider,
+  Value<String?> externalRef,
+  Value<DateTime?> lastPricedAt,
+});
+typedef $$HoldingsTableUpdateCompanionBuilder = HoldingsCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String?> symbol,
+  Value<double> quantity,
+  Value<String> currency,
+  Value<double> unitPrice,
+  Value<double> value,
+  Value<String> priceSource,
+  Value<String?> provider,
+  Value<String?> externalRef,
+  Value<DateTime?> lastPricedAt,
+});
+
+class $$HoldingsTableFilterComposer
+    extends Composer<_$AppDatabase, $HoldingsTable> {
+  $$HoldingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get symbol => $composableBuilder(
+      column: $table.symbol, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get quantity => $composableBuilder(
+      column: $table.quantity, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get currency => $composableBuilder(
+      column: $table.currency, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get unitPrice => $composableBuilder(
+      column: $table.unitPrice, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get value => $composableBuilder(
+      column: $table.value, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get priceSource => $composableBuilder(
+      column: $table.priceSource, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get provider => $composableBuilder(
+      column: $table.provider, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get externalRef => $composableBuilder(
+      column: $table.externalRef, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get lastPricedAt => $composableBuilder(
+      column: $table.lastPricedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$HoldingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HoldingsTable> {
+  $$HoldingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get symbol => $composableBuilder(
+      column: $table.symbol, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get quantity => $composableBuilder(
+      column: $table.quantity, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get currency => $composableBuilder(
+      column: $table.currency, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get unitPrice => $composableBuilder(
+      column: $table.unitPrice, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get value => $composableBuilder(
+      column: $table.value, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get priceSource => $composableBuilder(
+      column: $table.priceSource, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get provider => $composableBuilder(
+      column: $table.provider, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get externalRef => $composableBuilder(
+      column: $table.externalRef, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get lastPricedAt => $composableBuilder(
+      column: $table.lastPricedAt,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$HoldingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HoldingsTable> {
+  $$HoldingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get symbol =>
+      $composableBuilder(column: $table.symbol, builder: (column) => column);
+
+  GeneratedColumn<double> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<String> get currency =>
+      $composableBuilder(column: $table.currency, builder: (column) => column);
+
+  GeneratedColumn<double> get unitPrice =>
+      $composableBuilder(column: $table.unitPrice, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<String> get priceSource => $composableBuilder(
+      column: $table.priceSource, builder: (column) => column);
+
+  GeneratedColumn<String> get provider =>
+      $composableBuilder(column: $table.provider, builder: (column) => column);
+
+  GeneratedColumn<String> get externalRef => $composableBuilder(
+      column: $table.externalRef, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastPricedAt => $composableBuilder(
+      column: $table.lastPricedAt, builder: (column) => column);
+}
+
+class $$HoldingsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HoldingsTable,
+    HoldingRow,
+    $$HoldingsTableFilterComposer,
+    $$HoldingsTableOrderingComposer,
+    $$HoldingsTableAnnotationComposer,
+    $$HoldingsTableCreateCompanionBuilder,
+    $$HoldingsTableUpdateCompanionBuilder,
+    (HoldingRow, BaseReferences<_$AppDatabase, $HoldingsTable, HoldingRow>),
+    HoldingRow,
+    PrefetchHooks Function()> {
+  $$HoldingsTableTableManager(_$AppDatabase db, $HoldingsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HoldingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HoldingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HoldingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> symbol = const Value.absent(),
+            Value<double> quantity = const Value.absent(),
+            Value<String> currency = const Value.absent(),
+            Value<double> unitPrice = const Value.absent(),
+            Value<double> value = const Value.absent(),
+            Value<String> priceSource = const Value.absent(),
+            Value<String?> provider = const Value.absent(),
+            Value<String?> externalRef = const Value.absent(),
+            Value<DateTime?> lastPricedAt = const Value.absent(),
+          }) =>
+              HoldingsCompanion(
+            id: id,
+            name: name,
+            symbol: symbol,
+            quantity: quantity,
+            currency: currency,
+            unitPrice: unitPrice,
+            value: value,
+            priceSource: priceSource,
+            provider: provider,
+            externalRef: externalRef,
+            lastPricedAt: lastPricedAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            Value<String?> symbol = const Value.absent(),
+            Value<double> quantity = const Value.absent(),
+            required String currency,
+            Value<double> unitPrice = const Value.absent(),
+            Value<double> value = const Value.absent(),
+            Value<String> priceSource = const Value.absent(),
+            Value<String?> provider = const Value.absent(),
+            Value<String?> externalRef = const Value.absent(),
+            Value<DateTime?> lastPricedAt = const Value.absent(),
+          }) =>
+              HoldingsCompanion.insert(
+            id: id,
+            name: name,
+            symbol: symbol,
+            quantity: quantity,
+            currency: currency,
+            unitPrice: unitPrice,
+            value: value,
+            priceSource: priceSource,
+            provider: provider,
+            externalRef: externalRef,
+            lastPricedAt: lastPricedAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$HoldingsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $HoldingsTable,
+    HoldingRow,
+    $$HoldingsTableFilterComposer,
+    $$HoldingsTableOrderingComposer,
+    $$HoldingsTableAnnotationComposer,
+    $$HoldingsTableCreateCompanionBuilder,
+    $$HoldingsTableUpdateCompanionBuilder,
+    (HoldingRow, BaseReferences<_$AppDatabase, $HoldingsTable, HoldingRow>),
+    HoldingRow,
+    PrefetchHooks Function()>;
+typedef $$FinancialPositionCacheTableCreateCompanionBuilder
+    = FinancialPositionCacheCompanion Function({
+  required String cacheKey,
+  required String payload,
+  Value<String?> currency,
+  required DateTime fetchedAt,
+  Value<int> rowid,
+});
+typedef $$FinancialPositionCacheTableUpdateCompanionBuilder
+    = FinancialPositionCacheCompanion Function({
+  Value<String> cacheKey,
+  Value<String> payload,
+  Value<String?> currency,
+  Value<DateTime> fetchedAt,
+  Value<int> rowid,
+});
+
+class $$FinancialPositionCacheTableFilterComposer
+    extends Composer<_$AppDatabase, $FinancialPositionCacheTable> {
+  $$FinancialPositionCacheTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get cacheKey => $composableBuilder(
+      column: $table.cacheKey, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get payload => $composableBuilder(
+      column: $table.payload, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get currency => $composableBuilder(
+      column: $table.currency, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get fetchedAt => $composableBuilder(
+      column: $table.fetchedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$FinancialPositionCacheTableOrderingComposer
+    extends Composer<_$AppDatabase, $FinancialPositionCacheTable> {
+  $$FinancialPositionCacheTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get cacheKey => $composableBuilder(
+      column: $table.cacheKey, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+      column: $table.payload, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get currency => $composableBuilder(
+      column: $table.currency, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get fetchedAt => $composableBuilder(
+      column: $table.fetchedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$FinancialPositionCacheTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FinancialPositionCacheTable> {
+  $$FinancialPositionCacheTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get cacheKey =>
+      $composableBuilder(column: $table.cacheKey, builder: (column) => column);
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<String> get currency =>
+      $composableBuilder(column: $table.currency, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fetchedAt =>
+      $composableBuilder(column: $table.fetchedAt, builder: (column) => column);
+}
+
+class $$FinancialPositionCacheTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $FinancialPositionCacheTable,
+    FinancialPositionCacheRow,
+    $$FinancialPositionCacheTableFilterComposer,
+    $$FinancialPositionCacheTableOrderingComposer,
+    $$FinancialPositionCacheTableAnnotationComposer,
+    $$FinancialPositionCacheTableCreateCompanionBuilder,
+    $$FinancialPositionCacheTableUpdateCompanionBuilder,
+    (
+      FinancialPositionCacheRow,
+      BaseReferences<_$AppDatabase, $FinancialPositionCacheTable,
+          FinancialPositionCacheRow>
+    ),
+    FinancialPositionCacheRow,
+    PrefetchHooks Function()> {
+  $$FinancialPositionCacheTableTableManager(
+      _$AppDatabase db, $FinancialPositionCacheTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FinancialPositionCacheTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FinancialPositionCacheTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FinancialPositionCacheTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> cacheKey = const Value.absent(),
+            Value<String> payload = const Value.absent(),
+            Value<String?> currency = const Value.absent(),
+            Value<DateTime> fetchedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              FinancialPositionCacheCompanion(
+            cacheKey: cacheKey,
+            payload: payload,
+            currency: currency,
+            fetchedAt: fetchedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String cacheKey,
+            required String payload,
+            Value<String?> currency = const Value.absent(),
+            required DateTime fetchedAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              FinancialPositionCacheCompanion.insert(
+            cacheKey: cacheKey,
+            payload: payload,
+            currency: currency,
+            fetchedAt: fetchedAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$FinancialPositionCacheTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $FinancialPositionCacheTable,
+        FinancialPositionCacheRow,
+        $$FinancialPositionCacheTableFilterComposer,
+        $$FinancialPositionCacheTableOrderingComposer,
+        $$FinancialPositionCacheTableAnnotationComposer,
+        $$FinancialPositionCacheTableCreateCompanionBuilder,
+        $$FinancialPositionCacheTableUpdateCompanionBuilder,
+        (
+          FinancialPositionCacheRow,
+          BaseReferences<_$AppDatabase, $FinancialPositionCacheTable,
+              FinancialPositionCacheRow>
+        ),
+        FinancialPositionCacheRow,
+        PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -14145,4 +15313,9 @@ class $AppDatabaseManager {
       $$BudgetTargetsTableTableManager(_db, _db.budgetTargets);
   $$BudgetPeriodStatesTableTableManager get budgetPeriodStates =>
       $$BudgetPeriodStatesTableTableManager(_db, _db.budgetPeriodStates);
+  $$HoldingsTableTableManager get holdings =>
+      $$HoldingsTableTableManager(_db, _db.holdings);
+  $$FinancialPositionCacheTableTableManager get financialPositionCache =>
+      $$FinancialPositionCacheTableTableManager(
+          _db, _db.financialPositionCache);
 }

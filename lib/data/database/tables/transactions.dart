@@ -5,7 +5,6 @@ import 'package:trakli/data/database/tables/sync_table.dart';
 import 'package:trakli/data/database/tables/wallets.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
-
 @DataClassName('Transaction')
 
 // @UseRowClass(Transaction)
@@ -18,6 +17,11 @@ class Transactions extends Table with SyncTable {
 
   @JsonKey('type')
   TextColumn get type => textEnum<TransactionType>()();
+
+  // Raw server-key string (e.g. 'investment_buy'); converted via
+  // TransactionIntent.tryParse / serverKey at the entity boundary.
+  @JsonKey('intent')
+  TextColumn get intent => text().withDefault(const Constant('regular'))();
 
   @JsonKey('description')
   TextColumn get description => text().nullable()();

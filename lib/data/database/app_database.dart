@@ -18,7 +18,9 @@ import 'package:trakli/data/database/tables/budgets.dart';
 import 'package:trakli/data/database/tables/categories.dart';
 import 'package:trakli/data/database/tables/categorizables.dart';
 import 'package:trakli/data/database/tables/configs.dart';
+import 'package:trakli/data/database/tables/financial_position_cache.dart';
 import 'package:trakli/data/database/tables/groups.dart';
+import 'package:trakli/data/database/tables/holdings.dart';
 import 'package:trakli/data/database/tables/local_changes.dart';
 import 'package:trakli/data/database/tables/media_files.dart';
 import 'package:trakli/data/database/tables/notifications.dart';
@@ -57,6 +59,8 @@ part 'app_database.g.dart';
   Budgets,
   BudgetTargets,
   BudgetPeriodStates,
+  Holdings,
+  FinancialPositionCache,
 ])
 class AppDatabase extends _$AppDatabase with SynchronizerDb {
   final Set<SyncTypeHandler> typeHandlers;
@@ -68,7 +72,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
         super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -285,6 +289,8 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     await budgetTargets.deleteAll();
     await budgetPeriodStates.deleteAll();
     await budgets.deleteAll();
+    await holdings.deleteAll();
+    await financialPositionCache.deleteAll();
   }
 }
 
@@ -311,6 +317,11 @@ extension Migrations on GeneratedDatabase {
           await m.createTable(schema.budgets);
           await m.createTable(schema.budgetTargets);
           await m.createTable(schema.budgetPeriodStates);
+        },
+        from5To6: (Migrator m, Schema6 schema) async {
+          await m.addColumn(schema.transactions, schema.transactions.intent);
+          await m.createTable(schema.holdings);
+          await m.createTable(schema.financialPositionCache);
         },
       );
 }
