@@ -57,6 +57,8 @@ import '../data/datasources/exchange-rate/exchange_rate_remote_datasource.dart'
     as _i632;
 import '../data/datasources/group/group_local_datasource.dart' as _i873;
 import '../data/datasources/group/group_remote_datasource.dart' as _i478;
+import '../data/datasources/holding/holding_local_datasource.dart' as _i1057;
+import '../data/datasources/holding/holding_remote_datasource.dart' as _i358;
 import '../data/datasources/import/import_remote_datasource.dart' as _i76;
 import '../data/datasources/media_file/media_file_local_datasource.dart'
     as _i216;
@@ -68,6 +70,9 @@ import '../data/datasources/notification/notification_remote_datasource.dart'
     as _i513;
 import '../data/datasources/party/party_local_datasource.dart' as _i655;
 import '../data/datasources/party/party_remote_datasource.dart' as _i656;
+import '../data/datasources/stats/financial_position_local_datasource.dart'
+    as _i11;
+import '../data/datasources/stats/stats_remote_datasource.dart' as _i738;
 import '../data/datasources/subscription/subscription_remote_data_source.dart'
     as _i682;
 import '../data/datasources/transaction/transaction_local_datasource.dart'
@@ -85,7 +90,9 @@ import '../data/repositories/category_repository_impl.dart' as _i324;
 import '../data/repositories/cloud_benefit_repository_imp.dart' as _i415;
 import '../data/repositories/config_repository_impl.dart' as _i379;
 import '../data/repositories/exchange_rate_imp.dart' as _i827;
+import '../data/repositories/financial_position_repository_impl.dart' as _i569;
 import '../data/repositories/group_repository_impl.dart' as _i875;
+import '../data/repositories/holding_repository_impl.dart' as _i204;
 import '../data/repositories/import_repository_impl.dart' as _i337;
 import '../data/repositories/media_repository_impl.dart' as _i74;
 import '../data/repositories/notification_repository_impl.dart' as _i888;
@@ -113,7 +120,9 @@ import '../domain/repositories/category_repository.dart' as _i410;
 import '../domain/repositories/cloud_benefit_repository.dart' as _i11;
 import '../domain/repositories/config_repository.dart' as _i899;
 import '../domain/repositories/exchange_rate_repository.dart' as _i1057;
+import '../domain/repositories/financial_position_repository.dart' as _i581;
 import '../domain/repositories/group_repository.dart' as _i957;
+import '../domain/repositories/holding_repository.dart' as _i645;
 import '../domain/repositories/import_repository.dart' as _i32;
 import '../domain/repositories/media_repository.dart' as _i442;
 import '../domain/repositories/notification_repository.dart' as _i965;
@@ -174,11 +183,20 @@ import '../domain/usecases/configs/update_config_usecase.dart' as _i436;
 import '../domain/usecases/exchange_rate/listen_to_exchange_rate.dart' as _i397;
 import '../domain/usecases/exchange_rate/update_default_currency_usecase.dart'
     as _i798;
+import '../domain/usecases/financial_position/get_financial_position_usecase.dart'
+    as _i26;
 import '../domain/usecases/group/add_group_usecase.dart' as _i353;
 import '../domain/usecases/group/delete_group_usecase.dart' as _i759;
 import '../domain/usecases/group/get_groups_usecase.dart' as _i982;
 import '../domain/usecases/group/listen_to_groups_usecase.dart' as _i146;
 import '../domain/usecases/group/update_group_usecase.dart' as _i820;
+import '../domain/usecases/holding/create_holding_usecase.dart' as _i684;
+import '../domain/usecases/holding/delete_holding_usecase.dart' as _i301;
+import '../domain/usecases/holding/get_holdings_usecase.dart' as _i83;
+import '../domain/usecases/holding/reprice_holdings_usecase.dart' as _i583;
+import '../domain/usecases/holding/search_coins_usecase.dart' as _i15;
+import '../domain/usecases/holding/update_holding_usecase.dart' as _i679;
+import '../domain/usecases/holding/watch_holdings_usecase.dart' as _i573;
 import '../domain/usecases/import/analyze_document_usecase.dart' as _i60;
 import '../domain/usecases/import/confirm_session_usecase.dart' as _i36;
 import '../domain/usecases/import/get_import_session_usecase.dart' as _i661;
@@ -242,7 +260,10 @@ import '../presentation/config/cubit/config_cubit.dart' as _i408;
 import '../presentation/config/theme_cubit/theme_cubit.dart' as _i627;
 import '../presentation/currency/cubit/currency_cubit.dart' as _i484;
 import '../presentation/exchange_rate/cubit/exchange_rate_cubit.dart' as _i311;
+import '../presentation/financial_position/cubit/financial_position_cubit.dart'
+    as _i261;
 import '../presentation/groups/cubit/group_cubit.dart' as _i676;
+import '../presentation/holdings/cubit/holding_cubit.dart' as _i103;
 import '../presentation/imports/cubit/import_cubit.dart' as _i538;
 import '../presentation/notifications/cubit/notification_cubit.dart' as _i1056;
 import '../presentation/parties/cubit/party_cubit.dart' as _i841;
@@ -282,8 +303,6 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i877.SyncLogger>(() => _i422.SyncLoggerImpl());
   gh.factory<_i91.OAuthCubit>(() => _i91.OAuthCubit(gh<_i624.OAuthService>()));
   gh.singleton<_i1063.AppVersionInfo>(() => _i1063.AppVersionInfoImpl());
-  gh.factory<_i632.ExchangeRateRemoteDataSource>(
-      () => _i632.ExchangeRateRemoteDataSourceImpl());
   gh.singleton<_i789.SharedPrefs>(() => _i789.SharedPrefsImpl());
   gh.factory<_i483.TokenManager>(() => _i483.TokenManagerImpl());
   gh.singleton<_i493.RemoteUpdateCheck>(() => _i493.RemoteUpdateCheckImpl());
@@ -314,6 +333,8 @@ _i174.GetIt $initGetIt(
       () => _i78.InAppUpdateCubit(gh<_i47.InAppUpdateService>()));
   gh.factory<_i276.AuthLocalDataSource>(
       () => _i276.AuthLocalDataSourceImpl(gh<_i704.AppDatabase>()));
+  gh.factory<_i11.FinancialPositionLocalDataSource>(
+      () => _i11.FinancialPositionLocalDataSourceImpl(gh<_i704.AppDatabase>()));
   gh.factory<_i216.MediaFileLocalDataSource>(
       () => _i216.MediaFileLocalDataSourceImpl(gh<_i704.AppDatabase>()));
   gh.factory<_i873.GroupLocalDataSource>(
@@ -345,6 +366,8 @@ _i174.GetIt $initGetIt(
       ));
   gh.factory<_i513.NotificationRemoteDataSource>(
       () => _i513.NotificationRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
+  gh.factory<_i1057.HoldingLocalDataSource>(
+      () => _i1057.HoldingLocalDataSourceImpl(gh<_i704.AppDatabase>()));
   gh.factory<_i594.RemoteConfigCubit>(
       () => _i594.RemoteConfigCubit(gh<_i466.GetRemoteFeatureConfigUseCase>()));
   gh.factory<_i877.RequestAuthorizationService>(
@@ -379,6 +402,8 @@ _i174.GetIt $initGetIt(
       () => _i624.WalletRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.factory<_i481.UserContextService>(
       () => _i481.UserContextService(gh<_i538.CrashReportingService>()));
+  gh.factory<_i632.ExchangeRateRemoteDataSource>(
+      () => _i632.ExchangeRateRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.lazySingleton<_i542.AiRepository>(
       () => _i841.AiRepositoryImpl(remote: gh<_i514.AiRemoteDataSource>()));
   gh.lazySingleton<_i32.ImportRepository>(() => _i337.ImportRepositoryImpl(
@@ -387,6 +412,8 @@ _i174.GetIt $initGetIt(
       () => _i587.ConfigRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.factory<_i79.TransactionRemoteDataSource>(
       () => _i79.TransactionRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
+  gh.factory<_i358.HoldingRemoteDataSource>(
+      () => _i358.HoldingRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.lazySingleton<_i217.NotificationSyncHandler>(
       () => _i217.NotificationSyncHandler(
             gh<_i704.AppDatabase>(),
@@ -396,6 +423,8 @@ _i174.GetIt $initGetIt(
       () => _i478.GroupRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.factory<_i760.BudgetRemoteDataSource>(
       () => _i760.BudgetRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
+  gh.factory<_i738.StatsRemoteDataSource>(
+      () => _i738.StatsRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
   gh.factory<_i961.GetCategoriesUseCase>(
       () => _i961.GetCategoriesUseCase(gh<_i410.CategoryRepository>()));
   gh.factory<_i986.UpdateCategoryUseCase>(
@@ -428,6 +457,11 @@ _i174.GetIt $initGetIt(
         remoteDataSource: gh<_i624.WalletRemoteDataSource>(),
         db: gh<_i704.AppDatabase>(),
       ));
+  gh.lazySingleton<_i581.FinancialPositionRepository>(
+      () => _i569.FinancialPositionRepositoryImpl(
+            gh<_i738.StatsRemoteDataSource>(),
+            gh<_i11.FinancialPositionLocalDataSource>(),
+          ));
   gh.factory<_i61.FetchBenefits>(
       () => _i61.FetchBenefits(gh<_i11.CloudBenefitRepository>()));
   gh.singleton<_i47.InAppUpdateService>(
@@ -502,6 +536,9 @@ _i174.GetIt $initGetIt(
         gh<_i704.AppDatabase>(),
         gh<_i760.BudgetRemoteDataSource>(),
       ));
+  gh.factory<_i26.GetFinancialPositionUseCase>(() =>
+      _i26.GetFinancialPositionUseCase(
+          gh<_i581.FinancialPositionRepository>()));
   gh.factory<_i929.GetImportSessionsUseCase>(
       () => _i929.GetImportSessionsUseCase(gh<_i32.ImportRepository>()));
   gh.factory<_i36.ConfirmSessionUseCase>(
@@ -559,12 +596,33 @@ _i174.GetIt $initGetIt(
       () => _i640.LogoutUsecase(gh<_i800.AuthRepository>()));
   gh.factory<_i684.DeleteAccountUseCase>(
       () => _i684.DeleteAccountUseCase(gh<_i800.AuthRepository>()));
+  gh.lazySingleton<_i645.HoldingRepository>(() => _i204.HoldingRepositoryImpl(
+        gh<_i358.HoldingRemoteDataSource>(),
+        gh<_i1057.HoldingLocalDataSource>(),
+        gh<_i683.PreferenceManager>(),
+      ));
   gh.lazySingleton<_i368.WalletRepository>(() => _i305.WalletRepositoryImpl(
         syncHandler: gh<_i849.WalletSyncHandler>(),
         localDataSource: gh<_i849.WalletLocalDataSource>(),
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
       ));
+  gh.factory<_i679.UpdateHoldingUseCase>(
+      () => _i679.UpdateHoldingUseCase(gh<_i645.HoldingRepository>()));
+  gh.factory<_i301.DeleteHoldingUseCase>(
+      () => _i301.DeleteHoldingUseCase(gh<_i645.HoldingRepository>()));
+  gh.factory<_i583.RepriceHoldingsUseCase>(
+      () => _i583.RepriceHoldingsUseCase(gh<_i645.HoldingRepository>()));
+  gh.factory<_i15.SearchCoinsUseCase>(
+      () => _i15.SearchCoinsUseCase(gh<_i645.HoldingRepository>()));
+  gh.factory<_i684.CreateHoldingUseCase>(
+      () => _i684.CreateHoldingUseCase(gh<_i645.HoldingRepository>()));
+  gh.factory<_i83.GetHoldingsUseCase>(
+      () => _i83.GetHoldingsUseCase(gh<_i645.HoldingRepository>()));
+  gh.factory<_i573.WatchHoldingsUseCase>(
+      () => _i573.WatchHoldingsUseCase(gh<_i645.HoldingRepository>()));
+  gh.factory<_i261.FinancialPositionCubit>(() => _i261.FinancialPositionCubit(
+      getFinancialPositionUseCase: gh<_i26.GetFinancialPositionUseCase>()));
   gh.factory<_i422.GetNotificationsUseCase>(
       () => _i422.GetNotificationsUseCase(gh<_i965.NotificationRepository>()));
   gh.factory<_i837.MarkNotificationAsReadUseCase>(() =>
@@ -574,6 +632,15 @@ _i174.GetIt $initGetIt(
         localDataSource: gh<_i873.GroupLocalDataSource>(),
         db: gh<_i704.AppDatabase>(),
         requestAuthorizationService: gh<_i877.RequestAuthorizationService>(),
+      ));
+  gh.factory<_i103.HoldingCubit>(() => _i103.HoldingCubit(
+        getHoldingsUseCase: gh<_i83.GetHoldingsUseCase>(),
+        watchHoldingsUseCase: gh<_i573.WatchHoldingsUseCase>(),
+        createHoldingUseCase: gh<_i684.CreateHoldingUseCase>(),
+        updateHoldingUseCase: gh<_i679.UpdateHoldingUseCase>(),
+        deleteHoldingUseCase: gh<_i301.DeleteHoldingUseCase>(),
+        repriceHoldingsUseCase: gh<_i583.RepriceHoldingsUseCase>(),
+        searchCoinsUseCase: gh<_i15.SearchCoinsUseCase>(),
       ));
   gh.factory<_i80.AddWalletUseCase>(
       () => _i80.AddWalletUseCase(gh<_i368.WalletRepository>()));

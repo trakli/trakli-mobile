@@ -23,6 +23,7 @@ class CreateTransactionUseCase
       params.type,
       params.datetime,
       params.walletClientId,
+      intent: params.intent,
       partyClientId: params.partyClientId,
       groupClientId: params.groupClientId,
       attachedFilePaths: params.attachedFilePaths,
@@ -35,6 +36,7 @@ class CreateTransactionParams {
   final String description;
   final List<String> categoryIds;
   final TransactionType type;
+  final TransactionIntent intent;
   final DateTime datetime;
   final String walletClientId;
   final String? partyClientId;
@@ -46,6 +48,7 @@ class CreateTransactionParams {
     required this.description,
     required this.categoryIds,
     required this.type,
+    this.intent = TransactionIntent.regular,
     required this.datetime,
     required this.walletClientId,
     this.partyClientId,

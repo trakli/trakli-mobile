@@ -13,8 +13,7 @@ import 'package:trakli/core/utils/id_helper.dart';
 @lazySingleton
 class TransactionSyncHandler
     extends SyncTypeHandler<TransactionCompleteDto, String, int>
-    with
-        RestSyncTypeHandler<TransactionCompleteDto, String, int>
+    with RestSyncTypeHandler<TransactionCompleteDto, String, int>
     implements PagedSyncTypeHandler<TransactionCompleteDto> {
   static const String entity = 'transaction';
 
@@ -166,7 +165,8 @@ class TransactionSyncHandler
           .getSingleOrNull();
 
       // Server provides these values → use them; otherwise preserve existing local values.
-      final transferId = entity.transaction.transferId ?? existingRow?.transferId;
+      final transferId =
+          entity.transaction.transferId ?? existingRow?.transferId;
       final transferClientId =
           (entity.transaction.transferClientId?.isNotEmpty ?? false)
               ? entity.transaction.transferClientId
@@ -178,6 +178,7 @@ class TransactionSyncHandler
         description: Value(entity.transaction.description),
         clientId: Value(entity.transaction.clientId),
         type: Value(entity.transaction.type),
+        intent: Value(entity.transaction.intent),
         datetime: Value(entity.transaction.datetime),
         createdAt: Value(entity.transaction.createdAt),
         lastSyncedAt: Value(entity.transaction.lastSyncedAt),

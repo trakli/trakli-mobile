@@ -12,7 +12,10 @@ import 'package:trakli/presentation/budget/budget_screen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/category/category_screen.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
+import 'package:trakli/presentation/financial_position/financial_position_screen.dart';
 import 'package:trakli/presentation/groups/my_groups_screen.dart';
+import 'package:trakli/presentation/holdings/cubit/holding_cubit.dart';
+import 'package:trakli/presentation/holdings/holdings_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
 import 'package:trakli/presentation/imports/import_hub_screen.dart';
 import 'package:trakli/presentation/parties/party_screen.dart';
@@ -228,6 +231,27 @@ class CustomDrawer extends StatelessWidget {
                           ),
                         ),
                       ),
+                      _iconMenuItem(
+                        context,
+                        icon: Icons.balance,
+                        title: LocaleKeys.fpSectionTitle.tr(),
+                        onTap: () => AppNavigator.push(
+                          context,
+                          const FinancialPositionScreen(),
+                        ),
+                      ),
+                      _iconMenuItem(
+                        context,
+                        icon: Icons.paid_outlined,
+                        title: LocaleKeys.holdingsTitle.tr(),
+                        onTap: () => AppNavigator.push(
+                          context,
+                          BlocProvider(
+                            create: (_) => getIt<HoldingCubit>(),
+                            child: const HoldingsScreen(),
+                          ),
+                        ),
+                      ),
                       InkWell(
                         onTap: () => AppNavigator.push(
                           context,
@@ -326,6 +350,40 @@ class CustomDrawer extends StatelessWidget {
           fontWeight: FontWeight.w800,
           letterSpacing: 1.6,
           color: Colors.grey.shade500,
+        ),
+      ),
+    );
+  }
+
+  Widget _iconMenuItem(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 20.sp,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

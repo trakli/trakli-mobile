@@ -7,6 +7,7 @@ import 'package:trakli/data/mappers/wallet_mapper.dart';
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/domain/entities/transaction_entity.dart';
 import 'package:trakli/data/mappers/media_file_mapper.dart';
+import 'package:trakli/presentation/utils/enums.dart';
 
 class _TransactionMapper {
   static TransactionEntity toDomain(Transaction row) {
@@ -18,6 +19,8 @@ class _TransactionMapper {
       createdAt: row.createdAt,
       datetime: row.datetime ?? row.createdAt,
       type: row.type,
+      intent:
+          TransactionIntent.tryParse(row.intent) ?? TransactionIntent.regular,
       updatedAt: row.updatedAt,
       walletClientId: row.walletClientId,
       partyClientId: row.partyClientId,

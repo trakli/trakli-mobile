@@ -13,6 +13,8 @@ class TransactionDTO {
   @JsonKey(fromJson: parseAmount)
   final double amount;
   final TransactionType type;
+  @JsonKey(defaultValue: 'regular')
+  final String? intent;
   final String? description;
   final String? datetime;
   @JsonKey(name: 'created_at')
@@ -42,6 +44,7 @@ class TransactionDTO {
     required this.id,
     required this.amount,
     required this.type,
+    this.intent,
     required this.description,
     this.datetime,
     required this.createdAt,

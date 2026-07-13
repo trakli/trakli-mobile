@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/core/usecases/usecase.dart';
 import 'package:trakli/domain/repositories/transaction_repository.dart';
+import 'package:trakli/presentation/utils/enums.dart';
 
 @injectable
 class UpdateTransactionUseCase
@@ -20,6 +21,7 @@ class UpdateTransactionUseCase
       params.categoryIds,
       params.datetime,
       params.walletClientId,
+      intent: params.intent,
       partyClientId: params.partyClientId,
       groupClientId: params.groupClientId,
     );
@@ -33,6 +35,7 @@ class UpdateTransactionParams {
   final List<String>? categoryIds;
   final DateTime? datetime;
   final String? walletClientId;
+  final TransactionIntent? intent;
   final String? partyClientId;
   final String? groupClientId;
   final List<String> attachedFilePaths;
@@ -44,6 +47,7 @@ class UpdateTransactionParams {
     this.categoryIds,
     this.datetime,
     this.walletClientId,
+    this.intent,
     this.partyClientId,
     this.groupClientId,
     this.attachedFilePaths = const [],
