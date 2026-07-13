@@ -249,15 +249,19 @@ Future<T?> showCustomPopOver<T>(
 }
 
 Future<T?> showCustomBottomSheet<T>(
-  context, {
+  BuildContext context, {
   required Widget widget,
   Color color = Colors.white,
-  double maxHeightRatio = 1,
+  double maxHeightRatio = 0.95,
 }) async {
   return showModalBottomSheet<T>(
     context: context,
     backgroundColor: color,
-    scrollControlDisabledMaxHeightRatio: maxHeightRatio,
+    isScrollControlled: true,
+    useSafeArea: true,
+    constraints: BoxConstraints(
+      maxHeight: MediaQuery.of(context).size.height * maxHeightRatio,
+    ),
     builder: (context) {
       return widget;
     },

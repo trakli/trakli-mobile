@@ -79,6 +79,24 @@ enum TransactionType {
   }
 }
 
+/// How a holding's price is maintained. `auto` = priced from CoinGecko via the
+/// backend; `manual` = user-entered unit price.
+enum HoldingPriceSource {
+  @JsonValue('manual')
+  manual,
+  @JsonValue('auto')
+  auto;
+
+  String get serverKey => this == HoldingPriceSource.auto ? 'auto' : 'manual';
+
+  bool get isAuto => this == HoldingPriceSource.auto;
+
+  static HoldingPriceSource tryParse(String? value) =>
+      value?.trim().toLowerCase() == 'auto'
+          ? HoldingPriceSource.auto
+          : HoldingPriceSource.manual;
+}
+
 enum NavigationScreen {
   home,
   statistics,
