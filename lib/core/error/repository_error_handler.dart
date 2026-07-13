@@ -14,7 +14,8 @@ class RepositoryErrorHandler {
 
       final result = await apiCall();
       return right(result);
-    } on UnauthorizedException {
+    } on UnauthorizedException catch (e) {
+      logger.e('UnauthorizedException', error: e);
       return left(const UnauthorizedFailure());
     } on ValidationException catch (e) {
       return left(ValidationFailure(e.message, errors: e.errors));
@@ -55,7 +56,7 @@ class RepositoryErrorHandler {
       },
       none: (_) => ServerException('No error'),
       notFound: (_) => NotFoundException('Resource not found'),
-      duplicate: (DuplicateFailure f) => DuplicateException(f.message), 
+      duplicate: (DuplicateFailure f) => DuplicateException(f.message),
       cancel: (CancelFailure value) => CancelException('Operation cancelled'),
     );
   }

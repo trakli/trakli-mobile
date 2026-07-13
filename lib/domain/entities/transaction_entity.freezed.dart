@@ -27,6 +27,7 @@ mixin _$TransactionEntity {
   DateTime get updatedAt => throw _privateConstructorUsedError;
   DateTime get datetime => throw _privateConstructorUsedError;
   TransactionType get type => throw _privateConstructorUsedError;
+  TransactionIntent get intent => throw _privateConstructorUsedError;
   DateTime? get lastSyncedAt => throw _privateConstructorUsedError;
   String get rev => throw _privateConstructorUsedError;
   String get walletClientId => throw _privateConstructorUsedError;
@@ -59,6 +60,7 @@ abstract class $TransactionEntityCopyWith<$Res> {
       DateTime updatedAt,
       DateTime datetime,
       TransactionType type,
+      TransactionIntent intent,
       DateTime? lastSyncedAt,
       String rev,
       String walletClientId,
@@ -90,6 +92,7 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
     Object? updatedAt = null,
     Object? datetime = null,
     Object? type = null,
+    Object? intent = null,
     Object? lastSyncedAt = freezed,
     Object? rev = null,
     Object? walletClientId = null,
@@ -127,6 +130,10 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransactionType,
+      intent: null == intent
+          ? _value.intent
+          : intent // ignore: cast_nullable_to_non_nullable
+              as TransactionIntent,
       lastSyncedAt: freezed == lastSyncedAt
           ? _value.lastSyncedAt
           : lastSyncedAt // ignore: cast_nullable_to_non_nullable
@@ -175,6 +182,7 @@ abstract class _$$TransactionEntityImplCopyWith<$Res>
       DateTime updatedAt,
       DateTime datetime,
       TransactionType type,
+      TransactionIntent intent,
       DateTime? lastSyncedAt,
       String rev,
       String walletClientId,
@@ -204,6 +212,7 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
     Object? updatedAt = null,
     Object? datetime = null,
     Object? type = null,
+    Object? intent = null,
     Object? lastSyncedAt = freezed,
     Object? rev = null,
     Object? walletClientId = null,
@@ -241,6 +250,10 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransactionType,
+      intent: null == intent
+          ? _value.intent
+          : intent // ignore: cast_nullable_to_non_nullable
+              as TransactionIntent,
       lastSyncedAt: freezed == lastSyncedAt
           ? _value.lastSyncedAt
           : lastSyncedAt // ignore: cast_nullable_to_non_nullable
@@ -284,6 +297,7 @@ class _$TransactionEntityImpl implements _TransactionEntity {
       required this.updatedAt,
       required this.datetime,
       required this.type,
+      this.intent = TransactionIntent.regular,
       this.lastSyncedAt,
       this.rev = '1',
       required this.walletClientId,
@@ -310,6 +324,9 @@ class _$TransactionEntityImpl implements _TransactionEntity {
   @override
   final TransactionType type;
   @override
+  @JsonKey()
+  final TransactionIntent intent;
+  @override
   final DateTime? lastSyncedAt;
   @override
   @JsonKey()
@@ -327,7 +344,7 @@ class _$TransactionEntityImpl implements _TransactionEntity {
 
   @override
   String toString() {
-    return 'TransactionEntity(clientId: $clientId, amount: $amount, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, datetime: $datetime, type: $type, lastSyncedAt: $lastSyncedAt, rev: $rev, walletClientId: $walletClientId, partyClientId: $partyClientId, groupClientId: $groupClientId, transferId: $transferId, transferClientId: $transferClientId)';
+    return 'TransactionEntity(clientId: $clientId, amount: $amount, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, datetime: $datetime, type: $type, intent: $intent, lastSyncedAt: $lastSyncedAt, rev: $rev, walletClientId: $walletClientId, partyClientId: $partyClientId, groupClientId: $groupClientId, transferId: $transferId, transferClientId: $transferClientId)';
   }
 
   @override
@@ -347,6 +364,7 @@ class _$TransactionEntityImpl implements _TransactionEntity {
             (identical(other.datetime, datetime) ||
                 other.datetime == datetime) &&
             (identical(other.type, type) || other.type == type) &&
+            (identical(other.intent, intent) || other.intent == intent) &&
             (identical(other.lastSyncedAt, lastSyncedAt) ||
                 other.lastSyncedAt == lastSyncedAt) &&
             (identical(other.rev, rev) || other.rev == rev) &&
@@ -373,6 +391,7 @@ class _$TransactionEntityImpl implements _TransactionEntity {
       updatedAt,
       datetime,
       type,
+      intent,
       lastSyncedAt,
       rev,
       walletClientId,
@@ -407,6 +426,7 @@ abstract class _TransactionEntity implements TransactionEntity {
       required final DateTime updatedAt,
       required final DateTime datetime,
       required final TransactionType type,
+      final TransactionIntent intent,
       final DateTime? lastSyncedAt,
       final String rev,
       required final String walletClientId,
@@ -432,6 +452,8 @@ abstract class _TransactionEntity implements TransactionEntity {
   DateTime get datetime;
   @override
   TransactionType get type;
+  @override
+  TransactionIntent get intent;
   @override
   DateTime? get lastSyncedAt;
   @override

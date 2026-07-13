@@ -16,6 +16,8 @@ _$TransactionEntityImpl _$$TransactionEntityImplFromJson(
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       datetime: DateTime.parse(json['datetime'] as String),
       type: $enumDecode(_$TransactionTypeEnumMap, json['type']),
+      intent: $enumDecodeNullable(_$TransactionIntentEnumMap, json['intent']) ??
+          TransactionIntent.regular,
       lastSyncedAt: json['lastSyncedAt'] == null
           ? null
           : DateTime.parse(json['lastSyncedAt'] as String),
@@ -37,6 +39,7 @@ Map<String, dynamic> _$$TransactionEntityImplToJson(
       'updatedAt': instance.updatedAt.toIso8601String(),
       'datetime': instance.datetime.toIso8601String(),
       'type': _$TransactionTypeEnumMap[instance.type]!,
+      'intent': _$TransactionIntentEnumMap[instance.intent]!,
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
       'rev': instance.rev,
       'walletClientId': instance.walletClientId,
@@ -49,4 +52,15 @@ Map<String, dynamic> _$$TransactionEntityImplToJson(
 const _$TransactionTypeEnumMap = {
   TransactionType.income: 'income',
   TransactionType.expense: 'expense',
+};
+
+const _$TransactionIntentEnumMap = {
+  TransactionIntent.regular: 'regular',
+  TransactionIntent.loanReceived: 'loan_received',
+  TransactionIntent.loanRepayment: 'loan_repayment',
+  TransactionIntent.debtOwed: 'debt_owed',
+  TransactionIntent.debtSettled: 'debt_settled',
+  TransactionIntent.investmentBuy: 'investment_buy',
+  TransactionIntent.investmentReturn: 'investment_return',
+  TransactionIntent.gift: 'gift',
 };

@@ -23,6 +23,7 @@ abstract class TransactionLocalDataSource {
     String? partyClientId,
     String? groupClientId,
     List<String> attachedFilePaths = const [],
+    TransactionIntent intent = TransactionIntent.regular,
   });
   Future<TransactionCompleteDto> updateTransaction(
     String id, {
@@ -34,6 +35,7 @@ abstract class TransactionLocalDataSource {
     String? partyClientId,
     String? groupClientId,
     String? transferClientId,
+    TransactionIntent? intent,
   });
 
   Future<TransactionCompleteDto> deleteTransaction(String id);
@@ -258,6 +260,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     String? partyClientId,
     String? groupClientId,
     List<String> attachedFilePaths = const [],
+    TransactionIntent intent = TransactionIntent.regular,
   }) async {
     // Reads outside transaction to avoid long blocking.
     for (var categoryId in categoryIds) {
@@ -319,6 +322,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
               amount: amount,
               description: Value(description),
               type: type,
+              intent: Value(intent.serverKey),
               datetime: Value(utcDatetime),
               updatedAt: Value(now),
               createdAt: Value(now),
@@ -407,6 +411,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     List<String>? categoryIds,
     DateTime? datetime,
     String? walletClientId,
+    TransactionIntent? intent,
     String? partyClientId,
     String? groupClientId,
     String? transferClientId,
@@ -487,6 +492,8 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
           amount: amount != null ? Value(amount) : const Value.absent(),
           description:
               description != null ? Value(description) : const Value.absent(),
+          intent:
+              intent != null ? Value(intent.serverKey) : const Value.absent(),
           datetime: datetime != null
               ? Value(getFormattedUtcDateTimeFromUtc(datetime))
               : const Value.absent(),
@@ -604,7 +611,8 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     }..removeWhere((g) => g == null);
 
     for (final walletId in affectedWallets) {
-      for (final groupId in affectedGroups.isEmpty ? <String?>{null} : affectedGroups) {
+      for (final groupId
+          in affectedGroups.isEmpty ? <String?>{null} : affectedGroups) {
         await _budgetProgressRecomputer.recomputeAffectedBy(
           walletClientId: walletId,
           groupClientId: groupId,
@@ -680,8 +688,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     await _budgetProgressRecomputer.recomputeAffectedBy(
       walletClientId: result.wallet.clientId,
       groupClientId: result.group?.clientId,
-      categoryClientIds:
-          result.categories.map((c) => c.clientId).toSet(),
+      categoryClientIds: result.categories.map((c) => c.clientId).toSet(),
     );
     return result;
   }

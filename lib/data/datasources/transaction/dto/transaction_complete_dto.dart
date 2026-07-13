@@ -195,6 +195,7 @@ class TransactionCompleteDto with _$TransactionCompleteDto {
       createdAt: DateTime.parse(transactionDto.createdAt),
       updatedAt: DateTime.parse(transactionDto.updatedAt),
       type: transactionDto.type,
+      intent: transactionDto.intent ?? 'regular',
       datetime: transactionDto.datetime != null
           ? DateTime.parse(transactionDto.datetime!)
           : null,

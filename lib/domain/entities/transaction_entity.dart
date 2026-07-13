@@ -14,6 +14,7 @@ class TransactionEntity with _$TransactionEntity {
     required DateTime updatedAt,
     required DateTime datetime,
     required TransactionType type,
+    @Default(TransactionIntent.regular) TransactionIntent intent,
     DateTime? lastSyncedAt,
     @Default('1') String rev,
     required String walletClientId,

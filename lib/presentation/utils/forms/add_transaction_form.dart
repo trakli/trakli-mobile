@@ -27,6 +27,7 @@ import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/wallets/add_wallet_screen.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_display_cache.dart';
+import 'package:trakli/presentation/transactions/transaction_intent_selector.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_list_item.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_list_view.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_source_row.dart';
@@ -67,6 +68,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
 
   // TextEditingController partyController = TextEditingController();
   Currency? currency;
+  TransactionIntent _selectedIntent = TransactionIntent.regular;
   WalletEntity? selectedWallet;
   CategoryEntity? selectedCategory;
   PartyEntity? selectedParty;
@@ -122,6 +124,11 @@ class _AddTransactionFormState extends State<AddTransactionForm>
   void initState() {
     super.initState();
     if (widget.transactionCompleteEntity != null) {
+      final existingIntent =
+          widget.transactionCompleteEntity!.transaction.intent;
+      _selectedIntent = existingIntent.availableFor(widget.transactionType)
+          ? existingIntent
+          : TransactionIntent.regular;
       setAmountController(currency);
       descriptionController.text =
           widget.transactionCompleteEntity!.transaction.description;
@@ -262,6 +269,13 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                   )
                 ],
               ),
+            ),
+            SizedBox(height: 16.h),
+            TransactionIntentSelector(
+              type: widget.transactionType,
+              selected: _selectedIntent,
+              accentColor: widget.accentColor,
+              onChanged: (intent) => setState(() => _selectedIntent = intent),
             ),
             SizedBox(height: 16.h),
             Text(
@@ -752,6 +766,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                                   amount: amount,
                                   description: description,
                                   datetime: date,
+                                  intent: _selectedIntent,
                                   categoryIds: selectedCategory != null
                                       ? [selectedCategory!.clientId]
                                       : null,
@@ -774,6 +789,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                                   amount: amount,
                                   description: description,
                                   type: widget.transactionType,
+                                  intent: _selectedIntent,
                                   datetime: date,
                                   walletClientId: selectedWallet!.clientId,
                                   categoryIds: selectedCategory != null

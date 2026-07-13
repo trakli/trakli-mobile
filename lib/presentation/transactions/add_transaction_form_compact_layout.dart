@@ -21,6 +21,7 @@ import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
 import 'package:trakli/presentation/parties/add_party_screen.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
+import 'package:trakli/presentation/transactions/transaction_intent_selector.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/custom_auto_complete_search.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -68,6 +69,7 @@ class _AddTransactionFormCompactLayoutState
   CategoryEntity? _selectedCategory;
   WalletEntity? _selectedWallet;
   PartyEntity? _selectedParty;
+  TransactionIntent _selectedIntent = TransactionIntent.regular;
   List<String> attachedFilePaths = [];
   List<MediaFileEntity> existingMedia = [];
   final _formKey = GlobalKey<FormState>();
@@ -111,6 +113,12 @@ class _AddTransactionFormCompactLayoutState
     if (widget.transactionCompleteEntity != null) {
       final wallet = widget.transactionCompleteEntity?.wallet;
       setCurrencyFromWallet(wallet);
+
+      final existingIntent =
+          widget.transactionCompleteEntity!.transaction.intent;
+      _selectedIntent = existingIntent.availableFor(widget.transactionType)
+          ? existingIntent
+          : TransactionIntent.regular;
 
       amountController.text =
           widget.transactionCompleteEntity!.transaction.amount.toString();
@@ -279,6 +287,13 @@ class _AddTransactionFormCompactLayoutState
                   )
                 ],
               ),
+            ),
+            SizedBox(height: 16.h),
+            TransactionIntentSelector(
+              type: widget.transactionType,
+              selected: _selectedIntent,
+              accentColor: widget.accentColor,
+              onChanged: (intent) => setState(() => _selectedIntent = intent),
             ),
             SizedBox(height: 16.h),
             IntrinsicHeight(
@@ -625,6 +640,7 @@ class _AddTransactionFormCompactLayoutState
                                   amount: amount,
                                   description: description,
                                   datetime: date,
+                                  intent: _selectedIntent,
                                   categoryIds: _selectedCategory != null
                                       ? [_selectedCategory!.clientId]
                                       : [],
@@ -641,6 +657,7 @@ class _AddTransactionFormCompactLayoutState
                                       ? [_selectedCategory!.clientId]
                                       : [],
                                   type: widget.transactionType,
+                                  intent: _selectedIntent,
                                   datetime: date,
                                   walletClientId:
                                       _selectedWallet?.clientId ?? '',

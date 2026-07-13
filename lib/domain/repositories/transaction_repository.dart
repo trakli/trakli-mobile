@@ -15,6 +15,7 @@ abstract class TransactionRepository {
     TransactionType type,
     DateTime datetime,
     String walletClientId, {
+    TransactionIntent intent = TransactionIntent.regular,
     String? partyClientId,
     String? groupClientId,
     List<String> attachedFilePaths = const [],
@@ -27,6 +28,7 @@ abstract class TransactionRepository {
     List<String>? categoryIds,
     DateTime? datetime,
     String? walletClientId, {
+    TransactionIntent? intent,
     String? partyClientId,
     String? groupClientId,
   });

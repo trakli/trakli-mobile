@@ -115,7 +115,7 @@ class _AiChatViewState extends State<_AiChatView> {
       backgroundColor: tones.bgPage,
       appBar: PageAppBar(
         title: LocaleKeys.aiChatTitle.tr(),
-        showBack: false,
+        showBack: true,
         actions: [
           PageAppBarAction(
             icon: Icons.history_rounded,
