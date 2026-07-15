@@ -51,4 +51,26 @@ class Transactions extends Table with SyncTable {
 
   @JsonKey('transfer_client_id')
   TextColumn get transferClientId => text().nullable()();
+
+  // Refund state (server-derived appends). Set via the dedicated
+  // POST/DELETE /transactions/{id}/refund endpoints, not a normal update.
+  @JsonKey('is_refund')
+  BoolColumn get isRefund => boolean().withDefault(const Constant(false))();
+
+  @JsonKey('refund_of_transaction_id')
+  IntColumn get refundOfTransactionId => integer().nullable()();
+
+  // Recurrence rule (hasOne on the server; stored flat here). A non-null
+  // period means the transaction recurs. next_scheduled_at is server-owned.
+  @JsonKey('recurrence_period')
+  TextColumn get recurrencePeriod => text().nullable()();
+
+  @JsonKey('recurrence_interval')
+  IntColumn get recurrenceInterval => integer().nullable()();
+
+  @JsonKey('recurrence_ends_at')
+  DateTimeColumn get recurrenceEndsAt => dateTime().nullable()();
+
+  @JsonKey('next_scheduled_at')
+  DateTimeColumn get recurrenceNextScheduledAt => dateTime().nullable()();
 }
