@@ -1,5 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:trakli/core/error/failures/failures.dart';
+import 'package:trakli/domain/entities/recurrence_input.dart';
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'dart:async';
@@ -19,6 +20,9 @@ abstract class TransactionRepository {
     String? partyClientId,
     String? groupClientId,
     List<String> attachedFilePaths = const [],
+    RecurrenceInput? recurrence,
+    bool isRefund = false,
+    String? refundOfClientId,
   });
 
   Future<Either<Failure, Unit>> updateTransaction(
@@ -31,9 +35,23 @@ abstract class TransactionRepository {
     TransactionIntent? intent,
     String? partyClientId,
     String? groupClientId,
+    RecurrenceInput? recurrence,
+    bool clearRecurrence = false,
+    bool? isRefund,
+    String? refundOfClientId,
   });
 
   Future<Either<Failure, Unit>> deleteTransaction(String id);
+
+  /// Marks the income transaction [refundClientId] as a refund. Optionally links
+  /// it to the original expense [originalClientId] (null = generic refund).
+  /// Requires the refund transaction to be synced (have a server id).
+  Future<Either<Failure, Unit>> markTransactionAsRefund(
+    String refundClientId,
+    String? originalClientId,
+  );
+
+  Future<Either<Failure, Unit>> unmarkTransactionRefund(String refundClientId);
 
   Stream<Either<Failure, List<TransactionCompleteEntity>>>
       listenToTransactions();

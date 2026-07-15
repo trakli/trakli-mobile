@@ -16,6 +16,7 @@ import 'package:trakli/domain/usecases/transaction/add_media_to_transaction_usec
 import 'package:trakli/domain/usecases/transaction/delete_media_usecase.dart';
 import 'package:trakli/domain/usecases/transaction/get_file_content_usecase.dart';
 import 'package:trakli/domain/usecases/transaction/get_media_for_transaction_usecase.dart';
+import 'package:trakli/domain/entities/recurrence_input.dart';
 import 'package:trakli/domain/usecases/transaction/usecase.dart';
 
 part 'transaction_state.dart';
@@ -31,6 +32,8 @@ class TransactionCubit extends Cubit<TransactionState> {
   final GetFileContentUseCase getFileContentUseCase;
   final UpdateTransactionUseCase updateTransactionUseCase;
   final DeleteTransactionUseCase deleteTransactionUseCase;
+  final MarkTransactionRefundUseCase markTransactionRefundUseCase;
+  final UnmarkTransactionRefundUseCase unmarkTransactionRefundUseCase;
   final GetWalletsUseCase getWalletsUseCase;
   final ListenToTransactionsUseCase listenToTransactionsUseCase;
   StreamSubscription? _transactionSubscription;
@@ -44,6 +47,8 @@ class TransactionCubit extends Cubit<TransactionState> {
     required this.getFileContentUseCase,
     required this.updateTransactionUseCase,
     required this.deleteTransactionUseCase,
+    required this.markTransactionRefundUseCase,
+    required this.unmarkTransactionRefundUseCase,
     required this.listenToTransactionsUseCase,
     required this.getWalletsUseCase,
   }) : super(TransactionState.initial()) {
@@ -104,6 +109,9 @@ class TransactionCubit extends Cubit<TransactionState> {
     required String walletClientId,
     String? partyClientId,
     List<String> attachedFilePaths = const [],
+    RecurrenceInput? recurrence,
+    bool isRefund = false,
+    String? refundOfClientId,
   }) async {
     emit(state.copyWith(isSaving: true, failure: const Failure.none()));
     final result = await createTransactionUseCase(
@@ -118,6 +126,9 @@ class TransactionCubit extends Cubit<TransactionState> {
         partyClientId: partyClientId,
         groupClientId: state.selectedGroup?.clientId,
         attachedFilePaths: attachedFilePaths,
+        recurrence: recurrence,
+        isRefund: isRefund,
+        refundOfClientId: refundOfClientId,
       ),
     );
     await result.fold(
@@ -147,6 +158,10 @@ class TransactionCubit extends Cubit<TransactionState> {
     String? partyClientId,
     String? groupClientId,
     List<String> attachedFilePaths = const [],
+    RecurrenceInput? recurrence,
+    bool clearRecurrence = false,
+    bool? isRefund,
+    String? refundOfClientId,
   }) async {
     emit(state.copyWith(isSaving: true, failure: const Failure.none()));
     final result = await updateTransactionUseCase(
@@ -161,6 +176,10 @@ class TransactionCubit extends Cubit<TransactionState> {
         partyClientId: partyClientId,
         groupClientId: groupClientId,
         attachedFilePaths: attachedFilePaths,
+        recurrence: recurrence,
+        clearRecurrence: clearRecurrence,
+        isRefund: isRefund,
+        refundOfClientId: refundOfClientId,
       ),
     );
     await result.fold(
@@ -229,6 +248,34 @@ class TransactionCubit extends Cubit<TransactionState> {
         isDeleting: false,
         failure: const Failure.none(),
       )),
+    );
+  }
+
+  Future<void> markAsRefund({
+    required String refundClientId,
+    String? originalClientId,
+  }) async {
+    emit(state.copyWith(isSaving: true, failure: const Failure.none()));
+    final result = await markTransactionRefundUseCase(
+      MarkTransactionRefundParams(
+        refundClientId: refundClientId,
+        originalClientId: originalClientId,
+      ),
+    );
+    result.fold(
+      (failure) => emit(state.copyWith(isSaving: false, failure: failure)),
+      (_) =>
+          emit(state.copyWith(isSaving: false, failure: const Failure.none())),
+    );
+  }
+
+  Future<void> removeRefund(String refundClientId) async {
+    emit(state.copyWith(isSaving: true, failure: const Failure.none()));
+    final result = await unmarkTransactionRefundUseCase(refundClientId);
+    result.fold(
+      (failure) => emit(state.copyWith(isSaving: false, failure: failure)),
+      (_) =>
+          emit(state.copyWith(isSaving: false, failure: const Failure.none())),
     );
   }
 

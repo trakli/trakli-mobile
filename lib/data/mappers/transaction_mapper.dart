@@ -13,6 +13,7 @@ class _TransactionMapper {
   static TransactionEntity toDomain(Transaction row) {
     return TransactionEntity(
       clientId: row.clientId,
+      id: row.id,
       amount: row.amount,
       description: row.description ?? '',
       lastSyncedAt: row.lastSyncedAt,
@@ -21,6 +22,12 @@ class _TransactionMapper {
       type: row.type,
       intent:
           TransactionIntent.tryParse(row.intent) ?? TransactionIntent.regular,
+      isRefund: row.isRefund,
+      refundOfTransactionId: row.refundOfTransactionId,
+      recurrencePeriod: row.recurrencePeriod,
+      recurrenceInterval: row.recurrenceInterval,
+      recurrenceEndsAt: row.recurrenceEndsAt,
+      recurrenceNextScheduledAt: row.recurrenceNextScheduledAt,
       updatedAt: row.updatedAt,
       walletClientId: row.walletClientId,
       partyClientId: row.partyClientId,

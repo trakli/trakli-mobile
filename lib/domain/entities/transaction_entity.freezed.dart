@@ -21,6 +21,7 @@ TransactionEntity _$TransactionEntityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$TransactionEntity {
   String get clientId => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
   double get amount => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
@@ -28,6 +29,12 @@ mixin _$TransactionEntity {
   DateTime get datetime => throw _privateConstructorUsedError;
   TransactionType get type => throw _privateConstructorUsedError;
   TransactionIntent get intent => throw _privateConstructorUsedError;
+  bool get isRefund => throw _privateConstructorUsedError;
+  int? get refundOfTransactionId => throw _privateConstructorUsedError;
+  String? get recurrencePeriod => throw _privateConstructorUsedError;
+  int? get recurrenceInterval => throw _privateConstructorUsedError;
+  DateTime? get recurrenceEndsAt => throw _privateConstructorUsedError;
+  DateTime? get recurrenceNextScheduledAt => throw _privateConstructorUsedError;
   DateTime? get lastSyncedAt => throw _privateConstructorUsedError;
   String get rev => throw _privateConstructorUsedError;
   String get walletClientId => throw _privateConstructorUsedError;
@@ -54,6 +61,7 @@ abstract class $TransactionEntityCopyWith<$Res> {
   @useResult
   $Res call(
       {String clientId,
+      int? id,
       double amount,
       String description,
       DateTime createdAt,
@@ -61,6 +69,12 @@ abstract class $TransactionEntityCopyWith<$Res> {
       DateTime datetime,
       TransactionType type,
       TransactionIntent intent,
+      bool isRefund,
+      int? refundOfTransactionId,
+      String? recurrencePeriod,
+      int? recurrenceInterval,
+      DateTime? recurrenceEndsAt,
+      DateTime? recurrenceNextScheduledAt,
       DateTime? lastSyncedAt,
       String rev,
       String walletClientId,
@@ -86,6 +100,7 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
   @override
   $Res call({
     Object? clientId = null,
+    Object? id = freezed,
     Object? amount = null,
     Object? description = null,
     Object? createdAt = null,
@@ -93,6 +108,12 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
     Object? datetime = null,
     Object? type = null,
     Object? intent = null,
+    Object? isRefund = null,
+    Object? refundOfTransactionId = freezed,
+    Object? recurrencePeriod = freezed,
+    Object? recurrenceInterval = freezed,
+    Object? recurrenceEndsAt = freezed,
+    Object? recurrenceNextScheduledAt = freezed,
     Object? lastSyncedAt = freezed,
     Object? rev = null,
     Object? walletClientId = null,
@@ -106,6 +127,10 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
           ? _value.clientId
           : clientId // ignore: cast_nullable_to_non_nullable
               as String,
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
       amount: null == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -134,6 +159,30 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
           ? _value.intent
           : intent // ignore: cast_nullable_to_non_nullable
               as TransactionIntent,
+      isRefund: null == isRefund
+          ? _value.isRefund
+          : isRefund // ignore: cast_nullable_to_non_nullable
+              as bool,
+      refundOfTransactionId: freezed == refundOfTransactionId
+          ? _value.refundOfTransactionId
+          : refundOfTransactionId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      recurrencePeriod: freezed == recurrencePeriod
+          ? _value.recurrencePeriod
+          : recurrencePeriod // ignore: cast_nullable_to_non_nullable
+              as String?,
+      recurrenceInterval: freezed == recurrenceInterval
+          ? _value.recurrenceInterval
+          : recurrenceInterval // ignore: cast_nullable_to_non_nullable
+              as int?,
+      recurrenceEndsAt: freezed == recurrenceEndsAt
+          ? _value.recurrenceEndsAt
+          : recurrenceEndsAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      recurrenceNextScheduledAt: freezed == recurrenceNextScheduledAt
+          ? _value.recurrenceNextScheduledAt
+          : recurrenceNextScheduledAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       lastSyncedAt: freezed == lastSyncedAt
           ? _value.lastSyncedAt
           : lastSyncedAt // ignore: cast_nullable_to_non_nullable
@@ -176,6 +225,7 @@ abstract class _$$TransactionEntityImplCopyWith<$Res>
   @useResult
   $Res call(
       {String clientId,
+      int? id,
       double amount,
       String description,
       DateTime createdAt,
@@ -183,6 +233,12 @@ abstract class _$$TransactionEntityImplCopyWith<$Res>
       DateTime datetime,
       TransactionType type,
       TransactionIntent intent,
+      bool isRefund,
+      int? refundOfTransactionId,
+      String? recurrencePeriod,
+      int? recurrenceInterval,
+      DateTime? recurrenceEndsAt,
+      DateTime? recurrenceNextScheduledAt,
       DateTime? lastSyncedAt,
       String rev,
       String walletClientId,
@@ -206,6 +262,7 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? clientId = null,
+    Object? id = freezed,
     Object? amount = null,
     Object? description = null,
     Object? createdAt = null,
@@ -213,6 +270,12 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
     Object? datetime = null,
     Object? type = null,
     Object? intent = null,
+    Object? isRefund = null,
+    Object? refundOfTransactionId = freezed,
+    Object? recurrencePeriod = freezed,
+    Object? recurrenceInterval = freezed,
+    Object? recurrenceEndsAt = freezed,
+    Object? recurrenceNextScheduledAt = freezed,
     Object? lastSyncedAt = freezed,
     Object? rev = null,
     Object? walletClientId = null,
@@ -226,6 +289,10 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
           ? _value.clientId
           : clientId // ignore: cast_nullable_to_non_nullable
               as String,
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
       amount: null == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -254,6 +321,30 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
           ? _value.intent
           : intent // ignore: cast_nullable_to_non_nullable
               as TransactionIntent,
+      isRefund: null == isRefund
+          ? _value.isRefund
+          : isRefund // ignore: cast_nullable_to_non_nullable
+              as bool,
+      refundOfTransactionId: freezed == refundOfTransactionId
+          ? _value.refundOfTransactionId
+          : refundOfTransactionId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      recurrencePeriod: freezed == recurrencePeriod
+          ? _value.recurrencePeriod
+          : recurrencePeriod // ignore: cast_nullable_to_non_nullable
+              as String?,
+      recurrenceInterval: freezed == recurrenceInterval
+          ? _value.recurrenceInterval
+          : recurrenceInterval // ignore: cast_nullable_to_non_nullable
+              as int?,
+      recurrenceEndsAt: freezed == recurrenceEndsAt
+          ? _value.recurrenceEndsAt
+          : recurrenceEndsAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      recurrenceNextScheduledAt: freezed == recurrenceNextScheduledAt
+          ? _value.recurrenceNextScheduledAt
+          : recurrenceNextScheduledAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       lastSyncedAt: freezed == lastSyncedAt
           ? _value.lastSyncedAt
           : lastSyncedAt // ignore: cast_nullable_to_non_nullable
@@ -291,6 +382,7 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
 class _$TransactionEntityImpl implements _TransactionEntity {
   const _$TransactionEntityImpl(
       {required this.clientId,
+      this.id,
       required this.amount,
       required this.description,
       required this.createdAt,
@@ -298,6 +390,12 @@ class _$TransactionEntityImpl implements _TransactionEntity {
       required this.datetime,
       required this.type,
       this.intent = TransactionIntent.regular,
+      this.isRefund = false,
+      this.refundOfTransactionId,
+      this.recurrencePeriod,
+      this.recurrenceInterval,
+      this.recurrenceEndsAt,
+      this.recurrenceNextScheduledAt,
       this.lastSyncedAt,
       this.rev = '1',
       required this.walletClientId,
@@ -311,6 +409,8 @@ class _$TransactionEntityImpl implements _TransactionEntity {
 
   @override
   final String clientId;
+  @override
+  final int? id;
   @override
   final double amount;
   @override
@@ -326,6 +426,19 @@ class _$TransactionEntityImpl implements _TransactionEntity {
   @override
   @JsonKey()
   final TransactionIntent intent;
+  @override
+  @JsonKey()
+  final bool isRefund;
+  @override
+  final int? refundOfTransactionId;
+  @override
+  final String? recurrencePeriod;
+  @override
+  final int? recurrenceInterval;
+  @override
+  final DateTime? recurrenceEndsAt;
+  @override
+  final DateTime? recurrenceNextScheduledAt;
   @override
   final DateTime? lastSyncedAt;
   @override
@@ -344,7 +457,7 @@ class _$TransactionEntityImpl implements _TransactionEntity {
 
   @override
   String toString() {
-    return 'TransactionEntity(clientId: $clientId, amount: $amount, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, datetime: $datetime, type: $type, intent: $intent, lastSyncedAt: $lastSyncedAt, rev: $rev, walletClientId: $walletClientId, partyClientId: $partyClientId, groupClientId: $groupClientId, transferId: $transferId, transferClientId: $transferClientId)';
+    return 'TransactionEntity(clientId: $clientId, id: $id, amount: $amount, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, datetime: $datetime, type: $type, intent: $intent, isRefund: $isRefund, refundOfTransactionId: $refundOfTransactionId, recurrencePeriod: $recurrencePeriod, recurrenceInterval: $recurrenceInterval, recurrenceEndsAt: $recurrenceEndsAt, recurrenceNextScheduledAt: $recurrenceNextScheduledAt, lastSyncedAt: $lastSyncedAt, rev: $rev, walletClientId: $walletClientId, partyClientId: $partyClientId, groupClientId: $groupClientId, transferId: $transferId, transferClientId: $transferClientId)';
   }
 
   @override
@@ -354,6 +467,7 @@ class _$TransactionEntityImpl implements _TransactionEntity {
             other is _$TransactionEntityImpl &&
             (identical(other.clientId, clientId) ||
                 other.clientId == clientId) &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -365,6 +479,19 @@ class _$TransactionEntityImpl implements _TransactionEntity {
                 other.datetime == datetime) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.intent, intent) || other.intent == intent) &&
+            (identical(other.isRefund, isRefund) ||
+                other.isRefund == isRefund) &&
+            (identical(other.refundOfTransactionId, refundOfTransactionId) ||
+                other.refundOfTransactionId == refundOfTransactionId) &&
+            (identical(other.recurrencePeriod, recurrencePeriod) ||
+                other.recurrencePeriod == recurrencePeriod) &&
+            (identical(other.recurrenceInterval, recurrenceInterval) ||
+                other.recurrenceInterval == recurrenceInterval) &&
+            (identical(other.recurrenceEndsAt, recurrenceEndsAt) ||
+                other.recurrenceEndsAt == recurrenceEndsAt) &&
+            (identical(other.recurrenceNextScheduledAt,
+                    recurrenceNextScheduledAt) ||
+                other.recurrenceNextScheduledAt == recurrenceNextScheduledAt) &&
             (identical(other.lastSyncedAt, lastSyncedAt) ||
                 other.lastSyncedAt == lastSyncedAt) &&
             (identical(other.rev, rev) || other.rev == rev) &&
@@ -382,23 +509,31 @@ class _$TransactionEntityImpl implements _TransactionEntity {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      clientId,
-      amount,
-      description,
-      createdAt,
-      updatedAt,
-      datetime,
-      type,
-      intent,
-      lastSyncedAt,
-      rev,
-      walletClientId,
-      partyClientId,
-      groupClientId,
-      transferId,
-      transferClientId);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        clientId,
+        id,
+        amount,
+        description,
+        createdAt,
+        updatedAt,
+        datetime,
+        type,
+        intent,
+        isRefund,
+        refundOfTransactionId,
+        recurrencePeriod,
+        recurrenceInterval,
+        recurrenceEndsAt,
+        recurrenceNextScheduledAt,
+        lastSyncedAt,
+        rev,
+        walletClientId,
+        partyClientId,
+        groupClientId,
+        transferId,
+        transferClientId
+      ]);
 
   /// Create a copy of TransactionEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -420,6 +555,7 @@ class _$TransactionEntityImpl implements _TransactionEntity {
 abstract class _TransactionEntity implements TransactionEntity {
   const factory _TransactionEntity(
       {required final String clientId,
+      final int? id,
       required final double amount,
       required final String description,
       required final DateTime createdAt,
@@ -427,6 +563,12 @@ abstract class _TransactionEntity implements TransactionEntity {
       required final DateTime datetime,
       required final TransactionType type,
       final TransactionIntent intent,
+      final bool isRefund,
+      final int? refundOfTransactionId,
+      final String? recurrencePeriod,
+      final int? recurrenceInterval,
+      final DateTime? recurrenceEndsAt,
+      final DateTime? recurrenceNextScheduledAt,
       final DateTime? lastSyncedAt,
       final String rev,
       required final String walletClientId,
@@ -441,6 +583,8 @@ abstract class _TransactionEntity implements TransactionEntity {
   @override
   String get clientId;
   @override
+  int? get id;
+  @override
   double get amount;
   @override
   String get description;
@@ -454,6 +598,18 @@ abstract class _TransactionEntity implements TransactionEntity {
   TransactionType get type;
   @override
   TransactionIntent get intent;
+  @override
+  bool get isRefund;
+  @override
+  int? get refundOfTransactionId;
+  @override
+  String? get recurrencePeriod;
+  @override
+  int? get recurrenceInterval;
+  @override
+  DateTime? get recurrenceEndsAt;
+  @override
+  DateTime? get recurrenceNextScheduledAt;
   @override
   DateTime? get lastSyncedAt;
   @override
