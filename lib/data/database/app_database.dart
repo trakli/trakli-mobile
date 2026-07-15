@@ -25,6 +25,7 @@ import 'package:trakli/data/database/tables/local_changes.dart';
 import 'package:trakli/data/database/tables/media_files.dart';
 import 'package:trakli/data/database/tables/notifications.dart';
 import 'package:trakli/data/database/tables/parties.dart';
+import 'package:trakli/data/database/tables/reminders.dart';
 import 'package:trakli/data/database/tables/sync_table.dart';
 import 'package:trakli/data/database/tables/transactions.dart';
 import 'package:trakli/data/database/tables/transfers.dart';
@@ -61,6 +62,7 @@ part 'app_database.g.dart';
   BudgetPeriodStates,
   Holdings,
   FinancialPositionCache,
+  Reminders,
 ])
 class AppDatabase extends _$AppDatabase with SynchronizerDb {
   final Set<SyncTypeHandler> typeHandlers;
@@ -72,7 +74,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
         super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration {
@@ -291,6 +293,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     await budgets.deleteAll();
     await holdings.deleteAll();
     await financialPositionCache.deleteAll();
+    await reminders.deleteAll();
   }
 }
 
@@ -322,6 +325,23 @@ extension Migrations on GeneratedDatabase {
           await m.addColumn(schema.transactions, schema.transactions.intent);
           await m.createTable(schema.holdings);
           await m.createTable(schema.financialPositionCache);
+        },
+        from6To7: (Migrator m, Schema7 schema) async {
+          // Refunds
+          await m.addColumn(schema.transactions, schema.transactions.isRefund);
+          await m.addColumn(
+              schema.transactions, schema.transactions.refundOfTransactionId);
+          // Recurring transactions
+          await m.addColumn(
+              schema.transactions, schema.transactions.recurrencePeriod);
+          await m.addColumn(
+              schema.transactions, schema.transactions.recurrenceInterval);
+          await m.addColumn(
+              schema.transactions, schema.transactions.recurrenceEndsAt);
+          await m.addColumn(schema.transactions,
+              schema.transactions.recurrenceNextScheduledAt);
+          // Reminders
+          await m.createTable(schema.reminders);
         },
       );
 }
