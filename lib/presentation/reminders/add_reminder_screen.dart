@@ -7,7 +7,7 @@ import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/reminders/cubit/reminder_cubit.dart';
 import 'package:trakli/presentation/reminders/reminder_labels.dart';
 
-/// Same repeat options and RRULE values as the web ReminderForm.
+///  RRULE values.
 const _repeatRules = <String, String?>{
   'none': null,
   'daily': 'FREQ=DAILY',
@@ -15,7 +15,7 @@ const _repeatRules = <String, String?>{
   'monthly': 'FREQ=MONTHLY',
 };
 
-/// Same timezone list as the web ReminderForm.
+/// Same timezone list to be in sync with the web.
 const _timezones = <String, String>{
   'UTC': 'UTC',
   'America/New_York': 'Eastern Time',
@@ -296,7 +296,8 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                       ? SizedBox(
                           height: 20.r,
                           width: 20.r,
-                          child: const CircularProgressIndicator(strokeWidth: 2),
+                          child:
+                              const CircularProgressIndicator(strokeWidth: 2),
                         )
                       : Text(LocaleKeys.saveReminder.tr()),
                 ),

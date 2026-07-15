@@ -168,11 +168,10 @@ class TransactionCompleteDto with _$TransactionCompleteDto {
       'group_id': group?.id,
     };
 
-    // Refund state is set via the dedicated endpoint, not a normal write.
+    // Refund state is set via the dedicated endpoint, not a normal write request.
     data.remove('is_refund');
     data.remove('refund_of_transaction_id');
 
-    // Recurrence: the API takes flat write-fields and owns next_scheduled_at.
     data.remove('next_scheduled_at');
     data.remove('recurrence_period');
     data.remove('recurrence_interval');
