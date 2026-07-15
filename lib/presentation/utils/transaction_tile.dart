@@ -141,6 +141,27 @@ class _TransactionTileState extends State<TransactionTile> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      if (widget.transaction.transaction.recurrencePeriod !=
+                          null) ...[
+                        Padding(
+                          padding: EdgeInsets.only(right: 4.w),
+                          child: Icon(
+                            Icons.repeat,
+                            size: 16.sp,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                      if (widget.transaction.transaction.isRefund) ...[
+                        Padding(
+                          padding: EdgeInsets.only(right: 4.w),
+                          child: Icon(
+                            Icons.assignment_return,
+                            size: 16.sp,
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                        ),
+                      ],
                       if ((widget.transaction.transaction.transferClientId !=
                               null &&
                           widget.transaction.transaction.transferClientId!

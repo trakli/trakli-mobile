@@ -5,6 +5,7 @@ import 'package:trakli/core/utils/date_util.dart';
 import 'package:trakli/data/services/budget/budget_progress_recomputer.dart';
 import 'package:trakli/data/database/app_database.dart';
 import 'package:trakli/data/datasources/media_file/media_file_local_datasource.dart';
+import 'package:trakli/domain/entities/recurrence_input.dart';
 import 'package:trakli/data/datasources/transaction/dto/transaction_complete_dto.dart';
 import 'package:trakli/data/models/wallet_stats.dart';
 import 'package:trakli/presentation/utils/enums.dart';
@@ -13,6 +14,11 @@ import 'package:trakli/core/utils/id_helper.dart';
 abstract class TransactionLocalDataSource {
   Future<List<TransactionCompleteDto>> getAllTransactions();
   Future<Transaction?> getTransactionByClientId(String clientId);
+  Future<void> setRefundState(
+    String clientId, {
+    required bool isRefund,
+    int? refundOfTransactionId,
+  });
   Future<TransactionCompleteDto> insertTransaction(
     double amount,
     String description,
@@ -24,6 +30,7 @@ abstract class TransactionLocalDataSource {
     String? groupClientId,
     List<String> attachedFilePaths = const [],
     TransactionIntent intent = TransactionIntent.regular,
+    RecurrenceInput? recurrence,
   });
   Future<TransactionCompleteDto> updateTransaction(
     String id, {
@@ -36,6 +43,8 @@ abstract class TransactionLocalDataSource {
     String? groupClientId,
     String? transferClientId,
     TransactionIntent? intent,
+    RecurrenceInput? recurrence,
+    bool clearRecurrence = false,
   });
 
   Future<TransactionCompleteDto> deleteTransaction(String id);
@@ -250,6 +259,22 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   }
 
   @override
+  Future<void> setRefundState(
+    String clientId, {
+    required bool isRefund,
+    int? refundOfTransactionId,
+  }) async {
+    await (database.update(database.transactions)
+          ..where((t) => t.clientId.equals(clientId)))
+        .write(
+      TransactionsCompanion(
+        isRefund: Value(isRefund),
+        refundOfTransactionId: Value(refundOfTransactionId),
+      ),
+    );
+  }
+
+  @override
   Future<TransactionCompleteDto> insertTransaction(
     double amount,
     String description,
@@ -261,6 +286,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     String? groupClientId,
     List<String> attachedFilePaths = const [],
     TransactionIntent intent = TransactionIntent.regular,
+    RecurrenceInput? recurrence,
   }) async {
     // Reads outside transaction to avoid long blocking.
     for (var categoryId in categoryIds) {
@@ -323,6 +349,9 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
               description: Value(description),
               type: type,
               intent: Value(intent.serverKey),
+              recurrencePeriod: Value(recurrence?.period),
+              recurrenceInterval: Value(recurrence?.interval),
+              recurrenceEndsAt: Value(recurrence?.endsAt),
               datetime: Value(utcDatetime),
               updatedAt: Value(now),
               createdAt: Value(now),
@@ -415,6 +444,8 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     String? partyClientId,
     String? groupClientId,
     String? transferClientId,
+    RecurrenceInput? recurrence,
+    bool clearRecurrence = false,
   }) async {
     // Capture original tag-set before the mutation so we can also recompute
     // budgets the transaction *used to* affect.
@@ -494,6 +525,15 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
               description != null ? Value(description) : const Value.absent(),
           intent:
               intent != null ? Value(intent.serverKey) : const Value.absent(),
+          recurrencePeriod: (recurrence != null || clearRecurrence)
+              ? Value(recurrence?.period)
+              : const Value.absent(),
+          recurrenceInterval: (recurrence != null || clearRecurrence)
+              ? Value(recurrence?.interval)
+              : const Value.absent(),
+          recurrenceEndsAt: (recurrence != null || clearRecurrence)
+              ? Value(recurrence?.endsAt)
+              : const Value.absent(),
           datetime: datetime != null
               ? Value(getFormattedUtcDateTimeFromUtc(datetime))
               : const Value.absent(),
