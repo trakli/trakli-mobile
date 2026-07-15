@@ -1,8 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:trakli/data/database/tables/sync_table.dart';
 
-/// Reminders are server-triggered (the backend fires the notifications/emails);
-/// this table is the offline-first store of the user's reminder definitions.
+/// Reminders are server-triggered
 @DataClassName('Reminder')
 class Reminders extends Table with SyncTable {
   @JsonKey('title')
@@ -21,7 +20,7 @@ class Reminders extends Table with SyncTable {
   @JsonKey('due_at')
   DateTimeColumn get dueAt => dateTime().nullable()();
 
-  // RRULE string, e.g. FREQ=DAILY;BYHOUR=20 (server-owned/opaque here).
+  // String, e.g. FREQ=DAILY;BYHOUR=20.
   @JsonKey('repeat_rule')
   TextColumn get repeatRule => text().nullable()();
 

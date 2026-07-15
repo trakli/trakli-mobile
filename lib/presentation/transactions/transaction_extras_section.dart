@@ -68,8 +68,6 @@ class TransactionExtrasController {
   }
 }
 
-/// Web-parity "This is a refund" (income only) + "Make recurring" checkboxes,
-/// each expanding into a slight-gray card.
 class TransactionExtrasSection extends StatefulWidget {
   const TransactionExtrasSection({
     super.key,

@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:fpdart/fpdart.dart';
 import 'package:drift_sync_core/drift_sync_core.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/core/error/repository_error_handler.dart';
 import 'package:trakli/data/database/app_database.dart';
-import 'package:trakli/domain/entities/recurrence_input.dart';
 import 'package:trakli/data/datasources/transaction/dto/transaction_complete_dto.dart';
-import 'package:trakli/domain/entities/transaction_complete_entity.dart';
-import 'package:trakli/domain/repositories/transaction_repository.dart';
-import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/data/datasources/transaction/transaction_local_datasource.dart';
 import 'package:trakli/data/datasources/transaction/transaction_remote_datasource.dart';
 import 'package:trakli/data/mappers/transaction_mapper.dart';
 import 'package:trakli/data/sync/transaction_sync_handler.dart';
+import 'package:trakli/domain/entities/recurrence_input.dart';
+import 'package:trakli/domain/entities/transaction_complete_entity.dart';
+import 'package:trakli/domain/repositories/transaction_repository.dart';
+import 'package:trakli/presentation/utils/enums.dart';
 
 @LazySingleton(as: TransactionRepository)
 class TransactionRepositoryImpl extends SyncEntityRepository<AppDatabase,
@@ -124,8 +124,9 @@ class TransactionRepositoryImpl extends SyncEntityRepository<AppDatabase,
 
       final clientId = transaction.transaction.clientId;
       if (isRefund && type == TransactionType.income) {
-        // Optimistic local flag for the badge; the server refund needs a
-        // server id, which post() writes back once the transaction syncs.
+        // Local flag for the badge
+        // The server refund needs a server id,
+        // which post() writes back once the transaction syncs.
         await localDataSource.setRefundState(clientId, isRefund: true);
         unawaited(post(transaction).then(
           (_) => markTransactionAsRefund(clientId, refundOfClientId),
