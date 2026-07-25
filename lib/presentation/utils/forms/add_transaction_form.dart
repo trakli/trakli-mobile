@@ -63,7 +63,6 @@ class _AddTransactionFormState extends State<AddTransactionForm>
   TextEditingController timeController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController categoryController = TextEditingController();
   TextEditingController walletController = TextEditingController();
 
   // TextEditingController partyController = TextEditingController();
@@ -144,6 +143,14 @@ class _AddTransactionFormState extends State<AddTransactionForm>
         // Set currency from wallet
         currency = selectedWallet!.currency;
       }
+
+      if (widget.transactionCompleteEntity?.party != null) {
+        selectedParty = widget.transactionCompleteEntity!.party;
+      }
+
+      if (widget.transactionCompleteEntity!.categories.isNotEmpty) {
+        selectedCategory = widget.transactionCompleteEntity!.categories.first;
+      }
     } else {
       date = DateTime.now();
       dateController.text = dateFormat.format(date);
@@ -166,10 +173,6 @@ class _AddTransactionFormState extends State<AddTransactionForm>
           walletController.text = defaultWallet.name;
           currency = defaultWallet.currency;
         }
-      }
-
-      if (widget.transactionCompleteEntity?.party != null) {
-        selectedParty = widget.transactionCompleteEntity!.party;
       }
     }
     if (widget.transactionCompleteEntity != null) {
@@ -551,79 +554,35 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: TextFormField(
-                      controller: categoryController,
-                      readOnly: true,
-                      onTap: () {
-                        showCustomBottomSheet(
-                          context,
-                          widget: BlocBuilder<CategoryCubit, CategoryState>(
-                            builder: (context, state) {
-                              //Category by transaction type
-                              final searchCategories = state.categories.where(
-                                  (element) =>
-                                      element.type == widget.transactionType);
+                    child: BlocBuilder<CategoryCubit, CategoryState>(
+                      builder: (context, state) {
+                        //Category by transaction type
+                        final typeCategories = state.categories
+                            .where((element) =>
+                                element.type == widget.transactionType)
+                            .toList();
 
-                              return CustomDropdownSearch<CategoryEntity>(
-                                label: "",
-                                accentColor: widget.accentColor,
-                                selectedItem: selectedCategory,
-                                items: (filter, infiniteScrollProps) {
-                                  return searchCategories
-                                      .map((data) => data)
-                                      .toList()
-                                      .where((CategoryEntity el) => el.name
-                                          .toLowerCase()
-                                          .contains(filter.toLowerCase()))
-                                      .toList();
-                                },
-                                itemAsString: (item) => item.name,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedCategory = value;
-                                    if (value != null) {
-                                      categoryController.text = value.name;
-                                    }
-
-                                    Navigator.pop(context);
-                                  });
-                                },
-                                compareFn: (i1, i2) =>
-                                    i1.clientId == i2.clientId,
-                                filterFn: (el, filter) {
-                                  return el.name.toLowerCase().contains(
-                                        filter.toLowerCase(),
-                                      );
-                                },
-                              );
-                            },
-                          ),
+                        return CustomDropdownSearch<CategoryEntity>(
+                          label: "",
+                          accentColor: widget.accentColor,
+                          selectedItem: selectedCategory,
+                          items: (filter, infiniteScrollProps) {
+                            return typeCategories;
+                          },
+                          itemAsString: (item) => item.name,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCategory = value;
+                            });
+                          },
+                          compareFn: (i1, i2) => i1.clientId == i2.clientId,
+                          filterFn: (el, filter) => el.name
+                              .toLowerCase()
+                              .contains(filter.toLowerCase()),
+                          validator: (value) => value == null
+                              ? LocaleKeys.categoryIsRequired.tr()
+                              : null,
                         );
-                      },
-                      decoration: InputDecoration(
-                        hintText: LocaleKeys.selectCategory.tr(),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: widget.accentColor,
-                          ),
-                        ),
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: SvgPicture.asset(
-                            Assets.images.arrowDown,
-                            colorFilter: ColorFilter.mode(
-                              Colors.grey.shade500,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return LocaleKeys.categoryIsRequired.tr();
-                        }
-                        return null;
                       },
                     ),
                   ),
