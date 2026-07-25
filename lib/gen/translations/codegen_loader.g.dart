@@ -510,6 +510,9 @@ abstract class  LocaleKeys {
   static const noPendingChanges = 'noPendingChanges';
   static const failedChanges = 'failedChanges';
   static const noFailedChanges = 'noFailedChanges';
+  static const needsAttention = 'needsAttention';
+  static const noQuarantinedChanges = 'noQuarantinedChanges';
+  static const quarantinedHint = 'quarantinedHint';
   static const dismiss = 'dismiss';
   static const categorySalary = 'categorySalary';
   static const categorySalaryDesc = 'categorySalaryDesc';

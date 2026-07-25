@@ -101,21 +101,42 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
 
   /// Failed changes are retried automatically once this much time has passed
   /// since the last attempt; a successful retry deletes the row.
-  static const failedChangeRetryDelay = Duration(minutes: 5);
+  /// Base delay before the first retry of a failed change. Each further
+  /// failed attempt doubles the wait ([retryBackoff]).
+  static const failedChangeRetryDelay = Duration(minutes: 1);
+
+  /// Upper bound on the exponential retry backoff.
+  static const failedChangeRetryCap = Duration(hours: 1);
+
+  /// Backoff before retrying a change that has failed [attemptCount] times:
+  /// base doubles per attempt, capped at [failedChangeRetryCap].
+  static Duration retryBackoff(int attemptCount) {
+    if (attemptCount <= 1) return failedChangeRetryDelay;
+    final shift = attemptCount - 1;
+    if (shift >= 30) return failedChangeRetryCap;
+    final ms = failedChangeRetryDelay.inMilliseconds << shift;
+    return ms >= failedChangeRetryCap.inMilliseconds
+        ? failedChangeRetryCap
+        : Duration(milliseconds: ms);
+  }
 
   @override
   Future<List<PendingLocalChange>> getPendingLocalChanges() async {
-    final retryCutoff = DateTime.now().subtract(failedChangeRetryDelay);
+    final now = DateTime.now();
+    // Quarantined changes never retry; the rest are filtered by their
+    // per-row exponential backoff below (not expressible in SQL).
     final rows = await (select(localChanges)
-          ..where((lc) =>
-              lc.quarantinedAt.isNull() &
-              (lc.error.isNull() |
-                  (lc.dismissed.equals(false) &
-                      (lc.concludedMoment.isNull() |
-                          lc.concludedMoment.isSmallerThanValue(retryCutoff))))))
+          ..where((lc) => lc.quarantinedAt.isNull()))
         .get();
 
     return rows
+        .where((row) {
+          if (row.error == null) return true; // never failed
+          if (row.dismissed) return false; // user dismissed
+          final concluded = row.concludedMoment;
+          if (concluded == null) return true;
+          return now.isAfter(concluded.add(retryBackoff(row.attemptCount)));
+        })
         .map((row) => PendingLocalChange(
               entityType: row.entityType,
               entityId: row.entityId,
@@ -225,6 +246,8 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
       concludedMoment: Value(pendingLocalChange.concludedMoment),
       error: Value(pendingLocalChange.error),
       deleted: Value(pendingLocalChange.deleted),
+      attemptCount: Value(pendingLocalChange.attemptCount),
+      quarantinedAt: Value(pendingLocalChange.quarantinedAt),
     );
 
     await into(localChanges).insert(
