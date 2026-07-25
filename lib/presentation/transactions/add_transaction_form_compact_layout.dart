@@ -466,11 +466,10 @@ class _AddTransactionFormCompactLayoutState
                           },
                           onSelected: (value) {
                             setState(() {
-                              debugPrint(value.name);
                               _selectedParty = value;
                             });
                           },
-                          // selectedItem: _selectedCategory,
+                          initialValue: _selectedParty,
                         );
                       },
                     ),
@@ -515,11 +514,10 @@ class _AddTransactionFormCompactLayoutState
                           },
                           onSelected: (value) {
                             setState(() {
-                              debugPrint(value.name);
                               _selectedCategory = value;
                             });
                           },
-                          // selectedItem: _selectedCategory,
+                          initialValue: _selectedCategory,
                         );
                       },
                     ),

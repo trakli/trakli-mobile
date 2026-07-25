@@ -2,11 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
-/// Contextual intent picker shown in the add/edit transaction form. Offers the
-/// intents valid for the given [type] (regular first), mirroring the web
-/// `TransactionForm` intent pills.
+/// Contextual intent picker shown in the add/edit transaction form. Offers
+/// the intents valid for the given [type] (regular first) in the same
+/// dropdown used for parties, without the search box.
 class TransactionIntentSelector extends StatelessWidget {
   final TransactionType type;
   final TransactionIntent selected;
@@ -24,6 +25,7 @@ class TransactionIntentSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final options = TransactionIntent.optionsFor(type);
+    final value = options.contains(selected) ? selected : options.first;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -34,30 +36,17 @@ class TransactionIntentSelector extends StatelessWidget {
               ),
         ),
         SizedBox(height: 8.h),
-        Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
-          children: options.map((intent) {
-            final isSelected = intent == selected;
-            return ChoiceChip(
-              label: Text(intent.label.tr()),
-              selected: isSelected,
-              showCheckmark: false,
-              onSelected: (_) => onChanged(intent),
-              selectedColor: accentColor.withValues(alpha: 0.15),
-              labelStyle: TextStyle(
-                fontSize: 13.sp,
-                color: isSelected
-                    ? accentColor
-                    : Theme.of(context).textTheme.bodyMedium?.color,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              ),
-              side: BorderSide(
-                color:
-                    isSelected ? accentColor : Theme.of(context).dividerColor,
-              ),
-            );
-          }).toList(),
+        CustomDropdownSearch<TransactionIntent>(
+          label: "",
+          accentColor: accentColor,
+          selectedItem: value,
+          showSearchBox: false,
+          items: (filter, infiniteScrollProps) => options,
+          itemAsString: (intent) => intent.label.tr(),
+          onChanged: (intent) {
+            if (intent != null) onChanged(intent);
+          },
+          compareFn: (i1, i2) => i1 == i2,
         ),
       ],
     );

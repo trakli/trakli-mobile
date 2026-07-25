@@ -73,17 +73,21 @@ class CustomDropdownSearch<T> extends StatelessWidget {
       ),
       decoratorProps: DropDownDecoratorProps(
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 16.h),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(12),
-            child: SvgPicture.asset(
-              Assets.images.searchSpecial,
-              colorFilter: ColorFilter.mode(
-                accentColor,
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
+          contentPadding: showSearchBox
+              ? EdgeInsets.only(top: 16.h)
+              : EdgeInsets.only(top: 16.h, left: 12.w),
+          prefixIcon: !showSearchBox
+              ? null
+              : Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: SvgPicture.asset(
+                    Assets.images.searchSpecial,
+                    colorFilter: ColorFilter.mode(
+                      accentColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
           suffixIcon: Padding(
             padding: const EdgeInsets.all(12),
             child: SvgPicture.asset(
