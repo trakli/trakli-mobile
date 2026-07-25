@@ -108,10 +108,11 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     final retryCutoff = DateTime.now().subtract(failedChangeRetryDelay);
     final rows = await (select(localChanges)
           ..where((lc) =>
-              lc.error.isNull() |
-              (lc.dismissed.equals(false) &
-                  (lc.concludedMoment.isNull() |
-                      lc.concludedMoment.isSmallerThanValue(retryCutoff)))))
+              lc.quarantinedAt.isNull() &
+              (lc.error.isNull() |
+                  (lc.dismissed.equals(false) &
+                      (lc.concludedMoment.isNull() |
+                          lc.concludedMoment.isSmallerThanValue(retryCutoff))))))
         .get();
 
     return rows
@@ -126,6 +127,8 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
               concludedMoment: row.concludedMoment,
               error: row.error,
               dismissed: row.dismissed,
+              attemptCount: row.attemptCount,
+              quarantinedAt: row.quarantinedAt,
             ))
         .toList();
   }
@@ -176,7 +179,9 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
 
   @override
   Future<void> concludeLocalChange(PendingLocalChange localChange,
-      {Object? error, bool persistedToRemote = false}) async {
+      {Object? error,
+      bool persistedToRemote = false,
+      bool quarantine = false}) async {
     if (error != null) {
       await (update(localChanges)
             ..where((lc) =>
@@ -187,6 +192,9 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
           concludedMoment: Value(DateTime.now()),
           error: Value(error.toString()),
           concluded: const Value(true),
+          attemptCount: Value(localChange.attemptCount + 1),
+          quarantinedAt:
+              quarantine ? Value(DateTime.now()) : const Value.absent(),
         ),
       );
     }
@@ -412,6 +420,13 @@ extension Migrations on GeneratedDatabase {
           // Parking store for down-synced items with unmet local
           // dependencies (SyncTypeHandler.shouldPersistLocal).
           await m.createTable(schema.deferredRemoteItems);
+
+          // Failure classification: retry accounting + quarantine for
+          // permanently failed local changes.
+          await m.addColumn(
+              schema.localChanges, schema.localChanges.attemptCount);
+          await m.addColumn(
+              schema.localChanges, schema.localChanges.quarantinedAt);
         },
       );
 }

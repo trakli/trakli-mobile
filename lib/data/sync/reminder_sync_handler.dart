@@ -47,6 +47,15 @@ class ReminderSyncHandler extends SyncTypeHandler<Reminder, String, int>
   }
 
   @override
+  Future<Reminder> claimClientId(Reminder entity) {
+    return remoteDataSource.claimClientId(
+      id: entity.id!,
+      clientId: entity.clientId,
+      updatedAt: entity.updatedAt,
+    );
+  }
+
+  @override
   Future<Reminder> restPutRemote(Reminder entity) async {
     if (entity.id == null) {
       return remoteDataSource.insertReminder(entity);

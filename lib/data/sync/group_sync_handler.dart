@@ -58,6 +58,15 @@ class GroupSyncHandler extends SyncTypeHandler<Group, String, int>
   }
 
   @override
+  Future<Group> claimClientId(Group entity) {
+    return remoteDataSource.claimClientId(
+      id: entity.id!,
+      clientId: entity.clientId,
+      updatedAt: entity.updatedAt,
+    );
+  }
+
+  @override
   Future<Group> restPutRemote(Group entity) async {
     if (entity.id == null) {
       return remoteDataSource.insertGroup(entity);

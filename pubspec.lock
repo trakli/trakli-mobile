@@ -428,9 +428,11 @@ packages:
   drift_sync_core:
     dependency: "direct main"
     description:
-      path: "../drift_sync/packages/drift_sync_core"
-      relative: true
-    source: path
+      path: "packages/drift_sync_core"
+      ref: "drift_sync_core-v0.3.0"
+      resolved-ref: "0aa018599a40da32e07a1f7a6fa4e92db94ac525"
+      url: "https://github.com/whilesmartflutter/drift_sync.git"
+    source: git
     version: "0.2.0"
   drift_sync_flutter:
     dependency: "direct main"

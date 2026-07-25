@@ -13,7 +13,10 @@ class SynchAppDatabase extends DriftSynchronizer<AppDatabase> {
     required super.requestAuthorizationService,
     required super.logger,
     super.crashReporter,
-  }) : super(cursorRewind: const Duration(seconds: 1));
+  }) : super(
+          cursorRewind: const Duration(seconds: 1),
+          classifyFailure: restFailureClassifier,
+        );
 
   final _syncStateController = StreamController<SyncState>.broadcast();
 

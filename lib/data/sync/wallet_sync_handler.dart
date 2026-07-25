@@ -41,6 +41,15 @@ class WalletSyncHandler extends SyncTypeHandler<Wallet, String, int>
   }
 
   @override
+  Future<Wallet> claimClientId(Wallet entity) {
+    return remoteDataSource.claimClientId(
+      id: entity.id!,
+      clientId: entity.clientId,
+      updatedAt: entity.updatedAt,
+    );
+  }
+
+  @override
   Future<Wallet> restPutRemote(Wallet entity) async {
     if (entity.id == null) {
       return await remoteDataSource.insertWallet(entity);

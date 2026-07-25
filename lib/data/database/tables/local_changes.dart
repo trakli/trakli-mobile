@@ -14,6 +14,8 @@ class LocalChanges extends Table {
   DateTimeColumn get concludedMoment => dateTime().nullable()();
   TextColumn get error => text().nullable()();
   BoolColumn get dismissed => boolean()();
+  IntColumn get attemptCount => integer().withDefault(const Constant(0))();
+  DateTimeColumn get quarantinedAt => dateTime().nullable()();
 
   @override
   Set<Column> get primaryKey => {entityId, entityType};

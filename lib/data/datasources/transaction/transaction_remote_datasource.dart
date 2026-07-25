@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:trakli/core/utils/date_util.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/data/database/app_database.dart';
 import 'package:trakli/data/datasources/core/api_response.dart';
@@ -21,6 +22,12 @@ abstract class TransactionRemoteDataSource {
 
   Future<TransactionCompleteDto> updateTransaction(
       TransactionCompleteDto transaction);
+
+  Future<TransactionCompleteDto> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  });
 
   Future<void> deleteTransaction(int id);
 
@@ -156,6 +163,22 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
     final data = response.data;
     final apiResponse = ApiResponse.fromJson(data as Map<String, dynamic>);
 
+    return TransactionCompleteDto.fromServerJson(
+        apiResponse.data as Map<String, dynamic>);
+  }
+
+  @override
+  Future<TransactionCompleteDto> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  }) async {
+    final response = await dio.put('transactions/$id', data: {
+      'client_id': clientId,
+      'updated_at': formatServerIsoDateTimeString(updatedAt),
+    });
+    final apiResponse =
+        ApiResponse.fromJson(response.data as Map<String, dynamic>);
     return TransactionCompleteDto.fromServerJson(
         apiResponse.data as Map<String, dynamic>);
   }
