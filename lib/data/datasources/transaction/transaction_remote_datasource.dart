@@ -33,17 +33,6 @@ abstract class TransactionRemoteDataSource {
     int transactionId,
     int fileId,
   );
-
-  /// Marks the (income) transaction with server id [transactionId] as a refund,
-  /// optionally of the original expense identified by server id or client id.
-  Future<void> markRefund(
-    int transactionId, {
-    int? originalTransactionId,
-    String? originalClientId,
-    String? clientId,
-  });
-
-  Future<void> unmarkRefund(int transactionId);
 }
 
 @Injectable(as: TransactionRemoteDataSource)
@@ -215,28 +204,5 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
     return TransactionCompleteDto.fromServerJson(
       apiResponse.data as Map<String, dynamic>,
     );
-  }
-
-  @override
-  Future<void> markRefund(
-    int transactionId, {
-    int? originalTransactionId,
-    String? originalClientId,
-    String? clientId,
-  }) async {
-    await dio.post(
-      'transactions/$transactionId/refund',
-      data: {
-        if (clientId != null) 'client_id': clientId,
-        if (originalTransactionId != null)
-          'original_transaction_id': originalTransactionId,
-        if (originalClientId != null) 'original_client_id': originalClientId,
-      },
-    );
-  }
-
-  @override
-  Future<void> unmarkRefund(int transactionId) async {
-    await dio.delete('transactions/$transactionId/refund');
   }
 }

@@ -39,10 +39,6 @@ class TransactionDTO {
   final int? transferId;
   @JsonKey(name: 'transfer_client_generated_id')
   final String? transferClientId;
-  @JsonKey(name: 'is_refund')
-  final bool? isRefund;
-  @JsonKey(name: 'refund_of_transaction_id')
-  final int? refundOfTransactionId;
 
   TransactionDTO({
     required this.id,
@@ -63,8 +59,6 @@ class TransactionDTO {
     required this.syncState,
     this.transferId,
     this.transferClientId,
-    this.isRefund,
-    this.refundOfTransactionId,
   });
 
   factory TransactionDTO.fromJson(Map<String, dynamic> json) =>

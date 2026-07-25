@@ -10,7 +10,6 @@ _$TransactionEntityImpl _$$TransactionEntityImplFromJson(
         Map<String, dynamic> json) =>
     _$TransactionEntityImpl(
       clientId: json['clientId'] as String,
-      id: (json['id'] as num?)?.toInt(),
       amount: (json['amount'] as num).toDouble(),
       description: json['description'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
@@ -19,16 +18,6 @@ _$TransactionEntityImpl _$$TransactionEntityImplFromJson(
       type: $enumDecode(_$TransactionTypeEnumMap, json['type']),
       intent: $enumDecodeNullable(_$TransactionIntentEnumMap, json['intent']) ??
           TransactionIntent.regular,
-      isRefund: json['isRefund'] as bool? ?? false,
-      refundOfTransactionId: (json['refundOfTransactionId'] as num?)?.toInt(),
-      recurrencePeriod: json['recurrencePeriod'] as String?,
-      recurrenceInterval: (json['recurrenceInterval'] as num?)?.toInt(),
-      recurrenceEndsAt: json['recurrenceEndsAt'] == null
-          ? null
-          : DateTime.parse(json['recurrenceEndsAt'] as String),
-      recurrenceNextScheduledAt: json['recurrenceNextScheduledAt'] == null
-          ? null
-          : DateTime.parse(json['recurrenceNextScheduledAt'] as String),
       lastSyncedAt: json['lastSyncedAt'] == null
           ? null
           : DateTime.parse(json['lastSyncedAt'] as String),
@@ -44,7 +33,6 @@ Map<String, dynamic> _$$TransactionEntityImplToJson(
         _$TransactionEntityImpl instance) =>
     <String, dynamic>{
       'clientId': instance.clientId,
-      'id': instance.id,
       'amount': instance.amount,
       'description': instance.description,
       'createdAt': instance.createdAt.toIso8601String(),
@@ -52,13 +40,6 @@ Map<String, dynamic> _$$TransactionEntityImplToJson(
       'datetime': instance.datetime.toIso8601String(),
       'type': _$TransactionTypeEnumMap[instance.type]!,
       'intent': _$TransactionIntentEnumMap[instance.intent]!,
-      'isRefund': instance.isRefund,
-      'refundOfTransactionId': instance.refundOfTransactionId,
-      'recurrencePeriod': instance.recurrencePeriod,
-      'recurrenceInterval': instance.recurrenceInterval,
-      'recurrenceEndsAt': instance.recurrenceEndsAt?.toIso8601String(),
-      'recurrenceNextScheduledAt':
-          instance.recurrenceNextScheduledAt?.toIso8601String(),
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
       'rev': instance.rev,
       'walletClientId': instance.walletClientId,

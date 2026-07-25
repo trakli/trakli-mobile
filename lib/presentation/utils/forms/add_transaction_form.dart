@@ -9,7 +9,6 @@ import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
 import 'package:trakli/domain/entities/media_file_entity.dart';
 import 'package:trakli/domain/entities/party_entity.dart';
-import 'package:trakli/presentation/transactions/transaction_extras_section.dart';
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/gen/assets.gen.dart';
@@ -64,12 +63,12 @@ class _AddTransactionFormState extends State<AddTransactionForm>
   TextEditingController timeController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
   TextEditingController walletController = TextEditingController();
 
   // TextEditingController partyController = TextEditingController();
   Currency? currency;
   TransactionIntent _selectedIntent = TransactionIntent.regular;
-  final _extras = TransactionExtrasController();
   WalletEntity? selectedWallet;
   CategoryEntity? selectedCategory;
   PartyEntity? selectedParty;
@@ -111,7 +110,6 @@ class _AddTransactionFormState extends State<AddTransactionForm>
   @override
   void dispose() {
     AttachmentDisplayCache.clear();
-    _extras.dispose();
     super.dispose();
   }
 
@@ -131,13 +129,6 @@ class _AddTransactionFormState extends State<AddTransactionForm>
       _selectedIntent = existingIntent.availableFor(widget.transactionType)
           ? existingIntent
           : TransactionIntent.regular;
-      _extras.populateFrom(
-        widget.transactionCompleteEntity!.transaction,
-        widget.transactionType,
-      );
-      if (widget.transactionCompleteEntity!.categories.isNotEmpty) {
-        selectedCategory = widget.transactionCompleteEntity!.categories.first;
-      }
       setAmountController(currency);
       descriptionController.text =
           widget.transactionCompleteEntity!.transaction.description;
@@ -287,11 +278,6 @@ class _AddTransactionFormState extends State<AddTransactionForm>
               onChanged: (intent) => setState(() => _selectedIntent = intent),
             ),
             SizedBox(height: 16.h),
-            TransactionExtrasSection(
-              controller: _extras,
-              transactionType: widget.transactionType,
-              accentColor: widget.accentColor,
-            ),
             Text(
               LocaleKeys.wallet.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -565,41 +551,79 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: BlocBuilder<CategoryCubit, CategoryState>(
-                      builder: (context, state) {
-                        //Category by transaction type
-                        final searchCategories = state.categories
-                            .where((element) =>
-                                element.type == widget.transactionType)
-                            .toList();
+                    child: TextFormField(
+                      controller: categoryController,
+                      readOnly: true,
+                      onTap: () {
+                        showCustomBottomSheet(
+                          context,
+                          widget: BlocBuilder<CategoryCubit, CategoryState>(
+                            builder: (context, state) {
+                              //Category by transaction type
+                              final searchCategories = state.categories.where(
+                                  (element) =>
+                                      element.type == widget.transactionType);
 
-                        return CustomDropdownSearch<CategoryEntity>(
-                          label: "",
-                          accentColor: widget.accentColor,
-                          selectedItem: selectedCategory,
-                          items: (filter, infiniteScrollProps) {
-                            return searchCategories
-                                .where((CategoryEntity el) => el.name
-                                    .toLowerCase()
-                                    .contains(filter.toLowerCase()))
-                                .toList();
-                          },
-                          itemAsString: (item) => item.name,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedCategory = value;
-                            });
-                          },
-                          compareFn: (i1, i2) => i1.clientId == i2.clientId,
-                          filterFn: (el, filter) {
-                            return el.name.toLowerCase().contains(
-                                  filter.toLowerCase(),
-                                );
-                          },
-                          validator: (value) => value == null
-                              ? LocaleKeys.categoryIsRequired.tr()
-                              : null,
+                              return CustomDropdownSearch<CategoryEntity>(
+                                label: "",
+                                accentColor: widget.accentColor,
+                                selectedItem: selectedCategory,
+                                items: (filter, infiniteScrollProps) {
+                                  return searchCategories
+                                      .map((data) => data)
+                                      .toList()
+                                      .where((CategoryEntity el) => el.name
+                                          .toLowerCase()
+                                          .contains(filter.toLowerCase()))
+                                      .toList();
+                                },
+                                itemAsString: (item) => item.name,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedCategory = value;
+                                    if (value != null) {
+                                      categoryController.text = value.name;
+                                    }
+
+                                    Navigator.pop(context);
+                                  });
+                                },
+                                compareFn: (i1, i2) =>
+                                    i1.clientId == i2.clientId,
+                                filterFn: (el, filter) {
+                                  return el.name.toLowerCase().contains(
+                                        filter.toLowerCase(),
+                                      );
+                                },
+                              );
+                            },
+                          ),
                         );
+                      },
+                      decoration: InputDecoration(
+                        hintText: LocaleKeys.selectCategory.tr(),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: widget.accentColor,
+                          ),
+                        ),
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: SvgPicture.asset(
+                            Assets.images.arrowDown,
+                            colorFilter: ColorFilter.mode(
+                              Colors.grey.shade500,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return LocaleKeys.categoryIsRequired.tr();
+                        }
+                        return null;
                       },
                     ),
                   ),
@@ -749,10 +773,6 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                                   walletClientId: selectedWallet?.clientId,
                                   partyClientId: selectedParty?.clientId,
                                   attachedFilePaths: attachedFilePaths,
-                                  recurrence: _extras.recurrence,
-                                  clearRecurrence: _extras.clearRecurrence,
-                                  isRefund: _extras.refundUpdate,
-                                  refundOfClientId: _extras.refundOfClientId,
                                 );
                             // Navigation handled by BlocListener
                           } else {
@@ -777,9 +797,6 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                                       : [],
                                   partyClientId: selectedParty?.clientId,
                                   attachedFilePaths: attachedFilePaths,
-                                  recurrence: _extras.recurrence,
-                                  isRefund: _extras.isRefund,
-                                  refundOfClientId: _extras.refundOfClientId,
                                 );
                             // Navigation handled by BlocListener
                           }

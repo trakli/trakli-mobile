@@ -150,21 +150,6 @@ class MockTransactionRemoteDataSource implements TransactionRemoteDataSource {
   }
 
   @override
-  Future<void> markRefund(
-    int transactionId, {
-    int? originalTransactionId,
-    String? originalClientId,
-    String? clientId,
-  }) async {
-    await _simulateDelay(() async => _notifyListeners());
-  }
-
-  @override
-  Future<void> unmarkRefund(int transactionId) async {
-    await _simulateDelay(() async => _notifyListeners());
-  }
-
-  @override
   Stream<List<TransactionCompleteDto>> getAllTransactionsStream(
       {DateTime? syncedSince, bool? noClientId}) async* {
     await Future.delayed(const Duration(milliseconds: 500));

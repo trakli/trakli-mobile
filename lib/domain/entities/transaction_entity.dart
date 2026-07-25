@@ -8,7 +8,6 @@ part 'transaction_entity.g.dart';
 class TransactionEntity with _$TransactionEntity {
   const factory TransactionEntity({
     required String clientId,
-    int? id,
     required double amount,
     required String description,
     required DateTime createdAt,
@@ -16,12 +15,6 @@ class TransactionEntity with _$TransactionEntity {
     required DateTime datetime,
     required TransactionType type,
     @Default(TransactionIntent.regular) TransactionIntent intent,
-    @Default(false) bool isRefund,
-    int? refundOfTransactionId,
-    String? recurrencePeriod,
-    int? recurrenceInterval,
-    DateTime? recurrenceEndsAt,
-    DateTime? recurrenceNextScheduledAt,
     DateTime? lastSyncedAt,
     @Default('1') String rev,
     required String walletClientId,

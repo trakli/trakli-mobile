@@ -3,7 +3,6 @@ import 'package:trakli/data/sync/category_sync_handler.dart';
 import 'package:trakli/data/sync/group_sync_handler.dart';
 import 'package:trakli/data/sync/notification_sync_handler.dart';
 import 'package:trakli/data/sync/party_sync_handler.dart';
-import 'package:trakli/data/sync/reminder_sync_handler.dart';
 import 'package:trakli/data/sync/media_sync_handler.dart';
 import 'package:trakli/data/sync/transaction_sync_handler.dart';
 import 'package:trakli/data/sync/transfer_sync_handler.dart';
@@ -29,7 +28,6 @@ class SyncDependencyManager extends DefaultSyncDependencyManager {
         PartySyncHandler.entity: {},
         GroupSyncHandler.entity: {},
         NotificationSyncHandler.entity: {},
-        ReminderSyncHandler.entity: {},
         MediaSyncHandler.entity: {TransactionSyncHandler.entity},
       };
 }

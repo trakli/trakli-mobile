@@ -31,9 +31,6 @@ TransactionDTO _$TransactionDTOFromJson(Map<String, dynamic> json) =>
           SyncStateDto.fromJson(json['sync_state'] as Map<String, dynamic>),
       transferId: (json['transfer_id'] as num?)?.toInt(),
       transferClientId: json['transfer_client_generated_id'] as String?,
-      isRefund: json['is_refund'] as bool?,
-      refundOfTransactionId:
-          (json['refund_of_transaction_id'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$TransactionDTOToJson(TransactionDTO instance) =>
@@ -56,8 +53,6 @@ Map<String, dynamic> _$TransactionDTOToJson(TransactionDTO instance) =>
       'sync_state': instance.syncState.toJson(),
       'transfer_id': instance.transferId,
       'transfer_client_generated_id': instance.transferClientId,
-      'is_refund': instance.isRefund,
-      'refund_of_transaction_id': instance.refundOfTransactionId,
     };
 
 const _$TransactionTypeEnumMap = {
