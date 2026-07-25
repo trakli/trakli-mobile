@@ -70,99 +70,101 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             ? LocaleKeys.editTransaction.tr()
             : LocaleKeys.addTransaction.tr(),
       ),
-      body: BlocListener<TransactionCubit, TransactionState>(
-        listenWhen: (previous, current) =>
-            previous.isSaving && !current.isSaving,
-        listener: (context, state) {
-          if (!state.failure.hasError && mounted) {
-            Navigator.pop(context);
-          }
-        },
-        child: Column(
-          children: [
-            if (widget.transaction == null)
-              Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
-                child: _TypeSegmented(
-                  controller: tabController,
+      body: SafeArea(
+        child: BlocListener<TransactionCubit, TransactionState>(
+          listenWhen: (previous, current) =>
+              previous.isSaving && !current.isSaving,
+          listener: (context, state) {
+            if (!state.failure.hasError && mounted) {
+              Navigator.pop(context);
+            }
+          },
+          child: Column(
+            children: [
+              if (widget.transaction == null)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
+                  child: _TypeSegmented(
+                    controller: tabController,
+                  ),
                 ),
-              ),
-            Expanded(
-              child: ColoredBox(
-                color: context.tones.bgPage,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onHorizontalDragEnd: (details) {
-                    final v = details.primaryVelocity ?? 0;
-                    if (v.abs() < 200) return;
-                    if (v < 0 &&
-                        tabController.index < tabController.length - 1) {
-                      tabController.animateTo(tabController.index + 1);
-                    } else if (v > 0 && tabController.index > 0) {
-                      tabController.animateTo(tabController.index - 1);
-                    }
-                  },
-                  child: AnimatedBuilder(
-                    animation: tabController,
-                    builder: (_, __) {
-                      final showExpense = widget.transaction == null ||
-                          widget.transaction!.transaction.type ==
-                              TransactionType.expense;
-                      final showIncome = widget.transaction == null ||
-                          widget.transaction!.transaction.type ==
-                              TransactionType.income;
-                      final children = <Widget>[
-                        if (showExpense)
-                          KeyedSubtree(
-                            key: const ValueKey('tx-form-expense'),
-                            child: formDisplay == 'full'
-                                ? AddTransactionForm(
-                                    transactionType: TransactionType.expense,
-                                    accentColor: appDangerColor,
-                                    transactionCompleteEntity:
-                                        widget.transaction,
-                                  )
-                                : AddTransactionFormCompactLayout(
-                                    transactionType: TransactionType.expense,
-                                    accentColor: appDangerColor,
-                                    transactionCompleteEntity:
-                                        widget.transaction,
-                                  ),
-                          ),
-                        if (showIncome)
-                          KeyedSubtree(
-                            key: const ValueKey('tx-form-income'),
-                            child: formDisplay == 'full'
-                                ? AddTransactionForm(
-                                    accentColor: appPrimaryColor,
-                                    transactionCompleteEntity:
-                                        widget.transaction,
-                                  )
-                                : AddTransactionFormCompactLayout(
-                                    accentColor: appPrimaryColor,
-                                    transactionCompleteEntity:
-                                        widget.transaction,
-                                  ),
-                          ),
-                        if (widget.transaction == null)
-                          const KeyedSubtree(
-                            key: ValueKey('tx-form-transfer'),
-                            child: WalletTransferScreen(embedded: true),
-                          ),
-                      ];
-                      return IndexedStack(
-                        index: tabController.index.clamp(
-                          0,
-                          children.length - 1,
-                        ),
-                        children: children,
-                      );
+              Expanded(
+                child: ColoredBox(
+                  color: context.tones.bgPage,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onHorizontalDragEnd: (details) {
+                      final v = details.primaryVelocity ?? 0;
+                      if (v.abs() < 200) return;
+                      if (v < 0 &&
+                          tabController.index < tabController.length - 1) {
+                        tabController.animateTo(tabController.index + 1);
+                      } else if (v > 0 && tabController.index > 0) {
+                        tabController.animateTo(tabController.index - 1);
+                      }
                     },
+                    child: AnimatedBuilder(
+                      animation: tabController,
+                      builder: (_, __) {
+                        final showExpense = widget.transaction == null ||
+                            widget.transaction!.transaction.type ==
+                                TransactionType.expense;
+                        final showIncome = widget.transaction == null ||
+                            widget.transaction!.transaction.type ==
+                                TransactionType.income;
+                        final children = <Widget>[
+                          if (showExpense)
+                            KeyedSubtree(
+                              key: const ValueKey('tx-form-expense'),
+                              child: formDisplay == 'full'
+                                  ? AddTransactionForm(
+                                      transactionType: TransactionType.expense,
+                                      accentColor: appDangerColor,
+                                      transactionCompleteEntity:
+                                          widget.transaction,
+                                    )
+                                  : AddTransactionFormCompactLayout(
+                                      transactionType: TransactionType.expense,
+                                      accentColor: appDangerColor,
+                                      transactionCompleteEntity:
+                                          widget.transaction,
+                                    ),
+                            ),
+                          if (showIncome)
+                            KeyedSubtree(
+                              key: const ValueKey('tx-form-income'),
+                              child: formDisplay == 'full'
+                                  ? AddTransactionForm(
+                                      accentColor: appPrimaryColor,
+                                      transactionCompleteEntity:
+                                          widget.transaction,
+                                    )
+                                  : AddTransactionFormCompactLayout(
+                                      accentColor: appPrimaryColor,
+                                      transactionCompleteEntity:
+                                          widget.transaction,
+                                    ),
+                            ),
+                          if (widget.transaction == null)
+                            const KeyedSubtree(
+                              key: ValueKey('tx-form-transfer'),
+                              child: WalletTransferScreen(embedded: true),
+                            ),
+                        ];
+                        return IndexedStack(
+                          index: tabController.index.clamp(
+                            0,
+                            children.length - 1,
+                          ),
+                          children: children,
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

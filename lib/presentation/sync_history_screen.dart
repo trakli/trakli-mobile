@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart' hide Column;
 import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -318,6 +320,54 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
     );
   }
 
+  /// Full error text plus the queued request payload, so validation
+  /// failures show exactly what the server received.
+  void _showChangeDetails(LocalChange change) {
+    final payload = const JsonEncoder.withIndent('  ').convert(change.data);
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(_getEntityTypeDisplayName(change.entityType)),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (change.error != null) ...[
+                  SelectableText(
+                    change.error!,
+                    style: TextStyle(fontSize: 12.sp, color: Colors.red[700]),
+                  ),
+                  SizedBox(height: 12.h),
+                ],
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: SelectableText(
+                    payload,
+                    style: TextStyle(fontSize: 11.sp, fontFamily: 'monospace'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(LocaleKeys.done.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildFailedChangesSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,9 +449,21 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
                         _retryFailedChange(change);
                       } else if (value == 'dismiss') {
                         _dismissFailedChange(change);
+                      } else if (value == 'details') {
+                        _showChangeDetails(change);
                       }
                     },
                     itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'details',
+                        child: Row(
+                          children: [
+                            Icon(Icons.info_outline, size: 18),
+                            SizedBox(width: 8),
+                            Text('View details'),
+                          ],
+                        ),
+                      ),
                       PopupMenuItem(
                         value: 'retry',
                         child: Row(

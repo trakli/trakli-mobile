@@ -35,12 +35,17 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
 
   @override
   Future<Transfer> unmarshal(Map<String, dynamic> entityJson) async {
-    return TransferDto.fromJson(entityJson).toTransfer();
+    // Snapshots queued by older builds used the API request shape
+    // (toServerJson), which lacks these DTO fields.
+    final json = Map<String, dynamic>.from(entityJson);
+    json['client_generated_id'] ??= json['client_id'];
+    json['updated_at'] ??= json['created_at'];
+    return TransferDto.fromJson(json).toTransfer();
   }
 
   @override
   Map<String, dynamic> marshal(Transfer entity) {
-    return toServerJson(entity);
+    return TransferDto.fromTransfer(entity).toJson();
   }
 
   @override
@@ -69,6 +74,22 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
       if (incomeTxn?.id == null) return false;
     }
 
+    return true;
+  }
+
+  @override
+  Future<bool> shouldPersistLocal(Transfer entity) async {
+    if (entity.deletedAt != null) return true;
+
+    for (final legClientId in [
+      entity.expenseTransactionClientId,
+      entity.incomeTransactionClientId,
+    ]) {
+      if (legClientId == null || legClientId.isEmpty) continue;
+      final txn = await transactionLocalDataSource
+          .getTransactionByClientId(legClientId);
+      if (txn == null) return false;
+    }
     return true;
   }
 
@@ -128,6 +149,10 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
   @override
   Future<void> upsertAllLocal(List<Transfer> list) async {
     for (final entity in list) {
+      if (entity.clientId.isEmpty) {
+        continue;
+      }
+
       if (entity.deletedAt != null) {
         await table.deleteWhere((t) => t.clientId.equals(entity.clientId));
       } else {
@@ -184,4 +209,7 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
 
   @override
   DateTime? getLastSyncedAt(Transfer entity) => entity.lastSyncedAt;
+
+  @override
+  DateTime? getCursorTimestamp(Transfer entity) => entity.updatedAt;
 }

@@ -178,4 +178,7 @@ class WalletSyncHandler extends SyncTypeHandler<Wallet, String, int>
 
   @override
   DateTime? getLastSyncedAt(Wallet entity) => entity.lastSyncedAt;
+
+  @override
+  DateTime? getCursorTimestamp(Wallet entity) => entity.updatedAt;
 }

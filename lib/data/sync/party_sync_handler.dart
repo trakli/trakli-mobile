@@ -149,4 +149,7 @@ class PartySyncHandler extends SyncTypeHandler<Party, String, int>
 
   @override
   DateTime? getLastSyncedAt(Party entity) => entity.lastSyncedAt;
+
+  @override
+  DateTime? getCursorTimestamp(Party entity) => entity.updatedAt;
 }

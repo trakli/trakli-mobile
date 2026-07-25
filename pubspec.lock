@@ -428,11 +428,9 @@ packages:
   drift_sync_core:
     dependency: "direct main"
     description:
-      path: "packages/drift_sync_core"
-      ref: "drift_sync_core-v0.2.1"
-      resolved-ref: "9ae0f78ad61c3ef9a9e6ff4bce26222fa6324d7e"
-      url: "https://github.com/whilesmartflutter/drift_sync.git"
-    source: git
+      path: "../drift_sync/packages/drift_sync_core"
+      relative: true
+    source: path
     version: "0.2.0"
   drift_sync_flutter:
     dependency: "direct main"
@@ -2126,7 +2124,7 @@ packages:
     source: hosted
     version: "1.0.1"
   web_socket_channel:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: web_socket_channel
       sha256: d645757fb0f4773d602444000a8131ff5d48c9e47adfe9772652dd1a4f2d45c8
