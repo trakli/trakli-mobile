@@ -77,14 +77,11 @@ class ChatLandingState extends State<ChatLanding>
     final greeting =
         firstName.isEmpty ? _greeting() : '${_greeting()}, $firstName';
 
-    final suggestions = <(String, IconData)>[
-      (
-        LocaleKeys.aiSuggestSpendMonth.tr(),
-        Icons.account_balance_wallet_rounded
-      ),
-      (LocaleKeys.aiSuggestTopCategory.tr(), Icons.pie_chart_rounded),
-      (LocaleKeys.aiSuggestIncomeVsExpense.tr(), Icons.show_chart_rounded),
-      (LocaleKeys.aiSuggestBalance.tr(), Icons.account_balance_rounded),
+    final suggestions = <String>[
+      LocaleKeys.aiSuggestSpendMonth.tr(),
+      LocaleKeys.aiSuggestTopCategory.tr(),
+      LocaleKeys.aiSuggestIncomeVsExpense.tr(),
+      LocaleKeys.aiSuggestBalance.tr(),
     ];
 
     return ListView(
@@ -129,7 +126,7 @@ class ChatLandingState extends State<ChatLanding>
                 5 + e.key,
                 Padding(
                   padding: EdgeInsets.only(bottom: 10.h),
-                  child: _suggestionChip(tones, e.value.$1, e.value.$2),
+                  child: _suggestionChip(tones, e.value),
                 ),
               ),
             ),
@@ -242,7 +239,7 @@ class ChatLandingState extends State<ChatLanding>
     );
   }
 
-  Widget _suggestionChip(AppTones tones, String q, IconData icon) {
+  Widget _suggestionChip(AppTones tones, String q) {
     return InkWell(
       onTap: () => widget.onPick(q),
       borderRadius: BorderRadius.circular(14.r),
@@ -255,7 +252,7 @@ class ChatLandingState extends State<ChatLanding>
         ),
         child: Row(
           children: [
-            Icon(icon, size: 16.sp, color: tones.brand.deep),
+            Icon(Icons.bolt_rounded, size: 16.sp, color: tones.brand.deep),
             SizedBox(width: 10.w),
             Expanded(
               child: Text(

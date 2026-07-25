@@ -1755,35 +1755,6 @@ class $TransactionsTable extends Transactions
       'transfer_client_id', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   @override
-  late final GeneratedColumn<bool> isRefund = GeneratedColumn<bool>(
-      'is_refund', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_refund" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  @override
-  late final GeneratedColumn<int> refundOfTransactionId = GeneratedColumn<int>(
-      'refund_of_transaction_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<String> recurrencePeriod = GeneratedColumn<String>(
-      'recurrence_period', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<int> recurrenceInterval = GeneratedColumn<int>(
-      'recurrence_interval', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<DateTime> recurrenceEndsAt =
-      GeneratedColumn<DateTime>('recurrence_ends_at', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<DateTime> recurrenceNextScheduledAt =
-      GeneratedColumn<DateTime>(
-          'recurrence_next_scheduled_at', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
   List<GeneratedColumn> get $columns => [
         id,
         userId,
@@ -1805,13 +1776,7 @@ class $TransactionsTable extends Transactions
         partyClientId,
         groupClientId,
         transferId,
-        transferClientId,
-        isRefund,
-        refundOfTransactionId,
-        recurrencePeriod,
-        recurrenceInterval,
-        recurrenceEndsAt,
-        recurrenceNextScheduledAt
+        transferClientId
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1867,19 +1832,6 @@ class $TransactionsTable extends Transactions
           .read(DriftSqlType.int, data['${effectivePrefix}transfer_id']),
       transferClientId: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}transfer_client_id']),
-      isRefund: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_refund'])!,
-      refundOfTransactionId: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}refund_of_transaction_id']),
-      recurrencePeriod: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}recurrence_period']),
-      recurrenceInterval: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}recurrence_interval']),
-      recurrenceEndsAt: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}recurrence_ends_at']),
-      recurrenceNextScheduledAt: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime,
-          data['${effectivePrefix}recurrence_next_scheduled_at']),
     );
   }
 
@@ -1914,12 +1866,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final String? groupClientId;
   final int? transferId;
   final String? transferClientId;
-  final bool isRefund;
-  final int? refundOfTransactionId;
-  final String? recurrencePeriod;
-  final int? recurrenceInterval;
-  final DateTime? recurrenceEndsAt;
-  final DateTime? recurrenceNextScheduledAt;
   const Transaction(
       {this.id,
       this.userId,
@@ -1941,13 +1887,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       this.partyClientId,
       this.groupClientId,
       this.transferId,
-      this.transferClientId,
-      required this.isRefund,
-      this.refundOfTransactionId,
-      this.recurrencePeriod,
-      this.recurrenceInterval,
-      this.recurrenceEndsAt,
-      this.recurrenceNextScheduledAt});
+      this.transferClientId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2003,23 +1943,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     if (!nullToAbsent || transferClientId != null) {
       map['transfer_client_id'] = Variable<String>(transferClientId);
     }
-    map['is_refund'] = Variable<bool>(isRefund);
-    if (!nullToAbsent || refundOfTransactionId != null) {
-      map['refund_of_transaction_id'] = Variable<int>(refundOfTransactionId);
-    }
-    if (!nullToAbsent || recurrencePeriod != null) {
-      map['recurrence_period'] = Variable<String>(recurrencePeriod);
-    }
-    if (!nullToAbsent || recurrenceInterval != null) {
-      map['recurrence_interval'] = Variable<int>(recurrenceInterval);
-    }
-    if (!nullToAbsent || recurrenceEndsAt != null) {
-      map['recurrence_ends_at'] = Variable<DateTime>(recurrenceEndsAt);
-    }
-    if (!nullToAbsent || recurrenceNextScheduledAt != null) {
-      map['recurrence_next_scheduled_at'] =
-          Variable<DateTime>(recurrenceNextScheduledAt);
-    }
     return map;
   }
 
@@ -2069,23 +1992,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       transferClientId: transferClientId == null && nullToAbsent
           ? const Value.absent()
           : Value(transferClientId),
-      isRefund: Value(isRefund),
-      refundOfTransactionId: refundOfTransactionId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(refundOfTransactionId),
-      recurrencePeriod: recurrencePeriod == null && nullToAbsent
-          ? const Value.absent()
-          : Value(recurrencePeriod),
-      recurrenceInterval: recurrenceInterval == null && nullToAbsent
-          ? const Value.absent()
-          : Value(recurrenceInterval),
-      recurrenceEndsAt: recurrenceEndsAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(recurrenceEndsAt),
-      recurrenceNextScheduledAt:
-          recurrenceNextScheduledAt == null && nullToAbsent
-              ? const Value.absent()
-              : Value(recurrenceNextScheduledAt),
     );
   }
 
@@ -2116,16 +2022,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       transferId: serializer.fromJson<int?>(json['transfer_id']),
       transferClientId:
           serializer.fromJson<String?>(json['transfer_client_id']),
-      isRefund: serializer.fromJson<bool>(json['is_refund']),
-      refundOfTransactionId:
-          serializer.fromJson<int?>(json['refund_of_transaction_id']),
-      recurrencePeriod: serializer.fromJson<String?>(json['recurrence_period']),
-      recurrenceInterval:
-          serializer.fromJson<int?>(json['recurrence_interval']),
-      recurrenceEndsAt:
-          serializer.fromJson<DateTime?>(json['recurrence_ends_at']),
-      recurrenceNextScheduledAt:
-          serializer.fromJson<DateTime?>(json['next_scheduled_at']),
     );
   }
   @override
@@ -2154,14 +2050,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'groupClientId': serializer.toJson<String?>(groupClientId),
       'transfer_id': serializer.toJson<int?>(transferId),
       'transfer_client_id': serializer.toJson<String?>(transferClientId),
-      'is_refund': serializer.toJson<bool>(isRefund),
-      'refund_of_transaction_id':
-          serializer.toJson<int?>(refundOfTransactionId),
-      'recurrence_period': serializer.toJson<String?>(recurrencePeriod),
-      'recurrence_interval': serializer.toJson<int?>(recurrenceInterval),
-      'recurrence_ends_at': serializer.toJson<DateTime?>(recurrenceEndsAt),
-      'next_scheduled_at':
-          serializer.toJson<DateTime?>(recurrenceNextScheduledAt),
     };
   }
 
@@ -2186,13 +2074,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           Value<String?> partyClientId = const Value.absent(),
           Value<String?> groupClientId = const Value.absent(),
           Value<int?> transferId = const Value.absent(),
-          Value<String?> transferClientId = const Value.absent(),
-          bool? isRefund,
-          Value<int?> refundOfTransactionId = const Value.absent(),
-          Value<String?> recurrencePeriod = const Value.absent(),
-          Value<int?> recurrenceInterval = const Value.absent(),
-          Value<DateTime?> recurrenceEndsAt = const Value.absent(),
-          Value<DateTime?> recurrenceNextScheduledAt = const Value.absent()}) =>
+          Value<String?> transferClientId = const Value.absent()}) =>
       Transaction(
         id: id.present ? id.value : this.id,
         userId: userId.present ? userId.value : this.userId,
@@ -2220,22 +2102,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
         transferClientId: transferClientId.present
             ? transferClientId.value
             : this.transferClientId,
-        isRefund: isRefund ?? this.isRefund,
-        refundOfTransactionId: refundOfTransactionId.present
-            ? refundOfTransactionId.value
-            : this.refundOfTransactionId,
-        recurrencePeriod: recurrencePeriod.present
-            ? recurrencePeriod.value
-            : this.recurrencePeriod,
-        recurrenceInterval: recurrenceInterval.present
-            ? recurrenceInterval.value
-            : this.recurrenceInterval,
-        recurrenceEndsAt: recurrenceEndsAt.present
-            ? recurrenceEndsAt.value
-            : this.recurrenceEndsAt,
-        recurrenceNextScheduledAt: recurrenceNextScheduledAt.present
-            ? recurrenceNextScheduledAt.value
-            : this.recurrenceNextScheduledAt,
       );
   Transaction copyWithCompanion(TransactionsCompanion data) {
     return Transaction(
@@ -2272,22 +2138,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       transferClientId: data.transferClientId.present
           ? data.transferClientId.value
           : this.transferClientId,
-      isRefund: data.isRefund.present ? data.isRefund.value : this.isRefund,
-      refundOfTransactionId: data.refundOfTransactionId.present
-          ? data.refundOfTransactionId.value
-          : this.refundOfTransactionId,
-      recurrencePeriod: data.recurrencePeriod.present
-          ? data.recurrencePeriod.value
-          : this.recurrencePeriod,
-      recurrenceInterval: data.recurrenceInterval.present
-          ? data.recurrenceInterval.value
-          : this.recurrenceInterval,
-      recurrenceEndsAt: data.recurrenceEndsAt.present
-          ? data.recurrenceEndsAt.value
-          : this.recurrenceEndsAt,
-      recurrenceNextScheduledAt: data.recurrenceNextScheduledAt.present
-          ? data.recurrenceNextScheduledAt.value
-          : this.recurrenceNextScheduledAt,
     );
   }
 
@@ -2314,13 +2164,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('partyClientId: $partyClientId, ')
           ..write('groupClientId: $groupClientId, ')
           ..write('transferId: $transferId, ')
-          ..write('transferClientId: $transferClientId, ')
-          ..write('isRefund: $isRefund, ')
-          ..write('refundOfTransactionId: $refundOfTransactionId, ')
-          ..write('recurrencePeriod: $recurrencePeriod, ')
-          ..write('recurrenceInterval: $recurrenceInterval, ')
-          ..write('recurrenceEndsAt: $recurrenceEndsAt, ')
-          ..write('recurrenceNextScheduledAt: $recurrenceNextScheduledAt')
+          ..write('transferClientId: $transferClientId')
           ..write(')'))
         .toString();
   }
@@ -2347,13 +2191,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
         partyClientId,
         groupClientId,
         transferId,
-        transferClientId,
-        isRefund,
-        refundOfTransactionId,
-        recurrencePeriod,
-        recurrenceInterval,
-        recurrenceEndsAt,
-        recurrenceNextScheduledAt
+        transferClientId
       ]);
   @override
   bool operator ==(Object other) =>
@@ -2379,13 +2217,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.partyClientId == this.partyClientId &&
           other.groupClientId == this.groupClientId &&
           other.transferId == this.transferId &&
-          other.transferClientId == this.transferClientId &&
-          other.isRefund == this.isRefund &&
-          other.refundOfTransactionId == this.refundOfTransactionId &&
-          other.recurrencePeriod == this.recurrencePeriod &&
-          other.recurrenceInterval == this.recurrenceInterval &&
-          other.recurrenceEndsAt == this.recurrenceEndsAt &&
-          other.recurrenceNextScheduledAt == this.recurrenceNextScheduledAt);
+          other.transferClientId == this.transferClientId);
 }
 
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
@@ -2410,12 +2242,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<String?> groupClientId;
   final Value<int?> transferId;
   final Value<String?> transferClientId;
-  final Value<bool> isRefund;
-  final Value<int?> refundOfTransactionId;
-  final Value<String?> recurrencePeriod;
-  final Value<int?> recurrenceInterval;
-  final Value<DateTime?> recurrenceEndsAt;
-  final Value<DateTime?> recurrenceNextScheduledAt;
   final Value<int> rowid;
   const TransactionsCompanion({
     this.id = const Value.absent(),
@@ -2439,12 +2265,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.groupClientId = const Value.absent(),
     this.transferId = const Value.absent(),
     this.transferClientId = const Value.absent(),
-    this.isRefund = const Value.absent(),
-    this.refundOfTransactionId = const Value.absent(),
-    this.recurrencePeriod = const Value.absent(),
-    this.recurrenceInterval = const Value.absent(),
-    this.recurrenceEndsAt = const Value.absent(),
-    this.recurrenceNextScheduledAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TransactionsCompanion.insert({
@@ -2469,12 +2289,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.groupClientId = const Value.absent(),
     this.transferId = const Value.absent(),
     this.transferClientId = const Value.absent(),
-    this.isRefund = const Value.absent(),
-    this.refundOfTransactionId = const Value.absent(),
-    this.recurrencePeriod = const Value.absent(),
-    this.recurrenceInterval = const Value.absent(),
-    this.recurrenceEndsAt = const Value.absent(),
-    this.recurrenceNextScheduledAt = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : amount = Value(amount),
         type = Value(type),
@@ -2501,12 +2315,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Expression<String>? groupClientId,
     Expression<int>? transferId,
     Expression<String>? transferClientId,
-    Expression<bool>? isRefund,
-    Expression<int>? refundOfTransactionId,
-    Expression<String>? recurrencePeriod,
-    Expression<int>? recurrenceInterval,
-    Expression<DateTime>? recurrenceEndsAt,
-    Expression<DateTime>? recurrenceNextScheduledAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2531,14 +2339,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       if (groupClientId != null) 'group_client_id': groupClientId,
       if (transferId != null) 'transfer_id': transferId,
       if (transferClientId != null) 'transfer_client_id': transferClientId,
-      if (isRefund != null) 'is_refund': isRefund,
-      if (refundOfTransactionId != null)
-        'refund_of_transaction_id': refundOfTransactionId,
-      if (recurrencePeriod != null) 'recurrence_period': recurrencePeriod,
-      if (recurrenceInterval != null) 'recurrence_interval': recurrenceInterval,
-      if (recurrenceEndsAt != null) 'recurrence_ends_at': recurrenceEndsAt,
-      if (recurrenceNextScheduledAt != null)
-        'recurrence_next_scheduled_at': recurrenceNextScheduledAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2565,12 +2365,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       Value<String?>? groupClientId,
       Value<int?>? transferId,
       Value<String?>? transferClientId,
-      Value<bool>? isRefund,
-      Value<int?>? refundOfTransactionId,
-      Value<String?>? recurrencePeriod,
-      Value<int?>? recurrenceInterval,
-      Value<DateTime?>? recurrenceEndsAt,
-      Value<DateTime?>? recurrenceNextScheduledAt,
       Value<int>? rowid}) {
     return TransactionsCompanion(
       id: id ?? this.id,
@@ -2594,14 +2388,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       groupClientId: groupClientId ?? this.groupClientId,
       transferId: transferId ?? this.transferId,
       transferClientId: transferClientId ?? this.transferClientId,
-      isRefund: isRefund ?? this.isRefund,
-      refundOfTransactionId:
-          refundOfTransactionId ?? this.refundOfTransactionId,
-      recurrencePeriod: recurrencePeriod ?? this.recurrencePeriod,
-      recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
-      recurrenceEndsAt: recurrenceEndsAt ?? this.recurrenceEndsAt,
-      recurrenceNextScheduledAt:
-          recurrenceNextScheduledAt ?? this.recurrenceNextScheduledAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2673,26 +2459,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (transferClientId.present) {
       map['transfer_client_id'] = Variable<String>(transferClientId.value);
     }
-    if (isRefund.present) {
-      map['is_refund'] = Variable<bool>(isRefund.value);
-    }
-    if (refundOfTransactionId.present) {
-      map['refund_of_transaction_id'] =
-          Variable<int>(refundOfTransactionId.value);
-    }
-    if (recurrencePeriod.present) {
-      map['recurrence_period'] = Variable<String>(recurrencePeriod.value);
-    }
-    if (recurrenceInterval.present) {
-      map['recurrence_interval'] = Variable<int>(recurrenceInterval.value);
-    }
-    if (recurrenceEndsAt.present) {
-      map['recurrence_ends_at'] = Variable<DateTime>(recurrenceEndsAt.value);
-    }
-    if (recurrenceNextScheduledAt.present) {
-      map['recurrence_next_scheduled_at'] =
-          Variable<DateTime>(recurrenceNextScheduledAt.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2723,12 +2489,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
           ..write('groupClientId: $groupClientId, ')
           ..write('transferId: $transferId, ')
           ..write('transferClientId: $transferClientId, ')
-          ..write('isRefund: $isRefund, ')
-          ..write('refundOfTransactionId: $refundOfTransactionId, ')
-          ..write('recurrencePeriod: $recurrencePeriod, ')
-          ..write('recurrenceInterval: $recurrenceInterval, ')
-          ..write('recurrenceEndsAt: $recurrenceEndsAt, ')
-          ..write('recurrenceNextScheduledAt: $recurrenceNextScheduledAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -9228,803 +8988,6 @@ class FinancialPositionCacheCompanion
   }
 }
 
-class $RemindersTable extends Reminders
-    with TableInfo<$RemindersTable, Reminder> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $RemindersTable(this.attachedDatabase, [this._alias]);
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
-  @override
-  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
-      'user_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<String> clientId = GeneratedColumn<String>(
-      'client_id', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(defaultClientId));
-  @override
-  late final GeneratedColumn<String> rev = GeneratedColumn<String>(
-      'rev', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('1'));
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
-  @override
-  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
-      'deleted_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<DateTime> lastSyncedAt = GeneratedColumn<DateTime>(
-      'last_synced_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<String> type = GeneratedColumn<String>(
-      'type', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('custom'));
-  @override
-  late final GeneratedColumn<DateTime> triggerAt = GeneratedColumn<DateTime>(
-      'trigger_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<DateTime> dueAt = GeneratedColumn<DateTime>(
-      'due_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<String> repeatRule = GeneratedColumn<String>(
-      'repeat_rule', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<String> timezone = GeneratedColumn<String>(
-      'timezone', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<String> status = GeneratedColumn<String>(
-      'status', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('active'));
-  @override
-  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
-      'priority', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  @override
-  late final GeneratedColumn<DateTime> snoozedUntil = GeneratedColumn<DateTime>(
-      'snoozed_until', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<DateTime> lastTriggeredAt =
-      GeneratedColumn<DateTime>('last_triggered_at', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumn<DateTime> nextTriggerAt =
-      GeneratedColumn<DateTime>('next_trigger_at', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        userId,
-        clientId,
-        rev,
-        createdAt,
-        updatedAt,
-        deletedAt,
-        lastSyncedAt,
-        title,
-        description,
-        type,
-        triggerAt,
-        dueAt,
-        repeatRule,
-        timezone,
-        status,
-        priority,
-        snoozedUntil,
-        lastTriggeredAt,
-        nextTriggerAt
-      ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'reminders';
-  @override
-  Set<GeneratedColumn> get $primaryKey => {clientId};
-  @override
-  Reminder map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Reminder(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id']),
-      userId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}user_id']),
-      clientId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}client_id'])!,
-      rev: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}rev']),
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
-      deletedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
-      lastSyncedAt: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_synced_at']),
-      title: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description']),
-      type: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
-      triggerAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}trigger_at']),
-      dueAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}due_at']),
-      repeatRule: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}repeat_rule']),
-      timezone: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}timezone']),
-      status: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
-      priority: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}priority'])!,
-      snoozedUntil: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}snoozed_until']),
-      lastTriggeredAt: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_triggered_at']),
-      nextTriggerAt: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}next_trigger_at']),
-    );
-  }
-
-  @override
-  $RemindersTable createAlias(String alias) {
-    return $RemindersTable(attachedDatabase, alias);
-  }
-}
-
-class Reminder extends DataClass implements Insertable<Reminder> {
-  final int? id;
-  final int? userId;
-  final String clientId;
-  final String? rev;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final DateTime? deletedAt;
-  final DateTime? lastSyncedAt;
-  final String title;
-  final String? description;
-  final String type;
-  final DateTime? triggerAt;
-  final DateTime? dueAt;
-  final String? repeatRule;
-  final String? timezone;
-  final String status;
-  final int priority;
-  final DateTime? snoozedUntil;
-  final DateTime? lastTriggeredAt;
-  final DateTime? nextTriggerAt;
-  const Reminder(
-      {this.id,
-      this.userId,
-      required this.clientId,
-      this.rev,
-      required this.createdAt,
-      required this.updatedAt,
-      this.deletedAt,
-      this.lastSyncedAt,
-      required this.title,
-      this.description,
-      required this.type,
-      this.triggerAt,
-      this.dueAt,
-      this.repeatRule,
-      this.timezone,
-      required this.status,
-      required this.priority,
-      this.snoozedUntil,
-      this.lastTriggeredAt,
-      this.nextTriggerAt});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (!nullToAbsent || id != null) {
-      map['id'] = Variable<int>(id);
-    }
-    if (!nullToAbsent || userId != null) {
-      map['user_id'] = Variable<int>(userId);
-    }
-    map['client_id'] = Variable<String>(clientId);
-    if (!nullToAbsent || rev != null) {
-      map['rev'] = Variable<String>(rev);
-    }
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    if (!nullToAbsent || deletedAt != null) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt);
-    }
-    if (!nullToAbsent || lastSyncedAt != null) {
-      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt);
-    }
-    map['title'] = Variable<String>(title);
-    if (!nullToAbsent || description != null) {
-      map['description'] = Variable<String>(description);
-    }
-    map['type'] = Variable<String>(type);
-    if (!nullToAbsent || triggerAt != null) {
-      map['trigger_at'] = Variable<DateTime>(triggerAt);
-    }
-    if (!nullToAbsent || dueAt != null) {
-      map['due_at'] = Variable<DateTime>(dueAt);
-    }
-    if (!nullToAbsent || repeatRule != null) {
-      map['repeat_rule'] = Variable<String>(repeatRule);
-    }
-    if (!nullToAbsent || timezone != null) {
-      map['timezone'] = Variable<String>(timezone);
-    }
-    map['status'] = Variable<String>(status);
-    map['priority'] = Variable<int>(priority);
-    if (!nullToAbsent || snoozedUntil != null) {
-      map['snoozed_until'] = Variable<DateTime>(snoozedUntil);
-    }
-    if (!nullToAbsent || lastTriggeredAt != null) {
-      map['last_triggered_at'] = Variable<DateTime>(lastTriggeredAt);
-    }
-    if (!nullToAbsent || nextTriggerAt != null) {
-      map['next_trigger_at'] = Variable<DateTime>(nextTriggerAt);
-    }
-    return map;
-  }
-
-  RemindersCompanion toCompanion(bool nullToAbsent) {
-    return RemindersCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      userId:
-          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
-      clientId: Value(clientId),
-      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-      deletedAt: deletedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedAt),
-      lastSyncedAt: lastSyncedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastSyncedAt),
-      title: Value(title),
-      description: description == null && nullToAbsent
-          ? const Value.absent()
-          : Value(description),
-      type: Value(type),
-      triggerAt: triggerAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(triggerAt),
-      dueAt:
-          dueAt == null && nullToAbsent ? const Value.absent() : Value(dueAt),
-      repeatRule: repeatRule == null && nullToAbsent
-          ? const Value.absent()
-          : Value(repeatRule),
-      timezone: timezone == null && nullToAbsent
-          ? const Value.absent()
-          : Value(timezone),
-      status: Value(status),
-      priority: Value(priority),
-      snoozedUntil: snoozedUntil == null && nullToAbsent
-          ? const Value.absent()
-          : Value(snoozedUntil),
-      lastTriggeredAt: lastTriggeredAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastTriggeredAt),
-      nextTriggerAt: nextTriggerAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(nextTriggerAt),
-    );
-  }
-
-  factory Reminder.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Reminder(
-      id: serializer.fromJson<int?>(json['id']),
-      userId: serializer.fromJson<int?>(json['user_id']),
-      clientId: serializer.fromJson<String>(json['client_generated_id']),
-      rev: serializer.fromJson<String?>(json['rev']),
-      createdAt: serializer.fromJson<DateTime>(json['created_at']),
-      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
-      deletedAt: serializer.fromJson<DateTime?>(json['deleted_at']),
-      lastSyncedAt: serializer.fromJson<DateTime?>(json['last_synced_at']),
-      title: serializer.fromJson<String>(json['title']),
-      description: serializer.fromJson<String?>(json['description']),
-      type: serializer.fromJson<String>(json['type']),
-      triggerAt: serializer.fromJson<DateTime?>(json['trigger_at']),
-      dueAt: serializer.fromJson<DateTime?>(json['due_at']),
-      repeatRule: serializer.fromJson<String?>(json['repeat_rule']),
-      timezone: serializer.fromJson<String?>(json['timezone']),
-      status: serializer.fromJson<String>(json['status']),
-      priority: serializer.fromJson<int>(json['priority']),
-      snoozedUntil: serializer.fromJson<DateTime?>(json['snoozed_until']),
-      lastTriggeredAt:
-          serializer.fromJson<DateTime?>(json['last_triggered_at']),
-      nextTriggerAt: serializer.fromJson<DateTime?>(json['next_trigger_at']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int?>(id),
-      'user_id': serializer.toJson<int?>(userId),
-      'client_generated_id': serializer.toJson<String>(clientId),
-      'rev': serializer.toJson<String?>(rev),
-      'created_at': serializer.toJson<DateTime>(createdAt),
-      'updated_at': serializer.toJson<DateTime>(updatedAt),
-      'deleted_at': serializer.toJson<DateTime?>(deletedAt),
-      'last_synced_at': serializer.toJson<DateTime?>(lastSyncedAt),
-      'title': serializer.toJson<String>(title),
-      'description': serializer.toJson<String?>(description),
-      'type': serializer.toJson<String>(type),
-      'trigger_at': serializer.toJson<DateTime?>(triggerAt),
-      'due_at': serializer.toJson<DateTime?>(dueAt),
-      'repeat_rule': serializer.toJson<String?>(repeatRule),
-      'timezone': serializer.toJson<String?>(timezone),
-      'status': serializer.toJson<String>(status),
-      'priority': serializer.toJson<int>(priority),
-      'snoozed_until': serializer.toJson<DateTime?>(snoozedUntil),
-      'last_triggered_at': serializer.toJson<DateTime?>(lastTriggeredAt),
-      'next_trigger_at': serializer.toJson<DateTime?>(nextTriggerAt),
-    };
-  }
-
-  Reminder copyWith(
-          {Value<int?> id = const Value.absent(),
-          Value<int?> userId = const Value.absent(),
-          String? clientId,
-          Value<String?> rev = const Value.absent(),
-          DateTime? createdAt,
-          DateTime? updatedAt,
-          Value<DateTime?> deletedAt = const Value.absent(),
-          Value<DateTime?> lastSyncedAt = const Value.absent(),
-          String? title,
-          Value<String?> description = const Value.absent(),
-          String? type,
-          Value<DateTime?> triggerAt = const Value.absent(),
-          Value<DateTime?> dueAt = const Value.absent(),
-          Value<String?> repeatRule = const Value.absent(),
-          Value<String?> timezone = const Value.absent(),
-          String? status,
-          int? priority,
-          Value<DateTime?> snoozedUntil = const Value.absent(),
-          Value<DateTime?> lastTriggeredAt = const Value.absent(),
-          Value<DateTime?> nextTriggerAt = const Value.absent()}) =>
-      Reminder(
-        id: id.present ? id.value : this.id,
-        userId: userId.present ? userId.value : this.userId,
-        clientId: clientId ?? this.clientId,
-        rev: rev.present ? rev.value : this.rev,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
-        lastSyncedAt:
-            lastSyncedAt.present ? lastSyncedAt.value : this.lastSyncedAt,
-        title: title ?? this.title,
-        description: description.present ? description.value : this.description,
-        type: type ?? this.type,
-        triggerAt: triggerAt.present ? triggerAt.value : this.triggerAt,
-        dueAt: dueAt.present ? dueAt.value : this.dueAt,
-        repeatRule: repeatRule.present ? repeatRule.value : this.repeatRule,
-        timezone: timezone.present ? timezone.value : this.timezone,
-        status: status ?? this.status,
-        priority: priority ?? this.priority,
-        snoozedUntil:
-            snoozedUntil.present ? snoozedUntil.value : this.snoozedUntil,
-        lastTriggeredAt: lastTriggeredAt.present
-            ? lastTriggeredAt.value
-            : this.lastTriggeredAt,
-        nextTriggerAt:
-            nextTriggerAt.present ? nextTriggerAt.value : this.nextTriggerAt,
-      );
-  Reminder copyWithCompanion(RemindersCompanion data) {
-    return Reminder(
-      id: data.id.present ? data.id.value : this.id,
-      userId: data.userId.present ? data.userId.value : this.userId,
-      clientId: data.clientId.present ? data.clientId.value : this.clientId,
-      rev: data.rev.present ? data.rev.value : this.rev,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
-      lastSyncedAt: data.lastSyncedAt.present
-          ? data.lastSyncedAt.value
-          : this.lastSyncedAt,
-      title: data.title.present ? data.title.value : this.title,
-      description:
-          data.description.present ? data.description.value : this.description,
-      type: data.type.present ? data.type.value : this.type,
-      triggerAt: data.triggerAt.present ? data.triggerAt.value : this.triggerAt,
-      dueAt: data.dueAt.present ? data.dueAt.value : this.dueAt,
-      repeatRule:
-          data.repeatRule.present ? data.repeatRule.value : this.repeatRule,
-      timezone: data.timezone.present ? data.timezone.value : this.timezone,
-      status: data.status.present ? data.status.value : this.status,
-      priority: data.priority.present ? data.priority.value : this.priority,
-      snoozedUntil: data.snoozedUntil.present
-          ? data.snoozedUntil.value
-          : this.snoozedUntil,
-      lastTriggeredAt: data.lastTriggeredAt.present
-          ? data.lastTriggeredAt.value
-          : this.lastTriggeredAt,
-      nextTriggerAt: data.nextTriggerAt.present
-          ? data.nextTriggerAt.value
-          : this.nextTriggerAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Reminder(')
-          ..write('id: $id, ')
-          ..write('userId: $userId, ')
-          ..write('clientId: $clientId, ')
-          ..write('rev: $rev, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('lastSyncedAt: $lastSyncedAt, ')
-          ..write('title: $title, ')
-          ..write('description: $description, ')
-          ..write('type: $type, ')
-          ..write('triggerAt: $triggerAt, ')
-          ..write('dueAt: $dueAt, ')
-          ..write('repeatRule: $repeatRule, ')
-          ..write('timezone: $timezone, ')
-          ..write('status: $status, ')
-          ..write('priority: $priority, ')
-          ..write('snoozedUntil: $snoozedUntil, ')
-          ..write('lastTriggeredAt: $lastTriggeredAt, ')
-          ..write('nextTriggerAt: $nextTriggerAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      id,
-      userId,
-      clientId,
-      rev,
-      createdAt,
-      updatedAt,
-      deletedAt,
-      lastSyncedAt,
-      title,
-      description,
-      type,
-      triggerAt,
-      dueAt,
-      repeatRule,
-      timezone,
-      status,
-      priority,
-      snoozedUntil,
-      lastTriggeredAt,
-      nextTriggerAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Reminder &&
-          other.id == this.id &&
-          other.userId == this.userId &&
-          other.clientId == this.clientId &&
-          other.rev == this.rev &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt &&
-          other.deletedAt == this.deletedAt &&
-          other.lastSyncedAt == this.lastSyncedAt &&
-          other.title == this.title &&
-          other.description == this.description &&
-          other.type == this.type &&
-          other.triggerAt == this.triggerAt &&
-          other.dueAt == this.dueAt &&
-          other.repeatRule == this.repeatRule &&
-          other.timezone == this.timezone &&
-          other.status == this.status &&
-          other.priority == this.priority &&
-          other.snoozedUntil == this.snoozedUntil &&
-          other.lastTriggeredAt == this.lastTriggeredAt &&
-          other.nextTriggerAt == this.nextTriggerAt);
-}
-
-class RemindersCompanion extends UpdateCompanion<Reminder> {
-  final Value<int?> id;
-  final Value<int?> userId;
-  final Value<String> clientId;
-  final Value<String?> rev;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
-  final Value<DateTime?> deletedAt;
-  final Value<DateTime?> lastSyncedAt;
-  final Value<String> title;
-  final Value<String?> description;
-  final Value<String> type;
-  final Value<DateTime?> triggerAt;
-  final Value<DateTime?> dueAt;
-  final Value<String?> repeatRule;
-  final Value<String?> timezone;
-  final Value<String> status;
-  final Value<int> priority;
-  final Value<DateTime?> snoozedUntil;
-  final Value<DateTime?> lastTriggeredAt;
-  final Value<DateTime?> nextTriggerAt;
-  final Value<int> rowid;
-  const RemindersCompanion({
-    this.id = const Value.absent(),
-    this.userId = const Value.absent(),
-    this.clientId = const Value.absent(),
-    this.rev = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.lastSyncedAt = const Value.absent(),
-    this.title = const Value.absent(),
-    this.description = const Value.absent(),
-    this.type = const Value.absent(),
-    this.triggerAt = const Value.absent(),
-    this.dueAt = const Value.absent(),
-    this.repeatRule = const Value.absent(),
-    this.timezone = const Value.absent(),
-    this.status = const Value.absent(),
-    this.priority = const Value.absent(),
-    this.snoozedUntil = const Value.absent(),
-    this.lastTriggeredAt = const Value.absent(),
-    this.nextTriggerAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  RemindersCompanion.insert({
-    this.id = const Value.absent(),
-    this.userId = const Value.absent(),
-    this.clientId = const Value.absent(),
-    this.rev = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.lastSyncedAt = const Value.absent(),
-    required String title,
-    this.description = const Value.absent(),
-    this.type = const Value.absent(),
-    this.triggerAt = const Value.absent(),
-    this.dueAt = const Value.absent(),
-    this.repeatRule = const Value.absent(),
-    this.timezone = const Value.absent(),
-    this.status = const Value.absent(),
-    this.priority = const Value.absent(),
-    this.snoozedUntil = const Value.absent(),
-    this.lastTriggeredAt = const Value.absent(),
-    this.nextTriggerAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : title = Value(title);
-  static Insertable<Reminder> custom({
-    Expression<int>? id,
-    Expression<int>? userId,
-    Expression<String>? clientId,
-    Expression<String>? rev,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
-    Expression<DateTime>? deletedAt,
-    Expression<DateTime>? lastSyncedAt,
-    Expression<String>? title,
-    Expression<String>? description,
-    Expression<String>? type,
-    Expression<DateTime>? triggerAt,
-    Expression<DateTime>? dueAt,
-    Expression<String>? repeatRule,
-    Expression<String>? timezone,
-    Expression<String>? status,
-    Expression<int>? priority,
-    Expression<DateTime>? snoozedUntil,
-    Expression<DateTime>? lastTriggeredAt,
-    Expression<DateTime>? nextTriggerAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (userId != null) 'user_id': userId,
-      if (clientId != null) 'client_id': clientId,
-      if (rev != null) 'rev': rev,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (deletedAt != null) 'deleted_at': deletedAt,
-      if (lastSyncedAt != null) 'last_synced_at': lastSyncedAt,
-      if (title != null) 'title': title,
-      if (description != null) 'description': description,
-      if (type != null) 'type': type,
-      if (triggerAt != null) 'trigger_at': triggerAt,
-      if (dueAt != null) 'due_at': dueAt,
-      if (repeatRule != null) 'repeat_rule': repeatRule,
-      if (timezone != null) 'timezone': timezone,
-      if (status != null) 'status': status,
-      if (priority != null) 'priority': priority,
-      if (snoozedUntil != null) 'snoozed_until': snoozedUntil,
-      if (lastTriggeredAt != null) 'last_triggered_at': lastTriggeredAt,
-      if (nextTriggerAt != null) 'next_trigger_at': nextTriggerAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  RemindersCompanion copyWith(
-      {Value<int?>? id,
-      Value<int?>? userId,
-      Value<String>? clientId,
-      Value<String?>? rev,
-      Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt,
-      Value<DateTime?>? deletedAt,
-      Value<DateTime?>? lastSyncedAt,
-      Value<String>? title,
-      Value<String?>? description,
-      Value<String>? type,
-      Value<DateTime?>? triggerAt,
-      Value<DateTime?>? dueAt,
-      Value<String?>? repeatRule,
-      Value<String?>? timezone,
-      Value<String>? status,
-      Value<int>? priority,
-      Value<DateTime?>? snoozedUntil,
-      Value<DateTime?>? lastTriggeredAt,
-      Value<DateTime?>? nextTriggerAt,
-      Value<int>? rowid}) {
-    return RemindersCompanion(
-      id: id ?? this.id,
-      userId: userId ?? this.userId,
-      clientId: clientId ?? this.clientId,
-      rev: rev ?? this.rev,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      deletedAt: deletedAt ?? this.deletedAt,
-      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      type: type ?? this.type,
-      triggerAt: triggerAt ?? this.triggerAt,
-      dueAt: dueAt ?? this.dueAt,
-      repeatRule: repeatRule ?? this.repeatRule,
-      timezone: timezone ?? this.timezone,
-      status: status ?? this.status,
-      priority: priority ?? this.priority,
-      snoozedUntil: snoozedUntil ?? this.snoozedUntil,
-      lastTriggeredAt: lastTriggeredAt ?? this.lastTriggeredAt,
-      nextTriggerAt: nextTriggerAt ?? this.nextTriggerAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (userId.present) {
-      map['user_id'] = Variable<int>(userId.value);
-    }
-    if (clientId.present) {
-      map['client_id'] = Variable<String>(clientId.value);
-    }
-    if (rev.present) {
-      map['rev'] = Variable<String>(rev.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
-    if (deletedAt.present) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
-    }
-    if (lastSyncedAt.present) {
-      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt.value);
-    }
-    if (title.present) {
-      map['title'] = Variable<String>(title.value);
-    }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
-    }
-    if (type.present) {
-      map['type'] = Variable<String>(type.value);
-    }
-    if (triggerAt.present) {
-      map['trigger_at'] = Variable<DateTime>(triggerAt.value);
-    }
-    if (dueAt.present) {
-      map['due_at'] = Variable<DateTime>(dueAt.value);
-    }
-    if (repeatRule.present) {
-      map['repeat_rule'] = Variable<String>(repeatRule.value);
-    }
-    if (timezone.present) {
-      map['timezone'] = Variable<String>(timezone.value);
-    }
-    if (status.present) {
-      map['status'] = Variable<String>(status.value);
-    }
-    if (priority.present) {
-      map['priority'] = Variable<int>(priority.value);
-    }
-    if (snoozedUntil.present) {
-      map['snoozed_until'] = Variable<DateTime>(snoozedUntil.value);
-    }
-    if (lastTriggeredAt.present) {
-      map['last_triggered_at'] = Variable<DateTime>(lastTriggeredAt.value);
-    }
-    if (nextTriggerAt.present) {
-      map['next_trigger_at'] = Variable<DateTime>(nextTriggerAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('RemindersCompanion(')
-          ..write('id: $id, ')
-          ..write('userId: $userId, ')
-          ..write('clientId: $clientId, ')
-          ..write('rev: $rev, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('lastSyncedAt: $lastSyncedAt, ')
-          ..write('title: $title, ')
-          ..write('description: $description, ')
-          ..write('type: $type, ')
-          ..write('triggerAt: $triggerAt, ')
-          ..write('dueAt: $dueAt, ')
-          ..write('repeatRule: $repeatRule, ')
-          ..write('timezone: $timezone, ')
-          ..write('status: $status, ')
-          ..write('priority: $priority, ')
-          ..write('snoozedUntil: $snoozedUntil, ')
-          ..write('lastTriggeredAt: $lastTriggeredAt, ')
-          ..write('nextTriggerAt: $nextTriggerAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10048,7 +9011,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $HoldingsTable holdings = $HoldingsTable(this);
   late final $FinancialPositionCacheTable financialPositionCache =
       $FinancialPositionCacheTable(this);
-  late final $RemindersTable reminders = $RemindersTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10071,8 +9033,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         budgetTargets,
         budgetPeriodStates,
         holdings,
-        financialPositionCache,
-        reminders
+        financialPositionCache
       ];
   @override
   DriftDatabaseOptions get options =>
@@ -11217,12 +10178,6 @@ typedef $$TransactionsTableCreateCompanionBuilder = TransactionsCompanion
   Value<String?> groupClientId,
   Value<int?> transferId,
   Value<String?> transferClientId,
-  Value<bool> isRefund,
-  Value<int?> refundOfTransactionId,
-  Value<String?> recurrencePeriod,
-  Value<int?> recurrenceInterval,
-  Value<DateTime?> recurrenceEndsAt,
-  Value<DateTime?> recurrenceNextScheduledAt,
   Value<int> rowid,
 });
 typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
@@ -11248,12 +10203,6 @@ typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
   Value<String?> groupClientId,
   Value<int?> transferId,
   Value<String?> transferClientId,
-  Value<bool> isRefund,
-  Value<int?> refundOfTransactionId,
-  Value<String?> recurrencePeriod,
-  Value<int?> recurrenceInterval,
-  Value<DateTime?> recurrenceEndsAt,
-  Value<DateTime?> recurrenceNextScheduledAt,
   Value<int> rowid,
 });
 
@@ -11371,29 +10320,6 @@ class $$TransactionsTableFilterComposer
 
   ColumnFilters<String> get transferClientId => $composableBuilder(
       column: $table.transferClientId,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isRefund => $composableBuilder(
-      column: $table.isRefund, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get refundOfTransactionId => $composableBuilder(
-      column: $table.refundOfTransactionId,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get recurrencePeriod => $composableBuilder(
-      column: $table.recurrencePeriod,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get recurrenceInterval => $composableBuilder(
-      column: $table.recurrenceInterval,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get recurrenceEndsAt => $composableBuilder(
-      column: $table.recurrenceEndsAt,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get recurrenceNextScheduledAt => $composableBuilder(
-      column: $table.recurrenceNextScheduledAt,
       builder: (column) => ColumnFilters(column));
 
   $$WalletsTableFilterComposer get walletClientId {
@@ -11522,29 +10448,6 @@ class $$TransactionsTableOrderingComposer
       column: $table.transferClientId,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get isRefund => $composableBuilder(
-      column: $table.isRefund, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get refundOfTransactionId => $composableBuilder(
-      column: $table.refundOfTransactionId,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get recurrencePeriod => $composableBuilder(
-      column: $table.recurrencePeriod,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get recurrenceInterval => $composableBuilder(
-      column: $table.recurrenceInterval,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get recurrenceEndsAt => $composableBuilder(
-      column: $table.recurrenceEndsAt,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get recurrenceNextScheduledAt => $composableBuilder(
-      column: $table.recurrenceNextScheduledAt,
-      builder: (column) => ColumnOrderings(column));
-
   $$WalletsTableOrderingComposer get walletClientId {
     final $$WalletsTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -11669,24 +10572,6 @@ class $$TransactionsTableAnnotationComposer
   GeneratedColumn<String> get transferClientId => $composableBuilder(
       column: $table.transferClientId, builder: (column) => column);
 
-  GeneratedColumn<bool> get isRefund =>
-      $composableBuilder(column: $table.isRefund, builder: (column) => column);
-
-  GeneratedColumn<int> get refundOfTransactionId => $composableBuilder(
-      column: $table.refundOfTransactionId, builder: (column) => column);
-
-  GeneratedColumn<String> get recurrencePeriod => $composableBuilder(
-      column: $table.recurrencePeriod, builder: (column) => column);
-
-  GeneratedColumn<int> get recurrenceInterval => $composableBuilder(
-      column: $table.recurrenceInterval, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get recurrenceEndsAt => $composableBuilder(
-      column: $table.recurrenceEndsAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get recurrenceNextScheduledAt => $composableBuilder(
-      column: $table.recurrenceNextScheduledAt, builder: (column) => column);
-
   $$WalletsTableAnnotationComposer get walletClientId {
     final $$WalletsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -11793,12 +10678,6 @@ class $$TransactionsTableTableManager extends RootTableManager<
             Value<String?> groupClientId = const Value.absent(),
             Value<int?> transferId = const Value.absent(),
             Value<String?> transferClientId = const Value.absent(),
-            Value<bool> isRefund = const Value.absent(),
-            Value<int?> refundOfTransactionId = const Value.absent(),
-            Value<String?> recurrencePeriod = const Value.absent(),
-            Value<int?> recurrenceInterval = const Value.absent(),
-            Value<DateTime?> recurrenceEndsAt = const Value.absent(),
-            Value<DateTime?> recurrenceNextScheduledAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TransactionsCompanion(
@@ -11823,12 +10702,6 @@ class $$TransactionsTableTableManager extends RootTableManager<
             groupClientId: groupClientId,
             transferId: transferId,
             transferClientId: transferClientId,
-            isRefund: isRefund,
-            refundOfTransactionId: refundOfTransactionId,
-            recurrencePeriod: recurrencePeriod,
-            recurrenceInterval: recurrenceInterval,
-            recurrenceEndsAt: recurrenceEndsAt,
-            recurrenceNextScheduledAt: recurrenceNextScheduledAt,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -11853,12 +10726,6 @@ class $$TransactionsTableTableManager extends RootTableManager<
             Value<String?> groupClientId = const Value.absent(),
             Value<int?> transferId = const Value.absent(),
             Value<String?> transferClientId = const Value.absent(),
-            Value<bool> isRefund = const Value.absent(),
-            Value<int?> refundOfTransactionId = const Value.absent(),
-            Value<String?> recurrencePeriod = const Value.absent(),
-            Value<int?> recurrenceInterval = const Value.absent(),
-            Value<DateTime?> recurrenceEndsAt = const Value.absent(),
-            Value<DateTime?> recurrenceNextScheduledAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TransactionsCompanion.insert(
@@ -11883,12 +10750,6 @@ class $$TransactionsTableTableManager extends RootTableManager<
             groupClientId: groupClientId,
             transferId: transferId,
             transferClientId: transferClientId,
-            isRefund: isRefund,
-            refundOfTransactionId: refundOfTransactionId,
-            recurrencePeriod: recurrencePeriod,
-            recurrenceInterval: recurrenceInterval,
-            recurrenceEndsAt: recurrenceEndsAt,
-            recurrenceNextScheduledAt: recurrenceNextScheduledAt,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -16416,401 +15277,6 @@ typedef $$FinancialPositionCacheTableProcessedTableManager
         ),
         FinancialPositionCacheRow,
         PrefetchHooks Function()>;
-typedef $$RemindersTableCreateCompanionBuilder = RemindersCompanion Function({
-  Value<int?> id,
-  Value<int?> userId,
-  Value<String> clientId,
-  Value<String?> rev,
-  Value<DateTime> createdAt,
-  Value<DateTime> updatedAt,
-  Value<DateTime?> deletedAt,
-  Value<DateTime?> lastSyncedAt,
-  required String title,
-  Value<String?> description,
-  Value<String> type,
-  Value<DateTime?> triggerAt,
-  Value<DateTime?> dueAt,
-  Value<String?> repeatRule,
-  Value<String?> timezone,
-  Value<String> status,
-  Value<int> priority,
-  Value<DateTime?> snoozedUntil,
-  Value<DateTime?> lastTriggeredAt,
-  Value<DateTime?> nextTriggerAt,
-  Value<int> rowid,
-});
-typedef $$RemindersTableUpdateCompanionBuilder = RemindersCompanion Function({
-  Value<int?> id,
-  Value<int?> userId,
-  Value<String> clientId,
-  Value<String?> rev,
-  Value<DateTime> createdAt,
-  Value<DateTime> updatedAt,
-  Value<DateTime?> deletedAt,
-  Value<DateTime?> lastSyncedAt,
-  Value<String> title,
-  Value<String?> description,
-  Value<String> type,
-  Value<DateTime?> triggerAt,
-  Value<DateTime?> dueAt,
-  Value<String?> repeatRule,
-  Value<String?> timezone,
-  Value<String> status,
-  Value<int> priority,
-  Value<DateTime?> snoozedUntil,
-  Value<DateTime?> lastTriggeredAt,
-  Value<DateTime?> nextTriggerAt,
-  Value<int> rowid,
-});
-
-class $$RemindersTableFilterComposer
-    extends Composer<_$AppDatabase, $RemindersTable> {
-  $$RemindersTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get userId => $composableBuilder(
-      column: $table.userId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get clientId => $composableBuilder(
-      column: $table.clientId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get rev => $composableBuilder(
-      column: $table.rev, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
-      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get lastSyncedAt => $composableBuilder(
-      column: $table.lastSyncedAt, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get triggerAt => $composableBuilder(
-      column: $table.triggerAt, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get dueAt => $composableBuilder(
-      column: $table.dueAt, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get repeatRule => $composableBuilder(
-      column: $table.repeatRule, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get timezone => $composableBuilder(
-      column: $table.timezone, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get priority => $composableBuilder(
-      column: $table.priority, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get snoozedUntil => $composableBuilder(
-      column: $table.snoozedUntil, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get lastTriggeredAt => $composableBuilder(
-      column: $table.lastTriggeredAt,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get nextTriggerAt => $composableBuilder(
-      column: $table.nextTriggerAt, builder: (column) => ColumnFilters(column));
-}
-
-class $$RemindersTableOrderingComposer
-    extends Composer<_$AppDatabase, $RemindersTable> {
-  $$RemindersTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get userId => $composableBuilder(
-      column: $table.userId, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get clientId => $composableBuilder(
-      column: $table.clientId, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get rev => $composableBuilder(
-      column: $table.rev, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
-      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get lastSyncedAt => $composableBuilder(
-      column: $table.lastSyncedAt,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get triggerAt => $composableBuilder(
-      column: $table.triggerAt, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get dueAt => $composableBuilder(
-      column: $table.dueAt, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get repeatRule => $composableBuilder(
-      column: $table.repeatRule, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get timezone => $composableBuilder(
-      column: $table.timezone, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get priority => $composableBuilder(
-      column: $table.priority, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get snoozedUntil => $composableBuilder(
-      column: $table.snoozedUntil,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get lastTriggeredAt => $composableBuilder(
-      column: $table.lastTriggeredAt,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get nextTriggerAt => $composableBuilder(
-      column: $table.nextTriggerAt,
-      builder: (column) => ColumnOrderings(column));
-}
-
-class $$RemindersTableAnnotationComposer
-    extends Composer<_$AppDatabase, $RemindersTable> {
-  $$RemindersTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<int> get userId =>
-      $composableBuilder(column: $table.userId, builder: (column) => column);
-
-  GeneratedColumn<String> get clientId =>
-      $composableBuilder(column: $table.clientId, builder: (column) => column);
-
-  GeneratedColumn<String> get rev =>
-      $composableBuilder(column: $table.rev, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedAt =>
-      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get lastSyncedAt => $composableBuilder(
-      column: $table.lastSyncedAt, builder: (column) => column);
-
-  GeneratedColumn<String> get title =>
-      $composableBuilder(column: $table.title, builder: (column) => column);
-
-  GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
-
-  GeneratedColumn<String> get type =>
-      $composableBuilder(column: $table.type, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get triggerAt =>
-      $composableBuilder(column: $table.triggerAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get dueAt =>
-      $composableBuilder(column: $table.dueAt, builder: (column) => column);
-
-  GeneratedColumn<String> get repeatRule => $composableBuilder(
-      column: $table.repeatRule, builder: (column) => column);
-
-  GeneratedColumn<String> get timezone =>
-      $composableBuilder(column: $table.timezone, builder: (column) => column);
-
-  GeneratedColumn<String> get status =>
-      $composableBuilder(column: $table.status, builder: (column) => column);
-
-  GeneratedColumn<int> get priority =>
-      $composableBuilder(column: $table.priority, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get snoozedUntil => $composableBuilder(
-      column: $table.snoozedUntil, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get lastTriggeredAt => $composableBuilder(
-      column: $table.lastTriggeredAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get nextTriggerAt => $composableBuilder(
-      column: $table.nextTriggerAt, builder: (column) => column);
-}
-
-class $$RemindersTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $RemindersTable,
-    Reminder,
-    $$RemindersTableFilterComposer,
-    $$RemindersTableOrderingComposer,
-    $$RemindersTableAnnotationComposer,
-    $$RemindersTableCreateCompanionBuilder,
-    $$RemindersTableUpdateCompanionBuilder,
-    (Reminder, BaseReferences<_$AppDatabase, $RemindersTable, Reminder>),
-    Reminder,
-    PrefetchHooks Function()> {
-  $$RemindersTableTableManager(_$AppDatabase db, $RemindersTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$RemindersTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$RemindersTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$RemindersTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int?> id = const Value.absent(),
-            Value<int?> userId = const Value.absent(),
-            Value<String> clientId = const Value.absent(),
-            Value<String?> rev = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<DateTime> updatedAt = const Value.absent(),
-            Value<DateTime?> deletedAt = const Value.absent(),
-            Value<DateTime?> lastSyncedAt = const Value.absent(),
-            Value<String> title = const Value.absent(),
-            Value<String?> description = const Value.absent(),
-            Value<String> type = const Value.absent(),
-            Value<DateTime?> triggerAt = const Value.absent(),
-            Value<DateTime?> dueAt = const Value.absent(),
-            Value<String?> repeatRule = const Value.absent(),
-            Value<String?> timezone = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            Value<int> priority = const Value.absent(),
-            Value<DateTime?> snoozedUntil = const Value.absent(),
-            Value<DateTime?> lastTriggeredAt = const Value.absent(),
-            Value<DateTime?> nextTriggerAt = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              RemindersCompanion(
-            id: id,
-            userId: userId,
-            clientId: clientId,
-            rev: rev,
-            createdAt: createdAt,
-            updatedAt: updatedAt,
-            deletedAt: deletedAt,
-            lastSyncedAt: lastSyncedAt,
-            title: title,
-            description: description,
-            type: type,
-            triggerAt: triggerAt,
-            dueAt: dueAt,
-            repeatRule: repeatRule,
-            timezone: timezone,
-            status: status,
-            priority: priority,
-            snoozedUntil: snoozedUntil,
-            lastTriggeredAt: lastTriggeredAt,
-            nextTriggerAt: nextTriggerAt,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            Value<int?> id = const Value.absent(),
-            Value<int?> userId = const Value.absent(),
-            Value<String> clientId = const Value.absent(),
-            Value<String?> rev = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<DateTime> updatedAt = const Value.absent(),
-            Value<DateTime?> deletedAt = const Value.absent(),
-            Value<DateTime?> lastSyncedAt = const Value.absent(),
-            required String title,
-            Value<String?> description = const Value.absent(),
-            Value<String> type = const Value.absent(),
-            Value<DateTime?> triggerAt = const Value.absent(),
-            Value<DateTime?> dueAt = const Value.absent(),
-            Value<String?> repeatRule = const Value.absent(),
-            Value<String?> timezone = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            Value<int> priority = const Value.absent(),
-            Value<DateTime?> snoozedUntil = const Value.absent(),
-            Value<DateTime?> lastTriggeredAt = const Value.absent(),
-            Value<DateTime?> nextTriggerAt = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              RemindersCompanion.insert(
-            id: id,
-            userId: userId,
-            clientId: clientId,
-            rev: rev,
-            createdAt: createdAt,
-            updatedAt: updatedAt,
-            deletedAt: deletedAt,
-            lastSyncedAt: lastSyncedAt,
-            title: title,
-            description: description,
-            type: type,
-            triggerAt: triggerAt,
-            dueAt: dueAt,
-            repeatRule: repeatRule,
-            timezone: timezone,
-            status: status,
-            priority: priority,
-            snoozedUntil: snoozedUntil,
-            lastTriggeredAt: lastTriggeredAt,
-            nextTriggerAt: nextTriggerAt,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$RemindersTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $RemindersTable,
-    Reminder,
-    $$RemindersTableFilterComposer,
-    $$RemindersTableOrderingComposer,
-    $$RemindersTableAnnotationComposer,
-    $$RemindersTableCreateCompanionBuilder,
-    $$RemindersTableUpdateCompanionBuilder,
-    (Reminder, BaseReferences<_$AppDatabase, $RemindersTable, Reminder>),
-    Reminder,
-    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -16852,6 +15318,4 @@ class $AppDatabaseManager {
   $$FinancialPositionCacheTableTableManager get financialPositionCache =>
       $$FinancialPositionCacheTableTableManager(
           _db, _db.financialPositionCache);
-  $$RemindersTableTableManager get reminders =>
-      $$RemindersTableTableManager(_db, _db.reminders);
 }

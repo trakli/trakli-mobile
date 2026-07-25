@@ -168,26 +168,6 @@ class TransactionCompleteDto with _$TransactionCompleteDto {
       'group_id': group?.id,
     };
 
-    // Refund state is set via the dedicated endpoint, not a normal write request.
-    data.remove('is_refund');
-    data.remove('refund_of_transaction_id');
-
-    data.remove('next_scheduled_at');
-    data.remove('recurrence_period');
-    data.remove('recurrence_interval');
-    data.remove('recurrence_ends_at');
-    if (transaction.recurrencePeriod != null) {
-      data['is_recurring'] = true;
-      data['recurrence_period'] = transaction.recurrencePeriod;
-      if (transaction.recurrenceInterval != null) {
-        data['recurrence_interval'] = transaction.recurrenceInterval;
-      }
-      if (transaction.recurrenceEndsAt != null) {
-        data['recurrence_ends_at'] =
-            formatServerIsoDateTimeString(transaction.recurrenceEndsAt!);
-      }
-    }
-
     return data;
   }
 
@@ -208,8 +188,6 @@ class TransactionCompleteDto with _$TransactionCompleteDto {
     final group = json['group'] != null
         ? Group.fromJson(json['group'] as Map<String, dynamic>)
         : null;
-
-    final recurringRule = json['recurring_rules'] as Map<String, dynamic>?;
 
     final transaction = Transaction(
       amount: transactionDto.amount,
@@ -234,17 +212,6 @@ class TransactionCompleteDto with _$TransactionCompleteDto {
       groupId: group?.id,
       transferId: transactionDto.transferId,
       transferClientId: transactionDto.transferClientId,
-      isRefund: transactionDto.isRefund ?? false,
-      refundOfTransactionId: transactionDto.refundOfTransactionId,
-      recurrencePeriod: recurringRule?['recurrence_period'] as String?,
-      recurrenceInterval:
-          (recurringRule?['recurrence_interval'] as num?)?.toInt(),
-      recurrenceEndsAt: recurringRule?['recurrence_ends_at'] != null
-          ? DateTime.parse(recurringRule!['recurrence_ends_at'] as String)
-          : null,
-      recurrenceNextScheduledAt: recurringRule?['next_scheduled_at'] != null
-          ? DateTime.parse(recurringRule!['next_scheduled_at'] as String)
-          : null,
     );
 
     final filesRaw = json['files'] is List<dynamic>

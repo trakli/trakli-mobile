@@ -2,7 +2,6 @@ import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/core/usecases/usecase.dart';
-import 'package:trakli/domain/entities/recurrence_input.dart';
 import 'package:trakli/domain/repositories/transaction_repository.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
@@ -25,10 +24,6 @@ class UpdateTransactionUseCase
       intent: params.intent,
       partyClientId: params.partyClientId,
       groupClientId: params.groupClientId,
-      recurrence: params.recurrence,
-      clearRecurrence: params.clearRecurrence,
-      isRefund: params.isRefund,
-      refundOfClientId: params.refundOfClientId,
     );
   }
 }
@@ -44,10 +39,6 @@ class UpdateTransactionParams {
   final String? partyClientId;
   final String? groupClientId;
   final List<String> attachedFilePaths;
-  final RecurrenceInput? recurrence;
-  final bool clearRecurrence;
-  final bool? isRefund;
-  final String? refundOfClientId;
 
   UpdateTransactionParams({
     required this.id,
@@ -60,9 +51,5 @@ class UpdateTransactionParams {
     this.partyClientId,
     this.groupClientId,
     this.attachedFilePaths = const [],
-    this.recurrence,
-    this.clearRecurrence = false,
-    this.isRefund,
-    this.refundOfClientId,
   });
 }

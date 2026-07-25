@@ -19,7 +19,6 @@ import 'package:trakli/presentation/holdings/holdings_screen.dart';
 import 'package:trakli/presentation/history_screen.dart';
 import 'package:trakli/presentation/imports/import_hub_screen.dart';
 import 'package:trakli/presentation/parties/party_screen.dart';
-import 'package:trakli/presentation/reminders/reminder_screen.dart';
 import 'package:trakli/presentation/root/bloc/main_navigation_page_cubit.dart';
 import 'package:trakli/presentation/settings_screen.dart';
 import 'package:trakli/presentation/transfers/transfers_screen.dart';
@@ -251,15 +250,6 @@ class CustomDrawer extends StatelessWidget {
                             create: (_) => getIt<HoldingCubit>(),
                             child: const HoldingsScreen(),
                           ),
-                        ),
-                      ),
-                      _iconMenuItem(
-                        context,
-                        icon: Icons.notifications_active_outlined,
-                        title: LocaleKeys.reminders.tr(),
-                        onTap: () => AppNavigator.push(
-                          context,
-                          const ReminderScreen(),
                         ),
                       ),
                       InkWell(

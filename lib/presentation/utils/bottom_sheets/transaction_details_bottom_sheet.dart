@@ -1,6 +1,5 @@
 import 'dart:ui' as ui;
 
-import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +17,6 @@ import 'package:trakli/presentation/utils/path_helper.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_list_item.dart';
 import 'package:trakli/presentation/widgets/attachment/attachment_list_view.dart';
 import 'package:trakli/presentation/widgets/categories_widget.dart';
-import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/transfers/cubit/transfer_cubit.dart';
 import 'package:trakli/presentation/utils/transfer_counterpart_wallet.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
@@ -53,23 +51,6 @@ class _TransactionDetailsBottomSheetState
   int _selectedAttachmentTab = 0;
 
   DateFormat format = DateFormat('dd/MM/yyyy HH:mm');
-
-  /// Description of the expense this refund reimburses, if resolvable locally.
-  String? _refundOriginalLabel(BuildContext context) {
-    final txn = widget.transaction.transaction;
-    if (!txn.isRefund || txn.refundOfTransactionId == null) return null;
-    final original = context
-        .watch<TransactionCubit>()
-        .state
-        .transactions
-        .firstWhereOrNull(
-          (t) => t.transaction.id == txn.refundOfTransactionId,
-        );
-    if (original == null) return null;
-    return original.transaction.description.isNotEmpty
-        ? original.transaction.description
-        : LocaleKeys.noDescription.tr();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,47 +157,6 @@ class _TransactionDetailsBottomSheetState
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              if (transaction.isRefund ||
-                  transaction.recurrencePeriod != null) ...[
-                SizedBox(height: 6.h),
-                Wrap(
-                  spacing: 6.w,
-                  runSpacing: 4.h,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    if (transaction.isRefund)
-                      _InfoChip(
-                        icon: Icons.assignment_return,
-                        label: LocaleKeys.refund.tr(),
-                        background:
-                            Theme.of(context).colorScheme.tertiaryContainer,
-                        foreground:
-                            Theme.of(context).colorScheme.onTertiaryContainer,
-                      ),
-                    if (transaction.recurrencePeriod != null)
-                      _InfoChip(
-                        icon: Icons.repeat,
-                        label: _recurrencePeriodLabel(
-                          transaction.recurrencePeriod!,
-                        ),
-                        background:
-                            Theme.of(context).colorScheme.primaryContainer,
-                        foreground:
-                            Theme.of(context).colorScheme.onPrimaryContainer,
-                      ),
-                  ],
-                ),
-                if (_refundOriginalLabel(context) != null) ...[
-                  SizedBox(height: 4.h),
-                  Text(
-                    '${LocaleKeys.refundOf.tr()}: ${_refundOriginalLabel(context)}',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: const Color(0xFF576760),
-                    ),
-                  ),
-                ],
-              ],
               SizedBox(height: 16.h),
               if (transaction.description.isNotEmpty) ...[
                 Text(
@@ -332,61 +272,6 @@ class _TransactionDetailsBottomSheetState
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-String _recurrencePeriodLabel(String period) {
-  switch (period) {
-    case 'daily':
-      return LocaleKeys.daily.tr();
-    case 'weekly':
-      return LocaleKeys.weekly.tr();
-    case 'monthly':
-      return LocaleKeys.monthly.tr();
-    case 'yearly':
-      return LocaleKeys.yearly.tr();
-    default:
-      return period;
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({
-    required this.icon,
-    required this.label,
-    required this.background,
-    required this.foreground,
-  });
-
-  final IconData icon;
-  final String label;
-  final Color background;
-  final Color foreground;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14.sp, color: foreground),
-          SizedBox(width: 4.w),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w700,
-              color: foreground,
-            ),
-          ),
-        ],
       ),
     );
   }
