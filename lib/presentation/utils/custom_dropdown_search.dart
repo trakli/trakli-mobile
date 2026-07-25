@@ -17,6 +17,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
   final Color accentColor;
   final T? selectedItem;
   final bool showSearchBox;
+  final bool showClearButton;
 
   const CustomDropdownSearch({
     super.key,
@@ -30,6 +31,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
     this.validator,
     this.selectedItem,
     this.showSearchBox = true,
+    this.showClearButton = false,
   });
 
   @override
@@ -43,6 +45,9 @@ class CustomDropdownSearch<T> extends StatelessWidget {
       validator: validator,
       onChanged: onChanged,
       selectedItem: selectedItem,
+      suffixProps: DropdownSuffixProps(
+        clearButtonProps: ClearButtonProps(isVisible: showClearButton),
+      ),
       popupProps: PopupProps.menu(
         searchFieldProps: TextFieldProps(
           decoration: InputDecoration(
