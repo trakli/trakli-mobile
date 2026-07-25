@@ -9,6 +9,7 @@ import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
 import 'package:trakli/domain/entities/media_file_entity.dart';
 import 'package:trakli/domain/entities/party_entity.dart';
+import 'package:trakli/presentation/transactions/transaction_extras_section.dart';
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
 import 'package:trakli/gen/assets.gen.dart';
@@ -68,6 +69,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
   // TextEditingController partyController = TextEditingController();
   Currency? currency;
   TransactionIntent _selectedIntent = TransactionIntent.regular;
+  final _extras = TransactionExtrasController();
   WalletEntity? selectedWallet;
   CategoryEntity? selectedCategory;
   PartyEntity? selectedParty;
@@ -109,6 +111,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
   @override
   void dispose() {
     AttachmentDisplayCache.clear();
+    _extras.dispose();
     super.dispose();
   }
 
@@ -128,6 +131,13 @@ class _AddTransactionFormState extends State<AddTransactionForm>
       _selectedIntent = existingIntent.availableFor(widget.transactionType)
           ? existingIntent
           : TransactionIntent.regular;
+      _extras.populateFrom(
+        widget.transactionCompleteEntity!.transaction,
+        widget.transactionType,
+      );
+      if (widget.transactionCompleteEntity!.categories.isNotEmpty) {
+        selectedCategory = widget.transactionCompleteEntity!.categories.first;
+      }
       setAmountController(currency);
       descriptionController.text =
           widget.transactionCompleteEntity!.transaction.description;
@@ -281,6 +291,11 @@ class _AddTransactionFormState extends State<AddTransactionForm>
               onChanged: (intent) => setState(() => _selectedIntent = intent),
             ),
             SizedBox(height: 16.h),
+            TransactionExtrasSection(
+              controller: _extras,
+              transactionType: widget.transactionType,
+              accentColor: widget.accentColor,
+            ),
             Text(
               LocaleKeys.wallet.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -732,6 +747,10 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                                   walletClientId: selectedWallet?.clientId,
                                   partyClientId: selectedParty?.clientId,
                                   attachedFilePaths: attachedFilePaths,
+                                  recurrence: _extras.recurrence,
+                                  clearRecurrence: _extras.clearRecurrence,
+                                  isRefund: _extras.refundUpdate,
+                                  refundOfClientId: _extras.refundOfClientId,
                                 );
                             // Navigation handled by BlocListener
                           } else {
@@ -756,6 +775,9 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                                       : [],
                                   partyClientId: selectedParty?.clientId,
                                   attachedFilePaths: attachedFilePaths,
+                                  recurrence: _extras.recurrence,
+                                  isRefund: _extras.isRefund,
+                                  refundOfClientId: _extras.refundOfClientId,
                                 );
                             // Navigation handled by BlocListener
                           }

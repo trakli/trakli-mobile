@@ -41,6 +41,26 @@ class TransferDto with _$TransferDto {
   factory TransferDto.fromJson(Map<String, dynamic> json) =>
       _$TransferDtoFromJson(json);
 
+  factory TransferDto.fromTransfer(Transfer transfer) => TransferDto(
+        id: transfer.id,
+        userId: transfer.userId,
+        clientId: transfer.clientId,
+        rev: transfer.rev,
+        createdAt: transfer.createdAt,
+        updatedAt: transfer.updatedAt,
+        deletedAt: transfer.deletedAt,
+        lastSyncedAt: transfer.lastSyncedAt,
+        amount: transfer.amount,
+        fromWalletId: transfer.fromWalletId,
+        toWalletId: transfer.toWalletId,
+        fromWalletClientId: transfer.fromWalletClientId,
+        toWalletClientId: transfer.toWalletClientId,
+        exchangeRate: transfer.exchangeRate,
+        datetime: transfer.datetime,
+        expenseTransactionClientId: transfer.expenseTransactionClientId,
+        incomeTransactionClientId: transfer.incomeTransactionClientId,
+      );
+
   Transfer toTransfer() => Transfer(
         id: id,
         userId: userId,

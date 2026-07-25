@@ -38,6 +38,10 @@ class BudgetPeriodStateSyncHandler
   DateTime? getLastSyncedAt(BudgetPeriodStateDto entity) => entity.lastSyncedAt;
 
   @override
+  DateTime? getCursorTimestamp(BudgetPeriodStateDto entity) =>
+      entity.updatedAt ?? entity.lastSyncedAt;
+
+  @override
   Future<BudgetPeriodStateDto> unmarshal(
       Map<String, dynamic> entityJson) async {
     return BudgetPeriodStateDto.fromJson(entityJson);

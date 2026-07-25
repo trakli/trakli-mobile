@@ -195,4 +195,7 @@ class GroupSyncHandler extends SyncTypeHandler<Group, String, int>
 
   @override
   DateTime? getLastSyncedAt(Group entity) => entity.lastSyncedAt;
+
+  @override
+  DateTime? getCursorTimestamp(Group entity) => entity.updatedAt;
 }

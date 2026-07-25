@@ -179,6 +179,13 @@ class TransactionSyncHandler
         clientId: Value(entity.transaction.clientId),
         type: Value(entity.transaction.type),
         intent: Value(entity.transaction.intent),
+        isRefund: Value(entity.transaction.isRefund),
+        refundOfTransactionId: Value(entity.transaction.refundOfTransactionId),
+        recurrencePeriod: Value(entity.transaction.recurrencePeriod),
+        recurrenceInterval: Value(entity.transaction.recurrenceInterval),
+        recurrenceEndsAt: Value(entity.transaction.recurrenceEndsAt),
+        recurrenceNextScheduledAt:
+            Value(entity.transaction.recurrenceNextScheduledAt),
         datetime: Value(entity.transaction.datetime),
         createdAt: Value(entity.transaction.createdAt),
         lastSyncedAt: Value(entity.transaction.lastSyncedAt),
@@ -385,4 +392,8 @@ class TransactionSyncHandler
   @override
   DateTime? getLastSyncedAt(TransactionCompleteDto entity) =>
       entity.transaction.lastSyncedAt;
+
+  @override
+  DateTime? getCursorTimestamp(TransactionCompleteDto entity) =>
+      entity.transaction.updatedAt;
 }

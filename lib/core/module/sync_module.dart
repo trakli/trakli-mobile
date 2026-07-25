@@ -9,6 +9,7 @@ import 'package:trakli/data/sync/group_sync_handler.dart';
 import 'package:trakli/data/sync/media_sync_handler.dart';
 import 'package:trakli/data/sync/notification_sync_handler.dart';
 import 'package:trakli/data/sync/party_sync_handler.dart';
+import 'package:trakli/data/sync/reminder_sync_handler.dart';
 import 'package:trakli/data/sync/transaction_sync_handler.dart';
 import 'package:trakli/data/sync/transfer_sync_handler.dart';
 import 'package:trakli/data/sync/wallet_sync_handler.dart';
@@ -28,6 +29,7 @@ abstract class SyncModule {
     MediaSyncHandler mediaSyncHandler,
     BudgetSyncHandler budgetTypeHandler,
     BudgetPeriodStateSyncHandler budgetPeriodStateTypeHandler,
+    ReminderSyncHandler reminderTypeHandler,
   ) {
     return {
       categoryTypeHandler,
@@ -41,6 +43,7 @@ abstract class SyncModule {
       mediaSyncHandler,
       budgetTypeHandler,
       budgetPeriodStateTypeHandler,
+      reminderTypeHandler,
     };
   }
 

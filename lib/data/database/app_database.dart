@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -18,6 +19,7 @@ import 'package:trakli/data/database/tables/budgets.dart';
 import 'package:trakli/data/database/tables/categories.dart';
 import 'package:trakli/data/database/tables/categorizables.dart';
 import 'package:trakli/data/database/tables/configs.dart';
+import 'package:trakli/data/database/tables/deferred_remote_items.dart';
 import 'package:trakli/data/database/tables/financial_position_cache.dart';
 import 'package:trakli/data/database/tables/groups.dart';
 import 'package:trakli/data/database/tables/holdings.dart';
@@ -25,6 +27,7 @@ import 'package:trakli/data/database/tables/local_changes.dart';
 import 'package:trakli/data/database/tables/media_files.dart';
 import 'package:trakli/data/database/tables/notifications.dart';
 import 'package:trakli/data/database/tables/parties.dart';
+import 'package:trakli/data/database/tables/reminders.dart';
 import 'package:trakli/data/database/tables/sync_table.dart';
 import 'package:trakli/data/database/tables/transactions.dart';
 import 'package:trakli/data/database/tables/transfers.dart';
@@ -61,6 +64,8 @@ part 'app_database.g.dart';
   BudgetPeriodStates,
   Holdings,
   FinancialPositionCache,
+  Reminders,
+  DeferredRemoteItems,
 ])
 class AppDatabase extends _$AppDatabase with SynchronizerDb {
   final Set<SyncTypeHandler> typeHandlers;
@@ -72,7 +77,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
         super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration {
@@ -297,6 +302,43 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
   }
 
   @override
+  Future<void> parkRemoteItem(ParkedRemoteItem item) async {
+    await deferredRemoteItems.insertOne(
+      DeferredRemoteItemsCompanion.insert(
+        entityType: item.entityType,
+        clientId: item.clientId,
+        data: jsonEncode(item.data),
+        parkedAt: Value(item.parkedAt ?? DateTime.now().toUtc()),
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
+  }
+
+  @override
+  Future<List<ParkedRemoteItem>> getParkedRemoteItems(
+      String entityType) async {
+    final rows = await (select(deferredRemoteItems)
+          ..where((t) => t.entityType.equals(entityType)))
+        .get();
+    return rows
+        .map((row) => ParkedRemoteItem(
+              entityType: row.entityType,
+              clientId: row.clientId,
+              data: jsonDecode(row.data) as Map<String, dynamic>,
+              parkedAt: row.parkedAt,
+            ))
+        .toList(growable: false);
+  }
+
+  @override
+  Future<void> unparkRemoteItem(String entityType, String clientId) async {
+    await (delete(deferredRemoteItems)
+          ..where((t) =>
+              t.entityType.equals(entityType) & t.clientId.equals(clientId)))
+        .go();
+  }
+
+  @override
   Future<void> clearDatabase() async {
     await users.deleteAll();
     await transactions.deleteAll();
@@ -316,6 +358,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     await budgets.deleteAll();
     await holdings.deleteAll();
     await financialPositionCache.deleteAll();
+    await reminders.deleteAll();
   }
 }
 
@@ -347,6 +390,28 @@ extension Migrations on GeneratedDatabase {
           await m.addColumn(schema.transactions, schema.transactions.intent);
           await m.createTable(schema.holdings);
           await m.createTable(schema.financialPositionCache);
+        },
+        from6To7: (Migrator m, Schema7 schema) async {
+          // Refunds
+          await m.addColumn(schema.transactions, schema.transactions.isRefund);
+          await m.addColumn(
+              schema.transactions, schema.transactions.refundOfTransactionId);
+          // Recurring transactions
+          await m.addColumn(
+              schema.transactions, schema.transactions.recurrencePeriod);
+          await m.addColumn(
+              schema.transactions, schema.transactions.recurrenceInterval);
+          await m.addColumn(
+              schema.transactions, schema.transactions.recurrenceEndsAt);
+          await m.addColumn(schema.transactions,
+              schema.transactions.recurrenceNextScheduledAt);
+          // Reminders
+          await m.createTable(schema.reminders);
+        },
+        from7To8: (Migrator m, Schema8 schema) async {
+          // Parking store for down-synced items with unmet local
+          // dependencies (SyncTypeHandler.shouldPersistLocal).
+          await m.createTable(schema.deferredRemoteItems);
         },
       );
 }

@@ -171,4 +171,7 @@ class NotificationSyncHandler extends SyncTypeHandler<Notification, String, int>
 
   @override
   DateTime? getLastSyncedAt(Notification entity) => entity.lastSyncedAt;
+
+  @override
+  DateTime? getCursorTimestamp(Notification entity) => entity.updatedAt;
 }

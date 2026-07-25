@@ -21,6 +21,7 @@ import 'package:trakli/presentation/currency/cubit/currency_cubit.dart';
 import 'package:trakli/presentation/parties/add_party_screen.dart';
 import 'package:trakli/presentation/parties/cubit/party_cubit.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
+import 'package:trakli/presentation/transactions/transaction_extras_section.dart';
 import 'package:trakli/presentation/transactions/transaction_intent_selector.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/custom_auto_complete_search.dart';
@@ -70,6 +71,7 @@ class _AddTransactionFormCompactLayoutState
   WalletEntity? _selectedWallet;
   PartyEntity? _selectedParty;
   TransactionIntent _selectedIntent = TransactionIntent.regular;
+  final _extras = TransactionExtrasController();
   List<String> attachedFilePaths = [];
   List<MediaFileEntity> existingMedia = [];
   final _formKey = GlobalKey<FormState>();
@@ -119,6 +121,10 @@ class _AddTransactionFormCompactLayoutState
       _selectedIntent = existingIntent.availableFor(widget.transactionType)
           ? existingIntent
           : TransactionIntent.regular;
+      _extras.populateFrom(
+        widget.transactionCompleteEntity!.transaction,
+        widget.transactionType,
+      );
 
       amountController.text =
           widget.transactionCompleteEntity!.transaction.amount.toString();
@@ -191,6 +197,7 @@ class _AddTransactionFormCompactLayoutState
   @override
   void dispose() {
     AttachmentDisplayCache.clear();
+    _extras.dispose();
     super.dispose();
   }
 
@@ -296,6 +303,11 @@ class _AddTransactionFormCompactLayoutState
               onChanged: (intent) => setState(() => _selectedIntent = intent),
             ),
             SizedBox(height: 16.h),
+            TransactionExtrasSection(
+              controller: _extras,
+              transactionType: widget.transactionType,
+              accentColor: widget.accentColor,
+            ),
             IntrinsicHeight(
               child: Row(
                 spacing: 16.w,
@@ -645,6 +657,10 @@ class _AddTransactionFormCompactLayoutState
                                   walletClientId: _selectedWallet?.clientId,
                                   partyClientId: _selectedParty?.clientId,
                                   attachedFilePaths: attachedFilePaths,
+                                  recurrence: _extras.recurrence,
+                                  clearRecurrence: _extras.clearRecurrence,
+                                  isRefund: _extras.refundUpdate,
+                                  refundOfClientId: _extras.refundOfClientId,
                                 );
                             // Navigation handled by BlocListener
                           } else {
@@ -661,6 +677,9 @@ class _AddTransactionFormCompactLayoutState
                                       _selectedWallet?.clientId ?? '',
                                   partyClientId: _selectedParty?.clientId,
                                   attachedFilePaths: attachedFilePaths,
+                                  recurrence: _extras.recurrence,
+                                  isRefund: _extras.isRefund,
+                                  refundOfClientId: _extras.refundOfClientId,
                                 );
                             // Navigation handled by BlocListener
                           }

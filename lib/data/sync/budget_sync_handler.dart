@@ -42,6 +42,10 @@ class BudgetSyncHandler
       entity.budget.lastSyncedAt;
 
   @override
+  DateTime? getCursorTimestamp(BudgetCompleteDto entity) =>
+      entity.budget.updatedAt;
+
+  @override
   Future<BudgetCompleteDto> unmarshal(Map<String, dynamic> entityJson) async {
     return BudgetCompleteDto.fromServerJson(entityJson);
   }
