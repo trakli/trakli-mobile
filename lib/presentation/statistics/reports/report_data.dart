@@ -1,4 +1,5 @@
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
+import 'package:trakli/domain/entities/transaction_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
 /// Mobile port of the daily/monthly bucket types in `useReportData.ts`.
@@ -109,6 +110,8 @@ ReportData buildReportData(
   double totalExpense = 0;
 
   for (final t in transactions) {
+    // Transfer legs aren't income or spending; web and /stats exclude them.
+    if (t.transaction.isTransferLeg) continue;
     final day = _startOfDay(t.transaction.datetime);
     if (day.isBefore(start) || day.isAfter(end)) continue;
 

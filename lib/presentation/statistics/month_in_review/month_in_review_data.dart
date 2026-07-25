@@ -1,4 +1,5 @@
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
+import 'package:trakli/domain/entities/transaction_entity.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 
 class TopByName {
@@ -47,12 +48,9 @@ class MonthInReviewData {
   });
 }
 
-/// Computes a recap for the most recent month that actually has activity.
-/// If [offsetMonths] is 0 (default), the function walks back from "now" and
-/// picks the first month where there is at least one transaction — so the
-/// card never shows "No activity yet" for an account that only logged
-/// transactions in earlier months. A positive [offsetMonths] anchors to
-/// that many months before now (used for "previous month" comparisons).
+/// Computes a recap for the month [offsetMonths] before the current one
+/// (0 = the current month), matching the web recap. Transfer legs are
+/// excluded; returns null when the target month has no activity.
 MonthInReviewData? buildMonthInReview(
   List<TransactionCompleteEntity> transactions, {
   int offsetMonths = 0,
@@ -60,37 +58,14 @@ MonthInReviewData? buildMonthInReview(
   if (transactions.isEmpty) return null;
 
   final now = DateTime.now();
-  late final DateTime target;
-
-  if (offsetMonths != 0) {
-    target = DateTime(now.year, now.month - offsetMonths, 1);
-  } else {
-    DateTime? candidate;
-    for (var i = 0; i < 24; i++) {
-      final probe = DateTime(now.year, now.month - i, 1);
-      final hasAny = transactions.any((t) =>
-          t.transaction.datetime.year == probe.year &&
-          t.transaction.datetime.month == probe.month);
-      if (hasAny) {
-        candidate = probe;
-        break;
-      }
-    }
-    if (candidate == null) {
-      final latest = transactions
-          .map((t) => t.transaction.datetime)
-          .reduce((a, b) => a.isAfter(b) ? a : b);
-      candidate = DateTime(latest.year, latest.month, 1);
-    }
-    target = candidate;
-  }
+  final target = DateTime(now.year, now.month - offsetMonths, 1);
   final monthEnd = DateTime(target.year, target.month + 1, 0);
 
   bool sameMonth(DateTime d) =>
       d.year == target.year && d.month == target.month;
 
   final inMonth = transactions.where((t) {
-    return sameMonth(t.transaction.datetime);
+    return !t.transaction.isTransferLeg && sameMonth(t.transaction.datetime);
   }).toList();
 
   double income = 0;
