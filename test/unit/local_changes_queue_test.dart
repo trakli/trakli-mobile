@@ -124,6 +124,56 @@ void main() {
     });
   });
 
+  group('hasPendingTransactionChanges', () {
+    test('true for an ordinary pending transaction change', () async {
+      await db.insertLocalChange(_change('transaction', 't1'));
+      expect(await db.hasPendingTransactionChanges(), isTrue);
+    });
+
+    test('false once the only pending change is quarantined', () async {
+      // Regression: quarantine must count as "not blocking reports," or a
+      // permanently-failed change leaves the reports screen stuck on
+      // "local estimate" forever with no way to clear it.
+      await db.insertLocalChange(_change(
+        'transaction',
+        't1',
+        error: 'HTTP 422',
+        quarantinedAt: DateTime.now(),
+      ));
+      expect(await db.hasPendingTransactionChanges(), isFalse);
+    });
+
+    test('true again once a quarantined change is retried', () async {
+      await db.insertLocalChange(_change(
+        'transfer',
+        'tr1',
+        error: 'HTTP 422',
+        quarantinedAt: DateTime.now(),
+      ));
+      expect(await db.hasPendingTransactionChanges(), isFalse);
+
+      // Editing the entity replaces the change with a fresh one — same
+      // effect as _retryQuarantinedChange clearing quarantinedAt.
+      await db.insertLocalChange(_change('transfer', 'tr1'));
+      expect(await db.hasPendingTransactionChanges(), isTrue);
+    });
+
+    test('false for a dismissed change', () async {
+      await db.insertLocalChange(_change(
+        'transaction',
+        't1',
+        error: 'HTTP 500',
+        dismissed: true,
+      ));
+      expect(await db.hasPendingTransactionChanges(), isFalse);
+    });
+
+    test('ignores entity types outside transaction/transfer', () async {
+      await db.insertLocalChange(_change('category', 'c1'));
+      expect(await db.hasPendingTransactionChanges(), isFalse);
+    });
+  });
+
   group('retryBackoff', () {
     test('doubles per attempt and caps', () {
       const base = AppDatabase.failedChangeRetryDelay;
@@ -132,6 +182,18 @@ void main() {
       expect(AppDatabase.retryBackoff(2), base * 2);
       expect(AppDatabase.retryBackoff(3), base * 4);
       expect(AppDatabase.retryBackoff(100), AppDatabase.failedChangeRetryCap);
+    });
+
+    test('caps correctly in the shift range below the old fast-path guard',
+        () {
+      // Regression: attemptCount 17-30 (shift 16-29) used to fall through
+      // to `base << shift` uncapped — safe on the VM's 64-bit int, but a
+      // magnitude that overflows 32-bit bitwise truncation on Dart web.
+      for (final attemptCount in [17, 20, 25, 29, 30]) {
+        expect(AppDatabase.retryBackoff(attemptCount),
+            AppDatabase.failedChangeRetryCap,
+            reason: 'attemptCount=$attemptCount');
+      }
     });
   });
 

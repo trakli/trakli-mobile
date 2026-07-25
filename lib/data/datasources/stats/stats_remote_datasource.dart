@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 import 'package:trakli/data/datasources/core/api_response.dart';
 import 'package:trakli/data/datasources/stats/dto/financial_position_dto.dart';
 import 'package:trakli/data/datasources/stats/dto/report_stats_dto.dart';
@@ -56,6 +57,5 @@ class StatsRemoteDataSourceImpl implements StatsRemoteDataSource {
         (apiResponse.data as Map).cast<String, dynamic>());
   }
 
-  String _ymd(DateTime d) =>
-      '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+  String _ymd(DateTime d) => DateFormat('yyyy-MM-dd').format(d);
 }
