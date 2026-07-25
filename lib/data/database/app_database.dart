@@ -130,6 +130,19 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     await delete(localChanges).go();
   }
 
+  /// True while transaction or transfer changes are still waiting to sync —
+  /// server /stats cannot include them yet. Dismissed changes never sync,
+  /// so they don't count.
+  Future<bool> hasPendingTransactionChanges() async {
+    final row = await (select(localChanges)
+          ..where((lc) =>
+              lc.entityType.isIn(const ['transaction', 'transfer']) &
+              lc.dismissed.equals(false))
+          ..limit(1))
+        .getSingleOrNull();
+    return row != null;
+  }
+
   Future<List<Category>> getCategoriesForTransaction(
       String transactionId, CategorizableType sourceType) async {
     final query = select(categories).join([
