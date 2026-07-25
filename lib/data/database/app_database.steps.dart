@@ -3607,7 +3607,7 @@ final class Schema8 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape7 localChanges = Shape7(
+  late final Shape22 localChanges = Shape22(
       source: i0.VersionedTable(
         entityName: 'local_changes',
         withoutRowId: false,
@@ -3626,6 +3626,8 @@ final class Schema8 extends i0.VersionedSchema {
           _column_44,
           _column_45,
           _column_46,
+          _column_118,
+          _column_119,
         ],
         attachedDatabase: database,
       ),
@@ -3893,7 +3895,7 @@ final class Schema8 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape22 deferredRemoteItems = Shape22(
+  late final Shape23 deferredRemoteItems = Shape23(
       source: i0.VersionedTable(
         entityName: 'deferred_remote_items',
         withoutRowId: false,
@@ -3903,9 +3905,9 @@ final class Schema8 extends i0.VersionedSchema {
         ],
         columns: [
           _column_37,
-          _column_118,
+          _column_120,
           _column_41,
-          _column_119,
+          _column_121,
         ],
         attachedDatabase: database,
       ),
@@ -3916,6 +3918,41 @@ class Shape22 extends i0.VersionedTable {
   Shape22({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<String> get entityType =>
       columnsByName['entity_type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get entityId =>
+      columnsByName['entity_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get entityRev =>
+      columnsByName['entity_rev']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get deleted =>
+      columnsByName['deleted']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<String> get data =>
+      columnsByName['data']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get createAt =>
+      columnsByName['create_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<bool> get concluded =>
+      columnsByName['concluded']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get concludedMoment =>
+      columnsByName['concluded_moment']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get error =>
+      columnsByName['error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get dismissed =>
+      columnsByName['dismissed']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<int> get attemptCount =>
+      columnsByName['attempt_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<DateTime> get quarantinedAt =>
+      columnsByName['quarantined_at']! as i1.GeneratedColumn<DateTime>;
+}
+
+i1.GeneratedColumn<int> _column_118(String aliasedName) =>
+    i1.GeneratedColumn<int>('attempt_count', aliasedName, false,
+        type: i1.DriftSqlType.int, defaultValue: const CustomExpression('0'));
+i1.GeneratedColumn<DateTime> _column_119(String aliasedName) =>
+    i1.GeneratedColumn<DateTime>('quarantined_at', aliasedName, true,
+        type: i1.DriftSqlType.dateTime);
+
+class Shape23 extends i0.VersionedTable {
+  Shape23({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get entityType =>
+      columnsByName['entity_type']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get clientId =>
       columnsByName['client_id']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get data =>
@@ -3924,10 +3961,10 @@ class Shape22 extends i0.VersionedTable {
       columnsByName['parked_at']! as i1.GeneratedColumn<DateTime>;
 }
 
-i1.GeneratedColumn<String> _column_118(String aliasedName) =>
+i1.GeneratedColumn<String> _column_120(String aliasedName) =>
     i1.GeneratedColumn<String>('client_id', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<DateTime> _column_119(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_121(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('parked_at', aliasedName, false,
         type: i1.DriftSqlType.dateTime,
         defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));

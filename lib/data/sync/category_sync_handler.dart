@@ -58,6 +58,15 @@ class CategorySyncHandler extends SyncTypeHandler<Category, String, int>
   }
 
   @override
+  Future<Category> claimClientId(Category entity) {
+    return remoteDataSource.claimClientId(
+      id: entity.id!,
+      clientId: entity.clientId,
+      updatedAt: entity.updatedAt,
+    );
+  }
+
+  @override
   Future<Category> restPutRemote(Category entity) async {
     if (entity.id == null) {
       return await remoteDataSource.insertCategory(entity);

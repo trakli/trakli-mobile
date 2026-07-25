@@ -65,7 +65,7 @@ dependencies:
   drift_sync_core:
     git:
       url: https://github.com/whilesmartflutter/drift_sync.git
-      ref: drift_sync_core-v0.2.1
+      ref: drift_sync_core-v0.3.0
       path: packages/drift_sync_core
   drift_sync_flutter:
     git:
@@ -115,10 +115,6 @@ dependencies:
 dependency_overrides:
   matcher: 0.12.17
   test_api: 0.7.7
-  # Local drift_sync_core with getCursorTimestamp (down-sync cursor fix).
-  # Remove once drift_sync_core-v0.2.2 is tagged and the git ref above is bumped.
-  drift_sync_core:
-    path: ../drift_sync/packages/drift_sync_core
 
 dev_dependencies:
   flutter_gen_runner: ^5.8.0

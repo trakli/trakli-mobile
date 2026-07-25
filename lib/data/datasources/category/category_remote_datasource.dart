@@ -12,6 +12,11 @@ abstract class CategoryRemoteDataSource {
   Future<Category?> getCategory(int id);
   Future<Category> insertCategory(Category category);
   Future<Category> updateCategory(Category category);
+  Future<Category> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  });
   Future<void> deleteCategory(int id);
 }
 
@@ -115,6 +120,20 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
       },
     );
 
+    final apiResponse = ApiResponse.fromJson(response.data);
+    return Category.fromJson(apiResponse.data);
+  }
+
+  @override
+  Future<Category> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  }) async {
+    final response = await dio.put('categories/$id', data: {
+      'client_id': clientId,
+      'updated_at': formatServerIsoDateTimeString(updatedAt),
+    });
     final apiResponse = ApiResponse.fromJson(response.data);
     return Category.fromJson(apiResponse.data);
   }

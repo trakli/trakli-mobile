@@ -11,6 +11,11 @@ abstract class GroupRemoteDataSource {
   Future<Group> getGroup(int id);
   Future<Group> insertGroup(Group group);
   Future<Group> updateGroup(Group group);
+  Future<Group> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  });
   Future<void> deleteGroup(int int);
 
   /// Updates multiple groups with new client IDs in a single request
@@ -97,6 +102,20 @@ class GroupRemoteDataSourceImpl implements GroupRemoteDataSource {
         'icon': group.icon?.content,
         'icon_type': group.icon?.type.name,
       }
+    });
+    final apiResponse = ApiResponse.fromJson(response.data);
+    return Group.fromJson(apiResponse.data as Map<String, dynamic>);
+  }
+
+  @override
+  Future<Group> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  }) async {
+    final response = await dio.put('groups/$id', data: {
+      'client_id': clientId,
+      'updated_at': formatServerIsoDateTimeString(updatedAt),
     });
     final apiResponse = ApiResponse.fromJson(response.data);
     return Group.fromJson(apiResponse.data as Map<String, dynamic>);

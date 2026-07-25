@@ -14,6 +14,11 @@ abstract class ReminderRemoteDataSource {
   Future<Reminder?> getReminder(int id);
   Future<Reminder> insertReminder(Reminder reminder);
   Future<Reminder> updateReminder(Reminder reminder);
+  Future<Reminder> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  });
   Future<void> deleteReminder(int id);
   Future<void> snoozeReminder(int id, DateTime until);
   Future<void> pauseReminder(int id);
@@ -102,6 +107,20 @@ class ReminderRemoteDataSourceImpl implements ReminderRemoteDataSource {
       'reminders/${reminder.id}',
       data: _writeData(reminder),
     );
+    final apiResponse = ApiResponse.fromJson(response.data);
+    return Reminder.fromJson(apiResponse.data);
+  }
+
+  @override
+  Future<Reminder> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  }) async {
+    final response = await dio.put('reminders/$id', data: {
+      'client_id': clientId,
+      'updated_at': formatServerIsoDateTimeString(updatedAt),
+    });
     final apiResponse = ApiResponse.fromJson(response.data);
     return Reminder.fromJson(apiResponse.data);
   }

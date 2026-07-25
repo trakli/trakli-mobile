@@ -75,6 +75,15 @@ class BudgetSyncHandler
   }
 
   @override
+  Future<BudgetCompleteDto> claimClientId(BudgetCompleteDto entity) {
+    return remoteDataSource.claimClientId(
+      id: entity.budget.id!,
+      clientId: entity.budget.clientId,
+      updatedAt: entity.budget.updatedAt,
+    );
+  }
+
+  @override
   Future<BudgetCompleteDto> restPutRemote(BudgetCompleteDto entity) async {
     if (entity.budget.id == null) {
       return remoteDataSource.insertBudget(entity);

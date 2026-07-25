@@ -12,6 +12,11 @@ abstract class PartyRemoteDataSource {
   Future<Party?> getParty(int id);
   Future<Party> insertParty(Party party);
   Future<Party> updateParty(Party party);
+  Future<Party> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  });
   Future<void> deleteParty(int id);
 }
 
@@ -111,6 +116,20 @@ class PartyRemoteDataSourceImpl implements PartyRemoteDataSource {
       data: data,
     );
 
+    final apiResponse = ApiResponse.fromJson(response.data);
+    return Party.fromJson(apiResponse.data);
+  }
+
+  @override
+  Future<Party> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  }) async {
+    final response = await dio.put('parties/$id', data: {
+      'client_id': clientId,
+      'updated_at': formatServerIsoDateTimeString(updatedAt),
+    });
     final apiResponse = ApiResponse.fromJson(response.data);
     return Party.fromJson(apiResponse.data);
   }

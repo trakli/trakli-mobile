@@ -128,6 +128,16 @@ class TransactionSyncHandler
   }
 
   @override
+  Future<TransactionCompleteDto> claimClientId(
+      TransactionCompleteDto entity) {
+    return remoteDataSource.claimClientId(
+      id: entity.transaction.id!,
+      clientId: entity.transaction.clientId,
+      updatedAt: entity.transaction.updatedAt,
+    );
+  }
+
+  @override
   Future<TransactionCompleteDto?> restGetRemote(int id) async {
     return await remoteDataSource.getTransaction(id);
   }

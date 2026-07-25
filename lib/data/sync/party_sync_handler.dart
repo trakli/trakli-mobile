@@ -51,6 +51,15 @@ class PartySyncHandler extends SyncTypeHandler<Party, String, int>
   }
 
   @override
+  Future<Party> claimClientId(Party entity) {
+    return remoteDataSource.claimClientId(
+      id: entity.id!,
+      clientId: entity.clientId,
+      updatedAt: entity.updatedAt,
+    );
+  }
+
+  @override
   Future<Party> restPutRemote(Party entity) async {
     if (entity.id == null) {
       return remoteDataSource.insertParty(entity);

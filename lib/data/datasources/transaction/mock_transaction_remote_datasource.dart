@@ -51,6 +51,22 @@ class MockTransactionRemoteDataSource implements TransactionRemoteDataSource {
   }
 
   @override
+  Future<TransactionCompleteDto> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  }) async {
+    return _simulateDelay(() async {
+      final index =
+          _transactions.indexWhere((t) => t.transaction.id == id);
+      if (index == -1) {
+        throw Exception('Transaction not found');
+      }
+      return _transactions[index];
+    });
+  }
+
+  @override
   Future<void> deleteTransaction(int id) async {
     await _simulateDelay(() async {
       _transactions.removeWhere((t) => t.transaction.id == id);

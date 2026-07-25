@@ -4016,6 +4016,14 @@ class LocalChanges extends Table
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("dismissed" IN (0, 1))'));
+  late final GeneratedColumn<int> attemptCount = GeneratedColumn<int>(
+      'attempt_count', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const CustomExpression('0'));
+  late final GeneratedColumn<DateTime> quarantinedAt =
+      GeneratedColumn<DateTime>('quarantined_at', aliasedName, true,
+          type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         entityType,
@@ -4027,7 +4035,9 @@ class LocalChanges extends Table
         concluded,
         concludedMoment,
         error,
-        dismissed
+        dismissed,
+        attemptCount,
+        quarantinedAt
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4060,6 +4070,10 @@ class LocalChanges extends Table
           .read(DriftSqlType.string, data['${effectivePrefix}error']),
       dismissed: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}dismissed'])!,
+      attemptCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}attempt_count'])!,
+      quarantinedAt: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}quarantined_at']),
     );
   }
 
@@ -4081,6 +4095,8 @@ class LocalChangesData extends DataClass
   final DateTime? concludedMoment;
   final String? error;
   final bool dismissed;
+  final int attemptCount;
+  final DateTime? quarantinedAt;
   const LocalChangesData(
       {required this.entityType,
       required this.entityId,
@@ -4091,7 +4107,9 @@ class LocalChangesData extends DataClass
       required this.concluded,
       this.concludedMoment,
       this.error,
-      required this.dismissed});
+      required this.dismissed,
+      required this.attemptCount,
+      this.quarantinedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4109,6 +4127,10 @@ class LocalChangesData extends DataClass
       map['error'] = Variable<String>(error);
     }
     map['dismissed'] = Variable<bool>(dismissed);
+    map['attempt_count'] = Variable<int>(attemptCount);
+    if (!nullToAbsent || quarantinedAt != null) {
+      map['quarantined_at'] = Variable<DateTime>(quarantinedAt);
+    }
     return map;
   }
 
@@ -4127,6 +4149,10 @@ class LocalChangesData extends DataClass
       error:
           error == null && nullToAbsent ? const Value.absent() : Value(error),
       dismissed: Value(dismissed),
+      attemptCount: Value(attemptCount),
+      quarantinedAt: quarantinedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(quarantinedAt),
     );
   }
 
@@ -4144,6 +4170,8 @@ class LocalChangesData extends DataClass
       concludedMoment: serializer.fromJson<DateTime?>(json['concludedMoment']),
       error: serializer.fromJson<String?>(json['error']),
       dismissed: serializer.fromJson<bool>(json['dismissed']),
+      attemptCount: serializer.fromJson<int>(json['attemptCount']),
+      quarantinedAt: serializer.fromJson<DateTime?>(json['quarantinedAt']),
     );
   }
   @override
@@ -4160,6 +4188,8 @@ class LocalChangesData extends DataClass
       'concludedMoment': serializer.toJson<DateTime?>(concludedMoment),
       'error': serializer.toJson<String?>(error),
       'dismissed': serializer.toJson<bool>(dismissed),
+      'attemptCount': serializer.toJson<int>(attemptCount),
+      'quarantinedAt': serializer.toJson<DateTime?>(quarantinedAt),
     };
   }
 
@@ -4173,7 +4203,9 @@ class LocalChangesData extends DataClass
           bool? concluded,
           Value<DateTime?> concludedMoment = const Value.absent(),
           Value<String?> error = const Value.absent(),
-          bool? dismissed}) =>
+          bool? dismissed,
+          int? attemptCount,
+          Value<DateTime?> quarantinedAt = const Value.absent()}) =>
       LocalChangesData(
         entityType: entityType ?? this.entityType,
         entityId: entityId ?? this.entityId,
@@ -4187,6 +4219,9 @@ class LocalChangesData extends DataClass
             : this.concludedMoment,
         error: error.present ? error.value : this.error,
         dismissed: dismissed ?? this.dismissed,
+        attemptCount: attemptCount ?? this.attemptCount,
+        quarantinedAt:
+            quarantinedAt.present ? quarantinedAt.value : this.quarantinedAt,
       );
   LocalChangesData copyWithCompanion(LocalChangesCompanion data) {
     return LocalChangesData(
@@ -4203,6 +4238,12 @@ class LocalChangesData extends DataClass
           : this.concludedMoment,
       error: data.error.present ? data.error.value : this.error,
       dismissed: data.dismissed.present ? data.dismissed.value : this.dismissed,
+      attemptCount: data.attemptCount.present
+          ? data.attemptCount.value
+          : this.attemptCount,
+      quarantinedAt: data.quarantinedAt.present
+          ? data.quarantinedAt.value
+          : this.quarantinedAt,
     );
   }
 
@@ -4218,14 +4259,27 @@ class LocalChangesData extends DataClass
           ..write('concluded: $concluded, ')
           ..write('concludedMoment: $concludedMoment, ')
           ..write('error: $error, ')
-          ..write('dismissed: $dismissed')
+          ..write('dismissed: $dismissed, ')
+          ..write('attemptCount: $attemptCount, ')
+          ..write('quarantinedAt: $quarantinedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(entityType, entityId, entityRev, deleted,
-      data, createAt, concluded, concludedMoment, error, dismissed);
+  int get hashCode => Object.hash(
+      entityType,
+      entityId,
+      entityRev,
+      deleted,
+      data,
+      createAt,
+      concluded,
+      concludedMoment,
+      error,
+      dismissed,
+      attemptCount,
+      quarantinedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4239,7 +4293,9 @@ class LocalChangesData extends DataClass
           other.concluded == this.concluded &&
           other.concludedMoment == this.concludedMoment &&
           other.error == this.error &&
-          other.dismissed == this.dismissed);
+          other.dismissed == this.dismissed &&
+          other.attemptCount == this.attemptCount &&
+          other.quarantinedAt == this.quarantinedAt);
 }
 
 class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
@@ -4253,6 +4309,8 @@ class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
   final Value<DateTime?> concludedMoment;
   final Value<String?> error;
   final Value<bool> dismissed;
+  final Value<int> attemptCount;
+  final Value<DateTime?> quarantinedAt;
   final Value<int> rowid;
   const LocalChangesCompanion({
     this.entityType = const Value.absent(),
@@ -4265,6 +4323,8 @@ class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
     this.concludedMoment = const Value.absent(),
     this.error = const Value.absent(),
     this.dismissed = const Value.absent(),
+    this.attemptCount = const Value.absent(),
+    this.quarantinedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LocalChangesCompanion.insert({
@@ -4278,6 +4338,8 @@ class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
     this.concludedMoment = const Value.absent(),
     this.error = const Value.absent(),
     required bool dismissed,
+    this.attemptCount = const Value.absent(),
+    this.quarantinedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : entityType = Value(entityType),
         entityId = Value(entityId),
@@ -4298,6 +4360,8 @@ class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
     Expression<DateTime>? concludedMoment,
     Expression<String>? error,
     Expression<bool>? dismissed,
+    Expression<int>? attemptCount,
+    Expression<DateTime>? quarantinedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4311,6 +4375,8 @@ class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
       if (concludedMoment != null) 'concluded_moment': concludedMoment,
       if (error != null) 'error': error,
       if (dismissed != null) 'dismissed': dismissed,
+      if (attemptCount != null) 'attempt_count': attemptCount,
+      if (quarantinedAt != null) 'quarantined_at': quarantinedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4326,6 +4392,8 @@ class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
       Value<DateTime?>? concludedMoment,
       Value<String?>? error,
       Value<bool>? dismissed,
+      Value<int>? attemptCount,
+      Value<DateTime?>? quarantinedAt,
       Value<int>? rowid}) {
     return LocalChangesCompanion(
       entityType: entityType ?? this.entityType,
@@ -4338,6 +4406,8 @@ class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
       concludedMoment: concludedMoment ?? this.concludedMoment,
       error: error ?? this.error,
       dismissed: dismissed ?? this.dismissed,
+      attemptCount: attemptCount ?? this.attemptCount,
+      quarantinedAt: quarantinedAt ?? this.quarantinedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4375,6 +4445,12 @@ class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
     if (dismissed.present) {
       map['dismissed'] = Variable<bool>(dismissed.value);
     }
+    if (attemptCount.present) {
+      map['attempt_count'] = Variable<int>(attemptCount.value);
+    }
+    if (quarantinedAt.present) {
+      map['quarantined_at'] = Variable<DateTime>(quarantinedAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4394,6 +4470,8 @@ class LocalChangesCompanion extends UpdateCompanion<LocalChangesData> {
           ..write('concludedMoment: $concludedMoment, ')
           ..write('error: $error, ')
           ..write('dismissed: $dismissed, ')
+          ..write('attemptCount: $attemptCount, ')
+          ..write('quarantinedAt: $quarantinedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();

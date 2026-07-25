@@ -11,6 +11,11 @@ abstract class WalletRemoteDataSource {
   Future<Wallet?> getWallet(int id);
   Future<Wallet> insertWallet(Wallet wallet);
   Future<Wallet> updateWallet(Wallet wallet);
+  Future<Wallet> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  });
   Future<void> deleteWallet(int id);
 }
 
@@ -112,6 +117,20 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
       data: data,
     );
 
+    final apiResponse = ApiResponse.fromJson(response.data);
+    return WalletDto.fromJson(apiResponse.data).toModel();
+  }
+
+  @override
+  Future<Wallet> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  }) async {
+    final response = await dio.put('wallets/$id', data: {
+      'client_id': clientId,
+      'updated_at': formatServerIsoDateTimeString(updatedAt),
+    });
     final apiResponse = ApiResponse.fromJson(response.data);
     return WalletDto.fromJson(apiResponse.data).toModel();
   }

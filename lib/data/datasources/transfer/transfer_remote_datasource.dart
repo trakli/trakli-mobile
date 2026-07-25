@@ -20,6 +20,11 @@ abstract class TransferRemoteDataSource {
   Future<Transfer?> getTransfer(int id);
   Future<Transfer> insertTransfer(Transfer transfer);
   Future<Transfer> updateTransfer(Transfer transfer);
+  Future<Transfer> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  });
   Future<void> deleteTransfer(int id);
 }
 
@@ -107,6 +112,21 @@ class TransferRemoteDataSourceImpl implements TransferRemoteDataSource {
       'transfers/${transfer.id}',
       data: toServerJson(transfer),
     );
+    final apiResponse = ApiResponse.fromJson(response.data);
+    return TransferDto.fromJson(apiResponse.data as Map<String, dynamic>)
+        .toTransfer();
+  }
+
+  @override
+  Future<Transfer> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  }) async {
+    final response = await dio.put('transfers/$id', data: {
+      'client_id': clientId,
+      'updated_at': formatServerIsoDateTimeString(updatedAt),
+    });
     final apiResponse = ApiResponse.fromJson(response.data);
     return TransferDto.fromJson(apiResponse.data as Map<String, dynamic>)
         .toTransfer();

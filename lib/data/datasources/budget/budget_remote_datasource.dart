@@ -16,6 +16,11 @@ abstract class BudgetRemoteDataSource {
   Future<BudgetCompleteDto?> getBudget(int id);
   Future<BudgetCompleteDto> insertBudget(BudgetCompleteDto dto);
   Future<BudgetCompleteDto> updateBudget(BudgetCompleteDto dto);
+  Future<BudgetCompleteDto> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  });
   Future<void> deleteBudget(int id);
   Future<BudgetCompleteDto?> closeBudgetPeriod(int id);
   Future<List<BudgetPeriodStateDto>> getAllPeriodStates({
@@ -96,6 +101,22 @@ class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
       'budgets/${dto.budget.id}',
       data: dto.toServerJson(),
     );
+    final apiResponse = ApiResponse.fromJson(response.data);
+    return BudgetCompleteDto.fromServerJson(
+      apiResponse.data as Map<String, dynamic>,
+    );
+  }
+
+  @override
+  Future<BudgetCompleteDto> claimClientId({
+    required int id,
+    required String clientId,
+    required DateTime updatedAt,
+  }) async {
+    final response = await dio.put('budgets/$id', data: {
+      'client_id': clientId,
+      'updated_at': formatServerIsoDateTimeString(updatedAt),
+    });
     final apiResponse = ApiResponse.fromJson(response.data);
     return BudgetCompleteDto.fromServerJson(
       apiResponse.data as Map<String, dynamic>,

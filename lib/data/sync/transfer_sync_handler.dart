@@ -130,6 +130,17 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
   }
 
   @override
+  Future<Transfer> claimClientId(Transfer entity) async {
+    final result = await remoteDataSource.claimClientId(
+      id: entity.id!,
+      clientId: entity.clientId,
+      updatedAt: entity.updatedAt,
+    );
+    await upsertLocal(result);
+    return result;
+  }
+
+  @override
   Future<void> restDeleteRemote(Transfer entity) async {
     if (entity.id != null) {
       await remoteDataSource.deleteTransfer(entity.id!);
