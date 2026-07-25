@@ -113,8 +113,12 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
   static Duration retryBackoff(int attemptCount) {
     if (attemptCount <= 1) return failedChangeRetryDelay;
     final shift = attemptCount - 1;
-    if (shift >= 30) return failedChangeRetryCap;
-    final ms = failedChangeRetryDelay.inMilliseconds << shift;
+    // Cap the exponent itself, not just the final duration: on Dart
+    // compiled to JS, bitwise shifts truncate to 32 bits, so a large shift
+    // can wrap negative before the cap check below ever runs. 6 is already
+    // past the point where the multiplication exceeds the cap.
+    final safeShift = shift > 6 ? 6 : shift;
+    final ms = failedChangeRetryDelay.inMilliseconds * (1 << safeShift);
     return ms >= failedChangeRetryCap.inMilliseconds
         ? failedChangeRetryCap
         : Duration(milliseconds: ms);
@@ -123,16 +127,17 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
   @override
   Future<List<PendingLocalChange>> getPendingLocalChanges() async {
     final now = DateTime.now();
-    // Quarantined changes never retry; the rest are filtered by their
-    // per-row exponential backoff below (not expressible in SQL).
+    // Quarantined and dismissed changes never retry, so both are excluded
+    // in SQL. The remaining rows are filtered by their per-row exponential
+    // backoff below (not expressible in SQL).
     final rows = await (select(localChanges)
-          ..where((lc) => lc.quarantinedAt.isNull()))
+          ..where((lc) =>
+              lc.quarantinedAt.isNull() & lc.dismissed.equals(false)))
         .get();
 
     return rows
         .where((row) {
           if (row.error == null) return true; // never failed
-          if (row.dismissed) return false; // user dismissed
           final concluded = row.concludedMoment;
           if (concluded == null) return true;
           return now.isAfter(concluded.add(retryBackoff(row.attemptCount)));
@@ -160,13 +165,16 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
   }
 
   /// True while transaction or transfer changes are still waiting to sync —
-  /// server /stats cannot include them yet. Dismissed changes never sync,
-  /// so they don't count.
+  /// server /stats cannot include them yet. Dismissed and quarantined
+  /// changes don't count: dismissed changes never sync, and quarantined
+  /// ones won't sync without a user retry, so neither should hold reports
+  /// on "local estimate" indefinitely.
   Future<bool> hasPendingTransactionChanges() async {
     final row = await (select(localChanges)
           ..where((lc) =>
               lc.entityType.isIn(const ['transaction', 'transfer']) &
-              lc.dismissed.equals(false))
+              lc.dismissed.equals(false) &
+              lc.quarantinedAt.isNull())
           ..limit(1))
         .getSingleOrNull();
     return row != null;
