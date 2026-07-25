@@ -38,6 +38,8 @@ TransactionCompleteEntity _txn({
   required DateTime when,
   PartyEntity? party,
   List<CategoryEntity> categories = const [],
+  int? transferId,
+  String? transferClientId,
 }) {
   return TransactionCompleteEntity(
     transaction: TransactionEntity(
@@ -50,6 +52,8 @@ TransactionCompleteEntity _txn({
       type: type,
       walletClientId: 'w1',
       partyClientId: party?.clientId,
+      transferId: transferId,
+      transferClientId: transferClientId,
     ),
     categories: categories,
     wallet: _wallet(),
@@ -59,12 +63,13 @@ TransactionCompleteEntity _txn({
 
 void main() {
   group('buildMonthInReview', () {
-    test('returns null only when there are no transactions at all', () {
+    test('returns null when there are no transactions', () {
       expect(buildMonthInReview(const []), isNull);
     });
 
     test(
-      'falls back to the most recent active month when the current month is empty',
+      'anchors to the current month like web: no walk-back to an older '
+      'active month',
       () {
         final now = DateTime.now();
         final twoMonthsAgo = DateTime(now.year, now.month - 2, 15);
@@ -73,19 +78,39 @@ void main() {
           _txn(amount: 200, type: TransactionType.expense, when: twoMonthsAgo),
         ];
 
-        final recap = buildMonthInReview(txns);
-
-        expect(recap, isNotNull,
-            reason:
-                'Recap must not be null when there is activity in an earlier month');
-        expect(recap!.income, 500);
-        expect(recap.expense, 200);
-        expect(recap.net, 300);
+        expect(buildMonthInReview(txns), isNull,
+            reason: 'An empty current month must not surface older activity');
+        expect(buildMonthInReview(txns, offsetMonths: 2)!.income, 500);
       },
     );
 
-    test('honours offsetMonths and ignores fallback when explicitly anchored',
-        () {
+    test('excludes transfer legs, synced or not', () {
+      final now = DateTime.now();
+      final txns = [
+        _txn(amount: 100, type: TransactionType.income, when: now),
+        _txn(amount: 40, type: TransactionType.expense, when: now),
+        _txn(
+            amount: 500,
+            type: TransactionType.expense,
+            when: now,
+            transferId: 7),
+        _txn(
+            amount: 500,
+            type: TransactionType.income,
+            when: now,
+            transferClientId: 'tr-1'),
+      ];
+
+      final recap = buildMonthInReview(txns);
+      expect(recap, isNotNull);
+      expect(recap!.income, 100);
+      expect(recap.expense, 40);
+      expect(recap.transactionCount, 2);
+      expect(recap.biggestExpense?.amount, 40,
+          reason: 'A transfer leg must never be the biggest expense');
+    });
+
+    test('honours offsetMonths when explicitly anchored', () {
       final now = DateTime.now();
       final thisMonth = DateTime(now.year, now.month, 5);
       final lastMonth = DateTime(now.year, now.month - 1, 5);

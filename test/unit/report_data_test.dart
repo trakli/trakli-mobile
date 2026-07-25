@@ -30,6 +30,8 @@ TransactionCompleteEntity _tx({
   required TransactionType type,
   required DateTime when,
   List<CategoryEntity> categories = const [],
+  int? transferId,
+  String? transferClientId,
 }) {
   return TransactionCompleteEntity(
     transaction: TransactionEntity(
@@ -41,6 +43,8 @@ TransactionCompleteEntity _tx({
       datetime: when,
       type: type,
       walletClientId: 'w1',
+      transferId: transferId,
+      transferClientId: transferClientId,
     ),
     categories: categories,
     wallet: _wallet(),
@@ -49,6 +53,29 @@ TransactionCompleteEntity _tx({
 
 void main() {
   group('buildReportData', () {
+    test('excludes transfer legs, synced or not, from totals and buckets', () {
+      final now = DateTime.now();
+      final data = buildReportData([
+        _tx(amount: 100, type: TransactionType.income, when: now),
+        _tx(amount: 40, type: TransactionType.expense, when: now),
+        _tx(
+            amount: 500,
+            type: TransactionType.expense,
+            when: now,
+            transferId: 7),
+        _tx(
+            amount: 500,
+            type: TransactionType.income,
+            when: now,
+            transferClientId: 'tr-1'),
+      ]);
+
+      expect(data.totals.income, 100);
+      expect(data.totals.expense, 40);
+      expect(data.daily.last.txCount, 2,
+          reason: 'Transfer legs must not count as transactions');
+    });
+
     test('daily buckets cover the requested period exactly', () {
       final data = buildReportData(const [], periodDays: 30);
       expect(data.daily.length, 30);

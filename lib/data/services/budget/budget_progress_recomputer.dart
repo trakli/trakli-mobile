@@ -129,6 +129,7 @@ class BudgetProgressRecomputer {
           amount: t.amount,
           datetime: t.datetime,
           transferId: t.transferId,
+          transferClientId: t.transferClientId,
           walletClientId: t.walletClientId,
           walletCurrency: currencyByWallet[t.walletClientId],
           groupClientId: t.groupClientId,

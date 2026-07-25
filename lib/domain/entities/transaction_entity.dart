@@ -27,3 +27,10 @@ class TransactionEntity with _$TransactionEntity {
   factory TransactionEntity.fromJson(Map<String, dynamic> json) =>
       _$TransactionEntityFromJson(json);
 }
+
+extension TransactionTransferLeg on TransactionEntity {
+  /// True for either leg of a wallet-to-wallet transfer, synced
+  /// ([transferId]) or not yet synced ([transferClientId]).
+  bool get isTransferLeg =>
+      transferId != null || (transferClientId?.isNotEmpty ?? false);
+}

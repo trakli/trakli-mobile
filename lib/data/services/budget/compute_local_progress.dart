@@ -8,6 +8,7 @@ class BudgetTxnInput {
   final double amount;
   final DateTime? datetime;
   final int? transferId;
+  final String? transferClientId;
   final String walletClientId;
   final String? walletCurrency;
   final String? groupClientId;
@@ -18,6 +19,7 @@ class BudgetTxnInput {
     required this.amount,
     required this.datetime,
     required this.transferId,
+    this.transferClientId,
     required this.walletClientId,
     required this.walletCurrency,
     required this.groupClientId,
@@ -52,7 +54,9 @@ BudgetProgressEntity computeLocalProgress({
   double grossSpent = 0;
 
   for (final t in txns) {
-    if (t.transferId != null) continue;
+    if (t.transferId != null || (t.transferClientId?.isNotEmpty ?? false)) {
+      continue;
+    }
     if (t.type != TransactionType.expense) continue;
     final dt = t.datetime;
     if (dt == null) continue;

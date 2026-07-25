@@ -52,12 +52,14 @@ void main() {
     String? groupClientId,
     Set<String> categoryClientIds = const {},
     int? transferId,
+    String? transferClientId,
   }) {
     return BudgetTxnInput(
       type: type,
       amount: amount,
       datetime: at ?? DateTime.utc(2026, 5, 10),
       transferId: transferId,
+      transferClientId: transferClientId,
       walletClientId: walletClientId,
       walletCurrency: walletCurrency,
       groupClientId: groupClientId,
@@ -113,7 +115,8 @@ void main() {
         budget: makeBudget(),
         targets: const [],
         txns: [
-          txn(amount: 100, transferId: 7), // transfer
+          txn(amount: 100, transferId: 7), // synced transfer
+          txn(amount: 100, transferClientId: 'tr-1'), // unsynced transfer
           txn(amount: 50, type: TransactionType.income), // income
           txn(amount: 10, at: DateTime.utc(2026, 4, 30)), // before window
           txn(amount: 10, at: DateTime.utc(2026, 6, 1)), // after window
