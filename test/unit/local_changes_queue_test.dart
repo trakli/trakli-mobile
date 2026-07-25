@@ -10,6 +10,8 @@ PendingLocalChange _change(
   String? error,
   DateTime? concludedMoment,
   bool dismissed = false,
+  int attemptCount = 0,
+  DateTime? quarantinedAt,
 }) {
   return PendingLocalChange(
     entityType: entityType,
@@ -22,6 +24,8 @@ PendingLocalChange _change(
     concludedMoment: concludedMoment,
     error: error,
     dismissed: dismissed,
+    attemptCount: attemptCount,
+    quarantinedAt: quarantinedAt,
   );
 }
 
@@ -81,6 +85,53 @@ void main() {
       ));
 
       expect(await db.getPendingLocalChanges(), isEmpty);
+    });
+
+    test('backoff grows with attemptCount', () async {
+      // 3 prior failures → backoff is base*4. Concluded base*3 ago: still
+      // withheld; base*5 ago: eligible.
+      const base = AppDatabase.failedChangeRetryDelay;
+      await db.insertLocalChange(_change(
+        'category',
+        'young',
+        error: 'HTTP 500',
+        attemptCount: 3,
+        concludedMoment: DateTime.now().subtract(base * 3),
+      ));
+      await db.insertLocalChange(_change(
+        'category',
+        'ready',
+        error: 'HTTP 500',
+        attemptCount: 3,
+        concludedMoment: DateTime.now().subtract(base * 5),
+      ));
+
+      final pending = await db.getPendingLocalChanges();
+      expect(pending.map((c) => c.entityId), ['ready']);
+    });
+
+    test('never retries a quarantined change', () async {
+      await db.insertLocalChange(_change(
+        'category',
+        'c1',
+        error: 'HTTP 422',
+        concludedMoment:
+            DateTime.now().subtract(AppDatabase.failedChangeRetryCap * 2),
+        quarantinedAt: DateTime.now(),
+      ));
+
+      expect(await db.getPendingLocalChanges(), isEmpty);
+    });
+  });
+
+  group('retryBackoff', () {
+    test('doubles per attempt and caps', () {
+      const base = AppDatabase.failedChangeRetryDelay;
+      expect(AppDatabase.retryBackoff(0), base);
+      expect(AppDatabase.retryBackoff(1), base);
+      expect(AppDatabase.retryBackoff(2), base * 2);
+      expect(AppDatabase.retryBackoff(3), base * 4);
+      expect(AppDatabase.retryBackoff(100), AppDatabase.failedChangeRetryCap);
     });
   });
 

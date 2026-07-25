@@ -25,6 +25,7 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
   List<LocalSyncMetadata> _syncMetadata = [];
   List<LocalChange> _pendingChanges = [];
   List<LocalChange> _failedChanges = [];
+  List<LocalChange> _quarantinedChanges = [];
   bool _isLoading = true;
   bool _isSyncing = false;
 
@@ -50,14 +51,23 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
       final metadata = await _db.getLocalSyncMetadataList();
       final allChanges = await _db.select(_db.localChanges).get();
 
-      final pending = allChanges.where((c) => c.error == null).toList();
-      final failed = allChanges.where((c) => c.error != null).toList();
+      // Quarantined changes are permanently failed and never retry
+      // automatically; keep them out of the transient "failed" bucket.
+      final pending = allChanges
+          .where((c) => c.error == null && c.quarantinedAt == null)
+          .toList();
+      final failed = allChanges
+          .where((c) => c.error != null && c.quarantinedAt == null)
+          .toList();
+      final quarantined =
+          allChanges.where((c) => c.quarantinedAt != null).toList();
 
       if (mounted) {
         setState(() {
           _syncMetadata = metadata;
           _pendingChanges = pending;
           _failedChanges = failed;
+          _quarantinedChanges = quarantined;
           _isLoading = false;
         });
       }
@@ -81,21 +91,28 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
     }
   }
 
-  Future<void> _dismissFailedChange(LocalChange change) async {
-    await (_db.delete(_db.localChanges)
-          ..where((lc) =>
-              lc.entityType.equals(change.entityType) &
-              lc.entityId.equals(change.entityId)))
-        .go();
-    _loadData();
-  }
-
   Future<void> _retryFailedChange(LocalChange change) async {
     await (_db.update(_db.localChanges)
           ..where((lc) =>
               lc.entityType.equals(change.entityType) &
               lc.entityId.equals(change.entityId)))
         .write(const LocalChangesCompanion(error: Value(null)));
+    _loadData();
+    _triggerSync();
+  }
+
+  /// Un-quarantine: clear the error, lift quarantine, and reset the attempt
+  /// counter so the change re-enters the normal retry path immediately.
+  Future<void> _retryQuarantinedChange(LocalChange change) async {
+    await (_db.update(_db.localChanges)
+          ..where((lc) =>
+              lc.entityType.equals(change.entityType) &
+              lc.entityId.equals(change.entityId)))
+        .write(const LocalChangesCompanion(
+      error: Value(null),
+      quarantinedAt: Value(null),
+      attemptCount: Value(0),
+    ));
     _loadData();
     _triggerSync();
   }
@@ -132,25 +149,33 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _loadData,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 16.h,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSyncButton(),
-                    SizedBox(height: 24.h),
-                    _buildSyncStatusSection(),
-                    SizedBox(height: 24.h),
-                    _buildPendingChangesSection(),
-                    SizedBox(height: 24.h),
-                    _buildFailedChangesSection(),
-                  ],
+          : SafeArea(
+              child: RefreshIndicator(
+                onRefresh: _loadData,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.only(
+                    left: 16.w,
+                    right: 16.w,
+                    top: 16.h,
+                    bottom: 32.h,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSyncButton(),
+                      SizedBox(height: 24.h),
+                      _buildSyncStatusSection(),
+                      SizedBox(height: 24.h),
+                      if (_quarantinedChanges.isNotEmpty) ...[
+                        _buildQuarantinedSection(),
+                        SizedBox(height: 24.h),
+                      ],
+                      _buildPendingChangesSection(),
+                      SizedBox(height: 24.h),
+                      _buildFailedChangesSection(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -368,6 +393,104 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
     );
   }
 
+  Widget _buildQuarantinedSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.report_problem, size: 18.sp, color: Colors.orange[800]),
+            SizedBox(width: 6.w),
+            Text(
+              LocaleKeys.needsAttention.tr(),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 8.w),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+              decoration: BoxDecoration(
+                color: Colors.orange.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Text(
+                _quarantinedChanges.length.toString(),
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange[800],
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 4.h),
+        Text(
+          LocaleKeys.quarantinedHint.tr(),
+          style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
+        ),
+        SizedBox(height: 8.h),
+        Card(
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _quarantinedChanges.length,
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final change = _quarantinedChanges[index];
+              return ListTile(
+                dense: true,
+                leading: Icon(Icons.report_problem,
+                    size: 20.sp, color: Colors.orange[800]),
+                title: Text(
+                  _getEntityTypeDisplayName(change.entityType),
+                  style: TextStyle(fontSize: 14.sp),
+                ),
+                subtitle: Text(
+                  change.error ?? '',
+                  style: TextStyle(fontSize: 11.sp, color: Colors.orange[900]),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert, size: 20.sp),
+                  onSelected: (value) {
+                    if (value == 'retry') {
+                      _retryQuarantinedChange(change);
+                    } else if (value == 'details') {
+                      _showChangeDetails(change);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'details',
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline, size: 18),
+                          SizedBox(width: 8),
+                          Text('View details'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'retry',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.refresh, size: 18),
+                          SizedBox(width: 8.w),
+                          Text(LocaleKeys.retry.tr()),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildFailedChangesSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -447,8 +570,6 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
                     onSelected: (value) {
                       if (value == 'retry') {
                         _retryFailedChange(change);
-                      } else if (value == 'dismiss') {
-                        _dismissFailedChange(change);
                       } else if (value == 'details') {
                         _showChangeDetails(change);
                       }
@@ -471,16 +592,6 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
                             const Icon(Icons.refresh, size: 18),
                             SizedBox(width: 8.w),
                             Text(LocaleKeys.retry.tr()),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'dismiss',
-                        child: Row(
-                          children: [
-                            const Icon(Icons.close, size: 18),
-                            SizedBox(width: 8.w),
-                            Text(LocaleKeys.dismiss.tr()),
                           ],
                         ),
                       ),
