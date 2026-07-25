@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:trakli/core/services/auth_service.dart';
+import 'package:trakli/core/sync/sync_database.dart';
 import 'package:trakli/core/utils/currency_formater.dart';
+import 'package:trakli/data/database/app_database.dart';
+import 'package:trakli/data/datasources/stats/stats_remote_datasource.dart';
+import 'package:trakli/di/injection.dart';
+import 'package:trakli/presentation/statistics/cubit/report_stats_cubit.dart';
 import 'package:trakli/presentation/statistics/month_in_review/month_in_review_data.dart';
 import 'package:trakli/presentation/statistics/month_in_review/month_in_review_screen.dart';
 import 'package:trakli/presentation/statistics/reports/charts/calendar_heatmap.dart';
@@ -21,8 +27,11 @@ import 'package:trakli/presentation/utils/design_tokens.dart';
 /// - Hero KPIs
 /// - Tabbed cashflow / breakdown / activity charts
 ///
-/// The screen reads transactions from TransactionCubit and computes the
-/// report bundle locally, mirroring the web's `useReportData` composable.
+/// Totals and category breakdowns come from server /stats when available
+/// (matching web); daily-granularity charts and the recap are computed from
+/// local transactions, exactly as the web's `useReportData` does. Local
+/// numbers win while signed out, offline, or while transactions are still
+/// waiting to sync.
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
 
@@ -49,62 +58,147 @@ class _ReportsScreenState extends State<ReportsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransactionCubit, TransactionState>(
-      builder: (context, state) {
-        final data = buildReportData(
-          state.transactions,
-          periodDays: _periodDays,
-        );
-        final recap = buildMonthInReview(state.transactions);
+    return BlocProvider(
+      create: (_) => ReportStatsCubit(
+        remote: getIt<StatsRemoteDataSource>(),
+        authService: getIt<AuthService>(),
+        db: getIt<AppDatabase>(),
+        syncStream: getIt<SynchAppDatabase>().syncStateStream,
+      )..load(_periodDays),
+      child: BlocBuilder<TransactionCubit, TransactionState>(
+        builder: (context, state) {
+          return BlocBuilder<ReportStatsCubit, ReportStatsState>(
+            builder: (context, statsState) {
+              final data = buildReportData(
+                state.transactions,
+                periodDays: _periodDays,
+              );
+              final recap = buildMonthInReview(state.transactions);
 
-        return Scaffold(
-          appBar: const PageAppBar(title: 'Reports'),
-          body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                MonthInReviewCard(
-                  data: recap,
-                  onTap: recap == null
-                      ? null
-                      : () => MonthInReviewScreen.show(context, recap),
+              final server = statsState.stats;
+              final totals = server == null
+                  ? data.totals
+                  : ReportTotals(
+                      income: server.totalIncome,
+                      expense: server.totalExpenses,
+                      net: server.netCashFlow,
+                      savingsRate: server.savingsRate,
+                      expenseRatio: server.totalIncome > 0
+                          ? server.totalExpenses / server.totalIncome
+                          : 0,
+                      daysInPeriod: _periodDays,
+                    );
+              final expenseCategories = server == null
+                  ? data.expenseCategories
+                  : [
+                      for (final c in server.expenseCategories)
+                        CategoryAggregate(
+                          name: c.name,
+                          amount: c.amount,
+                          percentage: c.percentage,
+                        ),
+                    ];
+
+              return Scaffold(
+                appBar: const PageAppBar(title: 'Reports'),
+                body: SingleChildScrollView(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      MonthInReviewCard(
+                        data: recap,
+                        onTap: recap == null
+                            ? null
+                            : () => MonthInReviewScreen.show(context, recap),
+                      ),
+                      SizedBox(height: 16.h),
+                      _PeriodChips(
+                        selected: _periodDays,
+                        onChange: (v) {
+                          setState(() => _periodDays = v);
+                          context.read<ReportStatsCubit>().load(v);
+                        },
+                      ),
+                      SizedBox(height: 16.h),
+                      _StatsSourceNote(statsState: statsState),
+                      _KpiGrid(totals: totals),
+                      SizedBox(height: 16.h),
+                      _SectionCard(
+                        title: 'Cashflow',
+                        subtitle: 'Income vs expense across the period',
+                        child: CashflowChart(daily: data.daily),
+                      ),
+                      SizedBox(height: 16.h),
+                      _TabbedCard(
+                        controller: _tabs,
+                        tabs: const [
+                          _TabSpec(
+                              label: 'Categories', icon: Icons.donut_small),
+                          _TabSpec(
+                              label: 'Daily', icon: Icons.calendar_view_day),
+                          _TabSpec(label: 'Calendar', icon: Icons.grid_on),
+                          _TabSpec(label: 'Ratios', icon: Icons.percent),
+                        ],
+                        children: [
+                          _BreakdownTab(categories: expenseCategories),
+                          _DailyTab(data: data),
+                          _CalendarTab(data: data),
+                          _RatiosTab(totals: totals),
+                        ],
+                      ),
+                      SizedBox(height: 24.h),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 16.h),
-                _PeriodChips(
-                  selected: _periodDays,
-                  onChange: (v) => setState(() => _periodDays = v),
-                ),
-                SizedBox(height: 16.h),
-                _KpiGrid(totals: data.totals),
-                SizedBox(height: 16.h),
-                _SectionCard(
-                  title: 'Cashflow',
-                  subtitle: 'Income vs expense across the period',
-                  child: CashflowChart(daily: data.daily),
-                ),
-                SizedBox(height: 16.h),
-                _TabbedCard(
-                  controller: _tabs,
-                  tabs: const [
-                    _TabSpec(label: 'Categories', icon: Icons.donut_small),
-                    _TabSpec(label: 'Daily', icon: Icons.calendar_view_day),
-                    _TabSpec(label: 'Calendar', icon: Icons.grid_on),
-                    _TabSpec(label: 'Ratios', icon: Icons.percent),
-                  ],
-                  children: [
-                    _BreakdownTab(data: data),
-                    _DailyTab(data: data),
-                    _CalendarTab(data: data),
-                    _RatiosTab(totals: data.totals),
-                  ],
-                ),
-                SizedBox(height: 24.h),
-              ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// One-line note under the period chips when the numbers aren't plain
+/// server truth: local estimate (signed in but no server stats yet) or
+/// partial conversion. Signed-out users see nothing — local is their truth.
+class _StatsSourceNote extends StatelessWidget {
+  final ReportStatsState statsState;
+
+  const _StatsSourceNote({required this.statsState});
+
+  @override
+  Widget build(BuildContext context) {
+    final tones = context.tones;
+    final server = statsState.stats;
+
+    String? note;
+    if (server != null && server.partial) {
+      note =
+          'Totals exclude ${server.unconvertedCurrencies.join(', ')} (no exchange rate)';
+    } else if (server == null && !statsState.isLocalOnly) {
+      note = statsState.deferredForPendingSync
+          ? 'Local estimate — sync pending'
+          : 'Local estimate';
+    }
+    if (note == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Row(
+        children: [
+          Icon(Icons.info_outline, size: 13.sp, color: tones.textMuted),
+          SizedBox(width: 6.w),
+          Expanded(
+            child: Text(
+              note,
+              style: TextStyle(fontSize: 11.sp, color: tones.textMuted),
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
@@ -485,9 +579,9 @@ class _TabChip extends StatelessWidget {
 }
 
 class _BreakdownTab extends StatelessWidget {
-  final ReportData data;
+  final List<CategoryAggregate> categories;
 
-  const _BreakdownTab({required this.data});
+  const _BreakdownTab({required this.categories});
 
   @override
   Widget build(BuildContext context) {
@@ -495,13 +589,13 @@ class _BreakdownTab extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CategoryDonut(
-          categories: data.expenseCategories,
+          categories: categories,
           palette: expensePalette,
           centerLabel: 'Expense',
         ),
         SizedBox(height: 16.h),
         CategoryRanking(
-          categories: data.expenseCategories,
+          categories: categories,
           palette: expensePalette,
         ),
       ],
