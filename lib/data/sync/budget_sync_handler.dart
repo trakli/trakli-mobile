@@ -47,12 +47,12 @@ class BudgetSyncHandler
 
   @override
   Future<BudgetCompleteDto> unmarshal(Map<String, dynamic> entityJson) async {
-    return BudgetCompleteDto.fromServerJson(entityJson);
+    return BudgetCompleteDto.fromJson(entityJson);
   }
 
   @override
   Map<String, dynamic> marshal(BudgetCompleteDto entity) {
-    return entity.toServerJson();
+    return entity.toJson();
   }
 
   @override

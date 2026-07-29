@@ -1,5 +1,10 @@
+/// Truncated to milliseconds: the API rejects 6-digit fractional seconds.
 String formatServerIsoDateTimeString(DateTime dateTime) {
-  return dateTime.toUtc().toIso8601String();
+  final utc = dateTime.toUtc();
+  return DateTime.fromMillisecondsSinceEpoch(
+    utc.millisecondsSinceEpoch,
+    isUtc: true,
+  ).toIso8601String();
 }
 
 DateTime getNewFormattedUtcDateTime() {

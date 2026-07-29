@@ -38,6 +38,44 @@ class BudgetCompleteDto {
     );
   }
 
+  /// Round-trippable queue format; the server payload shape is [toServerJson].
+  Map<String, dynamic> toJson() {
+    return {
+      'budget': budget.toJson(),
+      'targets': targets.map((t) => t.toJson()).toList(),
+    };
+  }
+
+  factory BudgetCompleteDto.fromJson(Map<String, dynamic> json) {
+    final rawBudget = json['budget'];
+    if (rawBudget is Map<String, dynamic>) {
+      final rawTargets = json['targets'];
+      return BudgetCompleteDto(
+        budget: Budget.fromJson(rawBudget),
+        targets: (rawTargets is List)
+            ? rawTargets
+                .whereType<Map<String, dynamic>>()
+                .map(BudgetTargetDto.fromJson)
+                .toList()
+            : <BudgetTargetDto>[],
+      );
+    }
+    // Legacy server-shaped queue payload: restore drift-required fields.
+    final patched = Map<String, dynamic>.from(json);
+    patched[JsonDefaultsHelper.clientGeneratedIdField] ??=
+        patched['client_id'];
+    patched['slug'] ??=
+        ((patched['name'] as String?) ?? '').toLowerCase().replaceAll(' ', '-');
+    patched['owner_type'] ??= 'user';
+    final amount = patched['amount'];
+    if (amount is num) patched['amount'] = amount.toString();
+    final fallbackMoment =
+        patched['start_date'] ?? DateTime.now().toUtc().toIso8601String();
+    patched['created_at'] ??= fallbackMoment;
+    patched['updated_at'] ??= fallbackMoment;
+    return BudgetCompleteDto.fromServerJson(patched);
+  }
+
   Map<String, dynamic> toServerJson() {
     return {
       if (budget.clientId.isNotEmpty) 'client_id': budget.clientId,

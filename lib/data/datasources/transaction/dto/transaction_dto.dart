@@ -26,6 +26,7 @@ class TransactionDTO {
   @JsonKey(name: 'user_id')
   final int userId;
   final WalletDto? wallet;
+  @JsonKey(defaultValue: <dynamic>[])
   final List<dynamic> categories;
   @JsonKey(name: 'last_synced_at')
   final DateTime lastSyncedAt;

@@ -152,9 +152,23 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
     await table.deleteWhere((t) => t.clientId.equals(entity.clientId));
   }
 
+  /// The UI keys transfer presentation on the legs' transferClientId, so
+  /// legs that arrived before their transfer must be linked here.
+  Future<void> _linkLegs(Transfer entity) async {
+    if (entity.deletedAt != null || entity.clientId.isEmpty) return;
+    final legIds = [
+      entity.expenseTransactionClientId,
+      entity.incomeTransactionClientId,
+    ].whereType<String>().where((id) => id.isNotEmpty).toList();
+    if (legIds.isEmpty) return;
+    await (db.update(db.transactions)..where((t) => t.clientId.isIn(legIds)))
+        .write(TransactionsCompanion(transferClientId: Value(entity.clientId)));
+  }
+
   @override
   Future<void> upsertLocal(Transfer entity) async {
     await table.insertOne(entity, mode: InsertMode.insertOrReplace);
+    await _linkLegs(entity);
   }
 
   @override
@@ -168,6 +182,7 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
         await table.deleteWhere((t) => t.clientId.equals(entity.clientId));
       } else {
         await table.insertOnConflictUpdate(entity);
+        await _linkLegs(entity);
       }
     }
   }

@@ -6,6 +6,7 @@ import 'package:drift/native.dart';
 import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:trakli/core/sync/sync_error_description.dart';
 import 'package:trakli/core/utils/services/logger.dart';
 import 'package:trakli/data/database/converters/budget_progress_json_converter.dart';
 import 'package:trakli/data/database/converters/media_converter.dart';
@@ -164,6 +165,19 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     await delete(localChanges).go();
   }
 
+  /// Client ids with no server id and no local_changes row in any state.
+  Future<List<String>> getOrphanedClientIds(
+      String tableName, String entityType) async {
+    final rows = await customSelect(
+      'SELECT t.client_id AS client_id FROM $tableName t '
+      'WHERE t.id IS NULL AND t.deleted_at IS NULL AND NOT EXISTS ('
+      'SELECT 1 FROM local_changes lc '
+      'WHERE lc.entity_type = ?1 AND lc.entity_id = t.client_id)',
+      variables: [Variable.withString(entityType)],
+    ).get();
+    return rows.map((r) => r.read<String>('client_id')).toList();
+  }
+
   /// True while transaction or transfer changes are still waiting to sync —
   /// server /stats cannot include them yet. Dismissed and quarantined
   /// changes don't count: dismissed changes never sync, and quarantined
@@ -219,7 +233,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
           .write(
         LocalChangesCompanion(
           concludedMoment: Value(DateTime.now()),
-          error: Value(error.toString()),
+          error: Value(describeSyncError(error)),
           concluded: const Value(true),
           attemptCount: Value(localChange.attemptCount + 1),
           quarantinedAt:

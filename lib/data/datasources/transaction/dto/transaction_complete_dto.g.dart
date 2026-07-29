@@ -11,17 +11,20 @@ TransactionCompleteDto _$TransactionCompleteDtoFromJson(
     TransactionCompleteDto(
       transaction: const TransactionConverter()
           .fromJson(json['transaction'] as Map<String, dynamic>),
-      categories: (json['categories'] as List<dynamic>)
-          .map((e) =>
-              const CategoryConverter().fromJson(e as Map<String, dynamic>))
-          .toList(),
+      categories: (json['categories'] as List<dynamic>?)
+              ?.map((e) =>
+                  const CategoryConverter().fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
       wallet: const WalletConverter()
           .fromJson(json['wallet'] as Map<String, dynamic>),
       party: const PartyConverter()
           .fromJson(json['party'] as Map<String, dynamic>?),
       group: const GroupConverter()
           .fromJson(json['group'] as Map<String, dynamic>?),
-      files: const MediaFileListConverter().fromJson(json['files'] as List),
+      files: json['files'] == null
+          ? []
+          : const MediaFileListConverter().fromJson(json['files'] as List),
     );
 
 Map<String, dynamic> _$TransactionCompleteDtoToJson(

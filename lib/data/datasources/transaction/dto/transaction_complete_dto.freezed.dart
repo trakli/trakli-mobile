@@ -19,6 +19,7 @@ mixin _$TransactionCompleteDto {
   @TransactionConverter()
   Transaction get transaction => throw _privateConstructorUsedError;
   @CategoryConverter()
+  @JsonKey(defaultValue: [])
   List<Category> get categories => throw _privateConstructorUsedError;
   @WalletConverter()
   Wallet get wallet => throw _privateConstructorUsedError;
@@ -27,6 +28,7 @@ mixin _$TransactionCompleteDto {
   @GroupConverter()
   Group? get group => throw _privateConstructorUsedError;
   @MediaFileListConverter()
+  @JsonKey(defaultValue: [])
   List<MediaFile> get files => throw _privateConstructorUsedError;
 
   /// Create a copy of TransactionCompleteDto
@@ -44,11 +46,13 @@ abstract class $TransactionCompleteDtoCopyWith<$Res> {
   @useResult
   $Res call(
       {@TransactionConverter() Transaction transaction,
-      @CategoryConverter() List<Category> categories,
+      @CategoryConverter() @JsonKey(defaultValue: []) List<Category> categories,
       @WalletConverter() Wallet wallet,
       @PartyConverter() Party? party,
       @GroupConverter() Group? group,
-      @MediaFileListConverter() List<MediaFile> files});
+      @MediaFileListConverter()
+      @JsonKey(defaultValue: [])
+      List<MediaFile> files});
 }
 
 /// @nodoc
@@ -114,11 +118,13 @@ abstract class _$$TransactionCompleteDtoImplCopyWith<$Res>
   @useResult
   $Res call(
       {@TransactionConverter() Transaction transaction,
-      @CategoryConverter() List<Category> categories,
+      @CategoryConverter() @JsonKey(defaultValue: []) List<Category> categories,
       @WalletConverter() Wallet wallet,
       @PartyConverter() Party? party,
       @GroupConverter() Group? group,
-      @MediaFileListConverter() List<MediaFile> files});
+      @MediaFileListConverter()
+      @JsonKey(defaultValue: [])
+      List<MediaFile> files});
 }
 
 /// @nodoc
@@ -177,11 +183,15 @@ class __$$TransactionCompleteDtoImplCopyWithImpl<$Res>
 class _$TransactionCompleteDtoImpl extends _TransactionCompleteDto {
   const _$TransactionCompleteDtoImpl(
       {@TransactionConverter() required this.transaction,
-      @CategoryConverter() final List<Category> categories = const [],
+      @CategoryConverter()
+      @JsonKey(defaultValue: [])
+      final List<Category> categories = const [],
       @WalletConverter() required this.wallet,
       @PartyConverter() this.party,
       @GroupConverter() this.group,
-      @MediaFileListConverter() final List<MediaFile> files = const []})
+      @MediaFileListConverter()
+      @JsonKey(defaultValue: [])
+      final List<MediaFile> files = const []})
       : _categories = categories,
         _files = files,
         super._();
@@ -191,8 +201,8 @@ class _$TransactionCompleteDtoImpl extends _TransactionCompleteDto {
   final Transaction transaction;
   final List<Category> _categories;
   @override
-  @JsonKey()
   @CategoryConverter()
+  @JsonKey(defaultValue: [])
   List<Category> get categories {
     if (_categories is EqualUnmodifiableListView) return _categories;
     // ignore: implicit_dynamic_type
@@ -210,8 +220,8 @@ class _$TransactionCompleteDtoImpl extends _TransactionCompleteDto {
   final Group? group;
   final List<MediaFile> _files;
   @override
-  @JsonKey()
   @MediaFileListConverter()
+  @JsonKey(defaultValue: [])
   List<MediaFile> get files {
     if (_files is EqualUnmodifiableListView) return _files;
     // ignore: implicit_dynamic_type
@@ -260,13 +270,16 @@ class _$TransactionCompleteDtoImpl extends _TransactionCompleteDto {
 
 abstract class _TransactionCompleteDto extends TransactionCompleteDto {
   const factory _TransactionCompleteDto(
-          {@TransactionConverter() required final Transaction transaction,
-          @CategoryConverter() final List<Category> categories,
-          @WalletConverter() required final Wallet wallet,
-          @PartyConverter() final Party? party,
-          @GroupConverter() final Group? group,
-          @MediaFileListConverter() final List<MediaFile> files}) =
-      _$TransactionCompleteDtoImpl;
+      {@TransactionConverter() required final Transaction transaction,
+      @CategoryConverter()
+      @JsonKey(defaultValue: [])
+      final List<Category> categories,
+      @WalletConverter() required final Wallet wallet,
+      @PartyConverter() final Party? party,
+      @GroupConverter() final Group? group,
+      @MediaFileListConverter()
+      @JsonKey(defaultValue: [])
+      final List<MediaFile> files}) = _$TransactionCompleteDtoImpl;
   const _TransactionCompleteDto._() : super._();
 
   @override
@@ -274,6 +287,7 @@ abstract class _TransactionCompleteDto extends TransactionCompleteDto {
   Transaction get transaction;
   @override
   @CategoryConverter()
+  @JsonKey(defaultValue: [])
   List<Category> get categories;
   @override
   @WalletConverter()
@@ -286,6 +300,7 @@ abstract class _TransactionCompleteDto extends TransactionCompleteDto {
   Group? get group;
   @override
   @MediaFileListConverter()
+  @JsonKey(defaultValue: [])
   List<MediaFile> get files;
 
   /// Create a copy of TransactionCompleteDto
