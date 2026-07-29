@@ -183,6 +183,8 @@ class _AppViewState extends State<AppView> {
     state.maybeWhen(
       authenticated: (user) async {
         unawaited(getIt<SynchAppDatabase>().sync());
+        // Login proves connectivity — best moment to cache exchange rates.
+        context.read<ExchangeRateCubit>().getExchangeRate();
 
         final isOnboardingComplete = await _isOnboardingCompleteWithDefaults();
 

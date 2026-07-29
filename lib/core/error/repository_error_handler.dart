@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:trakli/core/error/exceptions.dart';
 import 'package:trakli/core/error/failures/failures.dart';
@@ -33,9 +36,30 @@ class RepositoryErrorHandler {
       return left(DuplicateFailure(e.message));
     } on NotFoundException {
       return left(const NotFoundFailure());
+    } on DioException catch (e, stackTrace) {
+      if (isConnectivityError(e)) {
+        return left(const NetworkFailure());
+      }
+      logger.e('UnknownFailure', error: e, stackTrace: stackTrace);
+      return left(const UnknownFailure());
     } catch (e, stackTrace) {
       logger.e('UnknownFailure', error: e, stackTrace: stackTrace);
       return left(const UnknownFailure());
+    }
+  }
+
+  /// True when the request never reached the server (offline, DNS, timeout).
+  static bool isConnectivityError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionError:
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        return true;
+      case DioExceptionType.unknown:
+        return e.error is SocketException;
+      default:
+        return false;
     }
   }
 

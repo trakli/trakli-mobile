@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:currency_picker/currency_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/core/usecases/usecase.dart';
+import 'package:trakli/core/utils/services/logger.dart';
+import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/domain/usecases/configs/get_config_usecase.dart';
 import 'package:trakli/domain/usecases/configs/listen_to_configs_usecase.dart';
 import 'package:trakli/domain/usecases/configs/save_config_usecase.dart';
@@ -94,6 +97,32 @@ class CurrencyCubit extends Cubit<CurrencyState> {
 
   Future<void> setCurrency(Currency currency) async {
     emit(const CurrencyState.loading());
+
+    final existingResult = await _getConfigUseCase(
+      GetConfigUseCaseParams(key: ConfigConstants.defaultCurrency),
+    );
+    final existingCode = existingResult.fold(
+      (_) => null,
+      (config) => config.value as String?,
+    );
+    final isFirstSelection = existingCode == null || existingCode.isEmpty;
+    final isSameCurrency = existingCode == currency.code;
+
+    // Switching requires rates for the new base; on failure nothing
+    // changes. First selection is exempt so onboarding never blocks.
+    if (!isFirstSelection && !isSameCurrency) {
+      final targetRate = await _updateDefaultCurrencyUseCase(
+        UpdateDefaultCurrencyParams(currencyCode: currency.code),
+      );
+      if (targetRate.isLeft()) {
+        emit(CurrencyState.error(Failure.validationError(
+          LocaleKeys.currencySwitchRatesUnavailable.tr(),
+          errors: const [],
+        )));
+        return;
+      }
+    }
+
     final saveResult = await _saveConfigUseCase(
       SaveConfigUseCaseParams(
         key: ConfigConstants.defaultCurrency,
@@ -101,19 +130,22 @@ class CurrencyCubit extends Cubit<CurrencyState> {
         value: currency.code,
       ),
     );
-    saveResult.fold(
-      (failure) => emit(CurrencyState.error(failure)),
+    await saveResult.fold(
+      (failure) async => emit(CurrencyState.error(failure)),
       (_) async {
-        // Update the exchange rate with the new default currency
-        final updateResult = await _updateDefaultCurrencyUseCase(
-          UpdateDefaultCurrencyParams(
-            currencyCode: currency.code,
-          ),
-        );
-        updateResult.fold(
-          (failure) => emit(CurrencyState.error(failure)),
-          (_) => emit(CurrencyState.loaded(currency)),
-        );
+        if (isFirstSelection || isSameCurrency) {
+          // Best-effort refresh only.
+          final updateResult = await _updateDefaultCurrencyUseCase(
+            UpdateDefaultCurrencyParams(currencyCode: currency.code),
+          );
+          updateResult.fold(
+            (failure) => logger.w(
+                '[currency] rate refresh failed after currency change: '
+                '${failure.customMessage}'),
+            (_) {},
+          );
+        }
+        emit(CurrencyState.loaded(currency));
       },
     );
   }
