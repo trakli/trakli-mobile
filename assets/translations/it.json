@@ -917,5 +917,11 @@
   "fpHelpFlowsTitle": "Entrate e uscite",
   "fpHelpFlowsBody": "Mostrano cosa ha mosso il tuo denaro durante il periodo. Alcune righe, come prestiti ricevuti o rimborsati, muovono contanti ma non cambiano il tuo patrimonio, quindi sono contrassegnate come \"Contanti, non patrimonio\".",
   "fpHelpAsOfTitle": "Al",
-  "fpHelpAsOfBody": "Le cifre sono calcolate sul server e riflettono i tuoi dati al momento indicato in fondo alla scheda."
+  "fpHelpAsOfBody": "Le cifre sono calcolate sul server e riflettono i tuoi dati al momento indicato in fondo alla scheda.",
+  "budgetOf": "di",
+  "needsAttention": "Richiede attenzione",
+  "noQuarantinedChanges": "Nessuna modifica in quarantena",
+  "quarantinedHint": "Queste modifiche sono fallite definitivamente e non verranno ritentate automaticamente. Riprovale dopo aver corretto la causa oppure ignorale.",
+  "exchangeRateRequired": "Inserisci il tasso di cambio — nessun tasso attuale disponibile",
+  "currencySwitchRatesUnavailable": "Impossibile cambiare valuta al momento — i tassi di cambio non sono disponibili. Riprova più tardi."
 }
