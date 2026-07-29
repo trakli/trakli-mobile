@@ -8,7 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/presentation/auth/cubits/auth/auth_cubit.dart';
-import 'package:trakli/presentation/budget/budget_screen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/category/category_screen.dart';
 import 'package:trakli/presentation/config/cubit/config_cubit.dart';
@@ -198,39 +197,6 @@ class CustomDrawer extends StatelessWidget {
                         title: LocaleKeys.groups.tr(),
                         iconPath: Assets.images.people,
                         subtitle: LocaleKeys.groupsDesc.tr(),
-                      ),
-                      InkWell(
-                        onTap: () => AppNavigator.push(
-                          context,
-                          const BudgetScreen(),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 8.h,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.savings_outlined,
-                                size: 20.sp,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
-                              SizedBox(width: 14.w),
-                              Expanded(
-                                child: Text(
-                                  LocaleKeys.drawerBudgets.tr(),
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
                       _iconMenuItem(
                         context,

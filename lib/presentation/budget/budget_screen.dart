@@ -179,23 +179,14 @@ class _BudgetCard extends StatelessWidget {
     };
   }
 
-  String _periodShort() {
-    return switch (budget.periodType) {
-      BudgetPeriodType.weekly => LocaleKeys.periodWeeklyShort.tr(),
-      BudgetPeriodType.monthly => LocaleKeys.periodMonthlyShort.tr(),
-      BudgetPeriodType.yearly => LocaleKeys.periodYearlyShort.tr(),
-      BudgetPeriodType.custom => '',
-    };
-  }
-
-  String _scopeText() {
-    if (budget.targets.isEmpty) return LocaleKeys.scopeAllTransactions.tr();
+  List<String> _scopeLabels() {
+    if (budget.targets.isEmpty) return [LocaleKeys.scopeAllTransactions.tr()];
     final byType = <BudgetTargetType, int>{};
     for (final t in budget.targets) {
       byType[t.type] = (byType[t.type] ?? 0) + 1;
     }
-    final parts = byType.entries.map((e) {
-      final label = switch (e.key) {
+    return byType.entries.map((e) {
+      return switch (e.key) {
         BudgetTargetType.category =>
           '${e.value} ${e.value == 1 ? LocaleKeys.targetTypeCategorySingular.tr() : LocaleKeys.categories.tr()}',
         BudgetTargetType.wallet =>
@@ -203,14 +194,48 @@ class _BudgetCard extends StatelessWidget {
         BudgetTargetType.group =>
           '${e.value} ${e.value == 1 ? LocaleKeys.targetTypeGroupSingular.tr() : LocaleKeys.groups.tr()}',
       };
-      return label;
-    });
-    return parts.join(' · ');
+    }).toList();
+  }
+
+  Color _statusColor(BuildContext context, BudgetStatus? status) {
+    final tones = context.tones;
+    return switch (status) {
+      BudgetStatus.overBudget => Colors.redAccent,
+      BudgetStatus.forecastBreach => Colors.orangeAccent,
+      BudgetStatus.nearLimit => Colors.amber.shade700,
+      BudgetStatus.onTrack => tones.brand.accent,
+      null => tones.textMuted,
+    };
+  }
+
+  String _statusLabel(BudgetStatus? status) {
+    return switch (status) {
+      BudgetStatus.overBudget => LocaleKeys.budgetStatusOverBudget.tr(),
+      BudgetStatus.forecastBreach => LocaleKeys.budgetStatusForecastBreach.tr(),
+      BudgetStatus.nearLimit => LocaleKeys.budgetStatusNearLimit.tr(),
+      BudgetStatus.onTrack => LocaleKeys.budgetStatusOnTrack.tr(),
+      null => LocaleKeys.budgetStatusAwaitingSync.tr(),
+    };
+  }
+
+  String _money(double value) {
+    return '${budget.currency} ${NumberFormat('#,##0.##').format(value)}';
   }
 
   @override
   Widget build(BuildContext context) {
     final tones = context.tones;
+    final progress = budget.progress;
+    final statusColor = _statusColor(context, progress?.status);
+    final netSpent = progress?.netSpent ?? 0.0;
+    final limit = progress?.effectiveLimit ?? budget.amount;
+    final remaining = progress?.remaining ?? limit;
+    final percent = progress?.percentUsed ?? 0.0;
+    final refunds = progress?.refunds ?? 0.0;
+    final periodLine = progress != null
+        ? '${_periodLabel()} · ${DateFormat.MMMd().format(progress.periodStart)}'
+        : _periodLabel();
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadii.lg),
@@ -229,27 +254,32 @@ class _BudgetCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(
-                    budget.name,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w700,
-                      color: tones.textPrimary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        budget.name,
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w700,
+                          color: tones.textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 2.h),
+                      Text(
+                        periodLine,
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: tones.textMuted,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(width: 8.w),
-                Text(
-                  '${budget.currency} ${budget.amount.toStringAsFixed(0)}${_periodShort()}',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w700,
-                    color: tones.textPrimary,
-                  ),
-                ),
-                SizedBox(width: 4.w),
+                _MiniChip(label: _statusLabel(progress?.status), color: statusColor),
                 PopupMenuButton<String>(
                   padding: EdgeInsets.zero,
                   iconSize: 18.sp,
@@ -266,14 +296,41 @@ class _BudgetCard extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 8.h),
+            Wrap(
+              spacing: 6.w,
+              runSpacing: 6.h,
+              children: [
+                for (final label in _scopeLabels()) _MiniChip(label: label),
+                if (!budget.isActive)
+                  _MiniChip(label: LocaleKeys.statusInactive.tr(), muted: true),
+              ],
+            ),
+            SizedBox(height: 10.h),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadii.pill),
+              child: LinearProgressIndicator(
+                value: (percent / 100).clamp(0.0, 1.0),
+                minHeight: 8.h,
+                backgroundColor: tones.bgPage,
+                valueColor: AlwaysStoppedAnimation(statusColor),
+              ),
+            ),
             SizedBox(height: 6.h),
             Row(
               children: [
-                _MiniChip(label: _periodLabel()),
-                SizedBox(width: 8.w),
-                Flexible(
-                  child: Text(
-                    _scopeText(),
+                Expanded(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: _money(netSpent),
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                        TextSpan(text: ' ${LocaleKeys.budgetOf.tr()} '),
+                        TextSpan(text: _money(limit)),
+                      ],
+                    ),
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: tones.textSecondary,
@@ -282,10 +339,48 @@ class _BudgetCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (!budget.isActive) ...[
-                  SizedBox(width: 8.w),
-                  _MiniChip(label: LocaleKeys.statusInactive.tr(), muted: true),
-                ],
+                Text(
+                  '${percent.round()}%',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w700,
+                    color: tones.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h),
+            Container(height: 1, color: tones.borderLight),
+            SizedBox(height: 8.h),
+            Row(
+              children: [
+                Text(
+                  LocaleKeys.budgetRemaining.tr().toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    letterSpacing: 0.5,
+                    color: tones.textMuted,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(width: 6.w),
+                Expanded(
+                  child: Text(
+                    _money(remaining),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                      color:
+                          remaining < 0 ? Colors.redAccent : tones.textPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (refunds > 0)
+                  _MiniChip(
+                    label: '↩ ${_money(refunds)}',
+                  ),
               ],
             ),
           ],
@@ -298,16 +393,17 @@ class _BudgetCard extends StatelessWidget {
 class _MiniChip extends StatelessWidget {
   final String label;
   final bool muted;
-  const _MiniChip({required this.label, this.muted = false});
+  final Color? color;
+  const _MiniChip({required this.label, this.muted = false, this.color});
 
   @override
   Widget build(BuildContext context) {
     final tones = context.tones;
+    final accent = color ?? tones.brand.accent;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
       decoration: BoxDecoration(
-        color:
-            muted ? tones.bgPage : tones.brand.accent.withValues(alpha: 0.12),
+        color: muted ? tones.bgPage : accent.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
       child: Text(
@@ -315,7 +411,7 @@ class _MiniChip extends StatelessWidget {
         style: TextStyle(
           fontSize: 11.sp,
           fontWeight: FontWeight.w600,
-          color: muted ? tones.textMuted : tones.brand.accent,
+          color: muted ? tones.textMuted : accent,
         ),
       ),
     );
