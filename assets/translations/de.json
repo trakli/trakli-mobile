@@ -917,5 +917,11 @@
   "fpHelpFlowsTitle": "Geld ein & Geld aus",
   "fpHelpFlowsBody": "Diese zeigen, was dein Geld im Zeitraum bewegt hat. Einige Zeilen – etwa erhaltene oder zurückgezahlte Darlehen – bewegen Bargeld, ändern aber dein Vermögen nicht und sind daher als \"Bargeld, kein Vermögen\" markiert.",
   "fpHelpAsOfTitle": "Stand",
-  "fpHelpAsOfBody": "Die Zahlen werden auf dem Server berechnet und geben deine Daten zum Zeitpunkt wieder, der unten auf der Karte angezeigt wird."
+  "fpHelpAsOfBody": "Die Zahlen werden auf dem Server berechnet und geben deine Daten zum Zeitpunkt wieder, der unten auf der Karte angezeigt wird.",
+  "budgetOf": "von",
+  "needsAttention": "Erfordert Aufmerksamkeit",
+  "noQuarantinedChanges": "Keine isolierten Änderungen",
+  "quarantinedHint": "Diese Änderungen sind dauerhaft fehlgeschlagen und werden nicht automatisch wiederholt. Nach Behebung der Ursache erneut versuchen oder verwerfen.",
+  "exchangeRateRequired": "Wechselkurs eingeben — kein aktueller Kurs verfügbar",
+  "currencySwitchRatesUnavailable": "Währungswechsel derzeit nicht möglich — Wechselkurse sind nicht verfügbar. Versuchen Sie es später erneut."
 }

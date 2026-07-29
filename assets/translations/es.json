@@ -917,5 +917,11 @@
   "fpHelpFlowsTitle": "Entradas y salidas",
   "fpHelpFlowsBody": "Muestran qué movió tu dinero durante el período. Algunas filas, como préstamos recibidos o devueltos, mueven efectivo pero no cambian tu patrimonio, por lo que se marcan como \"Efectivo, no patrimonio\".",
   "fpHelpAsOfTitle": "A fecha de",
-  "fpHelpAsOfBody": "Las cifras se calculan en el servidor y reflejan tus datos a fecha de la hora que se muestra en la parte inferior de la tarjeta."
+  "fpHelpAsOfBody": "Las cifras se calculan en el servidor y reflejan tus datos a fecha de la hora que se muestra en la parte inferior de la tarjeta.",
+  "budgetOf": "de",
+  "needsAttention": "Requiere atención",
+  "noQuarantinedChanges": "No hay cambios en cuarentena",
+  "quarantinedHint": "Estos cambios fallaron permanentemente y no se reintentarán solos. Reinténtalos tras corregir la causa o descártalos.",
+  "exchangeRateRequired": "Introduce el tipo de cambio: no hay un tipo actual disponible",
+  "currencySwitchRatesUnavailable": "No se puede cambiar la moneda ahora: los tipos de cambio no están disponibles. Inténtalo de nuevo más tarde."
 }

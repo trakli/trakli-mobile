@@ -920,5 +920,8 @@
   "fpHelpFlowsTitle": "Money in & money out",
   "fpHelpFlowsBody": "These show what moved your money during the period. Some rows — such as loans received or repaid — move cash but don't change your net worth, so they're marked \"Cash, not net worth\".",
   "fpHelpAsOfTitle": "As of",
-  "fpHelpAsOfBody": "Figures are calculated on the server and reflect your data as of the time shown at the bottom of the card."
+  "fpHelpAsOfBody": "Figures are calculated on the server and reflect your data as of the time shown at the bottom of the card.",
+  "budgetOf": "of",
+  "exchangeRateRequired": "Enter the exchange rate — no current rate is available",
+  "currencySwitchRatesUnavailable": "Can't switch currency right now — exchange rates are unavailable. Try again later."
 }

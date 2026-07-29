@@ -917,5 +917,11 @@
   "fpHelpFlowsTitle": "Entrées et sorties",
   "fpHelpFlowsBody": "Elles indiquent ce qui a fait bouger votre argent pendant la période. Certaines lignes, comme les prêts reçus ou remboursés, déplacent des liquidités mais ne changent pas votre patrimoine ; elles sont donc marquées « Liquidités, pas patrimoine ».",
   "fpHelpAsOfTitle": "Au",
-  "fpHelpAsOfBody": "Les chiffres sont calculés sur le serveur et reflètent vos données à l'heure indiquée au bas de la carte."
+  "fpHelpAsOfBody": "Les chiffres sont calculés sur le serveur et reflètent vos données à l'heure indiquée au bas de la carte.",
+  "budgetOf": "sur",
+  "needsAttention": "Attention requise",
+  "noQuarantinedChanges": "Aucun changement en quarantaine",
+  "quarantinedHint": "Ces changements ont échoué définitivement et ne seront pas réessayés automatiquement. Réessayez-les après avoir corrigé la cause, ou ignorez-les.",
+  "exchangeRateRequired": "Saisissez le taux de change — aucun taux actuel disponible",
+  "currencySwitchRatesUnavailable": "Impossible de changer de devise pour le moment — les taux de change sont indisponibles. Réessayez plus tard."
 }
