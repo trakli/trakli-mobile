@@ -79,6 +79,27 @@ void main() {
     });
   });
 
+  test('snapshot without outer categories/files keys still unmarshals',
+      () async {
+    await db.transactions.insertOne(TransactionsCompanion.insert(
+      amount: 5000,
+      type: TransactionType.expense,
+      walletClientId: 'w-1',
+      clientId: const Value('t-old'),
+      datetime: Value(DateTime(2026, 7, 1)),
+    ));
+    final dto = await transactionHandler.getLocalByClientId('t-old');
+
+    final snapshot = transactionHandler.marshal(dto);
+    snapshot.remove('categories');
+    snapshot.remove('files');
+
+    final restored = await transactionHandler.unmarshal(snapshot);
+    expect(restored.categories, isEmpty);
+    expect(restored.files, isEmpty);
+    expect(restored.transaction.clientId, 't-old');
+  });
+
   test('pre-v6 transaction snapshot without intent gets the column default',
       () async {
     await db.transactions.insertOne(TransactionsCompanion.insert(

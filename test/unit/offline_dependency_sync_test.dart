@@ -116,23 +116,24 @@ void main() {
       'transaction deferred by the dependency gate is retried and synced '
       'once its category syncs', () async {
     // Pass 1: the category push fails server-side. The transaction must be
-    // deferred by the gate — still queued, not errored.
+    // deferred by the gate — still queued, with the wait recorded.
     when(() => categoryRemote.insertCategory(any()))
         .thenThrow(Exception('HTTP 500'));
 
     await synchronizer.uploadLocalChanges();
 
     expect((await changeOf('category')).error, isNotNull);
-    expect((await changeOf('transaction')).error, isNull);
+    final deferred = await changeOf('transaction');
+    expect(deferred.error, contains('dependencies'));
+    expect(deferred.quarantinedAt, isNull);
     verifyNever(() => transactionRemote.insertTransaction(any()));
 
-    // The retry delay elapses.
-    await (db.update(db.localChanges)
-          ..where((lc) => lc.entityType.equals('category')))
-        .write(LocalChangesCompanion(
-      concludedMoment: Value(
-          DateTime.now().subtract(AppDatabase.failedChangeRetryDelay * 2)),
-    ));
+    // The retry delay elapses for both rows (the deferred transaction now
+    // carries a recorded wait, so it backs off like any failed change).
+    await db.update(db.localChanges).write(LocalChangesCompanion(
+          concludedMoment: Value(
+              DateTime.now().subtract(AppDatabase.failedChangeRetryDelay * 2)),
+        ));
 
     // Pass 2: the server recovers. The category gains its server id and the
     // transaction follows in the same pass.

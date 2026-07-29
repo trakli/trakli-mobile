@@ -21,7 +21,7 @@ TransactionDTO _$TransactionDTOFromJson(Map<String, dynamic> json) =>
       wallet: json['wallet'] == null
           ? null
           : WalletDto.fromJson(json['wallet'] as Map<String, dynamic>),
-      categories: json['categories'] as List<dynamic>,
+      categories: json['categories'] as List<dynamic>? ?? [],
       lastSyncedAt: DateTime.parse(json['last_synced_at'] as String),
       deletedAt: json['deleted_at'] == null
           ? null

@@ -9,6 +9,12 @@ import 'package:trakli/data/datasources/core/api_response.dart';
 import 'package:trakli/data/datasources/core/pagination_response.dart';
 import 'package:trakli/data/datasources/transaction/dto/transaction_complete_dto.dart';
 
+/// Booleans as '1'/'0': Laravel's boolean rule rejects 'true'/'false'.
+String formDataFieldValue(dynamic value) {
+  if (value is bool) return value ? '1' : '0';
+  return value.toString();
+}
+
 abstract class TransactionRemoteDataSource {
   Future<List<TransactionCompleteDto>> getAllTransactions(
       {DateTime? syncedSince, bool? noClientId});
@@ -82,7 +88,7 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
         'page': currentPage,
       };
       if (syncedSince != null) {
-        queryParams['synced_since'] = syncedSince.toIso8601String();
+        queryParams['synced_since'] = formatServerIsoDateTimeString(syncedSince);
       }
       if (noClientId != null) {
         queryParams['no_client_id'] = noClientId;
@@ -127,23 +133,31 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
         ));
       }
     }
-    // API expects all fields at the same level (client_id, amount, type, ..., files[]).
-    final formData = FormData();
-    for (final e in serverJson.entries) {
-      if (e.value == null) continue;
-      if (e.value is List) {
-        for (final item in e.value as List) {
-          formData.fields.add(MapEntry('${e.key}[]', item.toString()));
+    // JSON preserves bool/int types; multipart only when files are attached.
+    final Object payload;
+    if (multipartFiles.isEmpty) {
+      payload = serverJson;
+    } else {
+      // API expects all fields at the same level (client_id, amount, ..., files[]).
+      final formData = FormData();
+      for (final e in serverJson.entries) {
+        if (e.value == null) continue;
+        if (e.value is List) {
+          for (final item in e.value as List) {
+            formData.fields
+                .add(MapEntry('${e.key}[]', formDataFieldValue(item)));
+          }
+        } else {
+          formData.fields.add(MapEntry(e.key, formDataFieldValue(e.value)));
         }
-      } else {
-        formData.fields.add(MapEntry(e.key, e.value.toString()));
       }
-    }
-    for (final f in multipartFiles) {
-      formData.files.add(MapEntry('files[]', f));
+      for (final f in multipartFiles) {
+        formData.files.add(MapEntry('files[]', f));
+      }
+      payload = formData;
     }
 
-    final response = await dio.post('transactions', data: formData);
+    final response = await dio.post('transactions', data: payload);
     final data = response.data;
     final apiResponse = ApiResponse.fromJson(data as Map<String, dynamic>);
 

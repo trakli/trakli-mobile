@@ -122,11 +122,17 @@ class TransactionCompleteDto with _$TransactionCompleteDto {
 
   const factory TransactionCompleteDto({
     @TransactionConverter() required Transaction transaction,
-    @CategoryConverter() @Default([]) List<Category> categories,
+    @CategoryConverter()
+    @JsonKey(defaultValue: [])
+    @Default([])
+    List<Category> categories,
     @WalletConverter() required Wallet wallet,
     @PartyConverter() Party? party,
     @GroupConverter() Group? group,
-    @MediaFileListConverter() @Default([]) List<MediaFile> files,
+    @MediaFileListConverter()
+    @JsonKey(defaultValue: [])
+    @Default([])
+    List<MediaFile> files,
   }) = _TransactionCompleteDto;
 
   factory TransactionCompleteDto.fromTransaction({
@@ -200,8 +206,9 @@ class TransactionCompleteDto with _$TransactionCompleteDto {
   factory TransactionCompleteDto.fromServerJson(Map<String, dynamic> json) {
     final transactionDto = TransactionDTO.fromJson(json);
 
-    final categories = (json['categories'] as List<dynamic>)
-        .map((c) => Category.fromJson(c as Map<String, dynamic>))
+    final categories = (json['categories'] as List<dynamic>? ?? const [])
+        .whereType<Map<String, dynamic>>()
+        .map(Category.fromJson)
         .toList();
 
     final wallet =
