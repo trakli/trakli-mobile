@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:trakli/core/error/crash_reporting/crash_reporting_service.dart';
+import 'package:trakli/core/network/interceptors/crash_reporting_interceptor.dart';
 import 'package:trakli/core/network/interceptors/locale_interceptor.dart';
 import 'package:trakli/core/network/interceptors/logger_interceptor.dart';
 import 'package:trakli/core/network/interceptors/remove_null_exceptions.dart';
@@ -31,7 +33,8 @@ abstract class InjectHttpClientModule {
       RemoveNullValuesInterceptor(),
       TokenInterceptor(getIt<TokenManager>(), getIt<AuthService>()),
       LocaleInterceptor(),
-      LoggerInterceptor()
+      LoggerInterceptor(),
+      CrashReportingInterceptor(getIt<CrashReportingService>()),
     ]);
 
     return dio;

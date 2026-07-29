@@ -1,8 +1,32 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/error/crash_reporting/crash_reporting_interface.dart';
 import 'package:trakli/core/utils/services/logger.dart';
+
+/// Adds the response body DioException.toString() omits; headers excluded.
+@visibleForTesting
+String dioErrorReason(DioException error) {
+  final options = error.requestOptions;
+  final status = error.response?.statusCode;
+  return 'HTTP ${status ?? 'error'} on ${options.method} ${options.uri.path}';
+}
+
+@visibleForTesting
+List<String> dioErrorInformation(DioException error, {int maxBodyLength = 2000}) {
+  final options = error.requestOptions;
+  final body = error.response?.data?.toString() ?? '';
+  return [
+    '${options.method} ${options.uri}',
+    if (error.response?.statusCode != null)
+      'status: ${error.response!.statusCode}',
+    if (body.isNotEmpty)
+      'response: ${body.length > maxBodyLength ? body.substring(0, maxBodyLength) : body}',
+  ];
+}
 
 @Injectable(as: CrashReportingInterface)
 class FirebaseCrashlyticsService implements CrashReportingInterface {
@@ -69,11 +93,11 @@ class FirebaseCrashlyticsService implements CrashReportingInterface {
       await _crashlyticsInstance.recordError(
         error,
         stackTrace,
-        reason: reason,
-        information: information?.entries
-                .map((e) => '{ ${e.key}: ${e.value} }')
-                .toList() ??
-            const [],
+        reason: reason ?? (error is DioException ? dioErrorReason(error) : null),
+        information: [
+          ...?information?.entries.map((e) => '{ ${e.key}: ${e.value} }'),
+          if (error is DioException) ...dioErrorInformation(error),
+        ],
         fatal: fatal,
       );
     } catch (e, st) {
@@ -140,7 +164,7 @@ class FirebaseCrashlyticsService implements CrashReportingInterface {
     };
 
     PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      unawaited(_record(error, stackTrace: stack, fatal: true));
       return true;
     };
   }
