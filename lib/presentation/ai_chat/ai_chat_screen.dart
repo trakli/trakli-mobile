@@ -225,7 +225,11 @@ class _ErrorBanner extends StatelessWidget {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              LocaleKeys.aiChatError.tr(),
+              state.failure?.maybeMap(
+                    networkError: (f) => f.customMessage,
+                    orElse: () => LocaleKeys.aiChatError.tr(),
+                  ) ??
+                  LocaleKeys.aiChatError.tr(),
               style: TextStyle(
                 color: tones.expense.deep,
                 fontSize: 13.sp,

@@ -104,22 +104,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
             orElse: () => wallets.length > 1 ? wallets[1] : selectedFromWallet!,
           );
 
-          // Initialize default exchange rate based on current wallets
-          final exchangeRateEntity =
-              context.read<ExchangeRateCubit>().state.entity;
-          double defaultRate = 1.0;
-          if (exchangeRateEntity != null &&
-              selectedFromWallet!.currencyCode !=
-                  selectedToWallet!.currencyCode) {
-            final fromRate =
-                exchangeRateEntity.rates[selectedFromWallet!.currencyCode] ??
-                    1.0;
-            final toRate =
-                exchangeRateEntity.rates[selectedToWallet!.currencyCode] ?? 1.0;
-            defaultRate = toRate / fromRate;
-          }
-          _exchangeRateController.text =
-              formatExchangeRateForDisplay(defaultRate);
+          _prefillExchangeRate();
         });
       }
     });
@@ -132,6 +117,23 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
     _transferDateController.dispose();
     _transferTimeController.dispose();
     super.dispose();
+  }
+
+  /// Null when no rate is known — the field stays empty, never a silent 1:1.
+  double? _defaultRateFor(WalletEntity? from, WalletEntity? to) {
+    if (from == null || to == null) return null;
+    if (from.currencyCode == to.currencyCode) return 1.0;
+    final entity = context.read<ExchangeRateCubit>().state.entity;
+    final fromRate = entity?.rates[from.currencyCode];
+    final toRate = entity?.rates[to.currencyCode];
+    if (fromRate == null || toRate == null) return null;
+    return toRate / fromRate;
+  }
+
+  void _prefillExchangeRate() {
+    final rate = _defaultRateFor(selectedFromWallet, selectedToWallet);
+    _exchangeRateController.text =
+        rate == null ? '' : formatExchangeRateForDisplay(rate);
   }
 
   void _showWalletSelector({
@@ -217,24 +219,7 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
                         }
 
                         // Recompute default exchange rate when wallets change
-                        final exchangeRateEntity =
-                            context.read<ExchangeRateCubit>().state.entity;
-                        double defaultRate = 1.0;
-                        if (exchangeRateEntity != null &&
-                            selectedFromWallet != null &&
-                            selectedToWallet != null &&
-                            selectedFromWallet!.currencyCode !=
-                                selectedToWallet!.currencyCode) {
-                          final fromRate = exchangeRateEntity
-                                  .rates[selectedFromWallet!.currencyCode] ??
-                              1.0;
-                          final toRate = exchangeRateEntity
-                                  .rates[selectedToWallet!.currencyCode] ??
-                              1.0;
-                          defaultRate = toRate / fromRate;
-                        }
-                        _exchangeRateController.text =
-                            formatExchangeRateForDisplay(defaultRate);
+                        _prefillExchangeRate();
                       });
                       Navigator.pop(context);
                     },
@@ -285,7 +270,10 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
         selectedToWallet != null &&
         selectedFromWallet!.currencyCode != selectedToWallet!.currencyCode) {
       final parsedRate = parseAmount(_exchangeRateController.text.trim());
-      exchangeRate = parsedRate > 0 ? parsedRate : 1.0;
+      if (parsedRate <= 0) {
+        return LocaleKeys.exchangeRateRequired.tr();
+      }
+      exchangeRate = parsedRate;
     }
     final receiveAmount = (selectedFromWallet != null &&
             selectedToWallet != null &&
@@ -323,13 +311,13 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
     if (_formKey.currentState!.validate()) {
       final amount = parseAmount(_amountController.text.trim());
 
-      // Use exchange rate from the editable field when cross-currency
       double exchangeRate = 1.0;
       if (selectedFromWallet != null &&
           selectedToWallet != null &&
           selectedFromWallet!.currencyCode != selectedToWallet!.currencyCode) {
         final parsedRate = parseAmount(_exchangeRateController.text.trim());
-        exchangeRate = parsedRate > 0 ? parsedRate : 1.0;
+        if (parsedRate <= 0) return;
+        exchangeRate = parsedRate;
       }
 
       final receiveAmount = (selectedFromWallet != null &&
@@ -402,19 +390,14 @@ class _WalletTransferScreenState extends State<WalletTransferScreen> {
 
     final amount = parseAmount(_amountController.text.trim());
 
-    // Use the current exchange rate from the editable field
-    double exchangeRate = 1.0;
     final parsedRate = parseAmount(_exchangeRateController.text.trim());
-    if (parsedRate > 0) {
-      exchangeRate = parsedRate;
-    }
-
-    final receiveAmount = amount * exchangeRate;
-    final formatted = CurrencyFormater.formatAmountWithSymbol(
-      context,
-      receiveAmount,
-      currency: selectedToWallet!.currency,
-    );
+    final formatted = parsedRate > 0
+        ? CurrencyFormater.formatAmountWithSymbol(
+            context,
+            amount * parsedRate,
+            currency: selectedToWallet!.currency,
+          )
+        : '—';
 
     return Container(
       width: double.infinity,

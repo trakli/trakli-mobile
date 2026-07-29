@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/core/constants/config_constants.dart';
 import 'package:trakli/core/constants/key_constants.dart';
-import 'package:trakli/core/error/error_handler.dart';
+import 'package:trakli/core/error/crash_reporting/crash_reporting_service.dart';
 import 'package:trakli/core/error/failures/failures.dart';
+import 'package:trakli/core/utils/services/logger.dart';
 import 'package:trakli/core/error/repository_error_handler.dart';
+import 'package:trakli/di/injection.dart';
 import 'package:trakli/data/datasources/exchange-rate/exchange_rate_local_datasource.dart';
 import 'package:trakli/data/datasources/exchange-rate/exchange_rate_remote_datasource.dart';
 import 'package:trakli/data/mappers/exchange_rate_mapper.dart';
@@ -79,10 +80,16 @@ class ExchangeRateRepositoryImpl extends ExchangeRateRepository {
         _rateCachedController.add(exchangeRateEntity);
 
         yield exchangeRateEntity;
-      } on DioException catch (err) {
-        throw ErrorHandler.handleDioException(err);
-      } catch (error, stacktrace) {
-        throw ErrorHandler.handleUnknownException(error, stacktrace);
+      } catch (error, stackTrace) {
+        // Failed refreshes must not error the stream; report as a counted
+        // non-fatal instead.
+        logger.w('[exchange-rate] refresh failed: $error');
+        getIt<CrashReportingService>().recordError(
+          error,
+          stackTrace: stackTrace,
+          reason: 'exchange_rate_refresh_failed',
+          information: {'currency': currencyCode},
+        );
       }
     }
 
@@ -145,21 +152,27 @@ class ExchangeRateRepositoryImpl extends ExchangeRateRepository {
       // Check if we have the exchange rate for this currency
       final existingRate = await localDataSource.getExchangeRate(currencyCode);
 
-      // If no rate exists or it's outdated, fetch new rates
+      // Fetch when missing or stale; a stale cache survives a failed fetch.
       if (existingRate == null ||
           existingRate.timeNextUpdated.isBefore(DateTime.now())) {
-        final exchangeRateRemote =
-            await remoteDataSource.getExchangeRate(currencyCode);
-        await localDataSource.saveExchangeRate(
-          exchangeRateRemote.baseCode,
-          exchangeRateRemote,
-        );
+        try {
+          final exchangeRateRemote =
+              await remoteDataSource.getExchangeRate(currencyCode);
+          await localDataSource.saveExchangeRate(
+            exchangeRateRemote.baseCode,
+            exchangeRateRemote,
+          );
 
-        final exchangeRateEntity =
-            ExchangeRateMapper.toDomain(exchangeRateRemote);
-        _exchangeRateController.add(exchangeRateEntity);
-        _rateCachedController.add(exchangeRateEntity);
-        return exchangeRateEntity;
+          final exchangeRateEntity =
+              ExchangeRateMapper.toDomain(exchangeRateRemote);
+          _exchangeRateController.add(exchangeRateEntity);
+          _rateCachedController.add(exchangeRateEntity);
+          return exchangeRateEntity;
+        } catch (error) {
+          if (existingRate == null) rethrow;
+          logger.w('[exchange-rate] refresh for $currencyCode failed, '
+              'keeping stale cached rates: $error');
+        }
       }
 
       final exchangeRateEntity = ExchangeRateMapper.toDomain(existingRate);
