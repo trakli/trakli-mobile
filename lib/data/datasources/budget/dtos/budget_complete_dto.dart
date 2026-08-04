@@ -97,7 +97,7 @@ class BudgetCompleteDto {
                 'type': t.type.serverKey,
                 if (t.id != null) 'id': t.id,
                 if (t.clientId != null && t.clientId!.isNotEmpty)
-                  'client_id': t.clientId,
+                  'client_generated_id': t.clientId,
               })
           .toList(),
     };
