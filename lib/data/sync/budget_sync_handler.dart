@@ -5,8 +5,10 @@ import 'package:trakli/core/utils/id_helper.dart';
 import 'package:trakli/data/database/app_database.dart';
 import 'package:trakli/data/database/tables/budgets.dart';
 import 'package:trakli/data/database/tables/sync_table.dart';
+import 'package:trakli/data/datasources/budget/budget_local_datasource.dart';
 import 'package:trakli/data/datasources/budget/budget_remote_datasource.dart';
 import 'package:trakli/data/datasources/budget/dtos/budget_complete_dto.dart';
+import 'package:trakli/data/datasources/budget/dtos/budget_target_dto.dart';
 import 'package:trakli/data/mappers/budget_mapper.dart';
 
 @lazySingleton
@@ -18,10 +20,12 @@ class BudgetSyncHandler
   BudgetSyncHandler(
     this.db,
     this.remoteDataSource,
+    this.localDataSource,
   );
 
   final AppDatabase db;
   final BudgetRemoteDataSource remoteDataSource;
+  final BudgetLocalDataSource localDataSource;
 
   TableInfo<Budgets, Budget> get table => db.budgets;
 
@@ -56,7 +60,26 @@ class BudgetSyncHandler
   }
 
   @override
-  Future<bool> shouldPersistRemote(BudgetCompleteDto entity) async => true;
+  Future<bool> shouldPersistRemote(BudgetCompleteDto entity) async {
+    final targets = await _resolvedTargets(entity.budget.clientId);
+    return targets.every((t) => t.id != null);
+  }
+
+  /// The queued payload is a snapshot taken when the budget was saved, so a
+  /// target created offline still carries a null id there even after its own
+  /// entity has synced. Re-read from local before pushing.
+  Future<List<BudgetTargetDto>> _resolvedTargets(String budgetClientId) async {
+    final resolved =
+        await localDataSource.getResolvedTargetsForBudget(budgetClientId);
+    return resolved
+        .map((r) => BudgetTargetDto(
+              type: r.type,
+              id: r.id,
+              clientId: r.clientId,
+              name: r.name,
+            ))
+        .toList();
+  }
 
   @override
   Future<List<BudgetCompleteDto>> restGetAllRemote({
@@ -85,10 +108,15 @@ class BudgetSyncHandler
 
   @override
   Future<BudgetCompleteDto> restPutRemote(BudgetCompleteDto entity) async {
-    if (entity.budget.id == null) {
-      return remoteDataSource.insertBudget(entity);
+    final payload = BudgetCompleteDto(
+      budget: entity.budget,
+      targets: await _resolvedTargets(entity.budget.clientId),
+      progress: entity.progress,
+    );
+    if (payload.budget.id == null) {
+      return remoteDataSource.insertBudget(payload);
     } else {
-      return remoteDataSource.updateBudget(entity);
+      return remoteDataSource.updateBudget(payload);
     }
   }
 
@@ -151,7 +179,10 @@ class BudgetSyncHandler
     if (row == null) {
       throw Exception('Budget not found');
     }
-    return BudgetCompleteDto(budget: row);
+    return BudgetCompleteDto(
+      budget: row,
+      targets: await _resolvedTargets(row.clientId),
+    );
   }
 
   @override
@@ -159,7 +190,10 @@ class BudgetSyncHandler
     try {
       final row = await (db.select(table)..where((t) => t.id.equals(serverId)))
           .getSingle();
-      return BudgetCompleteDto(budget: row);
+      return BudgetCompleteDto(
+        budget: row,
+        targets: await _resolvedTargets(row.clientId),
+      );
     } catch (_) {
       return null;
     }
