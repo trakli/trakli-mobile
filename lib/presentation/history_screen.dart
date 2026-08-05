@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart'
     show PickerDateRange;
 import 'package:trakli/core/utils/currency_formater.dart';
+import 'package:trakli/data/datasources/export/export_remote_datasource.dart';
+import 'package:trakli/di/injection.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
 import 'package:trakli/domain/entities/transaction_complete_entity.dart';
 import 'package:trakli/domain/entities/wallet_entity.dart';
@@ -13,6 +16,7 @@ import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/add_transaction_screen.dart';
 import 'package:trakli/presentation/exchange_rate/cubit/exchange_rate_cubit.dart';
+import 'package:trakli/presentation/exports/cubit/export_cubit.dart';
 import 'package:trakli/presentation/info_interfaces/data.dart';
 import 'package:trakli/presentation/info_interfaces/info_interface.dart';
 import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
@@ -90,6 +94,77 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final tones = context.tones;
+    return BlocProvider(
+      create: (_) => getIt<ExportCubit>(),
+      child: BlocListener<ExportCubit, ExportState>(
+        listenWhen: (previous, current) =>
+            previous.file != current.file ||
+            previous.failure != current.failure ||
+            previous.blocker != current.blocker,
+        listener: _onExportStateChanged,
+        child: _buildScaffold(tones),
+      ),
+    );
+  }
+
+  void _onExportStateChanged(BuildContext context, ExportState state) {
+    if (state.file != null) {
+      final file = state.file!;
+      context.read<ExportCubit>().clearFile();
+      Share.shareXFiles([
+        XFile.fromData(
+          file.bytes,
+          name: file.name,
+          mimeType: file.mimeType,
+        ),
+      ], fileNameOverrides: [file.name]);
+      return;
+    }
+
+    if (state.failure.hasError) {
+      showSnackBar(message: state.failure);
+      return;
+    }
+
+    switch (state.blocker) {
+      case ExportBlocker.signedOut:
+        showSnackBar(message: LocaleKeys.exportRequiresAccount.tr());
+      case ExportBlocker.pendingSync:
+        showSnackBar(message: LocaleKeys.exportAwaitingSync.tr());
+      case ExportBlocker.none:
+        break;
+    }
+  }
+
+  /// Server-side exports only cover synced records, so a filter pinned to a
+  /// wallet or category that has not reached the server yet cannot be honoured.
+  void _export(BuildContext context, ExportFormat format) {
+    final wallets = selectedItems.whereType<WalletEntity>().toList();
+    final categories = selectedItems.whereType<CategoryEntity>().toList();
+
+    if (wallets.any((wallet) => wallet.id == null) ||
+        categories.any((category) => category.id == null)) {
+      showSnackBar(message: LocaleKeys.exportAwaitingSync.tr());
+      return;
+    }
+
+    final start = dateRange?.startDate;
+
+    showSnackBar(
+      message: LocaleKeys.exportPreparing.tr(),
+      isSuccess: true,
+    );
+
+    context.read<ExportCubit>().exportTransactions(
+          format: format,
+          from: start,
+          to: start == null ? null : (dateRange?.endDate ?? start),
+          walletIds: wallets.map((wallet) => wallet.id!).toList(),
+          categoryIds: categories.map((category) => category.id!).toList(),
+        );
+  }
+
+  Widget _buildScaffold(AppTones tones) {
     return BlocBuilder<TransactionCubit, TransactionState>(
       builder: (context, state) {
         final exchangeRateEntity =
@@ -253,7 +328,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                 itemBuilder: (context) {
                                   return [
                                     PopupMenuItem(
-                                      onTap: () {},
+                                      onTap: () =>
+                                          _export(context, ExportFormat.pdf),
                                       child: Row(
                                         spacing: 8.w,
                                         children: [
@@ -267,7 +343,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                       ),
                                     ),
                                     PopupMenuItem(
-                                      onTap: () {},
+                                      onTap: () =>
+                                          _export(context, ExportFormat.xlsx),
                                       child: Row(
                                         spacing: 8.w,
                                         children: [
