@@ -95,13 +95,10 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
     super.initState();
     // Edit mode: resolve the linked original expense for display.
     if (c.wasRefund && c.refundOfServerId != null && c.refundOfLabel == null) {
-      final original = context
-          .read<TransactionCubit>()
-          .state
-          .transactions
-          .firstWhereOrNull(
-            (t) => t.transaction.id == c.refundOfServerId,
-          );
+      final original =
+          context.read<TransactionCubit>().state.transactions.firstWhereOrNull(
+                (t) => t.transaction.id == c.refundOfServerId,
+              );
       if (original != null) {
         c.refundOfClientId = original.transaction.clientId;
         c.syncedRefundOfClientId = original.transaction.clientId;
@@ -305,7 +302,7 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DropdownButtonFormField<String>(
-                  value: c.recurrencePeriod,
+                  initialValue: c.recurrencePeriod,
                   dropdownColor: tones.bgSurface,
                   style: TextStyle(color: tones.textPrimary, fontSize: 14.sp),
                   decoration: InputDecoration(
