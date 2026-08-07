@@ -171,6 +171,8 @@
   "export": "Экспорт",
   "toPdf": "В PDF",
   "toExcel": "В Excel",
+  "exportSaved": "{name} сохранён",
+  "exportSaveFailed": "Не удалось сохранить файл.",
   "exportRequiresAccount": "Войдите в аккаунт, чтобы экспортировать. Файлы создаются на сервере.",
   "exportAwaitingSync": "Сначала синхронизируйте изменения, чтобы они попали в экспорт.",
   "exportPreparing": "Подготовка экспорта...",

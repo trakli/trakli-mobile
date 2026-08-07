@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -37,11 +38,10 @@ class ErrorHandler {
     }
 
     final statusCode = err.response?.statusCode;
-    final responseDataForMessage = err.response?.data;
-    final message = responseDataForMessage is Map
-        ? (responseDataForMessage['message'] as String?) ?? 'Unknown error'
+    final data = _decodeBody(err.response?.data);
+    final message = data is Map
+        ? (data['message'] as String?) ?? 'Unknown error'
         : 'Unknown error';
-    final data = err.response?.data;
 
     switch (statusCode) {
       case 400:
@@ -72,6 +72,18 @@ class ErrorHandler {
               statusCode: statusCode, data: data);
         }
         return ServerException(message, statusCode: statusCode, data: data);
+    }
+  }
+
+  /// A failed file download still carries a JSON body, but it arrives as bytes
+  /// because the request asked for bytes. Decode it so the server's message is
+  /// not lost behind a generic error.
+  static dynamic _decodeBody(dynamic data) {
+    if (data is! List<int>) return data;
+    try {
+      return jsonDecode(utf8.decode(data));
+    } catch (_) {
+      return null;
     }
   }
 

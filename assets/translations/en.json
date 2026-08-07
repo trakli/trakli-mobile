@@ -171,6 +171,8 @@
   "export": "Export",
   "toPdf": "To PDF",
   "toExcel": "To Excel",
+  "exportSaved": "Saved {name}",
+  "exportSaveFailed": "Could not save the file.",
   "exportRequiresAccount": "Sign in to export. Exports are generated on the server.",
   "exportAwaitingSync": "Sync your changes first so the export includes them.",
   "exportPreparing": "Preparing your export...",

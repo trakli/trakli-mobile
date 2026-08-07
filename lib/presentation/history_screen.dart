@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -111,13 +112,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     if (state.file != null) {
       final file = state.file!;
       context.read<ExportCubit>().clearFile();
-      Share.shareXFiles([
-        XFile.fromData(
-          file.bytes,
-          name: file.name,
-          mimeType: file.mimeType,
-        ),
-      ], fileNameOverrides: [file.name]);
+      _showExportActions(file);
       return;
     }
 
@@ -133,6 +128,72 @@ class _HistoryScreenState extends State<HistoryScreen> {
         showSnackBar(message: LocaleKeys.exportAwaitingSync.tr());
       case ExportBlocker.none:
         break;
+    }
+  }
+
+  /// The file is ready; let the user decide whether it should be kept on the
+  /// device or handed to another app.
+  void _showExportActions(ExportedFile file) {
+    showModalBottomSheet(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(
+                file.name,
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14.sp),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.download_outlined),
+              title: Text(LocaleKeys.save.tr()),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                _saveFile(file);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.share_outlined),
+              title: Text(LocaleKeys.share.tr()),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                _shareFile(file);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _shareFile(ExportedFile file) {
+    Share.shareXFiles([
+      XFile.fromData(
+        file.bytes,
+        name: file.name,
+        mimeType: file.mimeType,
+      ),
+    ], fileNameOverrides: [file.name]);
+  }
+
+  /// Writes the export through the system file picker, so the user chooses
+  /// where it lands and ends up with a copy they can find again.
+  Future<void> _saveFile(ExportedFile file) async {
+    try {
+      final path = await FilePicker.platform.saveFile(
+        dialogTitle: LocaleKeys.export.tr(),
+        fileName: file.name,
+        bytes: file.bytes,
+      );
+      if (path == null) return;
+      showSnackBar(
+        message: LocaleKeys.exportSaved.tr(namedArgs: {'name': file.name}),
+        isSuccess: true,
+      );
+    } catch (_) {
+      showSnackBar(message: LocaleKeys.exportSaveFailed.tr());
     }
   }
 
