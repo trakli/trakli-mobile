@@ -79,6 +79,10 @@ abstract class AppTheme{
           color: tones.textSecondary,
           fontWeight: FontWeight.normal,
         ),
+        bodyMedium: TextStyle(
+          fontSize: 14.sp,
+          color: tones.textPrimary,
+        ),
         bodySmall: TextStyle(
           fontSize: 12.sp,
           color: tones.textPrimary,
@@ -139,15 +143,15 @@ abstract class AppTheme{
           fontWeight: FontWeight.w600,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadii.lg.r),
+          borderRadius: BorderRadius.circular(AppRadii.md.r),
           borderSide: BorderSide(color: tones.borderLight, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadii.lg.r),
+          borderRadius: BorderRadius.circular(AppRadii.md.r),
           borderSide: BorderSide(color: tones.borderLight, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadii.lg.r),
+          borderRadius: BorderRadius.circular(AppRadii.md.r),
           borderSide: BorderSide(color: tones.brand.deep, width: 1.5),
         ),
         floatingLabelStyle: TextStyle(

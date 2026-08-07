@@ -22,6 +22,7 @@ import 'package:trakli/presentation/transactions/cubit/transaction_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/bottom_sheets/select_wallet_bottom_sheet.dart';
 import 'package:trakli/presentation/utils/custom_dropdown_search.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/dialogs/add_party_dialog.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -196,6 +197,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final tones = context.tones;
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(
         horizontal: 16.w,
@@ -210,6 +212,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
               LocaleKeys.transactionAmount.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
+                    color: tones.textPrimary,
                   ),
             ),
             SizedBox(height: 8.h),
@@ -224,8 +227,9 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         hintText: LocaleKeys.exampleAmount.tr(),
+                        fillColor: tones.bgSurface,
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(AppRadii.md.r),
                           borderSide: BorderSide(
                             color: widget.accentColor,
                           ),
@@ -252,11 +256,15 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         context: context,
                         theme: CurrencyPickerThemeData(
                             bottomSheetHeight: 0.7.sh,
-                            backgroundColor: Colors.white,
+                            backgroundColor: tones.bgSurface,
                             flagSize: 24.sp,
+                            titleTextStyle: TextStyle(
+                              color: tones.textPrimary,
+                              fontSize: 16.sp,
+                            ),
                             subtitleTextStyle: TextStyle(
                               fontSize: 12.sp,
-                              color: Theme.of(context).primaryColor,
+                              color: tones.textSecondary,
                             )),
                         onSelect: (Currency currencyValue) {
                           setState(() {
@@ -272,11 +280,15 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         maxHeight: 50.h,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(8),
+                        color: tones.bgSurface,
+                        borderRadius: BorderRadius.circular(AppRadii.md.r),
+                        border: Border.all(color: tones.borderLight),
                       ),
                       child: Center(
-                        child: Text(currency?.code ?? "XAF"),
+                        child: Text(
+                          currency?.code ?? "XAF",
+                          style: TextStyle(color: tones.textPrimary),
+                        ),
                       ),
                     ),
                   )
@@ -300,6 +312,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
               LocaleKeys.wallet.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
+                    color: tones.textPrimary,
                   ),
             ),
             SizedBox(height: 8.h),
@@ -315,7 +328,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                       onTap: () {
                         showCustomBottomSheet(
                           context,
-                          color: Theme.of(context).scaffoldBackgroundColor,
+                          color: tones.bgPage,
                           widget: BlocBuilder<WalletCubit, WalletState>(
                             builder: (context, state) {
                               return SelectWalletBottomSheet(
@@ -336,8 +349,9 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                       },
                       decoration: InputDecoration(
                         hintText: LocaleKeys.selectWallet.tr(),
+                        fillColor: tones.bgSurface,
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(AppRadii.md.r),
                           borderSide: BorderSide(
                             color: widget.accentColor,
                           ),
@@ -347,7 +361,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                           child: SvgPicture.asset(
                             Assets.images.arrowDown,
                             colorFilter: ColorFilter.mode(
-                              Colors.grey.shade500,
+                              tones.textMuted,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -371,11 +385,12 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         maxHeight: 50.h,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(8),
+                        color: tones.bgSurface,
+                        borderRadius: BorderRadius.circular(AppRadii.md.r),
+                        border: Border.all(color: tones.borderLight),
                       ),
-                      child: const Center(
-                        child: Icon(Icons.add),
+                      child: Center(
+                        child: Icon(Icons.add, color: tones.textPrimary),
                       ),
                     ),
                   )
@@ -395,6 +410,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         LocaleKeys.transactionDate.tr(),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w500,
+                              color: tones.textPrimary,
                             ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -402,14 +418,19 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         readOnly: true,
                         controller: dateController,
                         decoration: InputDecoration(
+                          fillColor: tones.bgSurface,
                           suffixIcon: Padding(
                             padding: const EdgeInsets.all(12),
                             child: SvgPicture.asset(
                               Assets.images.calendar,
+                              colorFilter: ColorFilter.mode(
+                                tones.textMuted,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(AppRadii.md.r),
                             borderSide: BorderSide(
                               color: widget.accentColor,
                             ),
@@ -445,6 +466,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         LocaleKeys.transactionTime.tr(),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w500,
+                              color: tones.textPrimary,
                             ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -452,14 +474,19 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         readOnly: true,
                         controller: timeController,
                         decoration: InputDecoration(
+                          fillColor: tones.bgSurface,
                           suffixIcon: Padding(
                             padding: const EdgeInsets.all(12),
                             child: SvgPicture.asset(
                               Assets.images.clock,
+                              colorFilter: ColorFilter.mode(
+                                tones.textMuted,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(AppRadii.md.r),
                             borderSide: BorderSide(
                               color: widget.accentColor,
                             ),
@@ -497,6 +524,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                   : '${LocaleKeys.transactionReceivedFrom.tr()} (${LocaleKeys.party.tr()})',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
+                    color: tones.textPrimary,
                   ),
             ),
             SizedBox(height: 8.h),
@@ -544,11 +572,12 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         maxHeight: 50.h,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(8),
+                        color: tones.bgSurface,
+                        borderRadius: BorderRadius.circular(AppRadii.md.r),
+                        border: Border.all(color: tones.borderLight),
                       ),
-                      child: const Center(
-                        child: Icon(Icons.add),
+                      child: Center(
+                        child: Icon(Icons.add, color: tones.textPrimary),
                       ),
                     ),
                   ),
@@ -560,6 +589,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
               LocaleKeys.transactionCategory.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
+                    color: tones.textPrimary,
                   ),
             ),
             SizedBox(height: 8.h),
@@ -617,11 +647,12 @@ class _AddTransactionFormState extends State<AddTransactionForm>
                         maxHeight: 50.h,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(8),
+                        color: tones.bgSurface,
+                        borderRadius: BorderRadius.circular(AppRadii.md.r),
+                        border: Border.all(color: tones.borderLight),
                       ),
-                      child: const Center(
-                        child: Icon(Icons.add),
+                      child: Center(
+                        child: Icon(Icons.add, color: tones.textPrimary),
                       ),
                     ),
                   ),
@@ -633,6 +664,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
               LocaleKeys.transactionDescription.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
+                    color: tones.textPrimary,
                   ),
             ),
             SizedBox(height: 8.h),
@@ -640,8 +672,9 @@ class _AddTransactionFormState extends State<AddTransactionForm>
               controller: descriptionController,
               decoration: InputDecoration(
                 hintText: LocaleKeys.transactionTypeHere.tr(),
+                fillColor: tones.bgSurface,
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadii.md.r),
                   borderSide: BorderSide(
                     color: widget.accentColor,
                   ),
@@ -653,6 +686,7 @@ class _AddTransactionFormState extends State<AddTransactionForm>
               LocaleKeys.transactionAttachment.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
+                    color: tones.textPrimary,
                   ),
             ),
             SizedBox(height: 8.h),

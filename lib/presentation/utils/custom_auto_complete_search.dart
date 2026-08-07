@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 
 class CustomAutoCompleteSearch<T extends Object> extends StatefulWidget {
   final String label;
@@ -94,6 +95,7 @@ class _CustomAutoCompleteSearchState<T extends Object>
   }
 
   OverlayEntry _createOverlayEntry() {
+    final tones = context.tones;
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
     final fieldGlobalY = renderBox.localToGlobal(Offset.zero).dy;
@@ -123,11 +125,11 @@ class _CustomAutoCompleteSearchState<T extends Object>
           targetAnchor: openUpward ? Alignment.topLeft : Alignment.bottomLeft,
           followerAnchor: openUpward ? Alignment.bottomLeft : Alignment.topLeft,
           child: Material(
-            color: Theme.of(context).colorScheme.surface,
+            color: tones.bgSurface,
             elevation: 4,
             borderRadius: openUpward
-                ? BorderRadius.vertical(top: Radius.circular(8.r))
-                : BorderRadius.vertical(bottom: Radius.circular(8.r)),
+                ? BorderRadius.vertical(top: Radius.circular(AppRadii.md.r))
+                : BorderRadius.vertical(bottom: Radius.circular(AppRadii.md.r)),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: maxHeight,
@@ -141,7 +143,10 @@ class _CustomAutoCompleteSearchState<T extends Object>
                         itemBuilder: (context, index) {
                           final T option = _options[index];
                           return ListTile(
-                            title: Text(widget.displayStringForOption(option)),
+                            title: Text(
+                              widget.displayStringForOption(option),
+                              style: TextStyle(color: tones.textPrimary),
+                            ),
                             onTap: () {
                               _controller.text =
                                   widget.displayStringForOption(option);
@@ -157,7 +162,10 @@ class _CustomAutoCompleteSearchState<T extends Object>
                       onTap: () {
                         _focusNode.unfocus();
                       },
-                      title: Text(LocaleKeys.noData.tr()),
+                      title: Text(
+                        LocaleKeys.noData.tr(),
+                        style: TextStyle(color: tones.textPrimary),
+                      ),
                     ),
             ),
           ),
@@ -176,27 +184,26 @@ class _CustomAutoCompleteSearchState<T extends Object>
 
   @override
   Widget build(BuildContext context) {
+    final tones = context.tones;
     return CompositedTransformTarget(
       link: _layerLink,
       child: Material(
-        color: _focusNode.hasFocus
-            ? Colors.white
-            : Theme.of(context).scaffoldBackgroundColor,
+        color: _focusNode.hasFocus ? tones.bgSurface : tones.bgPage,
         elevation: _focusNode.hasFocus ? 4 : 0,
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(8.r),
-          bottom: Radius.circular(_focusNode.hasFocus ? 0 : 8.r),
+          top: Radius.circular(AppRadii.md.r),
+          bottom: Radius.circular(_focusNode.hasFocus ? 0 : AppRadii.md.r),
         ),
         child: TextFormField(
           readOnly: readOnly,
           controller: _controller,
           focusNode: _focusNode,
           validator: widget.validator,
+          style: TextStyle(color: tones.textPrimary),
           decoration: InputDecoration(
-            fillColor: _focusNode.hasFocus
-                ? Theme.of(context).colorScheme.surface
-                : null,
+            fillColor: _focusNode.hasFocus ? tones.bgSurface : null,
             labelText: widget.label,
+            labelStyle: TextStyle(color: tones.textSecondary),
             contentPadding: EdgeInsets.only(top: 16.h),
             prefixIcon: IconButton(
               padding: EdgeInsets.zero,
@@ -239,35 +246,34 @@ class _CustomAutoCompleteSearchState<T extends Object>
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
+              borderRadius: BorderRadius.circular(AppRadii.lg.r),
               borderSide: BorderSide(
                 color: widget.accentColor,
                 width: 1.5,
               ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
-              borderSide: const BorderSide(
-                color: Color(0xFFE2E5E9),
+              borderRadius: BorderRadius.circular(AppRadii.lg.r),
+              borderSide: BorderSide(
+                color: tones.borderLight,
                 width: 1,
               ),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
-              borderSide: const BorderSide(
-                color: Color(0xFFE2E5E9),
+              borderRadius: BorderRadius.circular(AppRadii.lg.r),
+              borderSide: BorderSide(
+                color: tones.borderLight,
                 width: 1,
               ),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide:
-                  BorderSide(color: Theme.of(context).colorScheme.error),
+              borderRadius: BorderRadius.circular(AppRadii.md.r),
+              borderSide: BorderSide(color: tones.expense.accent),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(AppRadii.md.r),
               borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.error,
+                color: tones.expense.accent,
                 width: 2.0.w,
               ),
             ),

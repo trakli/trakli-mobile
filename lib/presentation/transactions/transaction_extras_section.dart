@@ -134,9 +134,10 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
     required ValueChanged<bool> onChanged,
     String? helpText,
   }) {
+    final tones = context.tones;
     return InkWell(
       onTap: () => onChanged(!value),
-      borderRadius: BorderRadius.circular(4.r),
+      borderRadius: BorderRadius.circular(AppRadii.xs.r),
       child: Row(
         children: [
           SizedBox(
@@ -145,6 +146,7 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
             child: Checkbox(
               value: value,
               activeColor: widget.accentColor,
+              side: BorderSide(color: tones.borderMedium, width: 2),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               onChanged: (v) => onChanged(v ?? false),
             ),
@@ -153,10 +155,10 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
           Flexible(
             child: Text(
               label,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: tones.textPrimary,
+                  ),
             ),
           ),
           if (helpText != null) ...[
@@ -168,7 +170,7 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
               child: Icon(
                 Icons.help_outline,
                 size: 16.sp,
-                color: Theme.of(context).hintColor,
+                color: tones.textMuted,
               ),
             ),
           ],
@@ -178,14 +180,15 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
   }
 
   Widget _grayCard(BuildContext context, {required Widget child}) {
+    final tones = context.tones;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8.r),
+        color: tones.bgCard,
+        borderRadius: BorderRadius.circular(AppRadii.md.r),
         border: Border.all(
-          color: Theme.of(context).dividerColor.withValues(alpha: 0.2),
+          color: tones.borderLight,
         ),
       ),
       child: child,
@@ -219,6 +222,7 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
   }
 
   Widget _refundSection(BuildContext context) {
+    final tones = context.tones;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -241,10 +245,13 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
                   child: InputDecorator(
                     decoration: InputDecoration(
                       labelText: LocaleKeys.refundOf.tr(),
+                      fillColor: tones.bgSurface,
                       suffixIcon: c.refundOfLabel == null
-                          ? const Icon(Icons.keyboard_arrow_down)
+                          ? Icon(Icons.keyboard_arrow_down,
+                              color: tones.textMuted)
                           : IconButton(
-                              icon: Icon(Icons.clear, size: 20.sp),
+                              icon: Icon(Icons.clear,
+                                  size: 20.sp, color: tones.textMuted),
                               onPressed: () => setState(() {
                                 c.refundOfClientId = null;
                                 c.refundOfLabel = null;
@@ -255,9 +262,10 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
                       c.refundOfLabel ?? LocaleKeys.searchExpenses.tr(),
                       style: TextStyle(
                         color: c.refundOfLabel != null
-                            ? null
-                            : context.tones.textMuted,
+                            ? tones.textPrimary
+                            : tones.textMuted,
                         fontWeight: FontWeight.w400,
+                        fontSize: 14.sp,
                       ),
                     ),
                   ),
@@ -265,7 +273,9 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
                 SizedBox(height: 4.h),
                 Text(
                   LocaleKeys.refundOfHint.tr(),
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: tones.textSecondary,
+                      ),
                 ),
               ],
             ),
@@ -277,6 +287,7 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
   }
 
   Widget _recurrenceSection(BuildContext context) {
+    final tones = context.tones;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -294,14 +305,20 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DropdownButtonFormField<String>(
-                  initialValue: c.recurrencePeriod,
+                  value: c.recurrencePeriod,
+                  dropdownColor: tones.bgSurface,
+                  style: TextStyle(color: tones.textPrimary, fontSize: 14.sp),
                   decoration: InputDecoration(
                     labelText: LocaleKeys.recurrencePeriod.tr(),
+                    fillColor: tones.bgSurface,
                   ),
                   items: const ['daily', 'weekly', 'monthly', 'yearly']
                       .map((p) => DropdownMenuItem(
                             value: p,
-                            child: Text(_periodLabel(p)),
+                            child: Text(
+                              _periodLabel(p),
+                              style: TextStyle(color: tones.textPrimary),
+                            ),
                           ))
                       .toList(),
                   onChanged: (v) =>
@@ -311,8 +328,10 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
                 TextFormField(
                   controller: c.recurrenceIntervalController,
                   keyboardType: TextInputType.number,
+                  style: TextStyle(color: tones.textPrimary),
                   decoration: InputDecoration(
                     labelText: LocaleKeys.repeatEvery.tr(),
+                    fillColor: tones.bgSurface,
                   ),
                   validator: (v) {
                     if (!c.isRecurring) return null;
@@ -326,23 +345,28 @@ class _TransactionExtrasSectionState extends State<TransactionExtrasSection> {
                 SizedBox(height: 12.h),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(LocaleKeys.recurrenceEndDate.tr()),
+                  title: Text(
+                    LocaleKeys.recurrenceEndDate.tr(),
+                    style: TextStyle(color: tones.textPrimary, fontSize: 14.sp),
+                  ),
                   subtitle: Text(
                     c.recurrenceEndsAt != null
                         ? _dateFormat.format(c.recurrenceEndsAt!)
                         : LocaleKeys.noEndDate.tr(),
+                    style: TextStyle(color: tones.textSecondary),
                   ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (c.recurrenceEndsAt != null)
                         IconButton(
-                          icon: const Icon(Icons.clear),
+                          icon: Icon(Icons.clear, color: tones.textMuted),
                           onPressed: () =>
                               setState(() => c.recurrenceEndsAt = null),
                         ),
                       IconButton(
-                        icon: const Icon(Icons.calendar_today),
+                        icon:
+                            Icon(Icons.calendar_today, color: tones.textMuted),
                         onPressed: () async {
                           final now = DateTime.now();
                           final picked = await showDatePicker(
