@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
+import 'package:trakli/core/error/error_handler.dart';
 
 /// The file formats the export endpoints can produce.
 enum ExportFormat {
@@ -43,16 +44,18 @@ class ExportRemoteDataSourceImpl implements ExportRemoteDataSource {
     List<int> walletIds = const [],
     List<int> categoryIds = const [],
   }) async {
-    final response = await dio.get<List<int>>(
-      'transactions/export',
-      queryParameters: {
-        'format': format.key,
-        if (from != null) 'date_from': _ymd(from),
-        if (to != null) 'date_to': _ymd(to),
-        if (walletIds.isNotEmpty) 'wallet_ids': walletIds.join(','),
-        if (categoryIds.isNotEmpty) 'category_ids': categoryIds.join(','),
-      },
-      options: Options(responseType: ResponseType.bytes),
+    final response = await ErrorHandler.handleApiCall(
+      () => dio.get<List<int>>(
+        'transactions/export',
+        queryParameters: {
+          'format': format.key,
+          if (from != null) 'date_from': _ymd(from),
+          if (to != null) 'date_to': _ymd(to),
+          if (walletIds.isNotEmpty) 'wallet_ids': walletIds.join(','),
+          if (categoryIds.isNotEmpty) 'category_ids': categoryIds.join(','),
+        },
+        options: Options(responseType: ResponseType.bytes),
+      ),
     );
 
     return Uint8List.fromList(response.data ?? []);
