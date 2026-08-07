@@ -106,12 +106,15 @@ class _HomeScreenState extends State<HomeScreen> {
         return false;
       }
 
-      // Transfers are global and should ignore group filters
-      if (transaction.transaction.isTransferLeg) {
+      final String? transactionGroupId = transaction.group?.clientId;
+      final bool isTransfer = transaction.transaction.transferId != null ||
+          (transaction.transaction.transferClientId?.isNotEmpty ?? false);
+
+      // Transfers without an explicit group are global (visible everywhere).
+      // If a transfer has a group assigned, it follows normal filtering.
+      if (isTransfer && transactionGroupId == null) {
         return true;
       }
-
-      final String? transactionGroupId = transaction.group?.clientId;
 
       // Include transaction if:
       final bool groupMatches = transactionGroupId == selectedGroupId;
