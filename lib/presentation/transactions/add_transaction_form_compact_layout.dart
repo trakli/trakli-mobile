@@ -25,6 +25,7 @@ import 'package:trakli/presentation/transactions/transaction_extras_section.dart
 import 'package:trakli/presentation/transactions/transaction_intent_selector.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/custom_auto_complete_search.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 import 'package:trakli/presentation/wallets/add_wallet_screen.dart';
@@ -204,6 +205,7 @@ class _AddTransactionFormCompactLayoutState
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final tones = context.tones;
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(
         horizontal: 16.w,
@@ -226,8 +228,9 @@ class _AddTransactionFormCompactLayoutState
                       decoration: InputDecoration(
                         hintText: LocaleKeys.exampleAmount.tr(),
                         labelText: LocaleKeys.transactionAmount.tr(),
+                        fillColor: tones.bgSurface,
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(AppRadii.md.r),
                           borderSide: BorderSide(
                             color: widget.accentColor,
                           ),
@@ -254,12 +257,15 @@ class _AddTransactionFormCompactLayoutState
                         context: context,
                         theme: CurrencyPickerThemeData(
                           bottomSheetHeight: 0.7.sh,
-                          backgroundColor:
-                              Theme.of(context).scaffoldBackgroundColor,
+                          backgroundColor: tones.bgSurface,
                           flagSize: 24.sp,
+                          titleTextStyle: TextStyle(
+                            color: tones.textPrimary,
+                            fontSize: 16.sp,
+                          ),
                           subtitleTextStyle: TextStyle(
                             fontSize: 12.sp,
-                            color: Theme.of(context).primaryColor,
+                            color: tones.textSecondary,
                           ),
                         ),
                         onSelect: (Currency currencyValue) {
@@ -274,7 +280,7 @@ class _AddTransactionFormCompactLayoutState
                       ),
                       decoration: BoxDecoration(
                         color: widget.accentColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8.r),
+                        borderRadius: BorderRadius.circular(AppRadii.md.r),
                         border: Border.all(
                           color: widget.accentColor.withValues(alpha: 0.35),
                           width: 1,
@@ -378,14 +384,19 @@ class _AddTransactionFormCompactLayoutState
                     controller: dateController,
                     decoration: InputDecoration(
                       labelText: LocaleKeys.date.tr(),
+                      fillColor: tones.bgSurface,
                       suffixIcon: Padding(
                         padding: const EdgeInsets.all(12),
                         child: SvgPicture.asset(
                           Assets.images.calendar,
+                          colorFilter: ColorFilter.mode(
+                            tones.textMuted,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(AppRadii.md.r),
                         borderSide: BorderSide(
                           color: widget.accentColor,
                         ),
@@ -416,14 +427,19 @@ class _AddTransactionFormCompactLayoutState
                     controller: timeController,
                     decoration: InputDecoration(
                       labelText: LocaleKeys.time.tr(),
+                      fillColor: tones.bgSurface,
                       suffixIcon: Padding(
                         padding: const EdgeInsets.all(12),
                         child: SvgPicture.asset(
                           Assets.images.clock,
+                          colorFilter: ColorFilter.mode(
+                            tones.textMuted,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(AppRadii.md.r),
                         borderSide: BorderSide(
                           color: widget.accentColor,
                         ),
@@ -556,8 +572,9 @@ class _AddTransactionFormCompactLayoutState
               decoration: InputDecoration(
                 labelText: LocaleKeys.transactionDescription.tr(),
                 hintText: LocaleKeys.transactionTypeHere.tr(),
+                fillColor: tones.bgSurface,
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadii.md.r),
                   borderSide: BorderSide(
                     color: widget.accentColor,
                   ),

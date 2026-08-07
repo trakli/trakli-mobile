@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trakli/gen/assets.gen.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 
 class CustomDropdownSearch<T> extends StatelessWidget {
   final String label;
@@ -36,6 +37,7 @@ class CustomDropdownSearch<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tones = context.tones;
     return DropdownSearch<T>(
       mode: Mode.form,
       items: items,
@@ -48,13 +50,22 @@ class CustomDropdownSearch<T> extends StatelessWidget {
       suffixProps: DropdownSuffixProps(
         clearButtonProps: ClearButtonProps(isVisible: showClearButton),
       ),
+      dropdownBuilder: (context, selectedItem) {
+        return Text(
+          selectedItem == null ? "" : itemAsString(selectedItem),
+          style: TextStyle(
+            color: tones.textPrimary,
+            fontSize: 14.sp,
+          ),
+        );
+      },
       popupProps: PopupProps.menu(
         searchFieldProps: TextFieldProps(
           decoration: InputDecoration(
             hintText: "Search...",
-            fillColor: Colors.white,
+            fillColor: tones.bgSurface,
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(AppRadii.md.r),
               borderSide: BorderSide(
                 color: accentColor,
               ),
@@ -64,20 +75,41 @@ class CustomDropdownSearch<T> extends StatelessWidget {
         showSearchBox: showSearchBox,
         fit: FlexFit.loose,
         menuProps: MenuProps(
-          backgroundColor: Colors.white,
+          backgroundColor: tones.bgSurface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            side: const BorderSide(
-              color: Colors.grey,
+            borderRadius: BorderRadius.circular(AppRadii.md.r),
+            side: BorderSide(
+              color: tones.borderLight,
             ),
           ),
           popUpAnimationStyle: const AnimationStyle(
             curve: Curves.decelerate,
           ),
         ),
+        itemBuilder: (context, item, isSelected, isFocused) {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: isSelected ? tones.brand.background : Colors.transparent,
+            ),
+            child: Text(
+              itemAsString(item),
+              style: TextStyle(
+                color: isSelected ? tones.brand.deep : tones.textPrimary,
+                fontSize: 14.sp,
+              ),
+            ),
+          );
+        },
       ),
       decoratorProps: DropDownDecoratorProps(
+        baseStyle: TextStyle(
+          color: tones.textPrimary,
+          fontSize: 14.sp,
+        ),
         decoration: InputDecoration(
+          filled: true,
+          fillColor: tones.bgSurface,
           contentPadding: showSearchBox
               ? EdgeInsets.only(top: 16.h)
               : EdgeInsets.only(top: 16.h, left: 12.w),
@@ -104,9 +136,21 @@ class CustomDropdownSearch<T> extends StatelessWidget {
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppRadii.md.r),
             borderSide: BorderSide(
               color: accentColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadii.md.r),
+            borderSide: BorderSide(
+              color: tones.borderLight,
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadii.md.r),
+            borderSide: BorderSide(
+              color: tones.borderLight,
             ),
           ),
         ),

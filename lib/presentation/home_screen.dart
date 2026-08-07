@@ -106,6 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
         return false;
       }
 
+      // Transfers are global and should ignore group filters
+      if (transaction.transaction.isTransferLeg) {
+        return true;
+      }
+
       final String? transactionGroupId = transaction.group?.clientId;
 
       // Include transaction if:
