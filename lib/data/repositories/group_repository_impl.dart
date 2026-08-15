@@ -103,7 +103,7 @@ class GroupRepositoryImpl
           throw NotFoundException('Group not found');
         }
 
-        await delete(group);
+        await persistAndDelete(group);
         return unit;
       },
     );

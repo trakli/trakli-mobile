@@ -144,7 +144,7 @@ class BudgetRepositoryImpl
     return RepositoryErrorHandler.handleApiCall(() async {
       final dto = await _composeDto(clientId);
       if (dto != null) {
-        await delete(dto);
+        await persistAndDelete(dto);
       }
       return unit;
     });

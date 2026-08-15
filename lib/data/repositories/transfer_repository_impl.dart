@@ -108,7 +108,7 @@ class TransferRepositoryImpl
   Future<Either<Failure, Unit>> deleteTransfer(String clientId) {
     return RepositoryErrorHandler.handleApiCall(() async {
       final transfer = await syncHandler.getLocalByClientId(clientId);
-      await delete(transfer);
+      await persistAndDelete(transfer);
       return unit;
     });
   }

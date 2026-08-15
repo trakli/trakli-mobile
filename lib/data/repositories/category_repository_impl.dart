@@ -78,7 +78,7 @@ class CategoryRepositoryImpl
   Future<Either<Failure, Unit>> deleteCategory(String clientId) {
     return RepositoryErrorHandler.handleApiCall(() async {
       final category = await syncHandler.getLocalByClientId(clientId);
-      await delete(category);
+      await persistAndDelete(category);
       return unit;
     });
   }

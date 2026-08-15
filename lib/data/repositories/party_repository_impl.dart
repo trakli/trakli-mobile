@@ -81,7 +81,7 @@ class PartyRepositoryImpl
   Future<Either<Failure, Unit>> deleteParty(String clientId) {
     return RepositoryErrorHandler.handleApiCall(() async {
       final party = await syncHandler.getLocalByClientId(clientId);
-      await delete(party);
+      await persistAndDelete(party);
       return unit;
     });
   }

@@ -91,7 +91,7 @@ class MediaRepositoryImpl
   Future<Either<Failure, Unit>> deleteMediaByPath(String path) async {
     try {
       final media = await syncHandler.getLocalByClientId(path);
-      await delete(media);
+      await persistAndDelete(media);
       return const Right(unit);
     } catch (e) {
       return Left(Failure.cacheError(e.toString()));

@@ -26,6 +26,11 @@ abstract class InjectHttpClientModule {
       BaseOptions(
         baseUrl: url,
         headers: {'Accept': 'application/json'},
+        // Without these, a stalled connection falls through to the OS socket
+        // timeout, which can hang a request for minutes.
+        connectTimeout: const Duration(seconds: 15),
+        sendTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
       ),
     );
 

@@ -107,7 +107,7 @@ class WalletRepositoryImpl
         throw NotFoundException('Wallet not found');
       }
 
-      await delete(wallet);
+      await persistAndDelete(wallet);
       return unit;
     });
   }
