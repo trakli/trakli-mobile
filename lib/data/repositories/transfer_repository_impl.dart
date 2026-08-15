@@ -72,8 +72,7 @@ class TransferRepositoryImpl
         expenseTransactionClientId: Value(entity.expenseTransactionClientId),
         incomeTransactionClientId: Value(entity.incomeTransactionClientId),
       );
-      final transfer = await localDataSource.insertTransfer(companion);
-      unawaited(post(transfer));
+      await persistAndPost(() => localDataSource.insertTransfer(companion));
       return unit;
     });
   }
@@ -100,8 +99,7 @@ class TransferRepositoryImpl
         expenseTransactionClientId: entity.expenseTransactionClientId,
         incomeTransactionClientId: entity.incomeTransactionClientId,
       );
-      final updated = await localDataSource.updateTransfer(transfer);
-      unawaited(put(updated));
+      await persistAndPut(() => localDataSource.updateTransfer(transfer));
       return unit;
     });
   }
@@ -109,8 +107,8 @@ class TransferRepositoryImpl
   @override
   Future<Either<Failure, Unit>> deleteTransfer(String clientId) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final transfer = await localDataSource.deleteTransfer(clientId);
-      unawaited(delete(transfer));
+      final transfer = await syncHandler.getLocalByClientId(clientId);
+      await delete(transfer);
       return unit;
     });
   }
@@ -191,6 +189,10 @@ class TransferRepositoryImpl
           incomeDto.transaction.clientId,
           transferClientId: transferClientId,
         );
+
+        await transactionRepository.enqueuePut(expenseDto);
+        await transactionRepository.enqueuePut(incomeDto);
+        await enqueuePut(transferRow);
       });
 
       unawaited(

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
@@ -74,28 +72,26 @@ class BudgetRepositoryImpl
     List<BudgetTargetSelection> targets = const [],
   }) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final budget = await localDataSource.insertBudget(
-        name: name,
-        slug: _slugify(name),
-        amount: amount,
-        currency: currency,
-        periodType: periodType,
-        startDate: startDate,
-        endDate: endDate,
-        description: description,
-        rolloverEnabled: rolloverEnabled,
-        thresholdPercent: thresholdPercent,
-        forecastAlertsEnabled: forecastAlertsEnabled,
-        isActive: isActive,
-        targets: targets
-            .map((t) => BudgetTargetInput(type: t.type, clientId: t.clientId))
-            .toList(),
-      );
-
-      final dto = await _composeDto(budget.clientId);
-      if (dto != null) {
-        unawaited(post(dto));
-      }
+      await persistAndPost(() async {
+        final budget = await localDataSource.insertBudget(
+          name: name,
+          slug: _slugify(name),
+          amount: amount,
+          currency: currency,
+          periodType: periodType,
+          startDate: startDate,
+          endDate: endDate,
+          description: description,
+          rolloverEnabled: rolloverEnabled,
+          thresholdPercent: thresholdPercent,
+          forecastAlertsEnabled: forecastAlertsEnabled,
+          isActive: isActive,
+          targets: targets
+              .map((t) => BudgetTargetInput(type: t.type, clientId: t.clientId))
+              .toList(),
+        );
+        return (await _composeDto(budget.clientId))!;
+      });
       return unit;
     });
   }
@@ -117,29 +113,28 @@ class BudgetRepositoryImpl
     List<BudgetTargetSelection>? targets,
   }) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      await localDataSource.updateBudget(
-        clientId,
-        name: name,
-        slug: name != null ? _slugify(name) : null,
-        amount: amount,
-        currency: currency,
-        periodType: periodType,
-        startDate: startDate,
-        endDate: endDate,
-        description: description,
-        rolloverEnabled: rolloverEnabled,
-        thresholdPercent: thresholdPercent,
-        forecastAlertsEnabled: forecastAlertsEnabled,
-        isActive: isActive,
-        targets: targets
-            ?.map((t) => BudgetTargetInput(type: t.type, clientId: t.clientId))
-            .toList(),
-      );
-
-      final dto = await _composeDto(clientId);
-      if (dto != null) {
-        unawaited(put(dto));
-      }
+      await persistAndPut(() async {
+        await localDataSource.updateBudget(
+          clientId,
+          name: name,
+          slug: name != null ? _slugify(name) : null,
+          amount: amount,
+          currency: currency,
+          periodType: periodType,
+          startDate: startDate,
+          endDate: endDate,
+          description: description,
+          rolloverEnabled: rolloverEnabled,
+          thresholdPercent: thresholdPercent,
+          forecastAlertsEnabled: forecastAlertsEnabled,
+          isActive: isActive,
+          targets: targets
+              ?.map(
+                  (t) => BudgetTargetInput(type: t.type, clientId: t.clientId))
+              .toList(),
+        );
+        return (await _composeDto(clientId))!;
+      });
       return unit;
     });
   }
@@ -148,9 +143,8 @@ class BudgetRepositoryImpl
   Future<Either<Failure, Unit>> deleteBudget(String clientId) {
     return RepositoryErrorHandler.handleApiCall(() async {
       final dto = await _composeDto(clientId);
-      await localDataSource.deleteBudget(clientId);
       if (dto != null) {
-        unawaited(delete(dto));
+        await delete(dto);
       }
       return unit;
     });

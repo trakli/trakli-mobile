@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:fpdart/fpdart.dart';
 import 'package:drift_sync_core/drift_sync_core.dart' as sync;
 import 'package:injectable/injectable.dart';
@@ -53,13 +52,11 @@ class GroupRepositoryImpl
               )
             : null;
 
-        final group = await localDataSource.insertGroup(
-          name,
-          description: description,
-          icon: media,
-        );
-
-        unawaited(post(group));
+        final group = await persistAndPost(() => localDataSource.insertGroup(
+              name,
+              description: description,
+              icon: media,
+            ));
         return GroupMapper.toDomain(group);
       },
     );
@@ -86,14 +83,12 @@ class GroupRepositoryImpl
               )
             : null;
 
-        final group = await localDataSource.updateGroup(
-          clientId,
-          name: name,
-          description: description,
-          icon: media,
-        );
-
-        unawaited(put(group));
+        await persistAndPut(() => localDataSource.updateGroup(
+              clientId,
+              name: name,
+              description: description,
+              icon: media,
+            ));
         return unit;
       },
     );
@@ -108,8 +103,7 @@ class GroupRepositoryImpl
           throw NotFoundException('Group not found');
         }
 
-        await localDataSource.deleteGroup(clientId);
-        unawaited(delete(group));
+        await delete(group);
         return unit;
       },
     );
