@@ -113,7 +113,7 @@ class ConfigRepositoryImpl
           throw NotFoundException('Config with key "$key" not found');
         }
 
-        await delete(config);
+        await persistAndDelete(config);
         return unit;
       },
     );

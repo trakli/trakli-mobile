@@ -97,7 +97,7 @@ class ReminderRepositoryImpl
   Future<Either<Failure, Unit>> deleteReminder(String clientId) {
     return RepositoryErrorHandler.handleApiCall(() async {
       final reminder = await syncHandler.getLocalByClientId(clientId);
-      await delete(reminder);
+      await persistAndDelete(reminder);
       return unit;
     });
   }

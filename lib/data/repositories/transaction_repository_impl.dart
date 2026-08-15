@@ -82,7 +82,7 @@ class TransactionRepositoryImpl extends SyncEntityRepository<AppDatabase,
     try {
       final transaction = await syncHandler.getLocalByClientId(id);
 
-      await delete(transaction);
+      await persistAndDelete(transaction);
       return const Right(unit);
     } catch (e) {
       return Left(Failure.cacheError(e.toString()));
