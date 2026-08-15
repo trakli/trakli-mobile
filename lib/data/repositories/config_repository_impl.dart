@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:fpdart/fpdart.dart';
 import 'package:drift_sync_core/drift_sync_core.dart' as sync;
 import 'package:injectable/injectable.dart';
@@ -63,20 +62,18 @@ class ConfigRepositoryImpl
         final Config config;
         if (existingConfig != null) {
           // Update existing config
-          config = await localDataSource.updateConfig(
-            key,
-            type: type,
-            value: value,
-          );
-          unawaited(put(config));
+          config = await persistAndPut(() => localDataSource.updateConfig(
+                key,
+                type: type,
+                value: value,
+              ));
         } else {
           // Create new config
-          config = await localDataSource.insertConfig(
-            key: key,
-            type: type,
-            value: value,
-          );
-          unawaited(post(config));
+          config = await persistAndPost(() => localDataSource.insertConfig(
+                key: key,
+                type: type,
+                value: value,
+              ));
         }
 
         return ConfigMapper.toDomain(config);
@@ -97,13 +94,11 @@ class ConfigRepositoryImpl
           throw NotFoundException('Config with key "$key" not found');
         }
 
-        final config = await localDataSource.updateConfig(
-          key,
-          type: type,
-          value: value,
-        );
-
-        unawaited(put(config));
+        await persistAndPut(() => localDataSource.updateConfig(
+              key,
+              type: type,
+              value: value,
+            ));
         return unit;
       },
     );
@@ -118,8 +113,7 @@ class ConfigRepositoryImpl
           throw NotFoundException('Config with key "$key" not found');
         }
 
-        await localDataSource.deleteConfig(key);
-        unawaited(delete(config));
+        await delete(config);
         return unit;
       },
     );

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:drift_sync_core/drift_sync_core.dart' as sync;
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
@@ -53,16 +51,14 @@ class WalletRepositoryImpl
               type: icon.mediaType,
             )
           : null;
-      final wallet = await localDataSource.insertWallet(
-        name,
-        type,
-        balance,
-        currency,
-        description: description,
-        icon: media,
-      );
-
-      unawaited(post(wallet));
+      final wallet = await persistAndPost(() => localDataSource.insertWallet(
+            name,
+            type,
+            balance,
+            currency,
+            description: description,
+            icon: media,
+          ));
       return WalletMapper.toDomain(wallet);
     });
   }
@@ -90,17 +86,15 @@ class WalletRepositoryImpl
             )
           : null;
 
-      final wallet = await localDataSource.updateWallet(
-        clientId,
-        name: name,
-        type: type,
-        balance: balance,
-        currency: currency,
-        description: description,
-        icon: media,
-      );
-
-      unawaited(put(wallet));
+      final wallet = await persistAndPut(() => localDataSource.updateWallet(
+            clientId,
+            name: name,
+            type: type,
+            balance: balance,
+            currency: currency,
+            description: description,
+            icon: media,
+          ));
       return WalletMapper.toDomain(wallet);
     });
   }
@@ -113,8 +107,7 @@ class WalletRepositoryImpl
         throw NotFoundException('Wallet not found');
       }
 
-      await localDataSource.deleteWallet(clientId);
-      unawaited(syncHandler.deleteRemote(wallet));
+      await delete(wallet);
       return unit;
     });
   }

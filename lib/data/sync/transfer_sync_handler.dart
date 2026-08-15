@@ -31,6 +31,9 @@ class TransferSyncHandler extends SyncTypeHandler<Transfer, String, int>
   String get entityType => TransferSyncHandler.entity;
 
   @override
+  bool get canSyncWithoutDependencies => true;
+
+  @override
   String getRev(Transfer entity) => entity.rev ?? '1';
 
   @override

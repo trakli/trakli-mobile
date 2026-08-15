@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:drift_sync_core/drift_sync_core.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
@@ -49,28 +47,28 @@ class TransactionRepositoryImpl extends SyncEntityRepository<AppDatabase,
     String? refundOfClientId,
   }) async {
     try {
-      final transaction = await localDataSource.updateTransaction(
-        id,
-        amount: amount,
-        description: description,
-        categoryIds: categoryIds,
-        datetime: datetime,
-        walletClientId: walletClientId,
-        intent: intent,
-        partyClientId: partyClientId,
-        groupClientId: groupClientId,
-        recurrence: recurrence,
-        clearRecurrence: clearRecurrence,
+      await persistAndPut(
+        () => localDataSource.updateTransaction(
+          id,
+          amount: amount,
+          description: description,
+          categoryIds: categoryIds,
+          datetime: datetime,
+          walletClientId: walletClientId,
+          intent: intent,
+          partyClientId: partyClientId,
+          groupClientId: groupClientId,
+          recurrence: recurrence,
+          clearRecurrence: clearRecurrence,
+        ),
       );
 
-      unawaited(put(transaction));
-
       if (isRefund == true) {
-        unawaited(markTransactionAsRefund(id, refundOfClientId));
+        await markTransactionAsRefund(id, refundOfClientId);
       } else if (isRefund == false) {
         final row = await localDataSource.getTransactionByClientId(id);
         if (row?.isRefund == true) {
-          unawaited(unmarkTransactionRefund(id));
+          await unmarkTransactionRefund(id);
         }
       }
       return const Right(unit);
@@ -82,9 +80,9 @@ class TransactionRepositoryImpl extends SyncEntityRepository<AppDatabase,
   @override
   Future<Either<Failure, Unit>> deleteTransaction(String id) async {
     try {
-      final transaction = await localDataSource.deleteTransaction(id);
+      final transaction = await syncHandler.getLocalByClientId(id);
 
-      unawaited(delete(transaction));
+      await delete(transaction);
       return const Right(unit);
     } catch (e) {
       return Left(Failure.cacheError(e.toString()));
@@ -108,18 +106,20 @@ class TransactionRepositoryImpl extends SyncEntityRepository<AppDatabase,
     String? refundOfClientId,
   }) async {
     try {
-      final transaction = await localDataSource.insertTransaction(
-        amount,
-        description,
-        categoryIds,
-        type,
-        datetime,
-        walletClientId,
-        intent: intent,
-        partyClientId: partyClientId,
-        groupClientId: groupClientId,
-        attachedFilePaths: attachedFilePaths,
-        recurrence: recurrence,
+      final transaction = await persistAndPost(
+        () => localDataSource.insertTransaction(
+          amount,
+          description,
+          categoryIds,
+          type,
+          datetime,
+          walletClientId,
+          intent: intent,
+          partyClientId: partyClientId,
+          groupClientId: groupClientId,
+          attachedFilePaths: attachedFilePaths,
+          recurrence: recurrence,
+        ),
       );
 
       final clientId = transaction.transaction.clientId;
@@ -128,11 +128,7 @@ class TransactionRepositoryImpl extends SyncEntityRepository<AppDatabase,
         // The server refund needs a server id,
         // which post() writes back once the transaction syncs.
         await localDataSource.setRefundState(clientId, isRefund: true);
-        unawaited(post(transaction).then(
-          (_) => markTransactionAsRefund(clientId, refundOfClientId),
-        ));
-      } else {
-        unawaited(post(transaction));
+        await markTransactionAsRefund(clientId, refundOfClientId);
       }
       return const Right(unit);
     } catch (e) {

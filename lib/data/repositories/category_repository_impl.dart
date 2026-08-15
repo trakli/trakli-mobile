@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/data/database/app_database.dart' as db;
@@ -40,17 +39,15 @@ class CategoryRepositoryImpl
       String name, String slug, TransactionType type,
       {String? description, MediaEntity? media}) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final category = await localDataSource.insertCategory(
-        name,
-        slug,
-        type,
-        description: description,
-        media: media != null
-            ? Media.fromLocal(content: media.content, type: media.mediaType)
-            : null,
-      );
-
-      unawaited(post(category));
+      await persistAndPost(() => localDataSource.insertCategory(
+            name,
+            slug,
+            type,
+            description: description,
+            media: media != null
+                ? Media.fromLocal(content: media.content, type: media.mediaType)
+                : null,
+          ));
       return unit;
     });
   }
@@ -64,16 +61,15 @@ class CategoryRepositoryImpl
     MediaEntity? media,
   }) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final category = await localDataSource.updateCategory(
-        clientId,
-        name: name,
-        slug: slug,
-        description: description,
-        media: media != null
-            ? Media.fromLocal(content: media.content, type: media.mediaType)
-            : null,
-      );
-      unawaited(put(category));
+      await persistAndPut(() => localDataSource.updateCategory(
+            clientId,
+            name: name,
+            slug: slug,
+            description: description,
+            media: media != null
+                ? Media.fromLocal(content: media.content, type: media.mediaType)
+                : null,
+          ));
       return unit;
     });
   }
@@ -81,8 +77,8 @@ class CategoryRepositoryImpl
   @override
   Future<Either<Failure, Unit>> deleteCategory(String clientId) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final category = await localDataSource.deleteCategory(clientId);
-      unawaited(delete(category));
+      final category = await syncHandler.getLocalByClientId(clientId);
+      await delete(category);
       return unit;
     });
   }

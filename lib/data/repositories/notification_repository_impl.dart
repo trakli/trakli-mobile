@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:trakli/data/database/app_database.dart';
@@ -41,9 +40,9 @@ class NotificationRepositoryImpl
         throw const NotFoundException(message: 'Notification not found');
       }
 
-      final updatedNotification =
-          await localDataSource.markAsRead(clientId, DateTime.now());
-      unawaited(put(updatedNotification));
+      await persistAndPut(
+        () => localDataSource.markAsRead(clientId, DateTime.now()),
+      );
       return unit;
     });
   }

@@ -9,6 +9,7 @@ import 'package:trakli/core/sync/sync_database.dart';
 import 'package:trakli/data/database/app_database.dart';
 import 'package:trakli/di/injection.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/page_app_bar.dart';
 
 class SyncHistoryScreen extends StatefulWidget {
@@ -48,7 +49,17 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final metadata = await _db.getLocalSyncMetadataList();
+      final savedMetadata = await _db.getLocalSyncMetadataList();
+      final metadataByType = {
+        for (final item in savedMetadata) item.entityType: item,
+      };
+      final metadata = _syncDb.typeHandlers
+          .where((handler) => !handler.skipDownSync)
+          .map((handler) =>
+              metadataByType[handler.entityType] ??
+              LocalSyncMetadata(entityType: handler.entityType))
+          .toList()
+        ..sort((a, b) => a.entityType.compareTo(b.entityType));
       final allChanges = await _db.select(_db.localChanges).get();
 
       // Quarantined changes are permanently failed and never retry
@@ -134,6 +145,16 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
         return LocaleKeys.party.tr();
       case 'group':
         return LocaleKeys.group.tr();
+      case 'transfer':
+        return LocaleKeys.transfer.tr();
+      case 'budget':
+        return LocaleKeys.budget.tr();
+      case 'budget_period_state':
+        return LocaleKeys.budgetPeriod.tr();
+      case 'notification':
+        return LocaleKeys.notifications.tr();
+      case 'reminder':
+        return LocaleKeys.reminders.tr();
       case 'config':
         return LocaleKeys.settings.tr();
       default:
@@ -251,13 +272,19 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
                     _getEntityTypeDisplayName(meta.entityType),
                     style: TextStyle(fontSize: 14.sp),
                   ),
-                  trailing: Text(
-                    _formatDateTime(meta.lastSyncedAt),
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
+                  trailing: meta.lastError != null
+                      ? Icon(
+                          Icons.error,
+                          color: context.tones.expense.deep,
+                          size: 20.sp,
+                        )
+                      : Text(
+                          _formatDateTime(meta.lastAttemptedAt),
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: context.tones.textMuted,
+                          ),
+                        ),
                 );
               },
             ),

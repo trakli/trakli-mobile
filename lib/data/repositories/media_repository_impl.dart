@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -62,11 +61,12 @@ class MediaRepositoryImpl
     String filePath,
   ) async {
     try {
-      final media = await localDataSource.insertMediaForTransaction(
-        transactionClientId,
-        filePath,
+      await persistAndPost(
+        () => localDataSource.insertMediaForTransaction(
+          transactionClientId,
+          filePath,
+        ),
       );
-      unawaited(post(media));
       return const Right(unit);
     } catch (e) {
       return Left(Failure.cacheError(e.toString()));
@@ -90,11 +90,8 @@ class MediaRepositoryImpl
   @override
   Future<Either<Failure, Unit>> deleteMediaByPath(String path) async {
     try {
-      final media = await localDataSource.deleteByPath(path);
-      if (media == null) {
-        return Left(Failure.cacheError('MediaFile not found for path: $path'));
-      }
-      unawaited(delete(media));
+      final media = await syncHandler.getLocalByClientId(path);
+      await delete(media);
       return const Right(unit);
     } catch (e) {
       return Left(Failure.cacheError(e.toString()));

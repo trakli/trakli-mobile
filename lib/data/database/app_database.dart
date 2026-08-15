@@ -78,7 +78,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
         super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration {
@@ -132,8 +132,8 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     // in SQL. The remaining rows are filtered by their per-row exponential
     // backoff below (not expressible in SQL).
     final rows = await (select(localChanges)
-          ..where((lc) =>
-              lc.quarantinedAt.isNull() & lc.dismissed.equals(false)))
+          ..where(
+              (lc) => lc.quarantinedAt.isNull() & lc.dismissed.equals(false)))
         .get();
 
     return rows
@@ -167,12 +167,20 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
 
   /// Client ids with no server id and no local_changes row in any state.
   Future<List<String>> getOrphanedClientIds(
-      String tableName, String entityType) async {
+    String tableName,
+    String entityType, {
+    String clientIdColumn = 'client_id',
+    String? deletedAtColumn = 'deleted_at',
+  }) async {
+    final activeRow =
+        deletedAtColumn == null ? '' : 'AND t.$deletedAtColumn IS NULL ';
     final rows = await customSelect(
-      'SELECT t.client_id AS client_id FROM $tableName t '
-      'WHERE t.id IS NULL AND t.deleted_at IS NULL AND NOT EXISTS ('
+      'SELECT t.$clientIdColumn AS client_id FROM $tableName t '
+      'WHERE t.id IS NULL $activeRow'
+      'AND NOT EXISTS ('
       'SELECT 1 FROM local_changes lc '
-      'WHERE lc.entity_type = ?1 AND lc.entity_id = t.client_id)',
+      'WHERE lc.entity_type = ?1 '
+      'AND lc.entity_id = t.$clientIdColumn)',
       variables: [Variable.withString(entityType)],
     ).get();
     return rows.map((r) => r.read<String>('client_id')).toList();
@@ -329,6 +337,8 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
     return LocalSyncMetadata(
       entityType: row.entityType,
       lastSyncedAt: row.lastSyncedAt,
+      lastAttemptedAt: row.lastAttemptedAt,
+      lastError: row.lastError,
     );
   }
 
@@ -339,6 +349,8 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
         .map((row) => LocalSyncMetadata(
               entityType: row.entityType,
               lastSyncedAt: row.lastSyncedAt,
+              lastAttemptedAt: row.lastAttemptedAt,
+              lastError: row.lastError,
             ))
         .toList();
   }
@@ -350,6 +362,21 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
       SyncMetadataCompanion(
         entityType: Value(entityType),
         lastSyncedAt: Value(lastSyncedAt),
+      ),
+    );
+  }
+
+  @override
+  Future<void> recordEntitySyncAttempt(
+    String entityType, {
+    required DateTime attemptedAt,
+    Object? error,
+  }) async {
+    await into(syncMetadata).insertOnConflictUpdate(
+      SyncMetadataCompanion(
+        entityType: Value(entityType),
+        lastAttemptedAt: Value(attemptedAt),
+        lastError: Value(error?.toString()),
       ),
     );
   }
@@ -368,8 +395,7 @@ class AppDatabase extends _$AppDatabase with SynchronizerDb {
   }
 
   @override
-  Future<List<ParkedRemoteItem>> getParkedRemoteItems(
-      String entityType) async {
+  Future<List<ParkedRemoteItem>> getParkedRemoteItems(String entityType) async {
     final rows = await (select(deferredRemoteItems)
           ..where((t) => t.entityType.equals(entityType)))
         .get();
@@ -472,6 +498,16 @@ extension Migrations on GeneratedDatabase {
               schema.localChanges, schema.localChanges.attemptCount);
           await m.addColumn(
               schema.localChanges, schema.localChanges.quarantinedAt);
+        },
+        from8To9: (Migrator m, Schema9 schema) async {
+          await m.addColumn(
+            schema.syncMetadata,
+            schema.syncMetadata.lastAttemptedAt,
+          );
+          await m.addColumn(
+            schema.syncMetadata,
+            schema.syncMetadata.lastError,
+          );
         },
       );
 }

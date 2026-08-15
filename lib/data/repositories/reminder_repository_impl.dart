@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:drift_sync_core/drift_sync_core.dart' as sync;
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
@@ -54,16 +52,15 @@ class ReminderRepositoryImpl
     int? priority,
   }) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final reminder = await localDataSource.insertReminder(
-        title: title,
-        description: description,
-        type: type,
-        triggerAt: triggerAt,
-        repeatRule: repeatRule,
-        timezone: timezone ?? 'UTC',
-        priority: priority ?? 0,
-      );
-      unawaited(post(reminder));
+      await persistAndPost(() => localDataSource.insertReminder(
+            title: title,
+            description: description,
+            type: type,
+            triggerAt: triggerAt,
+            repeatRule: repeatRule,
+            timezone: timezone ?? 'UTC',
+            priority: priority ?? 0,
+          ));
       return unit;
     });
   }
@@ -81,18 +78,17 @@ class ReminderRepositoryImpl
     int? priority,
   }) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final reminder = await localDataSource.updateReminder(
-        clientId,
-        title: title,
-        description: description,
-        type: type,
-        triggerAt: triggerAt,
-        repeatRule: repeatRule,
-        clearRepeatRule: clearRepeatRule,
-        timezone: timezone,
-        priority: priority,
-      );
-      unawaited(put(reminder));
+      await persistAndPut(() => localDataSource.updateReminder(
+            clientId,
+            title: title,
+            description: description,
+            type: type,
+            triggerAt: triggerAt,
+            repeatRule: repeatRule,
+            clearRepeatRule: clearRepeatRule,
+            timezone: timezone,
+            priority: priority,
+          ));
       return unit;
     });
   }
@@ -100,8 +96,8 @@ class ReminderRepositoryImpl
   @override
   Future<Either<Failure, Unit>> deleteReminder(String clientId) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final reminder = await localDataSource.deleteReminder(clientId);
-      unawaited(delete(reminder));
+      final reminder = await syncHandler.getLocalByClientId(clientId);
+      await delete(reminder);
       return unit;
     });
   }

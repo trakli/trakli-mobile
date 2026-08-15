@@ -75,6 +75,14 @@ void main() {
         ));
   }
 
+  Future<void> insertParty(String clientId, {int? serverId}) {
+    return db.into(db.parties).insert(PartiesCompanion.insert(
+          clientId: Value(clientId),
+          id: Value(serverId),
+          name: 'Party',
+        ));
+  }
+
   Future<void> insertChange(
     String entityType,
     String entityId, {
@@ -147,6 +155,7 @@ void main() {
         typeHandlers: {
           _StubHandler('transaction', failFor: failFor),
           _StubHandler('transfer'),
+          _StubHandler('party'),
         },
         dependencyManager: DefaultSyncDependencyManager(),
         requestAuthorizationService: _FakeAuth(),
@@ -154,17 +163,18 @@ void main() {
       );
     }
 
-    test('enqueues orphaned transactions and transfers', () async {
+    test('enqueues orphaned dependency models and dependents', () async {
       await insertTransaction('t1');
       await insertTransfer('tr1');
+      await insertParty('p1');
 
       final enqueued = await buildSync().reconcileOrphanedLocalChanges();
 
-      expect(enqueued, 2);
+      expect(enqueued, 3);
       final pending = await db.select(db.localChanges).get();
       expect(
         {for (final c in pending) c.entityId: c.entityType},
-        {'t1': 'transaction', 'tr1': 'transfer'},
+        {'t1': 'transaction', 'tr1': 'transfer', 'p1': 'party'},
       );
       final data = pending.firstWhere((c) => c.entityId == 't1').data;
       expect(data, {'entity_type': 'transaction', 'client_id': 't1'});

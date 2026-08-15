@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:fpdart/fpdart.dart';
 import 'package:drift_sync_core/drift_sync_core.dart' as sync;
 import 'package:injectable/injectable.dart';
@@ -44,16 +43,14 @@ class PartyRepositoryImpl
     PartyType? type,
   }) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final party = await localDataSource.insertParty(
-        name,
-        description: description,
-        media: media != null
-            ? Media.fromLocal(content: media.content, type: media.mediaType)
-            : null,
-        type: type,
-      );
-
-      unawaited(post(party));
+      await persistAndPost(() => localDataSource.insertParty(
+            name,
+            description: description,
+            media: media != null
+                ? Media.fromLocal(content: media.content, type: media.mediaType)
+                : null,
+            type: type,
+          ));
       return unit;
     });
   }
@@ -67,17 +64,15 @@ class PartyRepositoryImpl
     PartyType? type,
   }) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final party = await localDataSource.updateParty(
-        clientId,
-        name: name,
-        description: description,
-        media: media != null
-            ? Media.fromLocal(content: media.content, type: media.mediaType)
-            : null,
-        type: type,
-      );
-
-      unawaited(put(party));
+      await persistAndPut(() => localDataSource.updateParty(
+            clientId,
+            name: name,
+            description: description,
+            media: media != null
+                ? Media.fromLocal(content: media.content, type: media.mediaType)
+                : null,
+            type: type,
+          ));
       return unit;
     });
   }
@@ -85,8 +80,8 @@ class PartyRepositoryImpl
   @override
   Future<Either<Failure, Unit>> deleteParty(String clientId) {
     return RepositoryErrorHandler.handleApiCall(() async {
-      final party = await localDataSource.deleteParty(clientId);
-      unawaited(delete(party));
+      final party = await syncHandler.getLocalByClientId(clientId);
+      await delete(party);
       return unit;
     });
   }
