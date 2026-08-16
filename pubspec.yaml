@@ -65,7 +65,7 @@ dependencies:
   drift_sync_core:
     git:
       url: https://github.com/whilesmartflutter/drift_sync.git
-      ref: 4ac6cf0
+      ref: 136da08
       path: packages/drift_sync_core
   drift_sync_flutter:
     git:
