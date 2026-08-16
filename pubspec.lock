@@ -181,10 +181,10 @@ packages:
     dependency: transitive
     description:
       name: characters
-      sha256: faf38497bda5ead2a8c7615f4f7939df04333478bf32e4173fcb06d428b5716b
+      sha256: f71061c654a3380576a52b451dd5532377954cf9dbd272a78fc8479606670803
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.1"
+    version: "1.4.0"
   charcode:
     dependency: transitive
     description:
@@ -429,8 +429,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/drift_sync_core"
-      ref: "136da08"
-      resolved-ref: "136da0849494ad2ccc1e22165efe717395076055"
+      ref: "drift_sync_core-v0.3.4"
+      resolved-ref: "19ee6eced96af9f392fc83fb99816ce7d7dbc8c8"
       url: "https://github.com/whilesmartflutter/drift_sync.git"
     source: git
     version: "0.3.4"
@@ -1292,10 +1292,10 @@ packages:
     dependency: transitive
     description:
       name: material_color_utilities
-      sha256: "9c337007e82b1889149c82ed242ed1cb24a66044e30979c44912381e9be4c48b"
+      sha256: f7142bb1154231d7ea5f96bc7bde4bda2a0945d2806bb11670e30b850d56bdec
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.0"
+    version: "0.11.1"
   meta:
     dependency: transitive
     description:
@@ -2174,5 +2174,5 @@ packages:
     source: hosted
     version: "3.1.3"
 sdks:
-  dart: ">=3.9.0-0 <4.0.0"
+  dart: ">=3.8.0 <4.0.0"
   flutter: ">=3.32.0"
