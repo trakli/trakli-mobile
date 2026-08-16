@@ -266,25 +266,49 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
               separatorBuilder: (_, __) => const Divider(height: 1),
               itemBuilder: (context, index) {
                 final meta = _syncMetadata[index];
+                final error = meta.lastError;
                 return ListTile(
                   dense: true,
+                  onTap: error == null
+                      ? null
+                      : () => _showModelSyncError(meta, error),
                   title: Text(
                     _getEntityTypeDisplayName(meta.entityType),
                     style: TextStyle(fontSize: 14.sp),
                   ),
-                  trailing: meta.lastError != null
-                      ? Icon(
+                  subtitle: error == null
+                      ? null
+                      : Text(
+                          error,
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            color: context.tones.expense.deep,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Kept alongside the error so a failing model still
+                      // shows when it was last tried.
+                      Text(
+                        _formatDateTime(meta.lastAttemptedAt),
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: context.tones.textMuted,
+                        ),
+                      ),
+                      if (error != null) ...[
+                        SizedBox(width: 6.w),
+                        Icon(
                           Icons.error,
                           color: context.tones.expense.deep,
                           size: 20.sp,
-                        )
-                      : Text(
-                          _formatDateTime(meta.lastAttemptedAt),
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: context.tones.textMuted,
-                          ),
                         ),
+                      ],
+                    ],
+                  ),
                 );
               },
             ),
@@ -374,6 +398,59 @@ class _SyncHistoryScreenState extends State<SyncHistoryScreen> {
 
   /// Full error text plus the queued request payload, so validation
   /// failures show exactly what the server received.
+  /// Down-sync failures have no queued change to inspect, so the error is
+  /// only recoverable from the model's sync metadata.
+  void _showModelSyncError(LocalSyncMetadata meta, String error) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(_getEntityTypeDisplayName(meta.entityType)),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '${LocaleKeys.lastAttempted.tr()}: '
+                  '${_formatDateTime(meta.lastAttemptedAt)}',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: context.tones.textMuted,
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: SelectableText(
+                    error,
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      fontFamily: 'monospace',
+                      color: context.tones.expense.deep,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(LocaleKeys.done.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showChangeDetails(LocalChange change) {
     final payload = const JsonEncoder.withIndent('  ').convert(change.data);
     showDialog<void>(

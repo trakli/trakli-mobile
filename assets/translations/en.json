@@ -506,6 +506,7 @@
   "synchronization": "Synchronization",
   "syncHistoryDesc": "View sync status and pending changes",
   "lastSyncStatus": "Last sync status",
+  "lastAttempted": "Last attempted",
   "noSyncHistory": "No sync history available",
   "pendingChanges": "Pending changes",
   "noPendingChanges": "No pending changes",

@@ -506,6 +506,7 @@
   "synchronization": "Синхронизация",
   "syncHistoryDesc": "Просмотр статуса синхронизации и ожидающих изменений",
   "lastSyncStatus": "Последний статус синхронизации",
+  "lastAttempted": "Последняя попытка",
   "noSyncHistory": "История синхронизации недоступна",
   "pendingChanges": "Ожидающие изменения",
   "noPendingChanges": "Нет ожидающих изменений",

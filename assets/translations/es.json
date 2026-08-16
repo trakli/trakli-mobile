@@ -506,6 +506,7 @@
   "synchronization": "Sincronización",
   "syncHistoryDesc": "Ver estado de sincronización y cambios pendientes",
   "lastSyncStatus": "Último estado de sincronización",
+  "lastAttempted": "Último intento",
   "noSyncHistory": "No hay historial de sincronización disponible",
   "pendingChanges": "Cambios pendientes",
   "noPendingChanges": "No hay cambios pendientes",
