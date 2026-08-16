@@ -510,6 +510,7 @@ abstract class  LocaleKeys {
   static const synchronization = 'synchronization';
   static const syncHistoryDesc = 'syncHistoryDesc';
   static const lastSyncStatus = 'lastSyncStatus';
+  static const lastAttempted = 'lastAttempted';
   static const noSyncHistory = 'noSyncHistory';
   static const pendingChanges = 'pendingChanges';
   static const noPendingChanges = 'noPendingChanges';

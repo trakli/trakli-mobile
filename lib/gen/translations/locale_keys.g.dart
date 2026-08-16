@@ -174,6 +174,11 @@ abstract class  LocaleKeys {
   static const export = 'export';
   static const toPdf = 'toPdf';
   static const toExcel = 'toExcel';
+  static const exportSaved = 'exportSaved';
+  static const exportSaveFailed = 'exportSaveFailed';
+  static const exportRequiresAccount = 'exportRequiresAccount';
+  static const exportAwaitingSync = 'exportAwaitingSync';
+  static const exportPreparing = 'exportPreparing';
   static const family = 'family';
   static const searchHint = 'searchHint';
   static const totalIncome = 'totalIncome';
@@ -505,6 +510,7 @@ abstract class  LocaleKeys {
   static const synchronization = 'synchronization';
   static const syncHistoryDesc = 'syncHistoryDesc';
   static const lastSyncStatus = 'lastSyncStatus';
+  static const lastAttempted = 'lastAttempted';
   static const noSyncHistory = 'noSyncHistory';
   static const pendingChanges = 'pendingChanges';
   static const noPendingChanges = 'noPendingChanges';
