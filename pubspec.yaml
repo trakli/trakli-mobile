@@ -129,7 +129,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
   freezed: ^2.5.8
   json_serializable: ^6.9.5
   injectable_generator: ^2.7.0
