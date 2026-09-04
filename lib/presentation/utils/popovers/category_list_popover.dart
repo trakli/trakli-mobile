@@ -5,7 +5,7 @@ import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
 import 'package:trakli/presentation/category/cubit/category_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/widgets/image_widget.dart';
 
 class CategoryListPopover extends StatelessWidget {
@@ -20,13 +20,14 @@ class CategoryListPopover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tones = context.tones;
     return BlocConsumer<CategoryCubit, CategoryState>(
       listener: (context, state) {
         if (state.failure != const Failure.none()) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.failure.customMessage),
-              backgroundColor: Colors.red,
+              backgroundColor: tones.expense.accent,
             ),
           );
         }
@@ -35,7 +36,7 @@ class CategoryListPopover extends StatelessWidget {
         if (state.isLoading) {
           return Center(
             child: CircularProgressIndicator.adaptive(
-              valueColor: AlwaysStoppedAnimation(appPrimaryColor),
+              valueColor: AlwaysStoppedAnimation(tones.brand.deep),
             ),
           );
         }
@@ -51,6 +52,8 @@ class CategoryListPopover extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 16.sp,
+                  color: tones.textPrimary,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               state.categories.isEmpty
@@ -59,7 +62,7 @@ class CategoryListPopover extends StatelessWidget {
                         'No Categories yet',
                         style: TextStyle(
                           fontSize: 16.sp,
-                          color: Colors.grey,
+                          color: tones.textMuted,
                         ),
                       ),
                     )
@@ -80,11 +83,13 @@ class CategoryListPopover extends StatelessWidget {
                           title: Text(
                             category.name,
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: tones.textPrimary),
                           ),
                           trailing: ImageWidget(
                             mediaEntity: category.icon,
                             iconSize: 24.sp,
                             emojiSize: 24.sp,
+                            accentColor: tones.brand.accent,
                             placeholderIcon: Icons.category,
                           ),
                         );

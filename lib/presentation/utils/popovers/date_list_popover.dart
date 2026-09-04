@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart'
     show PickerDateRange;
 import 'package:trakli/gen/assets.gen.dart' show Assets;
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/dialogs/custom_range_picker.dart';
 import 'package:trakli/presentation/utils/enums.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
@@ -24,6 +25,7 @@ class DateListPopover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tones = context.tones;
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(
         vertical: 8.h,
@@ -36,6 +38,8 @@ class DateListPopover extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 16.sp,
+              color: tones.textPrimary,
+              fontWeight: FontWeight.w700,
             ),
           ),
           ListView.separated(
@@ -76,11 +80,12 @@ class DateListPopover extends StatelessWidget {
                 title: Text(
                   option.name.tr(),
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: tones.textPrimary),
                 ),
                 trailing: SvgPicture.asset(
                   Assets.images.arrowRight,
                   colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.onSurface,
+                    tones.textMuted,
                     BlendMode.srcIn,
                   ),
                 ),

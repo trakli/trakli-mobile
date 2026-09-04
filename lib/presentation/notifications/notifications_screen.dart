@@ -7,7 +7,7 @@ import 'package:trakli/di/injection.dart';
 import 'package:trakli/gen/assets.gen.dart';
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/notifications/cubit/notification_cubit.dart';
-import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/notification_tile.dart';
 import 'package:trakli/presentation/utils/page_app_bar.dart';
 
@@ -24,10 +24,11 @@ class NotificationsScreen extends StatelessWidget {
         ),
         body: BlocBuilder<NotificationCubit, NotificationState>(
           builder: (context, state) {
+            final tones = context.tones;
             if (state.isLoading) {
               return Center(
                 child: CircularProgressIndicator.adaptive(
-                  valueColor: AlwaysStoppedAnimation(appPrimaryColor),
+                  valueColor: AlwaysStoppedAnimation(tones.brand.deep),
                 ),
               );
             }
@@ -42,16 +43,17 @@ class NotificationsScreen extends StatelessWidget {
                       width: 64.w,
                       height: 64.h,
                       colorFilter: ColorFilter.mode(
-                        Colors.grey.shade300,
+                        tones.textMuted.withValues(alpha: 0.3),
                         BlendMode.srcIn,
                       ),
                     ),
                     SizedBox(height: 16.h),
                     Text(
-                      'No notifications',
+                      LocaleKeys.noNotifications.tr(),
                       style: TextStyle(
                         fontSize: 16.sp,
-                        color: Colors.grey.shade600,
+                        color: tones.textMuted,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
