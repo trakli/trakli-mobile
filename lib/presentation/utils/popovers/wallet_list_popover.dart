@@ -9,6 +9,7 @@ import 'package:trakli/gen/assets.gen.dart' show Assets;
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
 import 'package:trakli/presentation/utils/colors.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/wallets/cubit/wallet_cubit.dart';
 
 class WalletListPopover extends StatelessWidget {
@@ -25,13 +26,14 @@ class WalletListPopover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tones = context.tones;
     return BlocConsumer<WalletCubit, WalletState>(
       listener: (context, state) {
         if (state.failure != const Failure.none()) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.failure.customMessage),
-              backgroundColor: Colors.red,
+              backgroundColor: tones.expense.accent,
             ),
           );
         }
@@ -40,7 +42,7 @@ class WalletListPopover extends StatelessWidget {
         if (state.isLoading) {
           return Center(
             child: CircularProgressIndicator.adaptive(
-              valueColor: AlwaysStoppedAnimation(appPrimaryColor),
+              valueColor: AlwaysStoppedAnimation(tones.brand.deep),
             ),
           );
         }
@@ -56,6 +58,8 @@ class WalletListPopover extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 16.sp,
+                  color: tones.textPrimary,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               state.wallets.isEmpty
@@ -64,7 +68,7 @@ class WalletListPopover extends StatelessWidget {
                         LocaleKeys.noWalletsYet.tr(),
                         style: TextStyle(
                           fontSize: 16.sp,
-                          color: Colors.grey,
+                          color: tones.textMuted,
                         ),
                       ),
                     )
@@ -84,12 +88,13 @@ class WalletListPopover extends StatelessWidget {
                           title: Text(
                             wallet.name,
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: tones.textPrimary),
                           ),
                           subtitle: showCurrency
                               ? Text(
                                   wallet.currencyCode,
                                   style: TextStyle(
-                                    color: appPrimaryColor,
+                                    color: tones.brand.deep,
                                     fontSize: 12.sp,
                                   ),
                                   overflow: TextOverflow.ellipsis,
@@ -97,6 +102,10 @@ class WalletListPopover extends StatelessWidget {
                               : null,
                           trailing: SvgPicture.asset(
                             Assets.images.arrowRight,
+                            colorFilter: ColorFilter.mode(
+                              tones.textMuted,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         );
                       },

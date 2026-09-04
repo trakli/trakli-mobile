@@ -5,6 +5,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart'
     show PickerDateRange;
 import 'package:trakli/gen/translations/codegen_loader.g.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
+import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/utils/helpers.dart';
 
 class CustomRangePicker extends StatefulWidget {
@@ -34,18 +35,19 @@ class _CustomRangePickerState extends State<CustomRangePicker> {
 
   @override
   Widget build(BuildContext context) {
+    final tones = context.tones;
     return Dialog(
       insetPadding: EdgeInsets.symmetric(
         horizontal: 16.w,
         vertical: 20.h,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: tones.bgSurface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(AppRadii.xl.r),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: 48.h,
+          vertical: 32.h,
           horizontal: 16.w,
         ),
         child: Column(
@@ -54,14 +56,18 @@ class _CustomRangePickerState extends State<CustomRangePicker> {
           children: [
             Text(
               LocaleKeys.selectDateRange.tr(),
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: tones.textPrimary,
+                  ),
             ),
             SizedBox(height: 20.h),
             TextFormField(
               readOnly: true,
+              style: TextStyle(color: tones.textPrimary),
               decoration: InputDecoration(
                 labelText: LocaleKeys.fromDate.tr(),
-                suffixIcon: const Icon(Icons.calendar_today),
+                fillColor: tones.bgSurface,
+                suffixIcon: Icon(Icons.calendar_today, color: tones.textMuted),
               ),
               controller: TextEditingController(
                 text: range?.startDate != null
@@ -86,9 +92,11 @@ class _CustomRangePickerState extends State<CustomRangePicker> {
             SizedBox(height: 16.h),
             TextFormField(
               readOnly: true,
+              style: TextStyle(color: tones.textPrimary),
               decoration: InputDecoration(
                 labelText: LocaleKeys.toDate.tr(),
-                suffixIcon: const Icon(Icons.calendar_today),
+                fillColor: tones.bgSurface,
+                suffixIcon: Icon(Icons.calendar_today, color: tones.textMuted),
               ),
               controller: TextEditingController(
                 text: range?.endDate != null

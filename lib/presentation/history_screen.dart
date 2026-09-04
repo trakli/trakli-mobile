@@ -691,14 +691,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
     required String name,
     VoidCallback? onTap,
   }) {
+    final tones = context.tones;
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 8.w,
         vertical: 4.h,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: tones.bgSurface,
         borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: tones.borderLight),
       ),
       child: Row(
         spacing: 4.w,
@@ -710,7 +712,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               height: 16.h,
               iconPath,
               colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.onSurface,
+                tones.textPrimary,
                 BlendMode.srcIn,
               ),
             ),
@@ -718,7 +720,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             name,
             style: TextStyle(
               fontSize: 10.sp,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: tones.textPrimary,
             ),
           ),
           GestureDetector(
