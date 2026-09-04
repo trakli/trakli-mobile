@@ -5,7 +5,6 @@ import 'package:trakli/core/error/failures/failures.dart';
 import 'package:trakli/domain/entities/category_entity.dart';
 import 'package:trakli/presentation/category/cubit/category_cubit.dart';
 import 'package:trakli/presentation/utils/app_navigator.dart';
-import 'package:trakli/presentation/utils/colors.dart';
 import 'package:trakli/presentation/utils/design_tokens.dart';
 import 'package:trakli/presentation/widgets/image_widget.dart';
 
